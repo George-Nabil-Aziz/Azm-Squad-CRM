@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Crm.Application.Auth;
 using Crm.Application.Common.Localization;
+using Crm.Application.Users;
 
 namespace Crm.UnitTests.Localization;
 
@@ -38,6 +39,7 @@ public partial class LocalizedTextCatalogTests
     {
         Assert.Contains(typeof(AuthText), TextClasses);
         Assert.Contains(typeof(ErrorText), TextClasses);
+        Assert.Contains(typeof(UserText), TextClasses);
     }
 
     [Theory]

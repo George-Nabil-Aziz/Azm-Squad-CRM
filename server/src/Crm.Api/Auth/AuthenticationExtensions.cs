@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Crm.Application.Auth;
+using Crm.Application.Common.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -39,10 +41,31 @@ public static class AuthenticationExtensions
                     LifetimeValidator = (notBefore, expires, _, parameters) =>
                         IsWithinLifetime(notBefore, expires, parameters.ClockSkew, timeProvider.GetUtcNow().UtcDateTime),
                 };
+                bearer.Events = new JwtBearerEvents { OnTokenValidated = RejectInactiveUserAsync };
             });
 
-        services.AddAuthorization();
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUser, HttpCurrentUser>();
+
+        // Endpoints use policy names only. CRM-7 replaces RequireRole with a permission requirement here.
+        services.AddAuthorizationBuilder()
+            .AddPolicy(CrmPolicies.ManageUsers, policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin));
         return services;
+    }
+
+    /// <summary>
+    /// A valid signature is not enough: the user must still exist and be active. A deactivated user's token
+    /// stops working on the next request (401), not only when it expires.
+    /// </summary>
+    private static async Task RejectInactiveUserAsync(TokenValidatedContext context)
+    {
+        var checker = context.HttpContext.RequestServices.GetRequiredService<IActiveUserChecker>();
+        var isActive = Guid.TryParse(context.Principal?.FindFirstValue(AuthClaimTypes.UserId), out var userId)
+                       && await checker.IsActiveAsync(userId, context.HttpContext.RequestAborted);
+        if (!isActive)
+        {
+            context.Fail("The user is deactivated or no longer exists.");
+        }
     }
 
     /// <summary>A token without <c>exp</c> is rejected; <c>nbf</c> is optional.</summary>

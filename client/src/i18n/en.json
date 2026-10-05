@@ -50,5 +50,56 @@
   "toast": {
     "notifications": "Notifications",
     "close": "Close notification"
+  },
+  "users": {
+    "description": "Create, edit and deactivate staff users.",
+    "add": "Add user",
+    "searchLabel": "Search by name or email",
+    "search": "Search",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "roles": "Roles",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "active": "Active",
+    "inactive": "Inactive",
+    "edit": "Edit",
+    "deactivate": "Deactivate",
+    "reactivate": "Reactivate",
+    "empty": "No users found.",
+    "loading": "Loading users…",
+    "pageInfo": "Page {{page}} of {{pages}}",
+    "previous": "Previous",
+    "next": "Next",
+    "createTitle": "New user",
+    "createDescription": "The user signs in with this email and password.",
+    "editTitle": "Edit user",
+    "editDescription": "Change the name, email or roles.",
+    "fullName": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "roles": "Roles",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "fullNameRequired": "Enter the full name.",
+    "emailRequired": "Enter the email.",
+    "emailInvalid": "Enter a valid email address.",
+    "passwordWeak": "Use at least 8 characters with an upper-case letter, a lower-case letter, a digit and a symbol.",
+    "rolesRequired": "Select at least one role.",
+    "created": "User {{name}} was created.",
+    "updated": "User {{name}} was saved.",
+    "deactivateTitle": "Deactivate {{name}}?",
+    "deactivateDescription": "They will no longer be able to sign in. You can reactivate them later.",
+    "deactivated": "{{name}} was deactivated.",
+    "reactivated": "{{name}} was reactivated.",
+    "roleNames": {
+      "SuperAdmin": "System administrator",
+      "Admin": "Administrator",
+      "Supervisor": "Team supervisor",
+      "Agent": "Support agent"
+    }
   }
 }

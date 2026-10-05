@@ -1,4 +1,5 @@
 using Crm.Application.Auth;
+using Crm.Application.Users;
 using Crm.Infrastructure.Identity;
 using Crm.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +33,8 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<CrmDbContext>();
 
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IActiveUserChecker, ActiveUserChecker>();
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<CrmDbInitializer>();
         return services;
     }

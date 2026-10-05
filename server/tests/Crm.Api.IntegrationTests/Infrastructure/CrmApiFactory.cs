@@ -1,7 +1,9 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Crm.Infrastructure.Identity;
 using Crm.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.Sqlite;
@@ -26,6 +28,7 @@ public class CrmApiFactory : WebApplicationFactory<Program>
     public const string SuperAdminEmail = "admin@crm.local";
     public const string SuperAdminPassword = "Test#Admin123";
     public const string JwtSigningKey = "test-signing-key-for-integration-tests-only-0123456789";
+    public const string TestUserPassword = "Test#User123";
 
     private readonly SqliteConnection _connection = new("DataSource=:memory:");
 
@@ -70,6 +73,30 @@ public class CrmApiFactory : WebApplicationFactory<Program>
         response.EnsureSuccessStatusCode();
         var body = await response.Content.ReadFromJsonAsync<LoginBody>();
         return body!.AccessToken;
+    }
+
+    /// <summary>
+    /// Creates an active user directly through <see cref="UserManager{TUser}"/> (not through the API) and returns its id.
+    /// Use a unique email per test: the database is shared by all tests of a class.
+    /// </summary>
+    public async Task<Guid> CreateUserAsync(string email, string password, params string[] roles)
+    {
+        using var scope = Services.CreateScope();
+        var users = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var user = new ApplicationUser { UserName = email, Email = email, FullName = email };
+        var created = await users.CreateAsync(user, password);
+        Assert.True(created.Succeeded, string.Join("; ", created.Errors.Select(e => e.Description)));
+        var added = await users.AddToRolesAsync(user, roles);
+        Assert.True(added.Succeeded, string.Join("; ", added.Errors.Select(e => e.Description)));
+        return user.Id;
+    }
+
+    /// <summary>Creates a user with the given role (unique email) and returns a client signed in as that user.</summary>
+    public async Task<HttpClient> CreateClientWithRoleAsync(string role)
+    {
+        var email = $"{role.ToLowerInvariant()}-{Guid.NewGuid():N}@crm.local";
+        await CreateUserAsync(email, TestUserPassword, role);
+        return CreateAuthenticatedClient(await LoginAsync(email, TestUserPassword));
     }
 
     /// <summary>Client that sends <c>Authorization: Bearer &lt;token&gt;</c> on every request.</summary>

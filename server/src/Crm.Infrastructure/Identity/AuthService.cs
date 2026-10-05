@@ -16,7 +16,7 @@ public sealed class AuthService(
         await validator.ValidateOrThrowAsync(request, cancellationToken);
 
         var user = await userManager.FindByEmailAsync(request.Email!);
-        if (user is null || await userManager.IsLockedOutAsync(user))
+        if (user is null || !user.IsActive || await userManager.IsLockedOutAsync(user))
         {
             throw new UnauthorizedException(AuthText.InvalidCredentials);
         }

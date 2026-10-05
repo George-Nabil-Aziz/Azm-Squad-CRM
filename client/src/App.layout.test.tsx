@@ -5,6 +5,8 @@ import { getAccessToken, saveSession } from './auth/session'
 import { ADMIN_PASSWORD, callsTo, fakeApi, inOneHour, submitSignIn } from './test/fake-api'
 
 const NAVIGATION_LABELS = ['Dashboard', 'Tickets', 'Customers', 'Knowledge base', 'Reports', 'Users']
+/** Areas whose story is not built yet (each later story removes its label from this list). */
+const COMING_SOON_LABELS = ['Tickets', 'Customers', 'Knowledge base', 'Reports']
 
 function renderAt(path: string) {
   window.history.replaceState(null, '', path)
@@ -116,13 +118,27 @@ describe('App layout and routing', () => {
     expect(window.location.pathname).toBe('/')
   })
 
+  it('opens the users page from the sidebar', async () => {
+    signedIn()
+    vi.stubGlobal('fetch', fakeApi())
+    renderAt('/')
+    const navigation = await screen.findByRole('navigation', { name: 'Main navigation' })
+
+    fireEvent.click(within(navigation).getByRole('link', { name: 'Users' }))
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Users' })).toBeInTheDocument()
+    expect(await screen.findByRole('row', { name: /System Administrator/ })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/users')
+    expect(within(navigation).getByRole('link', { name: 'Users' })).toHaveAttribute('aria-current', 'page')
+  })
+
   it('opens a page for every navigation item (areas not built yet say "coming soon")', async () => {
     signedIn()
     vi.stubGlobal('fetch', fakeApi())
     renderAt('/')
     const navigation = await screen.findByRole('navigation', { name: 'Main navigation' })
 
-    for (const label of NAVIGATION_LABELS.slice(1)) {
+    for (const label of COMING_SOON_LABELS) {
       fireEvent.click(within(navigation).getByRole('link', { name: label }))
 
       expect(await screen.findByRole('heading', { level: 1, name: label })).toBeInTheDocument()

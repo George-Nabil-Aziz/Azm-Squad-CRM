@@ -30,6 +30,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapHealthEndpoints();
 app.MapAuthEndpoints();
+app.MapUsersEndpoints();
 
 await using (var scope = app.Services.CreateAsyncScope())
 {

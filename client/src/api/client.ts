@@ -83,3 +83,7 @@ export function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
 export function apiPost<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
   return request<T>('POST', path, { body, signal })
 }
+
+export function apiPut<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
+  return request<T>('PUT', path, { body, signal })
+}

@@ -20,6 +20,14 @@ Object.defineProperty(window, 'matchMedia', {
   }),
 })
 
+// jsdom has no ResizeObserver. Radix Checkbox (inside a <form>) measures itself with it.
+class ResizeObserverStub {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+Object.defineProperty(window, 'ResizeObserver', { writable: true, configurable: true, value: ResizeObserverStub })
+
 afterEach(async () => {
   cleanup()
   localStorage.clear()

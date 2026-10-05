@@ -37,6 +37,9 @@ export function fakeApi({ healthStatus = 200 }: FakeApiOptions = {}) {
       const auth = ((init?.headers ?? {}) as Record<string, string>).Authorization
       return auth === 'Bearer good-token' ? json(200, me) : json(401, { status: 401 }, 'application/problem+json')
     }
+    if (path === '/api/users' || path.startsWith('/api/users?')) {
+      return json(200, { items: [{ ...me, isActive: true }], page: 1, pageSize: 20, totalCount: 1 })
+    }
     return json(404, { status: 404 }, 'application/problem+json')
   })
 }

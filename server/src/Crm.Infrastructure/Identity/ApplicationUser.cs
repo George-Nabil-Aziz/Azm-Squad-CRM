@@ -6,4 +6,7 @@ namespace Crm.Infrastructure.Identity;
 public class ApplicationUser : IdentityUser<Guid>
 {
     public string FullName { get; set; } = string.Empty;
+
+    /// <summary>False after an admin deactivated the user: login is refused and existing tokens stop working.</summary>
+    public bool IsActive { get; set; } = true;
 }

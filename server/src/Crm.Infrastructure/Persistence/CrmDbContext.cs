@@ -14,6 +14,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
         builder.Entity<ApplicationUser>(user =>
         {
             user.Property(u => u.FullName).HasMaxLength(200).IsRequired();
+            // Rows that exist when the column is added (e.g. the seeded SuperAdmin) become active.
+            user.Property(u => u.IsActive).HasDefaultValue(true).ValueGeneratedNever();
         });
     }
 }
