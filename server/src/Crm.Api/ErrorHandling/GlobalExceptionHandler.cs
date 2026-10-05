@@ -60,6 +60,12 @@ public sealed class GlobalExceptionHandler(
             Status = badRequest.StatusCode,
             Title = "The request is malformed.",
         },
+        UnauthorizedException unauthorized => new ProblemDetails
+        {
+            Status = StatusCodes.Status401Unauthorized,
+            Title = "Authentication failed.",
+            Detail = unauthorized.Message,
+        },
         NotFoundException notFound => new ProblemDetails
         {
             Status = StatusCodes.Status404NotFound,

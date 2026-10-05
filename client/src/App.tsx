@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react'
 import { getHealth } from './api/health'
+import { useIsAuthenticated } from './auth/useIsAuthenticated'
 import { ApiErrorToaster } from './components/ApiErrorToaster'
+import { CurrentUserPanel } from './features/auth/CurrentUserPanel'
+import { LoginForm } from './features/auth/LoginForm'
 
 type ApiState = 'loading' | 'unavailable' | string
 
 function App() {
   const [apiStatus, setApiStatus] = useState<ApiState>('loading')
+  const isAuthenticated = useIsAuthenticated()
 
   useEffect(() => {
     const controller = new AbortController()
@@ -17,7 +21,7 @@ function App() {
     return () => controller.abort()
   }, [])
 
-  // Temporary placeholder text: i18n arrives in CRM-4, layout in CRM-3.
+  // Temporary placeholder text: i18n arrives in CRM-4, layout + routing in CRM-3.
   return (
     <>
       <main>
@@ -25,6 +29,7 @@ function App() {
         <p>
           API status: <strong>{apiStatus}</strong>
         </p>
+        {isAuthenticated ? <CurrentUserPanel /> : <LoginForm />}
       </main>
       <ApiErrorToaster />
     </>

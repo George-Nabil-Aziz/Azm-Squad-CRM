@@ -3,7 +3,10 @@ namespace Crm.UnitTests.Architecture;
 public class LayerDependencyTests
 {
     private static readonly string[] ForbiddenPrefixes =
-        ["Microsoft.AspNetCore", "Microsoft.EntityFrameworkCore", "Crm.Infrastructure", "Crm.Api"];
+        [
+            "Microsoft.AspNetCore", "Microsoft.EntityFrameworkCore", "Microsoft.Extensions.Identity",
+            "Crm.Infrastructure", "Crm.Api",
+        ];
 
     [Fact]
     public void Domain_DoesNotReferenceFrameworkOrOuterLayers() =>

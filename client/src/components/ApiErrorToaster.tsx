@@ -12,6 +12,9 @@ export function ApiErrorToaster() {
   useEffect(
     () =>
       onApiError((error) => {
+        // 401 is not a toast: the login form shows wrong credentials inline, and an expired
+        // session clears the token so the app shows the sign-in form again (CRM-2).
+        if (error.status === 401) return
         toast.error(getApiErrorMessage(error), { description: getApiErrorDescription(error) })
       }),
     [],

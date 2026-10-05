@@ -1,28 +1,93 @@
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using Crm.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Time.Testing;
 
 namespace Crm.Api.IntegrationTests.Infrastructure;
 
 /// <summary>
 /// The one shared test host (CLAUDE.md "Integration tests"). Environment <c>Testing</c>.
-/// Captures logs in <see cref="Logs"/> and maps test-only endpoints under <c>/_test</c>.
-/// Later stories add SQLite in-memory, JWT settings, etc. here.
+/// SQLite in-memory database (one open connection for the factory lifetime, created with EnsureCreated
+/// and seeded by the real startup code), test JWT key + seed password, a controllable clock in <see cref="Time"/>,
+/// captured logs in <see cref="Logs"/> and test-only endpoints under <c>/_test</c>.
 /// </summary>
 public class CrmApiFactory : WebApplicationFactory<Program>
 {
+    public const string SuperAdminEmail = "admin@crm.local";
+    public const string SuperAdminPassword = "Test#Admin123";
+    public const string JwtSigningKey = "test-signing-key-for-integration-tests-only-0123456789";
+
+    private readonly SqliteConnection _connection = new("DataSource=:memory:");
+
     public TestLoggerProvider Logs { get; } = new();
+
+    /// <summary>Clock used by the app (token issue time, expiry checks). Starts at the real current time.</summary>
+    public FakeTimeProvider Time { get; } = new(DateTimeOffset.UtcNow);
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        if (_connection.State != System.Data.ConnectionState.Open)
+        {
+            _connection.Open();
+        }
+
         builder.UseEnvironment("Testing");
+        builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            ["Jwt:SigningKey"] = JwtSigningKey,
+            ["Seed:SuperAdminPassword"] = SuperAdminPassword,
+            ["Database:StartupAction"] = "EnsureCreated",
+        }));
         builder.ConfigureLogging(logging => logging.AddProvider(Logs));
         builder.ConfigureTestServices(services =>
         {
+            services.RemoveAll<DbContextOptions<CrmDbContext>>();
+            services.RemoveAll<IDbContextOptionsConfiguration<CrmDbContext>>();
+            services.AddDbContext<CrmDbContext>(options => options.UseSqlite(_connection));
+
+            services.RemoveAll<TimeProvider>();
+            services.AddSingleton<TimeProvider>(Time);
+
             services.AddTransient<IStartupFilter, TestEndpointsStartupFilter>();
             services.AddScoped<FluentValidation.IValidator<SampleRequest>, SampleRequestValidator>();
         });
     }
+
+    /// <summary>Logs in through the real endpoint and returns the access token.</summary>
+    public async Task<string> LoginAsync(string email = SuperAdminEmail, string password = SuperAdminPassword)
+    {
+        var response = await CreateClient().PostAsJsonAsync("/api/auth/login", new { email, password });
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadFromJsonAsync<LoginBody>();
+        return body!.AccessToken;
+    }
+
+    /// <summary>Client that sends <c>Authorization: Bearer &lt;token&gt;</c> on every request.</summary>
+    public HttpClient CreateAuthenticatedClient(string accessToken)
+    {
+        var client = CreateClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        return client;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        if (disposing)
+        {
+            _connection.Dispose();
+        }
+    }
+
+    public sealed record LoginBody(string AccessToken, string TokenType, DateTimeOffset ExpiresAt);
 }

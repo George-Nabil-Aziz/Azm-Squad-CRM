@@ -1,3 +1,4 @@
+import { clearSession, getAccessToken } from '../auth/session'
 import { ApiError, type ProblemDetails } from './errors'
 
 type ApiErrorListener = (error: ApiError) => void
@@ -30,10 +31,25 @@ async function readProblem(response: Response): Promise<ProblemDetails | undefin
   }
 }
 
-async function request<T>(method: string, path: string, signal?: AbortSignal): Promise<T> {
+interface RequestOptions {
+  body?: unknown
+  signal?: AbortSignal
+}
+
+async function request<T>(method: string, path: string, { body, signal }: RequestOptions = {}): Promise<T> {
+  const headers: Record<string, string> = { Accept: 'application/json' }
+  if (body !== undefined) headers['Content-Type'] = 'application/json'
+  const accessToken = getAccessToken()
+  if (accessToken) headers.Authorization = `Bearer ${accessToken}`
+
   let response: Response
   try {
-    response = await fetch(path, { method, headers: { Accept: 'application/json' }, signal })
+    response = await fetch(path, {
+      method,
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
+      signal,
+    })
   } catch (error) {
     // Cancelled on purpose (component unmounted): not a failure the user must see.
     if (signal?.aborted) throw error
@@ -41,6 +57,8 @@ async function request<T>(method: string, path: string, signal?: AbortSignal): P
   }
 
   if (!response.ok) {
+    // Token expired or revoked: sign out, so the app shows the sign-in form again.
+    if (response.status === 401 && accessToken) clearSession()
     const problem = await readProblem(response)
     return fail(
       new ApiError(
@@ -52,9 +70,14 @@ async function request<T>(method: string, path: string, signal?: AbortSignal): P
     )
   }
 
+  if (response.status === 204) return undefined as T
   return (await response.json()) as T
 }
 
 export function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
-  return request<T>('GET', path, signal)
+  return request<T>('GET', path, { signal })
+}
+
+export function apiPost<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
+  return request<T>('POST', path, { body, signal })
 }

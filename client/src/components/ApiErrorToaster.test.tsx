@@ -56,4 +56,22 @@ describe('ApiErrorToaster', () => {
 
     expect(screen.queryByRole('listitem')).not.toBeInTheDocument()
   })
+
+  it('does not show a toast for 401 (handled by the sign-in flow)', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValueOnce(problemResponse(401, { status: 401, correlationId: 'corr-401' }))
+        .mockResolvedValueOnce(problemResponse(500, { status: 500, correlationId: 'corr-500' })),
+    )
+    render(<ApiErrorToaster />)
+
+    await expect(apiGet('/api/auth/me')).rejects.toThrow('401')
+    await expect(apiGet('/api/anything')).rejects.toThrow('500')
+
+    // The 500 toast proves the toaster is listening; the 401 one must not exist.
+    expect(await screen.findByText('Reference: corr-500')).toBeInTheDocument()
+    expect(screen.queryByText('Reference: corr-401')).not.toBeInTheDocument()
+  })
 })
