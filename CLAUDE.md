@@ -57,6 +57,25 @@ Every change goes through the squad-kit flow. No feature work outside it.
 - API calls go through one typed client in `client/src/api`; components do not call `fetch` directly.
 - Test user behavior (React Testing Library queries by role/label), not implementation details.
 
+## Architecture decisions (apply to every story)
+
+Backend:
+- **Persistence:** `CrmDbContext` in `Crm.Infrastructure/Persistence/`, derives from `IdentityDbContext<ApplicationUser, ApplicationRole, Guid>`. Identity types (`ApplicationUser`, `ApplicationRole`) live in Infrastructure, never in Domain. EF Core migrations live in `Crm.Infrastructure/Persistence/Migrations`.
+- **Database:** SQL Server LocalDB in Development, connection string `ConnectionStrings:Crm` = `Server=(localdb)\MSSQLLocalDB;Database=CustomerSupportCrm;Trusted_Connection=True;TrustServerCertificate=True` in `appsettings.Development.json`. Migrations are applied at startup in Development only.
+- **Integration tests:** one shared `CrmApiFactory : WebApplicationFactory<Program>` in `Crm.Api.IntegrationTests/Infrastructure/`, environment `Testing`, SQLite in-memory (one open connection kept for the factory lifetime, `EnsureCreated`), test config values (JWT key, seed admin password) injected via `ConfigureAppConfiguration`. Hangfire is not started in `Testing`; recurring jobs are plain classes whose method tests call directly. A fake `TimeProvider` is registered in tests that need time control.
+- **Secrets:** `Jwt:SigningKey`, `Seed:SuperAdminPassword`, channel credentials → `dotnet user-secrets` (Api project) or environment variables. Never in committed appsettings.
+- **Seed:** roles `SuperAdmin`, `Admin`, `Supervisor`, `Agent` and one SuperAdmin user `admin@crm.local` (password from `Seed:SuperAdminPassword`).
+- **Endpoints:** minimal APIs, one static class per feature `Crm.Api/Endpoints/<Feature>Endpoints.cs` with `Map<Feature>Endpoints()`, route groups under `/api/<resource>` (plural, kebab-case).
+- **Application layer:** one service per feature (`I<Feature>Service` + implementation) with request/response DTO records; validation with FluentValidation; failures expressed as exceptions from `Crm.Application/Common/Exceptions` (`ValidationException`, `NotFoundException`, `ConflictException`, `ForbiddenException`) mapped to ProblemDetails by the global handler (CRM-5).
+- **Pagination:** query `page` (default 1) and `pageSize` (default 20, max 100) → `PagedResult<T>(IReadOnlyList<T> Items, int Page, int PageSize, int TotalCount)`.
+- **Soft delete:** `IsDeleted` flag + EF global query filter.
+- **Channels:** every channel implements `IChannelProvider`. Real providers (SMTP/IMAP via MailKit, WhatsApp Cloud API via `HttpClient`) are configured from settings; tests use fakes. Missing credentials must not crash startup.
+
+Frontend:
+- Routing: `react-router`. Server state: `@tanstack/react-query`. Forms: `react-hook-form` + `zod`. i18n: `react-i18next` (`client/src/i18n/{ar,en}.json`). Toasts: shadcn `sonner`.
+- Auth token kept by `client/src/auth/` and attached by `client/src/api/client.ts`; components never read the token directly.
+- Pages in `client/src/pages/<area>/`, feature components in `client/src/features/<feature>/`.
+
 ## Conventions
 
 - Commit messages: `CRM-<n>: <short summary>` (Notion Story ID).
