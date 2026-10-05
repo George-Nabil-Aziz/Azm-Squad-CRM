@@ -1,38 +1,31 @@
+import { QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import { getHealth } from './api/health'
-import { useIsAuthenticated } from './auth/useIsAuthenticated'
-import { ApiErrorToaster } from './components/ApiErrorToaster'
-import { CurrentUserPanel } from './features/auth/CurrentUserPanel'
-import { LoginForm } from './features/auth/LoginForm'
-
-type ApiState = 'loading' | 'unavailable' | string
+import { BrowserRouter } from 'react-router'
+import { AppRoutes } from '@/app/AppRoutes'
+import { createQueryClient } from '@/app/query-client'
+import { getAccessToken, subscribeToSession } from '@/auth/session'
+import { ApiErrorToaster } from '@/components/ApiErrorToaster'
 
 function App() {
-  const [apiStatus, setApiStatus] = useState<ApiState>('loading')
-  const isAuthenticated = useIsAuthenticated()
+  const [queryClient] = useState(createQueryClient)
 
-  useEffect(() => {
-    const controller = new AbortController()
-    getHealth(controller.signal)
-      .then((health) => setApiStatus(health.status))
-      .catch(() => {
-        if (!controller.signal.aborted) setApiStatus('unavailable')
-      })
-    return () => controller.abort()
-  }, [])
+  // Signed out (button, expired or rejected token): forget every cached server response,
+  // so the next user never sees the previous user's data.
+  useEffect(
+    () =>
+      subscribeToSession(() => {
+        if (getAccessToken() === null) queryClient.clear()
+      }),
+    [queryClient],
+  )
 
-  // Temporary placeholder text: i18n arrives in CRM-4, layout + routing in CRM-3.
   return (
-    <>
-      <main>
-        <h1>Customer Support CRM</h1>
-        <p>
-          API status: <strong>{apiStatus}</strong>
-        </p>
-        {isAuthenticated ? <CurrentUserPanel /> : <LoginForm />}
-      </main>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
       <ApiErrorToaster />
-    </>
+    </QueryClientProvider>
   )
 }
 

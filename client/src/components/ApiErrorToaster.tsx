@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
+import { Toaster } from '@/components/ui/sonner'
 import { onApiError } from '../api/client'
 import { getApiErrorDescription, getApiErrorMessage } from '../api/error-messages'
 

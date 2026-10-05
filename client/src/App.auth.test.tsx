@@ -1,88 +1,56 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
-import { saveSession } from './auth/session'
+import { callsTo, fakeApi, submitSignIn } from './test/fake-api'
 
-const inOneHour = () => new Date(Date.now() + 60 * 60 * 1000).toISOString()
-
-function json(status: number, body: unknown, contentType = 'application/json') {
-  return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': contentType } })
-}
-
-const me = { id: '1', email: 'admin@crm.local', fullName: 'System Administrator', roles: ['SuperAdmin'] }
-
-/** Fake API: health is always ok; login accepts one password; /me needs the token login returned. */
-function fakeApi() {
-  return vi.fn(async (path: string, init?: RequestInit) => {
-    if (path === '/api/health') return json(200, { status: 'ok' })
-    if (path === '/api/auth/login') {
-      const { password } = JSON.parse(String(init?.body)) as { password: string }
-      return password === 'Admin#12345'
-        ? json(200, { accessToken: 'good-token', tokenType: 'Bearer', expiresAt: inOneHour() })
-        : json(401, { status: 401, title: 'Authentication failed.', correlationId: 'c-401' }, 'application/problem+json')
-    }
-    if (path === '/api/auth/me') {
-      const auth = ((init?.headers ?? {}) as Record<string, string>).Authorization
-      return auth === 'Bearer good-token' ? json(200, me) : json(401, { status: 401 }, 'application/problem+json')
-    }
-    return json(404, { status: 404 }, 'application/problem+json')
-  })
-}
-
-function submitSignIn(email: string, password: string) {
-  fireEvent.change(screen.getByLabelText('Email'), { target: { value: email } })
-  fireEvent.change(screen.getByLabelText('Password'), { target: { value: password } })
-  fireEvent.click(screen.getByRole('button', { name: 'Sign in' }))
-}
-
-describe('App authentication', () => {
+describe('Login page', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
   })
 
-  it('shows the sign-in form when signed out', () => {
+  it('shows the sign-in form with the app name when signed out', async () => {
     vi.stubGlobal('fetch', fakeApi())
     render(<App />)
 
-    expect(screen.getByRole('form', { name: 'Sign in' })).toBeInTheDocument()
-  })
-
-  it('signs in with valid credentials and shows the current user', async () => {
-    vi.stubGlobal('fetch', fakeApi())
-    render(<App />)
-
-    submitSignIn('admin@crm.local', 'Admin#12345')
-
-    expect(await screen.findByText('Signed in as System Administrator')).toBeInTheDocument()
-    expect(screen.queryByRole('form', { name: 'Sign in' })).not.toBeInTheDocument()
+    expect(await screen.findByRole('form', { name: 'Sign in' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Customer Support CRM' })).toBeInTheDocument()
   })
 
   it('shows an inline error and no toast for a wrong password', async () => {
     vi.stubGlobal('fetch', fakeApi())
     render(<App />)
+    await screen.findByRole('form', { name: 'Sign in' })
 
     submitSignIn('admin@crm.local', 'wrong')
 
     expect(await screen.findByRole('alert')).toHaveTextContent('Invalid email or password.')
     expect(screen.queryByText('Something went wrong. Please try again.')).not.toBeInTheDocument()
+    expect(screen.getByLabelText('Email')).toHaveValue('admin@crm.local')
   })
 
-  it('returns to the sign-in form when the stored token is rejected', async () => {
-    saveSession('expired-token', inOneHour())
-    vi.stubGlobal('fetch', fakeApi())
+  it('shows field errors and does not call the API when the fields are empty', async () => {
+    const fetchMock = fakeApi()
+    vi.stubGlobal('fetch', fetchMock)
     render(<App />)
+    await screen.findByRole('form', { name: 'Sign in' })
 
-    expect(await screen.findByRole('form', { name: 'Sign in' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Sign in' }))
+
+    expect(await screen.findByText('Enter your email.')).toBeInTheDocument()
+    expect(screen.getByText('Enter your password.')).toBeInTheDocument()
+    expect(screen.getByLabelText('Email')).toHaveAttribute('aria-invalid', 'true')
+    expect(callsTo(fetchMock, '/api/auth/login')).toBe(0)
   })
 
-  it('signs out', async () => {
-    vi.stubGlobal('fetch', fakeApi())
+  it('shows a field error for an invalid email address', async () => {
+    const fetchMock = fakeApi()
+    vi.stubGlobal('fetch', fetchMock)
     render(<App />)
-    submitSignIn('admin@crm.local', 'Admin#12345')
-    await screen.findByText('Signed in as System Administrator')
+    await screen.findByRole('form', { name: 'Sign in' })
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sign out' }))
+    submitSignIn('not-an-email', 'whatever')
 
-    expect(await screen.findByRole('form', { name: 'Sign in' })).toBeInTheDocument()
+    expect(await screen.findByText('Enter a valid email address.')).toBeInTheDocument()
+    expect(callsTo(fetchMock, '/api/auth/login')).toBe(0)
   })
 })
