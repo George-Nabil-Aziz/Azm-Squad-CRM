@@ -4,4 +4,4 @@ One row per feature folder under `.squad/plans/`. `NN` continues as a global exe
 
 | Feature | Overview | NN range |
 |---------|----------|----------|
-| foundation | [foundation/00-overview.md](foundation/00-overview.md) | 01–02 |
+| foundation | [foundation/00-overview.md](foundation/00-overview.md) | 01–03 |
