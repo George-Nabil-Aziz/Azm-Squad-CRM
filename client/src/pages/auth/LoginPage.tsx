@@ -1,12 +1,13 @@
+import { useTranslation } from 'react-i18next'
 import { Navigate, useLocation } from 'react-router'
-import { shellMessages } from '@/app/messages'
 import { getReturnPath } from '@/app/return-path'
 import { useIsAuthenticated } from '@/auth/useIsAuthenticated'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { authMessages } from '@/features/auth/auth-messages'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LoginForm } from '@/features/auth/LoginForm'
 
 export function LoginPage() {
+  const { t } = useTranslation()
   const isAuthenticated = useIsAuthenticated()
   const location = useLocation()
 
@@ -18,9 +19,12 @@ export function LoginPage() {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>
-            <h1 className="text-xl font-semibold">{shellMessages.appName}</h1>
+            <h1 className="text-xl font-semibold">{t('app.name')}</h1>
           </CardTitle>
-          <CardDescription>{authMessages.signInDescription}</CardDescription>
+          <CardDescription>{t('auth.signInDescription')}</CardDescription>
+          <CardAction>
+            <LanguageSwitcher />
+          </CardAction>
         </CardHeader>
         <CardContent>
           <LoginForm />

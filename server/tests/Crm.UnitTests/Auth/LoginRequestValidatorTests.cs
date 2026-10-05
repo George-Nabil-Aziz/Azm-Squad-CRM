@@ -1,4 +1,5 @@
 using Crm.Application.Auth;
+using Crm.UnitTests.Localization;
 
 namespace Crm.UnitTests.Auth;
 
@@ -26,5 +27,25 @@ public class LoginRequestValidatorTests
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == field);
+    }
+
+    [Fact]
+    public void EmptyRequest_InEnglish_HasEnglishMessages()
+    {
+        var messages = UiCulture.Use("en", () =>
+            _validator.Validate(new LoginRequest("", "")).Errors.Select(e => e.ErrorMessage).ToList());
+
+        Assert.Contains("'Email' must not be empty.", messages);
+        Assert.Contains("'Password' must not be empty.", messages);
+    }
+
+    [Fact]
+    public void EmptyRequest_InArabic_HasArabicMessagesAndFieldNames()
+    {
+        var messages = UiCulture.Use("ar", () =>
+            _validator.Validate(new LoginRequest("", "")).Errors.Select(e => e.ErrorMessage).ToList());
+
+        Assert.Contains("'البريد الإلكتروني' لا يجب أن يكون فارغاً.", messages);
+        Assert.Contains("'كلمة المرور' لا يجب أن يكون فارغاً.", messages);
     }
 }

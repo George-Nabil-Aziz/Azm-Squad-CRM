@@ -51,6 +51,11 @@ describe('theme', () => {
     expect(block('@theme inline')).toContain(`--color-${name}: var(--${name});`)
   })
 
+  it('loads a font with Arabic glyphs after the Latin font (Geist has no Arabic)', () => {
+    expect(css).toContain('@import "@fontsource-variable/noto-sans-arabic";')
+    expect(block('@theme inline')).toContain(`--font-sans: 'Geist Variable', 'Noto Sans Arabic Variable', sans-serif;`)
+  })
+
   it('scans the app sources', () => {
     expect(Object.keys(sources)).toContain('./App.tsx')
     expect(Object.keys(sources)).toContain('./components/ui/button.tsx')

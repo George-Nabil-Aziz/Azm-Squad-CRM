@@ -1,43 +1,46 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { isApiError } from '@/api/errors'
 import { signIn } from '@/auth/sign-in'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { authMessages } from './auth-messages'
-import { loginSchema, type LoginValues } from './login-schema'
+import { createLoginSchema, type LoginValues } from './login-schema'
 
 /** Email + password form (react-hook-form + zod). On success the session changes and LoginPage redirects. */
 export function LoginForm() {
-  const [serverError, setServerError] = useState<string | null>(null)
+  const { t } = useTranslation()
+  const [invalidCredentials, setInvalidCredentials] = useState(false)
+  // `t` changes with the language, so the next validation uses messages in the new language.
+  const schema = useMemo(() => createLoginSchema(t), [t])
   const form = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(schema),
     defaultValues: { email: '', password: '' },
   })
 
   async function onSubmit(values: LoginValues) {
-    setServerError(null)
+    setInvalidCredentials(false)
     try {
       await signIn(values.email, values.password)
     } catch (caught) {
       // Wrong credentials are shown here; every other failure already raised a toast (ApiErrorToaster).
-      if (isApiError(caught) && caught.status === 401) setServerError(authMessages.invalidCredentials)
+      if (isApiError(caught) && caught.status === 401) setInvalidCredentials(true)
     }
   }
 
   const isSubmitting = form.formState.isSubmitting
 
   return (
-    <form aria-label={authMessages.signInTitle} noValidate onSubmit={form.handleSubmit(onSubmit)}>
+    <form aria-label={t('auth.signInTitle')} noValidate onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup>
         <Controller
           name="email"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="login-email">{authMessages.email}</FieldLabel>
+              <FieldLabel htmlFor="login-email">{t('auth.email')}</FieldLabel>
               <Input
                 {...field}
                 id="login-email"
@@ -54,7 +57,7 @@ export function LoginForm() {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="login-password">{authMessages.password}</FieldLabel>
+              <FieldLabel htmlFor="login-password">{t('auth.password')}</FieldLabel>
               <Input
                 {...field}
                 id="login-password"
@@ -66,9 +69,9 @@ export function LoginForm() {
             </Field>
           )}
         />
-        {serverError ? <FieldError>{serverError}</FieldError> : null}
+        {invalidCredentials ? <FieldError>{t('auth.invalidCredentials')}</FieldError> : null}
         <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? authMessages.signingIn : authMessages.signIn}
+          {isSubmitting ? t('auth.signingIn') : t('auth.signIn')}
         </Button>
       </FieldGroup>
     </form>

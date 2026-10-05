@@ -1,0 +1,54 @@
+{
+  "app": {
+    "name": "Customer Support CRM"
+  },
+  "language": {
+    "switch": "العربية"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "tickets": "Tickets",
+    "customers": "Customers",
+    "knowledgeBase": "Knowledge base",
+    "reports": "Reports",
+    "users": "Users"
+  },
+  "shell": {
+    "mainNavigation": "Main navigation",
+    "toggleSidebar": "Show or hide the sidebar",
+    "comingSoon": "This area is coming soon."
+  },
+  "dashboard": {
+    "welcome": "Welcome, {{name}}",
+    "apiStatus": "API status",
+    "apiOk": "ok",
+    "apiLoading": "loading",
+    "apiUnavailable": "unavailable"
+  },
+  "auth": {
+    "signInTitle": "Sign in",
+    "signInDescription": "Sign in with your work email and password.",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "emailRequired": "Enter your email.",
+    "emailInvalid": "Enter a valid email address.",
+    "passwordRequired": "Enter your password.",
+    "invalidCredentials": "Invalid email or password.",
+    "signOut": "Sign out"
+  },
+  "errors": {
+    "network": "Cannot reach the server. Check your connection and try again.",
+    "badRequest": "The request is invalid. Check the entered data.",
+    "forbidden": "You do not have permission to do this.",
+    "notFound": "The requested item was not found.",
+    "conflict": "This change conflicts with existing data.",
+    "generic": "Something went wrong. Please try again.",
+    "reference": "Reference: {{id}}"
+  },
+  "toast": {
+    "notifications": "Notifications",
+    "close": "Close notification"
+  }
+}

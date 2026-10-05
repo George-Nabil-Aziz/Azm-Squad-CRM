@@ -1,5 +1,5 @@
+import { useTranslation } from 'react-i18next'
 import { NavLink, useMatch } from 'react-router'
-import { shellMessages } from '@/app/messages'
 import { navigationItems, type NavigationItem } from '@/app/navigation'
 import {
   Sidebar,
@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/sidebar'
 
 function AppSidebarLink({ item }: { item: NavigationItem }) {
+  const { t } = useTranslation()
   const isRoot = item.path === '/'
   const isActive = useMatch({ path: item.path, end: isRoot }) !== null
   const { isMobile, setOpenMobile } = useSidebar()
@@ -24,7 +25,7 @@ function AppSidebarLink({ item }: { item: NavigationItem }) {
       <SidebarMenuButton asChild isActive={isActive}>
         <NavLink to={item.path} end={isRoot} onClick={() => isMobile && setOpenMobile(false)}>
           <Icon aria-hidden="true" />
-          <span>{shellMessages.nav[item.id]}</span>
+          <span>{t(`nav.${item.id}`)}</span>
         </NavLink>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -32,15 +33,19 @@ function AppSidebarLink({ item }: { item: NavigationItem }) {
 }
 
 export function AppSidebar() {
+  const { t, i18n } = useTranslation()
+  const dir = i18n.dir()
+
+  // The sidebar sits on the reading-start side: left in English, right in Arabic (also the mobile sheet).
   return (
-    <Sidebar>
+    <Sidebar side={dir === 'rtl' ? 'right' : 'left'} dir={dir}>
       <SidebarHeader>
-        <span className="px-2 py-1 text-base font-semibold">{shellMessages.appName}</span>
+        <span className="px-2 py-1 text-base font-semibold">{t('app.name')}</span>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <nav aria-label={shellMessages.mainNavigation}>
+            <nav aria-label={t('shell.mainNavigation')}>
               <SidebarMenu>
                 {navigationItems.map((item) => (
                   <AppSidebarLink key={item.id} item={item} />

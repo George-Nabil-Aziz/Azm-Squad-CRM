@@ -1,4 +1,5 @@
 using Crm.Application.Common.Exceptions;
+using Crm.Application.Common.Localization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -53,41 +54,41 @@ public sealed class GlobalExceptionHandler(
             validation.Errors.ToDictionary(pair => pair.Key, pair => pair.Value))
         {
             Status = StatusCodes.Status400BadRequest,
-            Title = "One or more validation errors occurred.",
+            Title = ErrorText.ValidationFailed,
         },
         BadHttpRequestException badRequest => new ProblemDetails
         {
             Status = badRequest.StatusCode,
-            Title = "The request is malformed.",
+            Title = ErrorText.MalformedRequest,
         },
         UnauthorizedException unauthorized => new ProblemDetails
         {
             Status = StatusCodes.Status401Unauthorized,
-            Title = "Authentication failed.",
+            Title = ErrorText.AuthenticationFailed,
             Detail = unauthorized.Message,
         },
         NotFoundException notFound => new ProblemDetails
         {
             Status = StatusCodes.Status404NotFound,
-            Title = "The requested resource was not found.",
+            Title = ErrorText.NotFound,
             Detail = notFound.Message,
         },
         ConflictException conflict => new ProblemDetails
         {
             Status = StatusCodes.Status409Conflict,
-            Title = "The request conflicts with the current state.",
+            Title = ErrorText.Conflict,
             Detail = conflict.Message,
         },
         ForbiddenException forbidden => new ProblemDetails
         {
             Status = StatusCodes.Status403Forbidden,
-            Title = "You do not have permission to perform this action.",
+            Title = ErrorText.Forbidden,
             Detail = forbidden.Message,
         },
         _ => new ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
-            Title = "An unexpected error occurred.",
+            Title = ErrorText.Unexpected,
         },
     };
 }

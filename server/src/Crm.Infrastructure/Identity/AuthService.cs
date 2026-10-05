@@ -11,9 +11,6 @@ public sealed class AuthService(
     IAccessTokenGenerator tokenGenerator,
     IValidator<LoginRequest> validator) : IAuthService
 {
-    // One message for unknown email, wrong password and locked-out user: never reveal which one it was.
-    public const string InvalidCredentialsMessage = "Invalid email or password.";
-
     public async Task<LoginResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken)
     {
         await validator.ValidateOrThrowAsync(request, cancellationToken);
@@ -21,13 +18,13 @@ public sealed class AuthService(
         var user = await userManager.FindByEmailAsync(request.Email!);
         if (user is null || await userManager.IsLockedOutAsync(user))
         {
-            throw new UnauthorizedException(InvalidCredentialsMessage);
+            throw new UnauthorizedException(AuthText.InvalidCredentials);
         }
 
         if (!await userManager.CheckPasswordAsync(user, request.Password!))
         {
             await userManager.AccessFailedAsync(user);
-            throw new UnauthorizedException(InvalidCredentialsMessage);
+            throw new UnauthorizedException(AuthText.InvalidCredentials);
         }
 
         await userManager.ResetAccessFailedCountAsync(user);

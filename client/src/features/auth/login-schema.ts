@@ -1,10 +1,15 @@
+import type { TFunction } from 'i18next'
 import { z } from 'zod'
-import { authMessages } from './auth-messages'
 
-/** Client-side checks before calling POST /api/auth/login (the server validates again). */
-export const loginSchema = z.object({
-  email: z.string().trim().min(1, authMessages.emailRequired).pipe(z.email(authMessages.emailInvalid)),
-  password: z.string().min(1, authMessages.passwordRequired),
-})
+/**
+ * Client-side checks before calling POST /api/auth/login (the server validates again).
+ * Built with the current `t`, so the messages are in the current UI language.
+ */
+export function createLoginSchema(t: TFunction) {
+  return z.object({
+    email: z.string().trim().min(1, t('auth.emailRequired')).pipe(z.email(t('auth.emailInvalid'))),
+    password: z.string().min(1, t('auth.passwordRequired')),
+  })
+}
 
-export type LoginValues = z.infer<typeof loginSchema>
+export type LoginValues = z.infer<ReturnType<typeof createLoginSchema>>

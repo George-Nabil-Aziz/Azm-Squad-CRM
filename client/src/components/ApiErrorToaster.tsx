@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Toaster } from '@/components/ui/sonner'
 import { onApiError } from '../api/client'
@@ -6,10 +7,11 @@ import { getApiErrorDescription, getApiErrorMessage } from '../api/error-message
 
 /**
  * Mount once at the app root: renders the toast container and shows an error toast
- * for every failed API call. CRM-3 swaps sonner's <Toaster> for the shadcn wrapper
- * (client/src/components/ui/sonner.tsx); the toast() calls stay the same.
+ * for every failed API call, in the current UI language and direction.
  */
 export function ApiErrorToaster() {
+  const { t, i18n } = useTranslation()
+
   useEffect(
     () =>
       onApiError((error) => {
@@ -21,5 +23,14 @@ export function ApiErrorToaster() {
     [],
   )
 
-  return <Toaster position="top-center" closeButton />
+  return (
+    <Toaster
+      position="top-center"
+      closeButton
+      dir={i18n.dir()}
+      containerAriaLabel={t('toast.notifications')}
+      // Replaces the wrapper's toastOptions, so its "cn-toast" class is repeated here.
+      toastOptions={{ classNames: { toast: 'cn-toast' }, closeButtonAriaLabel: t('toast.close') }}
+    />
+  )
 }

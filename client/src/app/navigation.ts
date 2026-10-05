@@ -7,10 +7,13 @@ import {
   UsersIcon,
   type LucideIcon,
 } from 'lucide-react'
-import type { NavigationId } from './messages'
+import type en from '@/i18n/en.json'
+
+/** Key of a sidebar area: its label is the translation `nav.<id>` in src/i18n/{en,ar}.json. */
+export type NavigationId = keyof (typeof en)['nav']
 
 export interface NavigationItem {
-  /** Key of the label in shellMessages.nav (CRM-4: translation key). */
+  /** Translation key suffix: the label is t(`nav.${id}`). */
   id: NavigationId
   /** Absolute route path. Every path here has a route in AppRoutes.tsx (real page or "coming soon"). */
   path: string

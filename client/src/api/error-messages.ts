@@ -1,34 +1,25 @@
+import { i18n } from '../i18n/i18n'
 import type { ApiError } from './errors'
 
-// Temporary English text. CRM-4 moves these strings to client/src/i18n/{en,ar}.json
-// and replaces this module with translation keys.
-const messages = {
-  network: 'Cannot reach the server. Check your connection and try again.',
-  badRequest: 'The request is invalid. Check the entered data.',
-  forbidden: 'You do not have permission to do this.',
-  notFound: 'The requested item was not found.',
-  conflict: 'This change conflicts with existing data.',
-  generic: 'Something went wrong. Please try again.',
-  reference: (id: string) => `Reference: ${id}`,
-}
-
+// Toast text for a failed API call, in the current UI language (keys under "errors" in src/i18n/{en,ar}.json).
+// The text is chosen by status, not by the server title, so every toast is translated on the client.
 export function getApiErrorMessage(error: ApiError): string {
   switch (error.status) {
     case 0:
-      return messages.network
+      return i18n.t('errors.network')
     case 400:
-      return messages.badRequest
+      return i18n.t('errors.badRequest')
     case 403:
-      return messages.forbidden
+      return i18n.t('errors.forbidden')
     case 404:
-      return messages.notFound
+      return i18n.t('errors.notFound')
     case 409:
-      return messages.conflict
+      return i18n.t('errors.conflict')
     default:
-      return messages.generic
+      return i18n.t('errors.generic')
   }
 }
 
 export function getApiErrorDescription(error: ApiError): string | undefined {
-  return error.correlationId ? messages.reference(error.correlationId) : undefined
+  return error.correlationId ? i18n.t('errors.reference', { id: error.correlationId }) : undefined
 }

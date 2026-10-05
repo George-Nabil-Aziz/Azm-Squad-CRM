@@ -1,4 +1,5 @@
 import { clearSession, getAccessToken } from '../auth/session'
+import { getLanguage } from '../i18n/i18n'
 import { ApiError, type ProblemDetails } from './errors'
 
 type ApiErrorListener = (error: ApiError) => void
@@ -37,7 +38,8 @@ interface RequestOptions {
 }
 
 async function request<T>(method: string, path: string, { body, signal }: RequestOptions = {}): Promise<T> {
-  const headers: Record<string, string> = { Accept: 'application/json' }
+  // Accept-Language: the API answers validation messages and ProblemDetails in the UI language (ar / en).
+  const headers: Record<string, string> = { Accept: 'application/json', 'Accept-Language': getLanguage() }
   if (body !== undefined) headers['Content-Type'] = 'application/json'
   const accessToken = getAccessToken()
   if (accessToken) headers.Authorization = `Bearer ${accessToken}`
