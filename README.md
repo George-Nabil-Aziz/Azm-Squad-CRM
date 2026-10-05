@@ -39,3 +39,23 @@ Every change follows the squad-kit flow (details in [CLAUDE.md](CLAUDE.md)):
 ```
 Notion story → squad new-story (intake.md) → /squad-plan → tests first (TDD) → implement → Notion status Done
 ```
+
+## Run locally
+
+```bash
+# API (http://localhost:5080)
+cd server
+dotnet run --project src/Crm.Api --launch-profile http
+
+# Client (http://localhost:5173, proxies /api to the API)
+cd client
+npm install
+npm run dev
+```
+
+## Tests
+
+```bash
+cd server && dotnet test
+cd client && npm test
+```
