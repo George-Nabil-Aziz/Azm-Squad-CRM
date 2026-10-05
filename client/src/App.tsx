@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getHealth } from './api/health'
+import { ApiErrorToaster } from './components/ApiErrorToaster'
 
 type ApiState = 'loading' | 'unavailable' | string
 
@@ -18,12 +19,15 @@ function App() {
 
   // Temporary placeholder text: i18n arrives in CRM-4, layout in CRM-3.
   return (
-    <main>
-      <h1>Customer Support CRM</h1>
-      <p>
-        API status: <strong>{apiStatus}</strong>
-      </p>
-    </main>
+    <>
+      <main>
+        <h1>Customer Support CRM</h1>
+        <p>
+          API status: <strong>{apiStatus}</strong>
+        </p>
+      </main>
+      <ApiErrorToaster />
+    </>
   )
 }
 

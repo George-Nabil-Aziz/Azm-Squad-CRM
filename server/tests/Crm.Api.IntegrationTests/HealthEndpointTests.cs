@@ -1,11 +1,11 @@
 using System.Net;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
+using Crm.Api.IntegrationTests.Infrastructure;
 
 namespace Crm.Api.IntegrationTests;
 
-public class HealthEndpointTests(WebApplicationFactory<Program> factory)
-    : IClassFixture<WebApplicationFactory<Program>>
+public class HealthEndpointTests(CrmApiFactory factory)
+    : IClassFixture<CrmApiFactory>
 {
     [Fact]
     public async Task GetHealth_Returns200WithStatusOk()

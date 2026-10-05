@@ -1,10 +1,16 @@
 using Crm.Api.Endpoints;
+using Crm.Api.ErrorHandling;
+using Crm.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+builder.Services.AddCrmErrorHandling();
+builder.Services.AddApplication();
 
 var app = builder.Build();
+
+app.UseCrmErrorHandling();
 
 if (app.Environment.IsDevelopment())
 {
