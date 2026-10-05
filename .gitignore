@@ -1,0 +1,33 @@
+# Personal study notes (not part of the project)
+STUDY-NOTES.md
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+TestResults/
+appsettings.*.local.json
+
+# Node / React
+node_modules/
+dist/
+coverage/
+*.local
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+.squad/secrets.yaml
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.squad/stories/**/attachments/
+.squad/.trash/
+.squad/.last-run.json
+.squad/.last-copy-prompt.md
+.squad/runs/

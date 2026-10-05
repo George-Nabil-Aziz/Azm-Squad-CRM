@@ -1,0 +1,13 @@
+version: 1
+project:
+  name: Customer Support CRM
+  primaryLanguage: C#
+  projectRoots:
+    - .
+tracker:
+  type: none
+naming:
+  includeTrackerId: false
+  globalSequence: true
+agents:
+  - claude-code
