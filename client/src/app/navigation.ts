@@ -7,6 +7,7 @@ import {
   UsersIcon,
   type LucideIcon,
 } from 'lucide-react'
+import { permissions, type Permission } from '@/auth/permissions'
 import type en from '@/i18n/en.json'
 
 /** Key of a sidebar area: its label is the translation `nav.<id>` in src/i18n/{en,ar}.json. */
@@ -18,14 +19,16 @@ export interface NavigationItem {
   /** Absolute route path. Every path here has a route in AppRoutes.tsx (real page or "coming soon"). */
   path: string
   icon: LucideIcon
+  /** Shown only to users with this permission (its route is wrapped in RequirePermission with the same one). */
+  permission?: Permission
 }
 
 /** Sidebar items, in display order. */
 export const navigationItems: readonly NavigationItem[] = [
   { id: 'dashboard', path: '/', icon: LayoutDashboardIcon },
-  { id: 'tickets', path: '/tickets', icon: TicketIcon },
-  { id: 'customers', path: '/customers', icon: UsersIcon },
+  { id: 'tickets', path: '/tickets', icon: TicketIcon, permission: permissions.ticketsView },
+  { id: 'customers', path: '/customers', icon: UsersIcon, permission: permissions.customersView },
   { id: 'knowledgeBase', path: '/knowledge-base', icon: BookOpenIcon },
-  { id: 'reports', path: '/reports', icon: ChartColumnIcon },
-  { id: 'users', path: '/users', icon: UserCogIcon },
+  { id: 'reports', path: '/reports', icon: ChartColumnIcon, permission: permissions.reportsView },
+  { id: 'users', path: '/users', icon: UserCogIcon, permission: permissions.usersManage },
 ]

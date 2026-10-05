@@ -164,10 +164,13 @@ public sealed class UserService(
             .ToDictionary(group => group.Key, group => group.Select(pair => pair.RoleName).Order(StringComparer.Ordinal).ToList());
     }
 
-    /// <summary>Only a SuperAdmin may give the SuperAdmin role or change a SuperAdmin (no privilege escalation by an Admin).</summary>
+    /// <summary>
+    /// Only a user with <see cref="Permissions.UsersManageSuperAdmins"/> (SuperAdmin) may give the SuperAdmin role or
+    /// change a SuperAdmin (no privilege escalation by an Admin).
+    /// </summary>
     private void EnsureMayManage(IEnumerable<string> roles)
     {
-        if (roles.Contains(Roles.SuperAdmin) && !currentUser.IsInRole(Roles.SuperAdmin))
+        if (roles.Contains(Roles.SuperAdmin) && !currentUser.HasPermission(Permissions.UsersManageSuperAdmins))
         {
             throw new ForbiddenException(UserText.SuperAdminOnly);
         }

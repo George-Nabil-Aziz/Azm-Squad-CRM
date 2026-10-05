@@ -1,6 +1,7 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { getCurrentUser, type CurrentUser } from '@/api/auth'
 import { ApiError } from '@/api/errors'
 import {
   createUser,
@@ -12,8 +13,29 @@ import {
   type User,
 } from '@/api/users'
 import { createQueryClient } from '@/app/query-client'
+import { permissions } from '@/auth/permissions'
 import { ApiErrorToaster } from '@/components/ApiErrorToaster'
 import { UsersPage } from './UsersPage'
+
+vi.mock('@/api/auth', () => ({ getCurrentUser: vi.fn() }))
+
+/** The signed-in user: a SuperAdmin (every permission) unless a test signs in as an Admin. */
+const signedInSuperAdmin: CurrentUser = {
+  id: '1',
+  email: 'admin@crm.local',
+  fullName: 'System Administrator',
+  roles: ['SuperAdmin'],
+  permissions: Object.values(permissions),
+}
+const signedInAdmin: CurrentUser = {
+  id: '9',
+  email: 'office@crm.local',
+  fullName: 'Office Admin',
+  roles: ['Admin'],
+  permissions: Object.values(permissions).filter(
+    (permission) => permission !== permissions.usersManageSuperAdmins && permission !== permissions.slaManage,
+  ),
+}
 
 vi.mock('@/api/users', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/api/users')>()),
@@ -56,6 +78,7 @@ function fillUserForm(dialog: HTMLElement, values: { fullName?: string; email?: 
 
 describe('UsersPage', () => {
   beforeEach(() => {
+    vi.mocked(getCurrentUser).mockReset().mockResolvedValue(signedInSuperAdmin)
     vi.mocked(listUsers).mockReset().mockResolvedValue(pageOf([admin, sara, omar]))
     vi.mocked(createUser).mockReset()
     vi.mocked(updateUser).mockReset()
@@ -211,5 +234,40 @@ describe('UsersPage', () => {
     fireEvent.click(within(rowOf('Omar Former')).getByRole('button', { name: 'Reactivate' }))
 
     await waitFor(() => expect(reactivateUser).toHaveBeenCalledWith('3'))
+  })
+
+  it('lets a SuperAdmin manage SuperAdmins: row buttons and the SuperAdmin role', async () => {
+    renderPage()
+    await screen.findByRole('row', { name: /Sara Agent/ })
+    expect(await within(rowOf('System Administrator')).findByRole('button', { name: 'Edit' })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add user' }))
+    const dialog = await screen.findByRole('dialog', { name: 'New user' })
+
+    expect(within(dialog).getByRole('checkbox', { name: 'System administrator' })).toBeInTheDocument()
+  })
+
+  it('hides the SuperAdmin role from an Admin', async () => {
+    vi.mocked(getCurrentUser).mockResolvedValue(signedInAdmin)
+    renderPage()
+    await screen.findByRole('row', { name: /Sara Agent/ })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add user' }))
+    const dialog = await screen.findByRole('dialog', { name: 'New user' })
+
+    expect(within(dialog).getByRole('checkbox', { name: 'Administrator' })).toBeInTheDocument()
+    expect(within(dialog).queryByRole('checkbox', { name: 'System administrator' })).not.toBeInTheDocument()
+  })
+
+  it('shows an Admin no edit or deactivate button on SuperAdmin rows', async () => {
+    vi.mocked(getCurrentUser).mockResolvedValue(signedInAdmin)
+    renderPage()
+    await screen.findByRole('row', { name: /Sara Agent/ })
+
+    await waitFor(() =>
+      expect(within(rowOf('System Administrator')).queryByRole('button', { name: 'Edit' })).not.toBeInTheDocument(),
+    )
+    expect(within(rowOf('System Administrator')).queryByRole('button', { name: 'Deactivate' })).not.toBeInTheDocument()
+    expect(within(rowOf('Sara Agent')).getByRole('button', { name: 'Edit' })).toBeInTheDocument()
   })
 })

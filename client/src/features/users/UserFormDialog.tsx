@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { isApiError } from '@/api/errors'
 import { createUser, roleNames, updateUser, type User } from '@/api/users'
+import { permissions } from '@/auth/permissions'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -18,6 +19,7 @@ import {
 } from '@/components/ui/dialog'
 import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { usePermissions } from '@/features/auth/usePermissions'
 import { createUserFormSchema, userFormFields, type UserFormValues } from './user-form-schema'
 import { usersQueryKey } from './useUsers'
 
@@ -31,6 +33,9 @@ interface UserFormDialogProps {
 export function UserFormDialog({ user, onClose }: UserFormDialogProps) {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
+  const { can } = usePermissions()
+  // Only a SuperAdmin may give the SuperAdmin role (the API refuses it with 403 for everyone else).
+  const assignableRoles = roleNames.filter((role) => role !== 'SuperAdmin' || can(permissions.usersManageSuperAdmins))
   const mode = user ? 'edit' : 'create'
   const schema = useMemo(() => createUserFormSchema(t, mode), [t, mode])
   const form = useForm<UserFormValues>({
@@ -123,7 +128,7 @@ export function UserFormDialog({ user, onClose }: UserFormDialogProps) {
               render={({ field, fieldState }) => (
                 <FieldSet data-invalid={fieldState.invalid}>
                   <FieldLegend variant="label">{t('users.roles')}</FieldLegend>
-                  {roleNames.map((role) => (
+                  {assignableRoles.map((role) => (
                     <Field key={role} orientation="horizontal">
                       <Checkbox
                         id={`user-role-${role}`}

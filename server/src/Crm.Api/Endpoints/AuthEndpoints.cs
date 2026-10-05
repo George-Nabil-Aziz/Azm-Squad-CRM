@@ -15,11 +15,17 @@ public static class AuthEndpoints
             .AllowAnonymous()
             .WithName("Login");
 
-        group.MapGet("/me", (ClaimsPrincipal user) => Results.Ok(new CurrentUserResponse(
-                Guid.Parse(user.FindFirstValue(AuthClaimTypes.UserId)!),
-                user.FindFirstValue(AuthClaimTypes.Email) ?? string.Empty,
-                user.FindFirstValue(AuthClaimTypes.Name) ?? string.Empty,
-                [.. user.FindAll(AuthClaimTypes.Role).Select(claim => claim.Value)])))
+        // Any signed-in user (no permission): the client reads its permissions here to hide menu items and actions.
+        group.MapGet("/me", (ClaimsPrincipal user) =>
+            {
+                string[] roles = [.. user.FindAll(AuthClaimTypes.Role).Select(claim => claim.Value)];
+                return Results.Ok(new CurrentUserResponse(
+                    Guid.Parse(user.FindFirstValue(AuthClaimTypes.UserId)!),
+                    user.FindFirstValue(AuthClaimTypes.Email) ?? string.Empty,
+                    user.FindFirstValue(AuthClaimTypes.Name) ?? string.Empty,
+                    roles,
+                    RolePermissions.ForRoles(roles)));
+            })
             .RequireAuthorization()
             .WithName("GetCurrentUser");
 

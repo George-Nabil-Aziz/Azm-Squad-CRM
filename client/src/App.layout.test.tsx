@@ -40,6 +40,8 @@ describe('App layout and routing', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Dashboard' })).toBeInTheDocument()
     expect(window.location.pathname).toBe('/')
     const navigation = screen.getByRole('navigation', { name: 'Main navigation' })
+    // Items that need a permission appear once GET /api/auth/me has answered (the SuperAdmin sees all of them).
+    await within(navigation).findByRole('link', { name: 'Users' })
     const links = within(navigation).getAllByRole('link')
     expect(links.map((link) => link.textContent)).toEqual(NAVIGATION_LABELS)
     expect(within(navigation).getByRole('link', { name: 'Dashboard' })).toHaveAttribute('aria-current', 'page')
@@ -124,7 +126,7 @@ describe('App layout and routing', () => {
     renderAt('/')
     const navigation = await screen.findByRole('navigation', { name: 'Main navigation' })
 
-    fireEvent.click(within(navigation).getByRole('link', { name: 'Users' }))
+    fireEvent.click(await within(navigation).findByRole('link', { name: 'Users' }))
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Users' })).toBeInTheDocument()
     expect(await screen.findByRole('row', { name: /System Administrator/ })).toBeInTheDocument()
@@ -139,7 +141,7 @@ describe('App layout and routing', () => {
     const navigation = await screen.findByRole('navigation', { name: 'Main navigation' })
 
     for (const label of COMING_SOON_LABELS) {
-      fireEvent.click(within(navigation).getByRole('link', { name: label }))
+      fireEvent.click(await within(navigation).findByRole('link', { name: label }))
 
       expect(await screen.findByRole('heading', { level: 1, name: label })).toBeInTheDocument()
       expect(screen.getByText('This area is coming soon.')).toBeInTheDocument()

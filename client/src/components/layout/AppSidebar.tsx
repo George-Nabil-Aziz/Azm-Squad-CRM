@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { usePermissions } from '@/features/auth/usePermissions'
 
 function AppSidebarLink({ item }: { item: NavigationItem }) {
   const { t } = useTranslation()
@@ -34,7 +35,10 @@ function AppSidebarLink({ item }: { item: NavigationItem }) {
 
 export function AppSidebar() {
   const { t, i18n } = useTranslation()
+  const { can } = usePermissions()
   const dir = i18n.dir()
+  // Items with a permission appear once the user's permissions have loaded, and only if the user has it.
+  const visibleItems = navigationItems.filter((item) => !item.permission || can(item.permission))
 
   // The sidebar sits on the reading-start side: left in English, right in Arabic (also the mobile sheet).
   return (
@@ -47,7 +51,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <nav aria-label={t('shell.mainNavigation')}>
               <SidebarMenu>
-                {navigationItems.map((item) => (
+                {visibleItems.map((item) => (
                   <AppSidebarLink key={item.id} item={item} />
                 ))}
               </SidebarMenu>

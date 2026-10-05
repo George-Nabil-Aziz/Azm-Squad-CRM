@@ -7,4 +7,7 @@ public interface ICurrentUser
     Guid? UserId { get; }
 
     bool IsInRole(string role);
+
+    /// <summary>True when one of the user's roles grants the permission (<c>Crm.Application.Auth.Permissions</c>).</summary>
+    bool HasPermission(string permission);
 }

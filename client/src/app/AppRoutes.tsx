@@ -1,10 +1,12 @@
 import { Navigate, Route, Routes } from 'react-router'
+import { permissions } from '@/auth/permissions'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { ComingSoonPage } from '@/pages/coming-soon/ComingSoonPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
 import { UsersPage } from '@/pages/users/UsersPage'
 import { RequireAuth } from './RequireAuth'
+import { RequirePermission } from './RequirePermission'
 
 export function AppRoutes() {
   return (
@@ -13,12 +15,21 @@ export function AppRoutes() {
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>
           <Route index element={<DashboardPage />} />
-          <Route path="users" element={<UsersPage />} />
+          {/* Same permission as the area's item in navigation.ts. */}
+          <Route element={<RequirePermission permission={permissions.usersManage} />}>
+            <Route path="users" element={<UsersPage />} />
+          </Route>
           {/* Areas built by later stories: each story replaces its line with the real page routes. */}
-          <Route path="tickets" element={<ComingSoonPage area="tickets" />} />
-          <Route path="customers" element={<ComingSoonPage area="customers" />} />
+          <Route element={<RequirePermission permission={permissions.ticketsView} />}>
+            <Route path="tickets" element={<ComingSoonPage area="tickets" />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.customersView} />}>
+            <Route path="customers" element={<ComingSoonPage area="customers" />} />
+          </Route>
           <Route path="knowledge-base" element={<ComingSoonPage area="knowledgeBase" />} />
-          <Route path="reports" element={<ComingSoonPage area="reports" />} />
+          <Route element={<RequirePermission permission={permissions.reportsView} />}>
+            <Route path="reports" element={<ComingSoonPage area="reports" />} />
+          </Route>
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

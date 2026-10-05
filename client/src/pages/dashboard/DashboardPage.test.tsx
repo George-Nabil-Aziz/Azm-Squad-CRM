@@ -25,6 +25,7 @@ describe('DashboardPage', () => {
       email: 'admin@crm.local',
       fullName: 'System Administrator',
       roles: ['SuperAdmin'],
+      permissions: [],
     })
   })
 

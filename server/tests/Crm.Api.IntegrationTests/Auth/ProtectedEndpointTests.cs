@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using Crm.Api.IntegrationTests.Infrastructure;
+using Crm.Application.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +41,26 @@ public class ProtectedEndpointTests(CrmApiFactory factory) : IClassFixture<CrmAp
         Assert.Equal("System Administrator", me.FullName);
         Assert.Equal(["SuperAdmin"], me.Roles);
         Assert.NotEqual(Guid.Empty, me.Id);
+    }
+
+    [Fact]
+    public async Task Me_AsSuperAdmin_ReturnsEveryPermission()
+    {
+        var client = factory.CreateAuthenticatedClient(await factory.LoginAsync());
+
+        var me = await client.GetFromJsonAsync<MeBody>(MePath);
+
+        Assert.Equal(Permissions.All, me!.Permissions);
+    }
+
+    [Fact]
+    public async Task Me_AsAgent_ReturnsOnlyTheAgentPermissions()
+    {
+        var client = await factory.CreateClientWithRoleAsync(Roles.Agent);
+
+        var me = await client.GetFromJsonAsync<MeBody>(MePath);
+
+        Assert.Equal(["customers.view", "customers.manage", "tickets.view", "tickets.manage"], me!.Permissions);
     }
 
     [Fact]
@@ -90,5 +111,5 @@ public class ProtectedEndpointTests(CrmApiFactory factory) : IClassFixture<CrmAp
         Assert.Empty(unprotected);
     }
 
-    private sealed record MeBody(Guid Id, string Email, string FullName, string[] Roles);
+    private sealed record MeBody(Guid Id, string Email, string FullName, string[] Roles, string[] Permissions);
 }

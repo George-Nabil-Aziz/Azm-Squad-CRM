@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Crm.Application.Auth;
 using Crm.Application.Common.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -47,9 +48,17 @@ public static class AuthenticationExtensions
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, HttpCurrentUser>();
 
-        // Endpoints use policy names only. CRM-7 replaces RequireRole with a permission requirement here.
-        services.AddAuthorizationBuilder()
-            .AddPolicy(CrmPolicies.ManageUsers, policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin));
+        // One policy per permission, named like the permission (Permissions.All). Endpoints name the permission they
+        // need; PermissionAuthorizationHandler checks it against the user's role claims (RolePermissions).
+        var authorization = services.AddAuthorizationBuilder();
+        foreach (var permission in Permissions.All)
+        {
+            authorization.AddPolicy(permission, policy => policy
+                .RequireAuthenticatedUser()
+                .AddRequirements(new PermissionRequirement(permission)));
+        }
+
+        services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         return services;
     }
 
