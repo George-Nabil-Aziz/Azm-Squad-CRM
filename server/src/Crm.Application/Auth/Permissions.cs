@@ -32,6 +32,9 @@ public static class Permissions
     /// <summary>Read and mark own in-app notifications and connect to the notification hub (CRM-28); every role has it.</summary>
     public const string NotificationsView = "notifications.view";
 
+    /// <summary>Create, list and complete the user's own tasks and reminders (CRM-31); every role has it.</summary>
+    public const string TasksManage = "tasks.manage";
+
     /// <summary>Create, edit and deactivate ticket categories (CRM-12 admin settings).</summary>
     public const string CategoriesManage = "categories.manage";
 
@@ -49,7 +52,7 @@ public static class Permissions
     [
         UsersManage, UsersManageSuperAdmins,
         CustomersView, CustomersManage,
-        TicketsView, TicketsManage, TicketsAssign, NotificationsView,
+        TicketsView, TicketsManage, TicketsAssign, NotificationsView, TasksManage,
         CategoriesManage, SlaManage, ChannelsManage,
         ReportsView,
     ];

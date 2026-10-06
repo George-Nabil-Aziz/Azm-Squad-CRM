@@ -3,6 +3,7 @@ using Crm.Domain.Customers;
 using Crm.Domain.Notifications;
 using Crm.Domain.Settings;
 using Crm.Domain.Sla;
+using Crm.Domain.Tasks;
 using Crm.Domain.Tickets;
 using Crm.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -44,6 +45,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<Notification> Notifications => Set<Notification>();
 
     public DbSet<AppSetting> AppSettings => Set<AppSetting>();
+
+    public DbSet<WorkTask> Tasks => Set<WorkTask>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -8,6 +8,7 @@ import { CustomersPage } from '@/pages/customers/CustomersPage'
 import { AssignmentSettingsPage } from '@/pages/assignment/AssignmentSettingsPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
 import { SlaPoliciesPage } from '@/pages/sla/SlaPoliciesPage'
+import { TasksPage } from '@/pages/tasks/TasksPage'
 import { TicketCategoriesPage } from '@/pages/ticket-categories/TicketCategoriesPage'
 import { TicketDetailsPage } from '@/pages/tickets/TicketDetailsPage'
 import { TicketsPage } from '@/pages/tickets/TicketsPage'
@@ -43,6 +44,9 @@ export function AppRoutes() {
           <Route element={<RequirePermission permission={permissions.customersView} />}>
             <Route path="customers" element={<CustomersPage />} />
             <Route path="customers/:id" element={<CustomerDetailsPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.tasksManage} />}>
+            <Route path="tasks" element={<TasksPage />} />
           </Route>
           <Route path="knowledge-base" element={<ComingSoonPage area="knowledgeBase" />} />
           <Route element={<RequirePermission permission={permissions.reportsView} />}>

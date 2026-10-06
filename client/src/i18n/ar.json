@@ -14,7 +14,8 @@
     "users": "المستخدمون",
     "ticketCategories": "فئات التذاكر",
     "slaPolicies": "سياسة SLA",
-    "assignment": "الإسناد"
+    "assignment": "الإسناد",
+    "tasks": "المهام"
   },
   "shell": {
     "mainNavigation": "التنقل الرئيسي",
@@ -485,5 +486,19 @@
       "taskReminder": "مهمة مستحقة: {{text}}",
       "mention": "تمت الإشارة إليك في التذكرة {{ticket}}."
     }
+  },
+  "tasks": {
+    "description": "متابعاتك. ستصلك إشعار عند حلول موعد المهمة.",
+    "title": "العنوان",
+    "dueAt": "تاريخ ووقت الاستحقاق",
+    "ticket": "التذكرة",
+    "actions": "الإجراءات",
+    "add": "إضافة مهمة",
+    "titleRequired": "أدخل عنواناً.",
+    "dueInPast": "اختر تاريخاً ووقتاً في المستقبل.",
+    "loading": "جارٍ تحميل مهامك…",
+    "empty": "ليس لديك مهام مفتوحة.",
+    "markDone": "تعليم كمنجزة",
+    "markDoneFor": "تعليم كمنجزة: {{title}}"
   }
 }

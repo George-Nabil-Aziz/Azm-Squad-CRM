@@ -1,4 +1,5 @@
 using Crm.Application.Sla;
+using Crm.Application.Tasks;
 using Hangfire;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,7 +50,11 @@ public static class JobsExtensions
 public static class RecurringJobs
 {
     public const string SlaMonitorId = "sla-monitor";
+    public const string TaskRemindersId = "task-reminders";
 
-    public static void Register(IRecurringJobManager manager) =>
+    public static void Register(IRecurringJobManager manager)
+    {
         manager.AddOrUpdate<SlaMonitorJob>(SlaMonitorId, job => job.RunAsync(CancellationToken.None), Cron.Minutely());
+        manager.AddOrUpdate<TaskReminderJob>(TaskRemindersId, job => job.RunAsync(CancellationToken.None), Cron.Minutely());
+    }
 }

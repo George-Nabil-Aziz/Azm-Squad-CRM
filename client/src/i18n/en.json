@@ -14,7 +14,8 @@
     "users": "Users",
     "ticketCategories": "Ticket categories",
     "slaPolicies": "SLA policy",
-    "assignment": "Assignment"
+    "assignment": "Assignment",
+    "tasks": "Tasks"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -485,5 +486,19 @@
       "taskReminder": "Task due: {{text}}",
       "mention": "You were mentioned on ticket {{ticket}}."
     }
+  },
+  "tasks": {
+    "description": "Your follow-ups. You get a notification when a task is due.",
+    "title": "Title",
+    "dueAt": "Due date and time",
+    "ticket": "Ticket",
+    "actions": "Actions",
+    "add": "Add task",
+    "titleRequired": "Enter a title.",
+    "dueInPast": "Choose a date and time in the future.",
+    "loading": "Loading your tasks…",
+    "empty": "You have no open tasks.",
+    "markDone": "Mark as done",
+    "markDoneFor": "Mark as done: {{title}}"
   }
 }
