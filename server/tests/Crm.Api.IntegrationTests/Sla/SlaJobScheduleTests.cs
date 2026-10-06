@@ -18,7 +18,8 @@ public class SlaJobScheduleTests(CrmApiFactory factory) : IClassFixture<CrmApiFa
 
         RecurringJobs.Register(manager);
 
-        var (id, job, cron) = Assert.Single(manager.Added);
+        Assert.Contains(manager.Added, a => a.Id == "task-reminders" && a.Job.Type == typeof(Crm.Application.Tasks.TaskReminderJob));
+        var (id, job, cron) = Assert.Single(manager.Added, a => a.Id == "sla-monitor");
         Assert.Equal("sla-monitor", id);
         Assert.Equal("* * * * *", cron);
         Assert.Equal(typeof(SlaMonitorJob), job.Type);

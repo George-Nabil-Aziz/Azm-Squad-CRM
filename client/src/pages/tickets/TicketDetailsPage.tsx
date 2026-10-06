@@ -8,6 +8,7 @@ import { permissions } from '@/auth/permissions'
 import { Badge } from '@/components/ui/badge'
 import { Can } from '@/features/auth/Can'
 import { LinkedArticles } from '@/features/knowledge-base/LinkedArticles'
+import { CustomerPanel } from '@/features/tickets/CustomerPanel'
 import { TicketAssignControl } from '@/features/tickets/TicketAssignControl'
 import { TicketClassifyControl } from '@/features/tickets/TicketClassifyControl'
 import { TicketHistory } from '@/features/tickets/TicketHistory'
@@ -51,7 +52,8 @@ function TicketDetails({ ticket }: { ticket: Ticket }) {
   const [tab, setTab] = useState<'conversation' | 'history'>('conversation')
 
   return (
-    <>
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="flex min-w-0 flex-col gap-6">
       <header className="flex flex-col gap-2">
         <p dir="ltr" className="text-sm font-medium text-muted-foreground">
           {ticket.number}
@@ -136,7 +138,11 @@ function TicketDetails({ ticket }: { ticket: Ticket }) {
           </>
         )}
       </div>
-    </>
+      </div>
+      <Can permission={permissions.customersView}>
+        <CustomerPanel ticketId={ticket.id} customerId={ticket.customerId} />
+      </Can>
+    </div>
   )
 }
 

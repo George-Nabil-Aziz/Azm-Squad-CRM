@@ -9,7 +9,7 @@ public static class RolePermissions
     private static readonly IReadOnlyList<string> AgentPermissions =
     [
         Permissions.CustomersView, Permissions.CustomersManage,
-        Permissions.TicketsView, Permissions.TicketsManage,
+        Permissions.TicketsView, Permissions.TicketsManage, Permissions.NotificationsView, Permissions.TasksManage,
         Permissions.KbView,
     ];
 
@@ -17,7 +17,7 @@ public static class RolePermissions
     {
         [Roles.SuperAdmin] = Permissions.All,
         [Roles.Admin] = [.. Permissions.All.Except([Permissions.UsersManageSuperAdmins, Permissions.SlaManage])],
-        [Roles.Supervisor] = InCatalogueOrder([.. AgentPermissions, Permissions.TicketsAssign, Permissions.ReportsView]),
+        [Roles.Supervisor] = InCatalogueOrder([.. AgentPermissions, Permissions.TicketsAssign, Permissions.ReportsView, Permissions.QuickRepliesManageShared]),
         [Roles.Agent] = AgentPermissions,
     };
 

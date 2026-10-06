@@ -124,10 +124,10 @@ internal sealed class FakeTicketRepository(FakeTicketCategoryRepository categori
 /// <summary>History entries a service recorded (the real recorder adds them to the unit of work).</summary>
 internal sealed class FakeTicketHistoryRecorder : ITicketHistoryRecorder
 {
-    public List<(Guid TicketId, TicketHistoryField Field, string? OldValue, string? NewValue, DateTime UtcNow)> Entries { get; } = [];
+    public List<(Guid TicketId, TicketHistoryField Field, string? OldValue, string? NewValue, DateTime UtcNow, bool System)> Entries { get; } = [];
 
-    public void Record(Guid ticketId, TicketHistoryField field, string? oldValue, string? newValue, DateTime utcNow) =>
-        Entries.Add((ticketId, field, oldValue, newValue, utcNow));
+    public void Record(Guid ticketId, TicketHistoryField field, string? oldValue, string? newValue, DateTime utcNow, bool system = false) =>
+        Entries.Add((ticketId, field, oldValue, newValue, utcNow, system));
 }
 
 /// <summary>History storage with the contract of the EF Core repository: reads come back oldest first.</summary>

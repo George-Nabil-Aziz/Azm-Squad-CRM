@@ -4,7 +4,10 @@ using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Notifications;
+using Crm.Application.QuickReplies;
 using Crm.Application.Sla;
+using Crm.Application.Tasks;
 using Crm.Application.Tickets;
 using Crm.Application.Users;
 using Crm.Infrastructure.Channels;
@@ -14,7 +17,11 @@ using Crm.Infrastructure.Identity;
 using Crm.Infrastructure.KnowledgeBase;
 using Crm.Infrastructure.Persistence;
 using Crm.Infrastructure.Portal;
+using Crm.Infrastructure.Notifications;
+using Crm.Infrastructure.Persistence;
+using Crm.Infrastructure.QuickReplies;
 using Crm.Infrastructure.Sla;
+using Crm.Infrastructure.Tasks;
 using Crm.Infrastructure.Tickets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -62,7 +69,14 @@ public static class DependencyInjection
         services.AddScoped<ITicketAttachmentRepository, TicketAttachmentRepository>();
         services.AddScoped<ITicketHistoryRepository, TicketHistoryRepository>();
         services.AddScoped<ITicketSlaRepository, TicketSlaRepository>();
-        services.TryAddScoped<ISlaNotifier, LoggingSlaNotifier>();
+        services.AddScoped<IAssignmentRepository, AssignmentRepository>();
+        services.AddScoped<IMyTicketsRepository, MyTicketsRepository>();
+        services.AddScoped<ICustomerContextRepository, CustomerContextRepository>();
+        services.AddScoped<ITaskRepository, TaskRepository>();
+        services.AddScoped<IQuickReplyRepository, QuickReplyRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
+        services.AddScoped<IStaffDirectory, StaffDirectory>();
+        services.AddScoped<INotificationEmailSender, NotificationEmailSender>();
 
         // Uploaded files: a local folder (FileStorage:RootPath, default under the user's local app data). Read lazily
         // from the final configuration, so the test host can point it at a temp folder.

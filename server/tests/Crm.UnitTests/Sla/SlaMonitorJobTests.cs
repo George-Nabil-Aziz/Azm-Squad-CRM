@@ -114,11 +114,8 @@ public class SlaMonitorJobTests
         Assert.Equal(1, first.Warnings);
         Assert.Equal(0, second.Warnings);
         Assert.Equal([SlaEventType.ResponseWarning], EventTypes(ticket.Id));
-        var notification = Assert.Single(_repository.Notifications);
-        Assert.Equal(assignee, notification.RecipientUserId);
-        Assert.Null(notification.RecipientRole);
-        Assert.Equal(NotificationType.SlaWarning, notification.Type);
-        Assert.Single(_notifier.Notices, n => n.Type == NotificationType.SlaWarning && n.RecipientUserId == assignee);
+        var notice = Assert.Single(_notifier.Notices);
+        Assert.Equal((NotificationType.SlaWarning, (Guid?)assignee, (string?)null), (notice.Type, notice.RecipientUserId, notice.RecipientRole));
     }
 
     [Fact]
@@ -130,7 +127,7 @@ public class SlaMonitorJobTests
         await _job.RunAsync(CancellationToken.None);
 
         Assert.Empty(_repository.Events);
-        Assert.Empty(_repository.Notifications);
+        Assert.Empty(_notifier.Notices);
     }
 
     [Fact]
@@ -141,9 +138,9 @@ public class SlaMonitorJobTests
 
         await _job.RunAsync(CancellationToken.None);
 
-        var notification = Assert.Single(_repository.Notifications);
-        Assert.Null(notification.RecipientUserId);
-        Assert.Equal(Notification.SupervisorRole, notification.RecipientRole);
+        var notice = Assert.Single(_notifier.Notices);
+        Assert.Null(notice.RecipientUserId);
+        Assert.Equal(Notification.SupervisorRole, notice.RecipientRole);
     }
 
     [Fact]
@@ -158,10 +155,9 @@ public class SlaMonitorJobTests
         Assert.Equal(1, result.Escalations);
         var history = Assert.Single(_repository.Events, e => e.Type == SlaEventType.Escalated);
         Assert.Equal(1, history.Level);
-        var notification = Assert.Single(_repository.Notifications, n => n.Type == NotificationType.SlaEscalation);
-        Assert.Equal(Notification.SupervisorRole, notification.RecipientRole);
-        Assert.Equal(1, notification.Level);
-        Assert.Single(_notifier.Notices, n => n.Type == NotificationType.SlaEscalation && n.Level == 1);
+        var notice = Assert.Single(_notifier.Notices, n => n.Type == NotificationType.SlaEscalation);
+        Assert.Equal(Notification.SupervisorRole, notice.RecipientRole);
+        Assert.Equal(1, notice.Level);
     }
 
     [Fact]
@@ -219,7 +215,7 @@ public class SlaMonitorJobTests
         Assert.Equal(0, ticket.EscalationLevel);
         Assert.DoesNotContain(SlaEventType.Escalated, EventTypes(ticket.Id));
         Assert.DoesNotContain(SlaEventType.ResponseWarning, EventTypes(ticket.Id));
-        Assert.Empty(_repository.Notifications);
+        Assert.Empty(_notifier.Notices);
     }
 
     [Fact]
@@ -235,7 +231,7 @@ public class SlaMonitorJobTests
         Assert.Equal(2, result.Escalations);
         Assert.Equal(1, first.EscalationLevel);
         Assert.Equal(1, second.EscalationLevel);
-        Assert.Equal(2, _repository.Notifications.Count);
+        Assert.Equal(2, _notifier.Notices.Count);
     }
 }
 
@@ -245,8 +241,6 @@ internal sealed class FakeTicketSlaRepository : ITicketSlaRepository
     public List<Ticket> Tickets { get; } = [];
 
     public List<TicketSlaEvent> Events { get; } = [];
-
-    public List<Notification> Notifications { get; } = [];
 
     public Task<IReadOnlyList<Ticket>> ListBreachCandidatesAsync(DateTime utcNow, int take, CancellationToken cancellationToken) =>
         Task.FromResult<IReadOnlyList<Ticket>>([.. Tickets
@@ -259,8 +253,6 @@ internal sealed class FakeTicketSlaRepository : ITicketSlaRepository
             .Take(take)]);
 
     public void AddEvent(TicketSlaEvent slaEvent) => Events.Add(slaEvent);
-
-    public void AddNotification(Notification notification) => Notifications.Add(notification);
 
     public Task<bool> SaveChangesAsync(CancellationToken cancellationToken) => Task.FromResult(true);
 }

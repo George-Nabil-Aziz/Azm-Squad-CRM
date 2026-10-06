@@ -2,6 +2,8 @@ using Crm.Application.Common.Exceptions;
 using Crm.Application.Common.Security;
 using Crm.Application.Common.Validation;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Notifications;
+using Crm.Domain.Notifications;
 using Crm.Domain.Customers;
 using Crm.Domain.Tickets;
 using FluentValidation;
@@ -16,9 +18,11 @@ public sealed class TicketMessageService(
     ITicketReplyDispatcher dispatcher,
     ICurrentUser currentUser,
     TimeProvider timeProvider,
-    IValidator<AddTicketMessageRequest> validator) : ITicketMessageService
+    IValidator<AddTicketMessageRequest> validator,
+    INotificationDispatcher? notifications = null) : ITicketMessageService
 {
     private const int TimelineDetailsLength = 200;
+    private const int MentionExcerptLength = 100;
 
     public async Task<IReadOnlyList<TicketMessageResponse>> ListAsync(Guid ticketId, CancellationToken cancellationToken)
     {
@@ -63,9 +67,31 @@ public sealed class TicketMessageService(
         {
             await dispatcher.DispatchAsync(message, request.TemplateName, cancellationToken);
         }
+        else
+        {
+            await NotifyMentionsAsync(message, request.MentionedUserIds, ticket.Id, cancellationToken);
+        }
 
         return await messages.GetAsync(message.Id, cancellationToken)
                ?? throw new InvalidOperationException("The saved message was not found.");
+    }
+
+    /// <summary>
+    /// CRM-33: the mentioned users of an internal note hear about it (never the author; inactive users are skipped by the
+    /// dispatcher). Public replies never notify, so a mention can not reach the customer or a channel.
+    /// </summary>
+    private async Task NotifyMentionsAsync(TicketMessage note, IReadOnlyList<Guid>? mentioned, Guid ticketId, CancellationToken cancellationToken)
+    {
+        var users = mentioned?.Where(id => id != Guid.Empty && id != currentUser.UserId).Distinct().ToList();
+        if (notifications is null || users is not { Count: > 0 })
+        {
+            return;
+        }
+
+        var excerpt = note.Body.Length <= MentionExcerptLength ? note.Body : note.Body[..MentionExcerptLength];
+        await notifications.NotifyAsync(
+            new NotificationRequest(NotificationType.Mention, $"mention:{note.Id}", users, null, ticketId, 0, excerpt),
+            cancellationToken);
     }
 
     /// <summary>The API shape of a message (the repository fills the author name).</summary>

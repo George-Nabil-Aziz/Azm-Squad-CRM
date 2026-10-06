@@ -5,7 +5,8 @@ namespace Crm.Application.Tickets;
 /// (default false) makes it an internal note instead of a reply to the customer. <c>TemplateName</c> (optional, at most
 /// 100 characters) sends an approved WhatsApp template instead of free text (needed outside the 24-hour window).
 /// </summary>
-public sealed record AddTicketMessageRequest(string? Body, bool? Internal, string? TemplateName = null);
+public sealed record AddTicketMessageRequest(
+    string? Body, bool? Internal, string? TemplateName = null, IReadOnlyList<Guid>? MentionedUserIds = null);
 
 /// <summary>
 /// One message of a ticket thread. <c>Direction</c> is "inbound" (from the customer), "outbound" (an agent reply) or

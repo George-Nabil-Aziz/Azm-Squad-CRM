@@ -60,7 +60,7 @@ public class ProtectedEndpointTests(CrmApiFactory factory) : IClassFixture<CrmAp
 
         var me = await client.GetFromJsonAsync<MeBody>(MePath);
 
-        Assert.Equal(["customers.view", "customers.manage", "tickets.view", "tickets.manage", "kb.view"], me!.Permissions);
+        Assert.Equal(["customers.view", "customers.manage", "tickets.view", "tickets.manage", "notifications.view", "tasks.manage", "kb.view"], me!.Permissions);
     }
 
     [Fact]

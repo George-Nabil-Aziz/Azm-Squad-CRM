@@ -43,7 +43,7 @@ public static class AuthenticationExtensions
                     LifetimeValidator = (notBefore, expires, _, parameters) =>
                         IsWithinLifetime(notBefore, expires, parameters.ClockSkew, timeProvider.GetUtcNow().UtcDateTime),
                 };
-                bearer.Events = new JwtBearerEvents { OnTokenValidated = RejectInactiveUserAsync };
+                bearer.Events = new JwtBearerEvents { OnMessageReceived = ReadHubTokenFromQuery, OnTokenValidated = RejectInactiveUserAsync };
             });
 
         services.AddHttpContextAccessor();
@@ -66,6 +66,21 @@ public static class AuthenticationExtensions
 
         services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         return services;
+    }
+
+    /// <summary>
+    /// Browsers cannot set headers on a WebSocket: SignalR sends the token as <c>access_token</c> in the query string,
+    /// which is accepted for hub requests only (CRM-28).
+    /// </summary>
+    private static Task ReadHubTokenFromQuery(MessageReceivedContext context)
+    {
+        var token = context.Request.Query["access_token"];
+        if (!string.IsNullOrEmpty(token) && context.HttpContext.Request.Path.StartsWithSegments("/hubs"))
+        {
+            context.Token = token;
+        }
+
+        return Task.CompletedTask;
     }
 
     /// <summary>

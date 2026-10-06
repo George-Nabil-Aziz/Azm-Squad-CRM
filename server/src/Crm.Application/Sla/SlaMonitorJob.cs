@@ -46,10 +46,9 @@ public sealed class SlaMonitorJob(ITicketSlaRepository repository, ISlaNotifier 
             if (ticket.TryWarnResponse(now))
             {
                 repository.AddEvent(TicketSlaEvent.Create(ticket.Id, SlaEventType.ResponseWarning, 0, ticket.ResponseDueAt, now));
-                var notification = ticket.AssigneeId is { } assignee
-                    ? Notification.ForUser(assignee, ticket.Id, NotificationType.SlaWarning, 0, now)
-                    : Notification.ForRole(Notification.SupervisorRole, ticket.Id, NotificationType.SlaWarning, 0, now);
-                Store(notification, notices);
+                notices.Add(ticket.AssigneeId is { } assignee
+                    ? new SlaNotice(ticket.Id, NotificationType.SlaWarning, 0, assignee, null)
+                    : new SlaNotice(ticket.Id, NotificationType.SlaWarning, 0, null, Notification.SupervisorRole));
                 warnings++;
             }
         }
@@ -78,14 +77,8 @@ public sealed class SlaMonitorJob(ITicketSlaRepository repository, ISlaNotifier 
 
         var level = ticket.Escalate(now);
         repository.AddEvent(TicketSlaEvent.Create(ticket.Id, SlaEventType.Escalated, level, null, now));
-        Store(Notification.ForRole(Notification.SupervisorRole, ticket.Id, NotificationType.SlaEscalation, level, now), notices);
+        notices.Add(new SlaNotice(ticket.Id, NotificationType.SlaEscalation, level, null, Notification.SupervisorRole));
         return 1;
-    }
-
-    private void Store(Notification notification, List<SlaNotice> notices)
-    {
-        repository.AddNotification(notification);
-        notices.Add(new SlaNotice(notification.TicketId, notification.Type, notification.Level, notification.RecipientUserId, notification.RecipientRole));
     }
 
     private async Task NotifyAsync(List<SlaNotice> notices, CancellationToken cancellationToken)

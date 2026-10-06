@@ -13,7 +13,10 @@
     "reports": "Reports",
     "users": "Users",
     "ticketCategories": "Ticket categories",
-    "slaPolicies": "SLA policy"
+    "slaPolicies": "SLA policy",
+    "assignment": "Assignment",
+    "tasks": "Tasks",
+    "quickReplies": "Quick replies"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -25,7 +28,17 @@
     "apiStatus": "API status",
     "apiOk": "ok",
     "apiLoading": "loading",
-    "apiUnavailable": "unavailable"
+    "apiUnavailable": "unavailable",
+    "myTickets": {
+      "title": "My tickets",
+      "loading": "Loading your tickets…",
+      "empty": "No tickets are assigned to you.",
+      "counters": {
+        "open": "Open",
+        "pending": "Pending",
+        "breachedToday": "Breached today"
+      }
+    }
   },
   "auth": {
     "signInTitle": "Sign in",
@@ -216,7 +229,9 @@
       "updated": "The ticket was updated.",
       "tabs": "Ticket sections",
       "conversationTab": "Conversation",
-      "historyTab": "History"
+      "historyTab": "History",
+      "mention": "Mention a colleague",
+      "mentionPlaceholder": "Choose a colleague"
     },
     "history": {
       "title": "History",
@@ -231,6 +246,16 @@
         "priority": "Priority",
         "category": "Category"
       }
+    },
+    "customerPanel": {
+      "title": "Customer",
+      "loading": "Loading customer…",
+      "openProfile": "Open customer profile",
+      "deleted": "This customer was deleted.",
+      "noContacts": "No contact details.",
+      "total": "Total tickets: {{count}}",
+      "recent": "Recent tickets",
+      "current": "This ticket"
     }
   },
   "sla": {
@@ -435,6 +460,71 @@
         "actions": "Actions"
       }
     }
+  },
+  "assignment": {
+    "description": "New tickets go to the available agent with the fewest open tickets. Agents who are inactive or off duty are skipped.",
+    "loading": "Loading the assignment settings…",
+    "autoAssign": "Assign new tickets automatically",
+    "columns": {
+      "agent": "Name",
+      "openTickets": "Open tickets",
+      "onDuty": "On duty"
+    },
+    "onDutyFor": "On duty: {{name}}",
+    "noAgents": "There are no agents yet."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Your latest notifications.",
+    "open": "Notifications",
+    "openWithCount": "Notifications ({{count}} unread)",
+    "loading": "Loading notifications…",
+    "empty": "You have no notifications.",
+    "markRead": "Mark as read",
+    "markAllRead": "Mark all as read",
+    "types": {
+      "assignment": "Ticket {{ticket}} was assigned to you.",
+      "slaWarning": "Ticket {{ticket}} is close to its response deadline.",
+      "slaEscalation": "Ticket {{ticket}} breached its SLA (escalation level {{level}}).",
+      "taskReminder": "Task due: {{text}}",
+      "mention": "You were mentioned on ticket {{ticket}}."
+    }
+  },
+  "tasks": {
+    "description": "Your follow-ups. You get a notification when a task is due.",
+    "title": "Title",
+    "dueAt": "Due date and time",
+    "ticket": "Ticket",
+    "actions": "Actions",
+    "add": "Add task",
+    "titleRequired": "Enter a title.",
+    "dueInPast": "Choose a date and time in the future.",
+    "loading": "Loading your tasks…",
+    "empty": "You have no open tasks.",
+    "markDone": "Mark as done",
+    "markDoneFor": "Mark as done: {{title}}"
+  },
+  "quickReplies": {
+    "description": "Saved replies you can insert into a ticket reply. Use {{customer.name}}, {{ticket.number}}, {{ticket.subject}} or {{agent.name}} to fill in the ticket data.",
+    "picker": "Quick replies",
+    "search": "Search quick replies",
+    "empty": "No quick replies found.",
+    "loading": "Loading quick replies…",
+    "title": "Title",
+    "shortcut": "Shortcut",
+    "body": "Reply text",
+    "placeholders": "Placeholders: {{customer.name}}, {{ticket.number}}, {{ticket.subject}}, {{agent.name}}.",
+    "share": "Share with everybody",
+    "save": "Save quick reply",
+    "cancel": "Cancel",
+    "titleRequired": "Enter a title.",
+    "bodyRequired": "Enter the reply text.",
+    "visibility": "Visibility",
+    "shared": "Shared",
+    "personal": "Personal",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete"
   },
   "knowledgeBase": {
     "description": "Help articles for agents and customers, in Arabic and English.",
