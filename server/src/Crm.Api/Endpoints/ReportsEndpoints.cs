@@ -31,6 +31,15 @@ public static class ReportsEndpoints
                 Results.Ok(await reports.GetAsync(query, cancellationToken)))
             .WithName("GetCsatReport");
 
+        group.MapGet("/agents", async ([AsParameters] AgentQuery query, IAgentReportService reports, CancellationToken cancellationToken) =>
+                Results.Ok(await reports.GetAsync(query, cancellationToken)))
+            .WithName("GetAgentReport");
+
+        group.MapGet("/agents/export", async ([AsParameters] AgentQuery query, string? format, IAgentReportService reports,
+                    CancellationToken cancellationToken) =>
+                ToFile(await reports.ExportAsync(query, format, cancellationToken)))
+            .WithName("ExportAgentReport");
+
         return app;
     }
 

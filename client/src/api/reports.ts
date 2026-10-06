@@ -154,3 +154,29 @@ export interface CsatReport {
 export function getCsatReport(params: ReportRangeParams, signal?: AbortSignal): Promise<CsatReport> {
   return apiGet<CsatReport>(reportPath('/api/reports/csat', params), signal)
 }
+
+export interface AgentPerformance {
+  agentId: string
+  name: string
+  ticketsHandled: number
+  averageFirstResponseMinutes: number | null
+  averageResolutionMinutes: number | null
+  slaPercent: number | null
+  averageCsat: number | null
+  csatCount: number
+}
+
+/** GET /api/reports/agents (server: AgentReportResponse). */
+export interface AgentReport {
+  from: string
+  to: string
+  agents: AgentPerformance[]
+}
+
+export function getAgentReport(params: ReportRangeParams, signal?: AbortSignal): Promise<AgentReport> {
+  return apiGet<AgentReport>(reportPath('/api/reports/agents', params), signal)
+}
+
+export function exportAgentReport(params: ReportRangeParams, format: ExportFormat): Promise<Blob> {
+  return apiGetBlob(reportPath('/api/reports/agents/export', { ...params, format }))
+}

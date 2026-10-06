@@ -44,6 +44,9 @@ public interface IReportsRepository
     Task<TicketCounts> TicketCountsAsync(TicketReportFilter filter, CancellationToken cancellationToken);
 
     /// <summary>Per priority (only priorities that have tickets): SLA counts and minute sums of the tickets created in the range.</summary>
+    /// <summary>Per assignee: tickets created in the range with their SLA counts and minute sums (unassigned tickets are left out).</summary>
+    Task<IReadOnlyList<AgentAggregate>> AgentAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken);
+
     Task<IReadOnlyList<SlaAggregate>> SlaAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken);
 
     /// <summary>Tickets of the range whose response or resolution is breached at <c>NowUtc</c>, newest first.</summary>

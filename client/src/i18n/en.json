@@ -557,7 +557,8 @@
     "nav": {
       "tickets": "Tickets",
       "sla": "SLA",
-      "satisfaction": "Satisfaction"
+      "satisfaction": "Satisfaction",
+      "agents": "Agents"
     },
     "loading": "Loading the report…",
     "count": "Count",
@@ -622,6 +623,15 @@
       "noLow": "No low ratings in this period.",
       "comment": "Comment",
       "date": "Date"
+    },
+    "agents": {
+      "title": "Agent performance",
+      "scope": "Tickets assigned to each agent and created from {{from}} to {{to}}. All agents are shown (there are no teams yet).",
+      "empty": "No agent handled tickets in this period.",
+      "agent": "Agent name",
+      "handled": "Tickets handled",
+      "sla": "SLA met",
+      "csat": "Average CSAT"
     }
   }
 }

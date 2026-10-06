@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 const reportLinks = [
   { id: 'tickets', path: '/reports/tickets' },
   { id: 'sla', path: '/reports/sla' },
+  { id: 'agents', path: '/reports/agents' },
   { id: 'satisfaction', path: '/reports/satisfaction' },
 ] as const
 

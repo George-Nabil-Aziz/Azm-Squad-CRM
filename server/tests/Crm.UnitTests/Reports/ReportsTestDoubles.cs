@@ -21,6 +21,14 @@ internal sealed class FakeReportsRepository : IReportsRepository
 
     public (int Page, int PageSize)? LastBreachPaging { get; private set; }
 
+    public IReadOnlyList<AgentAggregate> AgentAggregates { get; set; } = [];
+
+    public Task<IReadOnlyList<AgentAggregate>> AgentAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken)
+    {
+        LastSlaFilter = filter;
+        return Task.FromResult(AgentAggregates);
+    }
+
     public Task<TicketCounts> TicketCountsAsync(TicketReportFilter filter, CancellationToken cancellationToken)
     {
         LastTicketFilter = filter;

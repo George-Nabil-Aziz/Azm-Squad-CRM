@@ -33,3 +33,9 @@
 ## Out of scope
 
 Teams, workload balancing suggestions, comparing periods.
+
+## Deviations (as built)
+
+- Deviation (AC 2): no team concept exists, so Supervisor / Admin / SuperAdmin see all agents (as planned); the page text says so.
+- Order: built after story 48 (shared `ICsatReadModel`).
+- Average minutes are streamed from two datetime columns per agent (SQLite cannot translate time spans), counts stay in SQL.

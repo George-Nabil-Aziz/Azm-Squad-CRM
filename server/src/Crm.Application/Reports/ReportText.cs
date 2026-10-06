@@ -34,6 +34,18 @@ public static class ReportText
 
     public static string ColumnCount => LocalizedText.Get("Count", "العدد");
 
+    public static string ColumnAgent => LocalizedText.Get("Agent", "الموظف");
+
+    public static string ColumnTicketsHandled => LocalizedText.Get("Tickets handled", "التذاكر المعالجة");
+
+    public static string ColumnAvgFirstResponse => LocalizedText.Get("Average first response (min)", "متوسط أول استجابة (دقيقة)");
+
+    public static string ColumnAvgResolution => LocalizedText.Get("Average resolution (min)", "متوسط زمن الحل (دقيقة)");
+
+    public static string ColumnSlaPercent => LocalizedText.Get("SLA %", "نسبة الالتزام بـ SLA");
+
+    public static string ColumnAvgCsat => LocalizedText.Get("Average CSAT", "متوسط رضا العملاء");
+
     public static string SectionStatus => LocalizedText.Get("Status", "الحالة");
 
     public static string SectionCategory => LocalizedText.Get("Category", "الفئة");

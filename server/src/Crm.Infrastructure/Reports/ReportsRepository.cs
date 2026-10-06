@@ -95,6 +95,56 @@ public sealed class ReportsRepository(CrmDbContext db) : IReportsRepository
         ];
     }
 
+    public async Task<IReadOnlyList<AgentAggregate>> AgentAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken)
+    {
+        var now = filter.NowUtc;
+        var assigned = db.Tickets.AsNoTracking()
+            .Where(t => t.CreatedAt >= filter.FromUtc && t.CreatedAt < filter.ToUtcExclusive && t.AssigneeId != null);
+        var rows = await assigned
+            .GroupBy(t => t.AssigneeId!.Value)
+            .Select(g => new
+            {
+                AgentId = g.Key,
+                Name = db.Users.Where(u => u.Id == g.Key).Select(u => u.FullName).FirstOrDefault(),
+                Tickets = g.Count(),
+                ResponseMet = g.Count(t => t.ResponseDueAt != null && t.FirstResponseAt != null && t.FirstResponseAt <= t.ResponseDueAt),
+                ResponseBreached = g.Count(t => t.ResponseDueAt != null
+                    && ((t.FirstResponseAt != null && t.FirstResponseAt > t.ResponseDueAt) || (t.FirstResponseAt == null && t.ResponseDueAt <= now))),
+                ResponseMeasured = g.Count(t => t.FirstResponseAt != null),
+                ResolutionMet = g.Count(t => t.ResolutionDueAt != null && t.ResolvedAt != null && t.ResolvedAt <= t.ResolutionDueAt),
+                ResolutionBreached = g.Count(t => t.ResolutionDueAt != null
+                    && ((t.ResolvedAt != null && t.ResolvedAt > t.ResolutionDueAt) || (t.ResolvedAt == null && t.ResolutionDueAt <= now))),
+                ResolutionMeasured = g.Count(t => t.ResolvedAt != null),
+            })
+            .ToListAsync(cancellationToken);
+
+        var responseMinutes = new Dictionary<Guid, double>();
+        await foreach (var t in assigned.Where(t => t.FirstResponseAt != null)
+                           .Select(t => new { Agent = t.AssigneeId!.Value, t.CreatedAt, End = t.FirstResponseAt!.Value })
+                           .AsAsyncEnumerable().WithCancellation(cancellationToken))
+        {
+            responseMinutes[t.Agent] = responseMinutes.GetValueOrDefault(t.Agent) + (t.End - t.CreatedAt).TotalMinutes;
+        }
+
+        var resolutionMinutes = new Dictionary<Guid, double>();
+        await foreach (var t in assigned.Where(t => t.ResolvedAt != null)
+                           .Select(t => new { Agent = t.AssigneeId!.Value, t.CreatedAt, End = t.ResolvedAt!.Value })
+                           .AsAsyncEnumerable().WithCancellation(cancellationToken))
+        {
+            resolutionMinutes[t.Agent] = resolutionMinutes.GetValueOrDefault(t.Agent) + (t.End - t.CreatedAt).TotalMinutes;
+        }
+
+        return
+        [
+            .. rows.Select(r => new AgentAggregate(
+                r.AgentId,
+                r.Name ?? string.Empty,
+                r.Tickets,
+                new SlaTargetAggregate(r.ResponseMet, r.ResponseBreached, 0, responseMinutes.GetValueOrDefault(r.AgentId), r.ResponseMeasured),
+                new SlaTargetAggregate(r.ResolutionMet, r.ResolutionBreached, 0, resolutionMinutes.GetValueOrDefault(r.AgentId), r.ResolutionMeasured))),
+        ];
+    }
+
     private sealed record Span(TicketPriority Priority, DateTime Start, DateTime End);
 
     private static async Task<Dictionary<TicketPriority, double>> MinutesAsync(IQueryable<Span> spans, CancellationToken cancellationToken)
