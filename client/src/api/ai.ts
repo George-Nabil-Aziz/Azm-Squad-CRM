@@ -24,3 +24,20 @@ export function getTicketSummary(ticketId: string, signal?: AbortSignal): Promis
 export function generateTicketSummary(ticketId: string): Promise<TicketSummary> {
   return apiPost<TicketSummary>(`/api/tickets/${encodeURIComponent(ticketId)}/ai-summary`, {})
 }
+
+/** An article a reply draft was based on. */
+export interface ReplyDraftSource {
+  id: string
+  title: string
+}
+
+/** A suggested reply (server: ReplyDraftResponse). It is only a draft: the agent reviews it and sends it. */
+export interface ReplyDraft {
+  draft: string
+  language: 'ar' | 'en'
+  articles: ReplyDraftSource[]
+}
+
+export function generateReplyDraft(ticketId: string): Promise<ReplyDraft> {
+  return apiPost<ReplyDraft>(`/api/tickets/${encodeURIComponent(ticketId)}/ai-reply-draft`, {})
+}

@@ -980,6 +980,12 @@
       "generating": "Generating…",
       "generatedAt": "Generated {{time}}",
       "empty": "No summary yet. Generate one to see the key points of this ticket."
+    },
+    "reply": {
+      "suggest": "Suggest a reply",
+      "suggesting": "Writing a draft…",
+      "review": "Review the draft before you send it.",
+      "basedOn": "Based on:"
     }
   }
 }

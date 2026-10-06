@@ -8,6 +8,7 @@ public static class AiServiceCollectionExtensions
     public static IServiceCollection AddAi(this IServiceCollection services)
     {
         services.AddScoped<ITicketSummaryService, TicketSummaryService>();
+        services.AddScoped<IReplyDraftService, ReplyDraftService>();
         return services;
     }
 }

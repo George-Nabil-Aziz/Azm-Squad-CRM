@@ -25,6 +25,12 @@ public static class AiEndpoints
             .RequireAuthorization(Permissions.TicketsManage)
             .WithName("GenerateTicketAiSummary");
 
+        // CRM-51: a draft for the reply box. It is only returned; the agent reviews it and sends it with the normal reply.
+        ticket.MapPost("/ai-reply-draft", async (Guid id, IReplyDraftService drafts, CancellationToken cancellationToken) =>
+                Results.Ok(await drafts.SuggestAsync(id, cancellationToken)))
+            .RequireAuthorization(Permissions.TicketsManage)
+            .WithName("SuggestTicketReplyDraft");
+
         return app;
     }
 }

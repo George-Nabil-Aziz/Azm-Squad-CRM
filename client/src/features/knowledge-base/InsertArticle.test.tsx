@@ -12,6 +12,7 @@ import { TicketReplyForm } from '@/features/tickets/TicketReplyForm'
 import { LinkedArticles } from './LinkedArticles'
 
 vi.mock('@/api/auth', () => ({ getCurrentUser: vi.fn() }))
+vi.mock('@/api/ai', () => ({ getAiStatus: vi.fn().mockResolvedValue({ enabled: false }), generateReplyDraft: vi.fn() }))
 vi.mock('@/api/tickets', () => ({ addTicketMessage: vi.fn() }))
 vi.mock('@/api/knowledge-base', () => ({
   searchKb: vi.fn(),

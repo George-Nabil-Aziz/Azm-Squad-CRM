@@ -42,3 +42,9 @@ Auto-send, saving drafts, tone / length settings.
 ## Verification / done
 
 All build / test / lint commands green; AC 1–4 each have a test.
+
+## As built
+
+- `KbRetriever` (+ `IKbRetrievalRepository`, `KbRetrievalRepository`) and `ReplyDraftService`; `POST /api/tickets/{id}/ai-reply-draft` (`tickets.manage`). No migration, no new permission. `TicketsAuthorizationTests` lists the new route.
+- The language comes from the newest customer message (`AiLanguage.Detect`), description then subject when there is none; the knowledge base is searched in that language.
+- Existing tests that render the reply form mock `@/api/ai` (AI disabled).
