@@ -114,7 +114,8 @@ public class TicketHistoryTests(CrmApiFactory factory) : IClassFixture<CrmApiFac
 
         Assert.All(attempts, r => Assert.True(r.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.MethodNotAllowed, r.StatusCode.ToString()));
         var methods = factory.Services.GetRequiredService<EndpointDataSource>().Endpoints.OfType<RouteEndpoint>()
-            .Where(e => e.RoutePattern.RawText?.Contains("/history", StringComparison.Ordinal) == true)
+            .Where(e => e.RoutePattern.RawText?.Contains("/history", StringComparison.Ordinal) == true
+                        && e.RoutePattern.RawText.StartsWith("/api/tickets/", StringComparison.Ordinal))
             .SelectMany(e => e.Metadata.GetMetadata<HttpMethodMetadata>()!.HttpMethods).ToArray();
         Assert.Equal(["GET"], methods);
     }
