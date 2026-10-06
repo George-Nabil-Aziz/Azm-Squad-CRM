@@ -4,6 +4,7 @@ using Crm.Api.ErrorHandling;
 using Crm.Api.Localization;
 using Crm.Application;
 using Crm.Infrastructure;
+using Crm.Infrastructure.Jobs;
 using Crm.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ builder.Services.AddCrmLocalization();
 builder.Services.AddCrmErrorHandling();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
+// Recurring jobs (Hangfire) never run in the Testing host; tests call the job classes directly.
+var jobsEnabled = !builder.Environment.IsEnvironment("Testing") && builder.Services.AddCrmJobs(builder.Configuration);
 builder.Services.AddCrmAuthentication(builder.Configuration);
 
 var app = builder.Build();
@@ -36,6 +39,11 @@ app.MapTicketCategoriesEndpoints();
 app.MapSlaPoliciesEndpoints();
 app.MapTicketsEndpoints();
 app.MapTicketSlaEndpoints();
+
+if (jobsEnabled)
+{
+    app.Services.RegisterCrmRecurringJobs();
+}
 
 await using (var scope = app.Services.CreateAsyncScope())
 {

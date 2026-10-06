@@ -21,6 +21,47 @@ public sealed partial class Ticket
     /// <summary>When the ticket was resolved (UTC); set by <see cref="MarkResolved"/>, cleared by <see cref="Reopen"/> (CRM-17).</summary>
     public DateTime? ResolvedAt { get; private set; }
 
+    /// <summary>The response target was missed and the SLA job flagged it (CRM-21); never cleared.</summary>
+    public bool ResponseBreached { get; private set; }
+
+    /// <summary>The resolution target was missed and the SLA job flagged it (CRM-21); never cleared.</summary>
+    public bool ResolutionBreached { get; private set; }
+
+    /// <summary>
+    /// True when the response is late at <paramref name="utcNow"/>: no first response and the due time has come, or the
+    /// first response came after the due time. Never true without a due time.
+    /// </summary>
+    public bool IsResponseBreachedAt(DateTime utcNow) =>
+        ResponseDueAt is { } due && (FirstResponseAt is { } answered ? answered > due : due <= utcNow);
+
+    /// <summary>The same rule for the resolution (<see cref="ResolvedAt"/> after the due time, or still unresolved past it).</summary>
+    public bool IsResolutionBreachedAt(DateTime utcNow) =>
+        ResolutionDueAt is { } due && (ResolvedAt is { } resolved ? resolved > due : due <= utcNow);
+
+    /// <summary>Flags the response breach; false when it was flagged before.</summary>
+    public bool MarkResponseBreached()
+    {
+        if (ResponseBreached)
+        {
+            return false;
+        }
+
+        ResponseBreached = true;
+        return true;
+    }
+
+    /// <summary>Flags the resolution breach; false when it was flagged before.</summary>
+    public bool MarkResolutionBreached()
+    {
+        if (ResolutionBreached)
+        {
+            return false;
+        }
+
+        ResolutionBreached = true;
+        return true;
+    }
+
     /// <summary>Copies the due times of the policy of this ticket's priority, counted from <see cref="CreatedAt"/>.</summary>
     public void ApplySla(SlaPolicy policy)
     {

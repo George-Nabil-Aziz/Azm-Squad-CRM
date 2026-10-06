@@ -79,6 +79,8 @@ export interface Ticket {
   resolutionDueAt: string | null
   firstResponseAt: string | null
   resolvedAt: string | null
+  responseBreached: boolean
+  resolutionBreached: boolean
 }
 
 /** Body of "create ticket". Customer and subject are required; send null for no description / category. */

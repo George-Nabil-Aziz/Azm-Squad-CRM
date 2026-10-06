@@ -31,7 +31,9 @@ public sealed record TicketResponse(
     DateTime? ResponseDueAt = null,
     DateTime? ResolutionDueAt = null,
     DateTime? FirstResponseAt = null,
-    DateTime? ResolvedAt = null);
+    DateTime? ResolvedAt = null,
+    bool ResponseBreached = false,
+    bool ResolutionBreached = false);
 
 /// <summary>Body of PUT /api/tickets/{id}/priority: "high", "mid" or "low" (CRM-20: the SLA due times are recalculated).</summary>
 public sealed record ChangeTicketPriorityRequest(string? Priority);

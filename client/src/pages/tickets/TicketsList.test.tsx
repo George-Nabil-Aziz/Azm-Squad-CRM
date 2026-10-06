@@ -44,6 +44,8 @@ function ticket(overrides: Partial<Ticket>): Ticket {
     resolutionDueAt: null,
     firstResponseAt: null,
     resolvedAt: null,
+    responseBreached: false,
+    resolutionBreached: false,
     ...overrides,
   }
 }

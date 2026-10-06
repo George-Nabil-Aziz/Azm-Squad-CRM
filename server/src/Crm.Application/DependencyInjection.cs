@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<ITicketCategoryService, TicketCategoryService>();
         services.AddScoped<ISlaPolicyService, SlaPolicyService>();
         services.AddScoped<ITicketService, TicketService>();
+        services.AddScoped<SlaMonitorJob>();
         return services;
     }
 }

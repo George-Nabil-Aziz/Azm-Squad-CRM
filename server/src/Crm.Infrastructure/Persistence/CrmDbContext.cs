@@ -30,6 +30,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<Ticket> Tickets => Set<Ticket>();
 
+    public DbSet<TicketSlaEvent> TicketSlaEvents => Set<TicketSlaEvent>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

@@ -59,6 +59,8 @@ const created: Ticket = {
   resolutionDueAt: null,
   firstResponseAt: null,
   resolvedAt: null,
+  responseBreached: false,
+  resolutionBreached: false,
 }
 
 function renderPage() {
