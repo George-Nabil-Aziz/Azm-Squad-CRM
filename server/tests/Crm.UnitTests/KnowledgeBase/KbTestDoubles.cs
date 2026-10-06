@@ -122,3 +122,23 @@ internal sealed class FakeKbSearchRepository : IKbSearchRepository
             [.. Faqs.Where(f => terms.All(f.SearchText.Contains)).Take(max)]));
     }
 }
+
+/// <summary>In-memory ticket-article link storage (the repository of CRM-39).</summary>
+internal sealed class FakeTicketArticleRepository : ITicketArticleRepository
+{
+    public HashSet<Guid> Tickets { get; } = [];
+
+    public List<TicketArticleLink> Links { get; } = [];
+
+    public Task<bool> TicketExistsAsync(Guid ticketId, CancellationToken cancellationToken) =>
+        Task.FromResult(Tickets.Contains(ticketId));
+
+    public void Add(TicketArticleLink link) => Links.Add(link);
+
+    public Task<IReadOnlyList<TicketArticleResponse>> ListAsync(Guid ticketId, CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<TicketArticleResponse>>(
+            [.. Links.Where(l => l.TicketId == ticketId).OrderByDescending(l => l.LinkedAt)
+                .Select(l => new TicketArticleResponse(l.Id, l.ArticleId, "Reset your password", l.LinkedAt, l.LinkedById, null))]);
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+}

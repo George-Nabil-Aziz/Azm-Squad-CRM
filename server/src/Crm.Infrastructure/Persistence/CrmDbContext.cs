@@ -49,6 +49,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<KbFaq> KbFaqs => Set<KbFaq>();
 
+    public DbSet<TicketArticleLink> TicketArticleLinks => Set<TicketArticleLink>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

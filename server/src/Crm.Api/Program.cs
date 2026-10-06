@@ -48,6 +48,7 @@ app.MapTicketAssignmentEndpoints();
 app.MapTicketStatusEndpoints();
 app.MapTicketHistoryEndpoints();
 app.MapKbEndpoints();
+app.MapTicketArticlesEndpoints();
 app.MapPortalKbEndpoints();
 
 if (jobsEnabled)

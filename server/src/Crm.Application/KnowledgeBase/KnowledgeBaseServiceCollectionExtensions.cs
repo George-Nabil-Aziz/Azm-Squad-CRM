@@ -11,6 +11,7 @@ public static class KnowledgeBaseServiceCollectionExtensions
         services.AddScoped<IKbArticleService, KbArticleService>();
         services.AddScoped<IKbFaqService, KbFaqService>();
         services.AddScoped<IKbSearchService, KbSearchService>();
+        services.AddScoped<ITicketArticleService, TicketArticleService>();
         return services;
     }
 }

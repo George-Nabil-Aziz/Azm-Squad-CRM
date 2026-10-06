@@ -112,6 +112,17 @@ public sealed class KbArticle : ISoftDeletable
         UpdatedAt = utcNow;
     }
 
+    /// <summary>An agent inserted the article into a ticket reply: raises <see cref="LinkedCount"/>. Only published articles can be linked.</summary>
+    public void RecordLinked()
+    {
+        if (!IsPublished || IsDeleted)
+        {
+            throw new InvalidOperationException("Only a published article can be linked to a ticket.");
+        }
+
+        LinkedCount++;
+    }
+
     public void Delete(DateTime utcNow)
     {
         EnsureUtc(utcNow);

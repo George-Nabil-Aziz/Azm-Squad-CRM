@@ -540,6 +540,17 @@
         "article": "Article",
         "faq": "FAQ"
       }
+    },
+    "insert": {
+      "button": "Insert article",
+      "title": "Insert a knowledge base article",
+      "searchLabel": "Search articles to insert",
+      "searchPlaceholder": "Search articles…",
+      "insert": "Insert",
+      "inserted": "Article \"{{title}}\" inserted into the reply."
+    },
+    "linked": {
+      "title": "Linked articles"
     }
   }
 }

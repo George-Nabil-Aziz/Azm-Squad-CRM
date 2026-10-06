@@ -165,3 +165,39 @@ export interface KbSearchResult {
 export function searchKb(query: string, signal?: AbortSignal): Promise<KbSearchResult[]> {
   return apiGet<KbSearchResult[]>(`/api/kb/search?q=${encodeURIComponent(query)}`, signal)
 }
+
+/** What the reply box inserts after an article was chosen (server: LinkedArticleResponse). */
+export interface LinkedArticle {
+  id: string
+  articleId: string
+  title: string
+  summary: string
+  /** Portal link of the article. */
+  url: string
+  /** Title, summary and link on separate lines, starting with a blank line: append it to the reply. */
+  insertText: string
+  linkedAt: string
+}
+
+/** An article linked to a ticket (server: TicketArticleResponse), newest first. */
+export interface TicketArticle {
+  id: string
+  articleId: string
+  title: string
+  linkedAt: string
+  linkedById: string | null
+  linkedByName: string | null
+}
+
+/**
+ * Records that the article was inserted into a reply of the ticket (raises its "times linked" counter) and returns the
+ * text to insert. 400 on `articleId` for an unpublished article.
+ */
+export function linkTicketArticle(ticketId: string, articleId: string): Promise<LinkedArticle> {
+  return apiPost<LinkedArticle>(`/api/tickets/${encodeURIComponent(ticketId)}/articles`, { articleId })
+}
+
+/** The articles linked to the ticket, newest first. */
+export function listTicketArticles(ticketId: string, signal?: AbortSignal): Promise<TicketArticle[]> {
+  return apiGet<TicketArticle[]>(`/api/tickets/${encodeURIComponent(ticketId)}/articles`, signal)
+}

@@ -130,3 +130,29 @@ public sealed class KbSearchRepository(CrmDbContext db) : IKbSearchRepository
             await faqs.OrderBy(f => f.DisplayOrder).Take(max).ToListAsync(cancellationToken));
     }
 }
+
+/// <summary>EF Core storage of the articles linked to tickets.</summary>
+public sealed class TicketArticleRepository(CrmDbContext db) : ITicketArticleRepository
+{
+    public Task<bool> TicketExistsAsync(Guid ticketId, CancellationToken cancellationToken) =>
+        db.Tickets.AnyAsync(t => t.Id == ticketId, cancellationToken);
+
+    public void Add(TicketArticleLink link) => db.TicketArticleLinks.Add(link);
+
+    public async Task<IReadOnlyList<TicketArticleResponse>> ListAsync(Guid ticketId, CancellationToken cancellationToken)
+    {
+        // Articles are read also when deleted afterwards (the ticket keeps what was sent).
+        var rows = await (
+            from link in db.TicketArticleLinks.AsNoTracking().Where(l => l.TicketId == ticketId)
+            join article in db.KbArticles.IgnoreQueryFilters([CrmDbContext.SoftDeleteFilter]) on link.ArticleId equals article.Id
+            join user in db.Users on link.LinkedById equals user.Id into users
+            from user in users.DefaultIfEmpty()
+            orderby link.LinkedAt descending, link.Id
+            select new { link, article.TitleEn, article.TitleAr, UserName = user != null ? user.FullName : null })
+            .ToListAsync(cancellationToken);
+        return [.. rows.Select(r => new TicketArticleResponse(
+            r.link.Id, r.link.ArticleId, KbLanguage.Pick(r.TitleEn, r.TitleAr), r.link.LinkedAt, r.link.LinkedById, r.UserName))];
+    }
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken) => db.SaveChangesAsync(cancellationToken);
+}

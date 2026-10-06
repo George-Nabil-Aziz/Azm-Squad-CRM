@@ -36,3 +36,7 @@
 ## Verification / done
 
 All build / test / lint commands green; AC 1–4 each have a test.
+
+## As built
+
+- Migration `AddTicketArticleLinks`. `appsettings.json` got a non-secret `Portal` section (`BaseUrl`, `ReopenWindowDays`, `SurveyValidDays`); `PortalOptions` is resolved lazily (Infrastructure `AddPortalOptions`). `TicketsAuthorizationTests` counts the two new `/api/tickets/{id}/articles` endpoints. The insert control lists articles only (FAQs are excluded from the picker). No other deviations.

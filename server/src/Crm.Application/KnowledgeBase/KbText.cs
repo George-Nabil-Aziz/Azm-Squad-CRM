@@ -70,6 +70,18 @@ public static class KbText
         "Enter the question for this language, or remove its answer.",
         "أدخل السؤال لهذه اللغة أو احذف إجابتها.");
 
+    public static string ArticleRequired => LocalizedText.Get(
+        "Choose an article.",
+        "اختر مقالاً.");
+
+    public static string ArticleNotPublished => LocalizedText.Get(
+        "Only a published article can be linked. Publish it first.",
+        "لا يمكن إرفاق إلا مقال منشور. انشره أولاً.");
+
+    public static string LanguageInvalid => LocalizedText.Get(
+        "Choose en or ar.",
+        "اختر en أو ar.");
+
     public static string DisplayOrderField => LocalizedText.Get("Display order", "ترتيب العرض");
 }
 

@@ -1,4 +1,6 @@
 using Crm.Domain.KnowledgeBase;
+using Crm.Domain.Tickets;
+using Crm.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -31,6 +33,23 @@ public sealed class KbFaqConfiguration : IEntityTypeConfiguration<KbFaq>
         faq.Property(f => f.SearchText).IsRequired(); // normalized text of both versions (CRM-38)
         faq.HasIndex(f => new { f.IsPublished, f.DisplayOrder }); // the portal list
         faq.HasQueryFilter(CrmDbContext.SoftDeleteFilter, f => !f.IsDeleted);
+    }
+}
+
+public sealed class TicketArticleLinkConfiguration : IEntityTypeConfiguration<TicketArticleLink>
+{
+    public void Configure(EntityTypeBuilder<TicketArticleLink> link)
+    {
+        link.ToTable("TicketArticleLinks");
+        link.HasKey(l => l.Id);
+        link.Property(l => l.Id).ValueGeneratedNever(); // set by TicketArticleLink.Create
+        link.HasIndex(l => new { l.TicketId, l.LinkedAt }); // the ticket's linked articles, newest first
+        link.HasIndex(l => l.ArticleId);
+
+        // Tickets, articles (soft-deleted) and users are never physically deleted: Restrict. No navigations.
+        link.HasOne<Ticket>().WithMany().HasForeignKey(l => l.TicketId).OnDelete(DeleteBehavior.Restrict);
+        link.HasOne<KbArticle>().WithMany().HasForeignKey(l => l.ArticleId).OnDelete(DeleteBehavior.Restrict);
+        link.HasOne<ApplicationUser>().WithMany().HasForeignKey(l => l.LinkedById).OnDelete(DeleteBehavior.Restrict);
     }
 }
 

@@ -7,6 +7,7 @@ import type { Ticket } from '@/api/tickets'
 import { permissions } from '@/auth/permissions'
 import { Badge } from '@/components/ui/badge'
 import { Can } from '@/features/auth/Can'
+import { LinkedArticles } from '@/features/knowledge-base/LinkedArticles'
 import { TicketAssignControl } from '@/features/tickets/TicketAssignControl'
 import { TicketClassifyControl } from '@/features/tickets/TicketClassifyControl'
 import { TicketHistory } from '@/features/tickets/TicketHistory'
@@ -123,6 +124,7 @@ function TicketDetails({ ticket }: { ticket: Ticket }) {
         ) : (
           <>
           <TicketThread ticketId={ticket.id} customerName={ticket.customerName} />
+          <LinkedArticles ticketId={ticket.id} />
 
           <Can permission={permissions.ticketsManage}>
             {ticket.status === 'closed' ? (

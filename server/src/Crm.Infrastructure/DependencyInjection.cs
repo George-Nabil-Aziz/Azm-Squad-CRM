@@ -13,6 +13,7 @@ using Crm.Infrastructure.Files;
 using Crm.Infrastructure.Identity;
 using Crm.Infrastructure.KnowledgeBase;
 using Crm.Infrastructure.Persistence;
+using Crm.Infrastructure.Portal;
 using Crm.Infrastructure.Sla;
 using Crm.Infrastructure.Tickets;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,7 @@ public static class DependencyInjection
         services.AddScoped<ICustomerNoteRepository, CustomerNoteRepository>();
         services.AddScoped<ICustomerAttachmentRepository, CustomerAttachmentRepository>();
         services.AddKnowledgeBaseStorage();
+        services.AddPortalOptions();
         services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
         services.AddScoped<ISlaPolicyRepository, SlaPolicyRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();
