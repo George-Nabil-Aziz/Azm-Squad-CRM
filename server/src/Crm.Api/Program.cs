@@ -1,4 +1,5 @@
 using Crm.Api.Auth;
+using Crm.Api.Channels;
 using Crm.Api.Endpoints;
 using Crm.Api.ErrorHandling;
 using Crm.Api.Localization;
@@ -17,6 +18,7 @@ builder.Services.AddInfrastructure();
 // Recurring jobs (Hangfire) never run in the Testing host; tests call the job classes directly.
 var jobsEnabled = !builder.Environment.IsEnvironment("Testing") && builder.Services.AddCrmJobs(builder.Configuration);
 builder.Services.AddCrmAuthentication(builder.Configuration);
+builder.Services.AddHostedService<ChannelWorker>();
 
 var app = builder.Build();
 
@@ -35,6 +37,8 @@ app.MapHealthEndpoints();
 app.MapAuthEndpoints();
 app.MapUsersEndpoints();
 app.MapCustomersEndpoints();
+app.MapChannelsEndpoints();
+app.MapWhatsAppWebhookEndpoints();
 app.MapTicketCategoriesEndpoints();
 app.MapSlaPoliciesEndpoints();
 app.MapTicketsEndpoints();

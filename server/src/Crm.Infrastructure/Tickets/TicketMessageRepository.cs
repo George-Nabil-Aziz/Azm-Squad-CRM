@@ -10,6 +10,9 @@ public sealed class TicketMessageRepository(CrmDbContext db) : ITicketMessageRep
 {
     public void Add(TicketMessage message) => db.TicketMessages.Add(message);
 
+    public Task<TicketMessage?> FindAsync(Guid id, CancellationToken cancellationToken) =>
+        db.TicketMessages.FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
+
     public async Task<TicketMessageResponse?> GetAsync(Guid id, CancellationToken cancellationToken) =>
         (await Rows(db.TicketMessages.AsNoTracking().Where(m => m.Id == id)).FirstOrDefaultAsync(cancellationToken))?.ToResponse();
 

@@ -177,6 +177,20 @@ public sealed partial class Ticket
         return true;
     }
 
+    /// <summary>The customer wrote on the ticket through a channel: bumps <see cref="UpdatedAt"/> (never <see cref="FirstResponseAt"/>).</summary>
+    public void RecordCustomerMessage(DateTime utcNow)
+    {
+        if (utcNow.Kind != DateTimeKind.Utc)
+        {
+            throw new ArgumentException("The time must be UTC (DateTimeKind.Utc).", nameof(utcNow));
+        }
+
+        if (utcNow > UpdatedAt)
+        {
+            UpdatedAt = utcNow;
+        }
+    }
+
     /// <summary>1 → "TKT-000001" (at least six digits).</summary>
     public static string FormatNumber(int number) =>
         NumberPrefix + number.ToString("D6", CultureInfo.InvariantCulture);

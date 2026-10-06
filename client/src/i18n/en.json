@@ -190,6 +190,7 @@
       },
       "message": "Message",
       "messageRequired": "Write a message first.",
+      "templateName": "Approved WhatsApp template name (use it when the last customer message is older than 24 hours)",
       "internalToggle": "Internal note (the customer never sees it)",
       "sendReply": "Send reply",
       "addNote": "Add note",

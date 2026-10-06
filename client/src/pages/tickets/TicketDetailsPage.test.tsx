@@ -218,6 +218,27 @@ describe('TicketDetailsPage', () => {
     expect(await screen.findByText('The ticket is closed. Reopen it to reply or add a note.')).toBeInTheDocument()
   })
 
+  it('offers a template field when the server refuses free text (WhatsApp 24-hour window)', async () => {
+    vi.mocked(addTicketMessage).mockRejectedValueOnce(
+      new ApiError('bad', 400, { status: 400, errors: { body: ['The last customer message is older than 24 hours. Send an approved template instead.'] } }),
+    )
+    renderPage()
+    await screen.findByRole('heading', { name: 'Invoice is wrong' })
+
+    fireEvent.change(await screen.findByLabelText('Message'), { target: { value: 'Late answer' } })
+    fireEvent.click(await screen.findByRole('button', { name: 'Send reply' }))
+    expect(
+      await screen.findByText('The last customer message is older than 24 hours. Send an approved template instead.'),
+    ).toBeInTheDocument()
+
+    fireEvent.change(await screen.findByLabelText(/Approved WhatsApp template name/), { target: { value: 'order_update' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Send reply' }))
+
+    await waitFor(() =>
+      expect(addTicketMessage).toHaveBeenLastCalledWith('t1', { body: 'Late answer', internal: false, templateName: 'order_update' }),
+    )
+  })
+
   it('has no reply box on a closed ticket', async () => {
     vi.mocked(getTicket).mockResolvedValue({ ...invoiceTicket, status: 'closed' })
     renderPage()

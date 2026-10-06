@@ -106,6 +106,8 @@ export interface TicketMessage {
 export interface AddTicketMessageRequest {
   body: string
   internal: boolean
+  /** Approved WhatsApp template sent instead of free text (needed more than 24 hours after the last customer message). */
+  templateName?: string
 }
 
 /** Moves the ticket along the workflow; 400 on `status` for a move the workflow does not allow (see `allowedStatuses`). */

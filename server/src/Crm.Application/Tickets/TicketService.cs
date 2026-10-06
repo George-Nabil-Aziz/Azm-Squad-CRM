@@ -26,12 +26,6 @@ public sealed class TicketService(
     ISlaPolicyRepository slaPolicies,
     ITicketHistoryRecorder history) : ITicketService
 {
-    /// <summary>
-    /// One ticket at a time takes "highest number + 1" and saves, so tickets created through this API instance never
-    /// collide. The unique index on the number still guards several instances (→ ConflictException, 409).
-    /// </summary>
-    private static readonly SemaphoreSlim NumberLock = new(1, 1);
-
     public async Task<TicketResponse> CreateAsync(CreateTicketRequest request, CancellationToken cancellationToken)
     {
         await createValidator.ValidateOrThrowAsync(request, cancellationToken);
@@ -57,20 +51,10 @@ public sealed class TicketService(
             ticket.ApplySla(policy);
         }
 
-        await NumberLock.WaitAsync(cancellationToken);
-        try
-        {
-            ticket.AssignNumber(await tickets.NextNumberAsync(cancellationToken));
-            tickets.Add(ticket);
-            // CRM-10 AC 2: the ticket shows in the customer's timeline; the entry is saved together with the ticket.
-            timeline.Record(customerId, InteractionType.Ticket, InteractionEvents.TicketCreated,
-                $"{ticket.DisplayNumber} {ticket.Subject}", ticket.Id, now);
-            await tickets.SaveChangesAsync(cancellationToken);
-        }
-        finally
-        {
-            NumberLock.Release();
-        }
+        // CRM-10 AC 2: the ticket shows in the customer's timeline; the entry is saved together with the ticket.
+        await TicketNumbering.SaveNewAsync(tickets, ticket, () => timeline.Record(
+            customerId, InteractionType.Ticket, InteractionEvents.TicketCreated,
+            $"{ticket.DisplayNumber} {ticket.Subject}", ticket.Id, now), cancellationToken);
 
         return await GetAsync(ticket.Id, cancellationToken);
     }

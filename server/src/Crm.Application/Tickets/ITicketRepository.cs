@@ -25,6 +25,11 @@ public interface ITicketRepository
 
     /// <summary>The active staff user (with a role) a ticket can be assigned to, or null for an unknown, inactive or role-less user.</summary>
     Task<TicketAssigneeResponse?> FindAssigneeAsync(Guid userId, CancellationToken cancellationToken);
+    /// <summary>The tracked ticket with this number (channel stories: the tag in an email subject), or null.</summary>
+    Task<Ticket?> FindByNumberAsync(int number, CancellationToken cancellationToken);
+
+    /// <summary>The customer's newest tracked ticket on this channel that is not Resolved or Closed, or null.</summary>
+    Task<Ticket?> FindLatestOpenAsync(Guid customerId, TicketChannel channel, CancellationToken cancellationToken);
 
     /// <summary>The ticket with its customer name (also of a deleted customer), category and assignee names; or null.</summary>
     Task<TicketView?> GetViewAsync(Guid id, CancellationToken cancellationToken);

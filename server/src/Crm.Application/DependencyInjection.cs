@@ -1,3 +1,5 @@
+using Crm.Application.Channels;
+using Crm.Application.Channels.WhatsApp;
 using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
@@ -21,6 +23,12 @@ public static class DependencyInjection
         services.AddScoped<ICustomerTimelineService, CustomerTimelineService>();
         services.AddScoped<ICustomerNoteService, CustomerNoteService>();
         services.AddScoped<ICustomerAttachmentService, CustomerAttachmentService>();
+        services.AddScoped<IChannelSender, ChannelSender>();
+        services.AddScoped<IChannelDeliveryObserver, TicketDeliveryObserver>();
+        services.AddScoped<IChannelTicketService, ChannelTicketService>();
+        services.AddScoped<ITicketReplyDispatcher, ChannelTicketReplyDispatcher>();
+        services.AddScoped<IInboundMessageProcessor, InboundMessageProcessor>();
+        services.AddScoped<IWhatsAppWebhookService, WhatsAppWebhookService>();
         services.AddScoped<ITicketCategoryService, TicketCategoryService>();
         services.AddScoped<ISlaPolicyService, SlaPolicyService>();
         services.AddScoped<ITicketService, TicketService>();

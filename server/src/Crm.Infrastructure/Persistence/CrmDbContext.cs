@@ -1,3 +1,4 @@
+using Crm.Domain.Channels;
 using Crm.Domain.Customers;
 using Crm.Domain.Notifications;
 using Crm.Domain.Sla;
@@ -25,6 +26,9 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<CustomerAttachment> CustomerAttachments => Set<CustomerAttachment>();
 
+    public DbSet<OutboundMessage> OutboundMessages => Set<OutboundMessage>();
+
+    public DbSet<ReceivedMessage> ReceivedMessages => Set<ReceivedMessage>();
     public DbSet<TicketCategory> TicketCategories => Set<TicketCategory>();
 
     public DbSet<SlaPolicy> SlaPolicies => Set<SlaPolicy>();

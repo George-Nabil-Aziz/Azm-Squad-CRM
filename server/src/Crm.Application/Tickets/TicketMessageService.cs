@@ -43,6 +43,11 @@ public sealed class TicketMessageService(
 
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var isInternal = request.Internal == true;
+        if (!isInternal)
+        {
+            await dispatcher.ValidateAsync(ticket, request.TemplateName, cancellationToken); // e.g. WhatsApp 24-hour window: nothing is saved
+        }
+
         var message = TicketMessage.Staff(ticket.Id, request.Body!, isInternal, ticket.Channel, currentUser.UserId, now);
         messages.Add(message);
         if (!isInternal)
@@ -56,7 +61,7 @@ public sealed class TicketMessageService(
         await tickets.SaveChangesAsync(cancellationToken);
         if (!isInternal)
         {
-            await dispatcher.DispatchAsync(message, cancellationToken);
+            await dispatcher.DispatchAsync(message, request.TemplateName, cancellationToken);
         }
 
         return await messages.GetAsync(message.Id, cancellationToken)
