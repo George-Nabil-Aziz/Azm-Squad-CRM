@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 import type { Customer } from '@/api/customers'
 import { permissions } from '@/auth/permissions'
 import { Button } from '@/components/ui/button'
@@ -28,7 +29,11 @@ export function CustomersTable({ customers, onEdit, onContacts }: CustomersTable
       <TableBody>
         {customers.map((customer) => (
           <TableRow key={customer.id}>
-            <TableCell className="font-medium">{customer.name}</TableCell>
+            <TableCell className="font-medium">
+              <Link to={`/customers/${customer.id}`} className="text-primary underline-offset-4 hover:underline">
+                {customer.name}
+              </Link>
+            </TableCell>
             {/* Phone numbers and emails read left to right in Arabic too. */}
             <TableCell dir="ltr" className="text-start">
               {customer.phone}

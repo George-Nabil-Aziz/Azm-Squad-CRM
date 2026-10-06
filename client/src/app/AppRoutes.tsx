@@ -3,10 +3,12 @@ import { permissions } from '@/auth/permissions'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { ComingSoonPage } from '@/pages/coming-soon/ComingSoonPage'
+import { CustomerDetailsPage } from '@/pages/customers/CustomerDetailsPage'
 import { CustomersPage } from '@/pages/customers/CustomersPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
 import { SlaPoliciesPage } from '@/pages/sla/SlaPoliciesPage'
 import { TicketCategoriesPage } from '@/pages/ticket-categories/TicketCategoriesPage'
+import { TicketsPage } from '@/pages/tickets/TicketsPage'
 import { UsersPage } from '@/pages/users/UsersPage'
 import { RequireAuth } from './RequireAuth'
 import { RequirePermission } from './RequirePermission'
@@ -30,10 +32,11 @@ export function AppRoutes() {
           </Route>
           {/* Areas built by later stories: each story replaces its line with the real page routes. */}
           <Route element={<RequirePermission permission={permissions.ticketsView} />}>
-            <Route path="tickets" element={<ComingSoonPage area="tickets" />} />
+            <Route path="tickets" element={<TicketsPage />} />
           </Route>
           <Route element={<RequirePermission permission={permissions.customersView} />}>
             <Route path="customers" element={<CustomersPage />} />
+            <Route path="customers/:id" element={<CustomerDetailsPage />} />
           </Route>
           <Route path="knowledge-base" element={<ComingSoonPage area="knowledgeBase" />} />
           <Route element={<RequirePermission permission={permissions.reportsView} />}>

@@ -1,4 +1,7 @@
 using Crm.Application.Customers;
+using Crm.Application.Customers.Attachments;
+using Crm.Application.Customers.Notes;
+using Crm.Application.Customers.Timeline;
 using Crm.Application.Sla;
 using Crm.Application.Tickets;
 using FluentValidation;
@@ -13,8 +16,13 @@ public static class DependencyInjection
     {
         services.AddValidatorsFromAssembly(typeof(AssemblyReference).Assembly, includeInternalTypes: true);
         services.AddScoped<ICustomerService, CustomerService>();
+        services.AddScoped<IInteractionRecorder, InteractionRecorder>();
+        services.AddScoped<ICustomerTimelineService, CustomerTimelineService>();
+        services.AddScoped<ICustomerNoteService, CustomerNoteService>();
+        services.AddScoped<ICustomerAttachmentService, CustomerAttachmentService>();
         services.AddScoped<ITicketCategoryService, TicketCategoryService>();
         services.AddScoped<ISlaPolicyService, SlaPolicyService>();
+        services.AddScoped<ITicketService, TicketService>();
         return services;
     }
 }

@@ -82,6 +82,32 @@ export function fakeApi({ healthStatus = 200, me = superAdminMe }: FakeApiOption
       }
       return json(200, { items: [customer], page: 1, pageSize: 20, totalCount: 1 })
     }
+    if (path === '/api/tickets/assignees') {
+      return json(200, [{ id: superAdminMe.id, fullName: superAdminMe.fullName }])
+    }
+    if (path === '/api/tickets' || path.startsWith('/api/tickets?')) {
+      const ticket = {
+        id: 't1',
+        number: 'TKT-000001',
+        subject: 'Invoice is wrong',
+        description: null,
+        status: 'new',
+        priority: 'mid',
+        channel: 'manual',
+        customerId: 'c1',
+        customerName: 'Nour Trading',
+        categoryId: null,
+        categoryName: null,
+        assigneeId: null,
+        assigneeName: null,
+        createdAt: '2026-10-01T08:00:00Z',
+        updatedAt: '2026-10-01T08:00:00Z',
+      }
+      return json(200, { items: [ticket], page: 1, pageSize: 20, totalCount: 1 })
+    }
+    if (path === '/api/ticket-categories' || path.startsWith('/api/ticket-categories?')) {
+      return json(200, [])
+    }
     return json(404, { status: 404 }, 'application/problem+json')
   })
 }

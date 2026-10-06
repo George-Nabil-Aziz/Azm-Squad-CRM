@@ -1,6 +1,7 @@
 using Crm.Application.Common.Exceptions;
 using Crm.Application.Common.Paging;
 using Crm.Application.Common.Validation;
+using Crm.Application.Customers.Timeline;
 using Crm.Domain.Customers;
 using FluentValidation;
 
@@ -13,7 +14,8 @@ public sealed class CustomerService(
     IValidator<ListCustomersQuery> listValidator,
     IValidator<CustomerRequest> requestValidator,
     IValidator<CustomerContactRequest> contactValidator,
-    IValidator<CustomerLookupQuery> lookupValidator) : ICustomerService
+    IValidator<CustomerLookupQuery> lookupValidator,
+    IInteractionRecorder timeline) : ICustomerService
 {
     private static readonly ContactType[] NumberTypes = [ContactType.Phone, ContactType.WhatsApp];
 
@@ -38,8 +40,10 @@ public sealed class CustomerService(
     {
         await requestValidator.ValidateOrThrowAsync(request, cancellationToken);
 
-        var customer = Customer.Create(request.Name!, request.Email, PhoneOrNull(request.Phone), UtcNow());
+        var now = UtcNow();
+        var customer = Customer.Create(request.Name!, request.Email, PhoneOrNull(request.Phone), now);
         customers.Add(customer);
+        timeline.Record(customer.Id, InteractionType.Customer, InteractionEvents.CustomerCreated, customer.Name, null, now);
         await customers.SaveChangesAsync(cancellationToken);
 
         return ToResponse(customer);
@@ -50,7 +54,9 @@ public sealed class CustomerService(
         await requestValidator.ValidateOrThrowAsync(request, cancellationToken);
         var customer = await FindAsync(id, cancellationToken);
 
-        customer.Update(request.Name!, request.Email, PhoneOrNull(request.Phone), UtcNow());
+        var now = UtcNow();
+        customer.Update(request.Name!, request.Email, PhoneOrNull(request.Phone), now);
+        timeline.Record(customer.Id, InteractionType.Customer, InteractionEvents.CustomerUpdated, customer.Name, null, now);
         await customers.SaveChangesAsync(cancellationToken);
 
         return ToResponse(customer);
@@ -76,7 +82,9 @@ public sealed class CustomerService(
             throw new ConflictException(CustomerText.ContactExists);
         }
 
-        var contact = customer.AddContact(type, value, request.IsPrimary == true, UtcNow());
+        var now = UtcNow();
+        var contact = customer.AddContact(type, value, request.IsPrimary == true, now);
+        timeline.Record(customer.Id, InteractionType.Customer, InteractionEvents.ContactAdded, contact.Value, contact.Id, now);
         await customers.SaveChangesAsync(cancellationToken);
 
         return ToResponse(contact);

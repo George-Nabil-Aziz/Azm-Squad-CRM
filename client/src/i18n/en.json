@@ -109,7 +109,67 @@
       "high": "High",
       "mid": "Mid",
       "low": "Low"
-    }
+    },
+    "description": "Customer requests tracked until they are solved.",
+    "new": "New ticket",
+    "createTitle": "New ticket",
+    "createDescription": "Customer and subject are required. The ticket starts as New.",
+    "customer": "Customer",
+    "customerSearch": "Search customers",
+    "customerFind": "Find",
+    "customerPlaceholder": "Select a customer",
+    "subject": "Subject",
+    "descriptionField": "Description",
+    "category": "Category",
+    "noCategory": "No category",
+    "priority": "Priority",
+    "create": "Create ticket",
+    "creating": "Creating…",
+    "cancel": "Cancel",
+    "customerRequired": "Choose a customer.",
+    "subjectRequired": "Enter a subject.",
+    "created": "Ticket {{number}} was created.",
+    "statuses": {
+      "new": "New",
+      "open": "Open",
+      "pending": "Pending",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "channels": {
+      "manual": "Created by an agent",
+      "email": "Email",
+      "whatsapp": "WhatsApp",
+      "portal": "Portal"
+    },
+    "searchLabel": "Search by ticket number or subject",
+    "search": "Search",
+    "filters": {
+      "status": "Status",
+      "priority": "Priority",
+      "category": "Category",
+      "assignee": "Assignee",
+      "all": "All",
+      "unassigned": "Unassigned",
+      "createdFrom": "Created from",
+      "createdTo": "Created to",
+      "clear": "Clear filters"
+    },
+    "columns": {
+      "number": "Number",
+      "subject": "Subject",
+      "customer": "Customer",
+      "status": "Status",
+      "priority": "Priority",
+      "category": "Category",
+      "assignee": "Assignee",
+      "created": "Created"
+    },
+    "empty": "No tickets found.",
+    "loading": "Loading tickets…",
+    "pageInfo": "Page {{page}} of {{pages}}",
+    "previous": "Previous",
+    "next": "Next"
   },
   "sla": {
     "description": "Time allowed for the first response and for resolving a ticket, per priority. New times apply to new tickets only.",
@@ -231,6 +291,77 @@
       "added": "Contact added.",
       "primaryChanged": "Primary contact changed.",
       "removed": "Contact removed."
+    },
+    "details": {
+      "back": "Back to customers",
+      "contacts": "Contact details",
+      "loading": "Loading customer…",
+      "notFound": "Customer not found."
+    },
+    "timeline": {
+      "title": "Interaction history",
+      "filter": "Show",
+      "types": {
+        "all": "All activity",
+        "customer": "Customer changes",
+        "note": "Notes",
+        "attachment": "Attachments",
+        "ticket": "Tickets",
+        "message": "Messages"
+      },
+      "events": {
+        "customerCreated": "Customer created",
+        "customerUpdated": "Customer updated",
+        "contactAdded": "Contact added",
+        "noteAdded": "Note added",
+        "attachmentAdded": "File attached",
+        "other": "Other activity",
+        "ticketCreated": "Ticket created"
+      },
+      "by": "by {{name}}",
+      "system": "System",
+      "empty": "Nothing has happened yet.",
+      "loading": "Loading history…",
+      "pageInfo": "Page {{page}} of {{pages}}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "notes": {
+      "title": "Notes",
+      "newNote": "New note",
+      "add": "Add note",
+      "adding": "Adding…",
+      "added": "Note added.",
+      "textRequired": "Write the note first.",
+      "textTooLong": "A note can have at most 4000 characters.",
+      "empty": "No notes yet.",
+      "loading": "Loading notes…",
+      "pageInfo": "Page {{page}} of {{pages}}",
+      "newer": "Newer notes",
+      "older": "Older notes"
+    },
+    "attachments": {
+      "title": "Attachments",
+      "file": "File",
+      "hint": "PDF, images (PNG, JPG, GIF, WEBP), text, CSV, Word or Excel; up to 10 MB.",
+      "upload": "Upload",
+      "uploading": "Uploading…",
+      "uploaded": "File uploaded.",
+      "fileRequired": "Choose a file to upload.",
+      "tooLarge": "The file is larger than 10 MB.",
+      "typeNotAllowed": "This file type is not allowed. Allowed: PDF, images (PNG, JPG, GIF, WEBP), text, CSV, Word and Excel files.",
+      "empty": "No files yet.",
+      "loading": "Loading files…",
+      "download": "Download",
+      "sizeKb": "{{size}} KB",
+      "sizeMb": "{{size}} MB",
+      "columns": {
+        "file": "File",
+        "size": "Size",
+        "uploadedBy": "Uploaded by",
+        "uploadedAt": "Uploaded",
+        "actions": "Actions"
+      }
     }
   }
 }

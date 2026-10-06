@@ -1,4 +1,4 @@
-import { apiDelete, apiGet, apiPost, apiPut } from './client'
+import { apiDelete, apiGet, apiGetBlob, apiPost, apiPostForm, apiPut } from './client'
 import { listPath, type ListParams, type PagedResult } from './paging'
 
 /** Kind of a customer contact (server: CustomerContactResponse.type). */
@@ -74,6 +74,97 @@ export function makeCustomerContactPrimary(customerId: string, contactId: string
     `/api/customers/${encodeURIComponent(customerId)}/contacts/${encodeURIComponent(contactId)}/primary`,
     undefined,
   )
+}
+
+/** Category of a timeline entry (server: InteractionTypes). */
+export type InteractionType = 'customer' | 'note' | 'attachment' | 'ticket' | 'message'
+
+/**
+ * One entry of a customer's timeline (server: CustomerInteractionResponse). `event` is a code such as
+ * "customerCreated" (translated under customers.timeline.events); `actorName` is null for system / channel entries.
+ */
+export interface CustomerInteraction {
+  id: number
+  type: InteractionType
+  event: string
+  details: string | null
+  sourceId: string | null
+  actorId: string | null
+  actorName: string | null
+  occurredAt: string
+}
+
+/** Query of GET /api/customers/{id}/timeline: optional type filter and paging. */
+export interface TimelineParams {
+  type?: InteractionType
+  page?: number
+  pageSize?: number
+}
+
+/** The customer's interaction history, newest first. */
+export function getCustomerTimeline(
+  id: string,
+  { type, page, pageSize }: TimelineParams,
+  signal?: AbortSignal,
+): Promise<PagedResult<CustomerInteraction>> {
+  const query = new URLSearchParams()
+  if (type) query.set('type', type)
+  if (page !== undefined) query.set('page', String(page))
+  if (pageSize !== undefined) query.set('pageSize', String(pageSize))
+  const queryString = query.toString()
+  const path = `/api/customers/${encodeURIComponent(id)}/timeline`
+  return apiGet<PagedResult<CustomerInteraction>>(queryString ? `${path}?${queryString}` : path, signal)
+}
+
+/** A note about a customer (server: CustomerNoteResponse). `authorName` is null when the user no longer exists. */
+export interface CustomerNote {
+  id: string
+  text: string
+  authorId: string | null
+  authorName: string | null
+  createdAt: string
+}
+
+/** A file attached to a customer (server: CustomerAttachmentResponse). `size` in bytes. */
+export interface CustomerAttachment {
+  id: string
+  fileName: string
+  contentType: string
+  size: number
+  uploadedById: string | null
+  uploadedByName: string | null
+  uploadedAt: string
+}
+
+/** The customer's notes, newest first. */
+export function listCustomerNotes(
+  id: string,
+  params: Omit<ListParams, 'search'>,
+  signal?: AbortSignal,
+): Promise<PagedResult<CustomerNote>> {
+  return apiGet<PagedResult<CustomerNote>>(listPath(`/api/customers/${encodeURIComponent(id)}/notes`, params), signal)
+}
+
+/** Adds a note written by the signed-in user. */
+export function addCustomerNote(id: string, text: string): Promise<CustomerNote> {
+  return apiPost<CustomerNote>(`/api/customers/${encodeURIComponent(id)}/notes`, { text })
+}
+
+/** Every file of the customer, newest first. */
+export function listCustomerAttachments(id: string, signal?: AbortSignal): Promise<CustomerAttachment[]> {
+  return apiGet<CustomerAttachment[]>(`/api/customers/${encodeURIComponent(id)}/attachments`, signal)
+}
+
+/** Uploads a file (multipart field "file"); the server allows certain types up to 10 MB. */
+export function uploadCustomerAttachment(id: string, file: File): Promise<CustomerAttachment> {
+  const form = new FormData()
+  form.append('file', file)
+  return apiPostForm<CustomerAttachment>(`/api/customers/${encodeURIComponent(id)}/attachments`, form)
+}
+
+/** The file's content, read through the authorized API. */
+export function downloadCustomerAttachment(id: string, attachmentId: string): Promise<Blob> {
+  return apiGetBlob(`/api/customers/${encodeURIComponent(id)}/attachments/${encodeURIComponent(attachmentId)}`)
 }
 
 /** Removes the contact; when it was primary, the next contact of its type becomes primary. */
