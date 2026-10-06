@@ -11,7 +11,8 @@
     "customers": "العملاء",
     "knowledgeBase": "قاعدة المعرفة",
     "reports": "التقارير",
-    "users": "المستخدمون"
+    "users": "المستخدمون",
+    "ticketCategories": "فئات التذاكر"
   },
   "shell": {
     "mainNavigation": "التنقل الرئيسي",
@@ -101,6 +102,39 @@
       "Supervisor": "مشرف فريق",
       "Agent": "موظف دعم"
     }
+  },
+  "tickets": {
+    "priorities": {
+      "high": "عالية",
+      "mid": "متوسطة",
+      "low": "منخفضة"
+    }
+  },
+  "ticketCategories": {
+    "description": "الفئات التي يختارها الموظفون عند إنشاء تذكرة.",
+    "add": "إضافة فئة",
+    "columns": {
+      "name": "الاسم",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "active": "نشطة",
+    "inactive": "غير نشطة",
+    "edit": "تعديل",
+    "empty": "لا توجد فئات بعد.",
+    "loading": "جارٍ تحميل الفئات…",
+    "createTitle": "فئة جديدة",
+    "createDescription": "يجب أن يكون الاسم فريداً. الفئات الجديدة تكون نشطة.",
+    "editTitle": "تعديل الفئة",
+    "editDescription": "غيّر اسم الفئة أو أوقفها. تبقى الفئات غير النشطة على التذاكر الحالية.",
+    "name": "الاسم",
+    "isActive": "نشطة (يمكن اختيارها للتذاكر الجديدة)",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ…",
+    "cancel": "إلغاء",
+    "nameRequired": "أدخل اسم الفئة.",
+    "created": "تم إنشاء الفئة {{name}}.",
+    "updated": "تم حفظ الفئة {{name}}."
   },
   "customers": {
     "description": "ملفات العملاء التي ترتبط بها التذاكر.",

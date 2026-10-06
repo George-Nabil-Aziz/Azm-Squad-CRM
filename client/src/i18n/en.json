@@ -11,7 +11,8 @@
     "customers": "Customers",
     "knowledgeBase": "Knowledge base",
     "reports": "Reports",
-    "users": "Users"
+    "users": "Users",
+    "ticketCategories": "Ticket categories"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -101,6 +102,39 @@
       "Supervisor": "Team supervisor",
       "Agent": "Support agent"
     }
+  },
+  "tickets": {
+    "priorities": {
+      "high": "High",
+      "mid": "Mid",
+      "low": "Low"
+    }
+  },
+  "ticketCategories": {
+    "description": "Categories agents choose when they create a ticket.",
+    "add": "Add category",
+    "columns": {
+      "name": "Name",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "active": "Active",
+    "inactive": "Inactive",
+    "edit": "Edit",
+    "empty": "No categories yet.",
+    "loading": "Loading categories…",
+    "createTitle": "New category",
+    "createDescription": "The name must be unique. New categories are active.",
+    "editTitle": "Edit category",
+    "editDescription": "Rename the category or deactivate it. Inactive categories stay on existing tickets.",
+    "name": "Name",
+    "isActive": "Active (can be chosen for new tickets)",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "nameRequired": "Enter the category name.",
+    "created": "Category {{name}} was created.",
+    "updated": "Category {{name}} was saved."
   },
   "customers": {
     "description": "Customer profiles that tickets belong to.",

@@ -132,6 +132,7 @@ All commands from `client/`.
 - **Create file: `client/src/features/tickets/ticket-values.test.ts`** — `ticketPriorities` equals `['high','mid','low']` and every priority has an English and Arabic label (`tickets.priorities.*`).
 - **Create file: `client/src/pages/ticket-categories/TicketCategoriesPage.test.tsx`** (mocks `@/api/auth` + `@/api/ticket-categories`) — lists categories with "Active"/"Inactive"; adds a category (dialog "Add category", label "Name", button "Save" → `createTicketCategory({ name, isActive: true })`); shows the server's duplicate-name message under the field on 400 (AC 2); edit dialog unchecks "Active" → `updateTicketCategory(id, { name, isActive: false })` (AC 3); "Add category" hidden without `categories.manage`.
 - **File: `client/src/App.layout.test.tsx`** line 7 — `NAVIGATION_LABELS` gets `'Ticket categories'` at the end (SuperAdmin sees it). `App.permissions.test.tsx` stays unchanged (Agent / Supervisor do not see it).
+- **Deviation:** `client/src/App.i18n.test.tsx` line 7 (`ARABIC_NAVIGATION_LABELS`) also gets `'فئات التذاكر'` — the Arabic sidebar test lists every item too.
 
 ### 2 — Implementation (Green)
 

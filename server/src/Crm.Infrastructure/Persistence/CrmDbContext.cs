@@ -1,4 +1,5 @@
 using Crm.Domain.Customers;
+using Crm.Domain.Tickets;
 using Crm.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public const string SoftDeleteFilter = "SoftDelete";
 
     public DbSet<Customer> Customers => Set<Customer>();
+
+    public DbSet<TicketCategory> TicketCategories => Set<TicketCategory>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -1,4 +1,5 @@
 using Crm.Application.Customers;
+using Crm.Application.Tickets;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,7 @@ public static class DependencyInjection
     {
         services.AddValidatorsFromAssembly(typeof(AssemblyReference).Assembly, includeInternalTypes: true);
         services.AddScoped<ICustomerService, CustomerService>();
+        services.AddScoped<ITicketCategoryService, TicketCategoryService>();
         return services;
     }
 }

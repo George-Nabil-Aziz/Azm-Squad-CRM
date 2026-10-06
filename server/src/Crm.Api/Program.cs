@@ -32,6 +32,7 @@ app.MapHealthEndpoints();
 app.MapAuthEndpoints();
 app.MapUsersEndpoints();
 app.MapCustomersEndpoints();
+app.MapTicketCategoriesEndpoints();
 
 await using (var scope = app.Services.CreateAsyncScope())
 {

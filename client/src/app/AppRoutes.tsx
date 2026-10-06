@@ -5,6 +5,7 @@ import { LoginPage } from '@/pages/auth/LoginPage'
 import { ComingSoonPage } from '@/pages/coming-soon/ComingSoonPage'
 import { CustomersPage } from '@/pages/customers/CustomersPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
+import { TicketCategoriesPage } from '@/pages/ticket-categories/TicketCategoriesPage'
 import { UsersPage } from '@/pages/users/UsersPage'
 import { RequireAuth } from './RequireAuth'
 import { RequirePermission } from './RequirePermission'
@@ -19,6 +20,9 @@ export function AppRoutes() {
           {/* Same permission as the area's item in navigation.ts. */}
           <Route element={<RequirePermission permission={permissions.usersManage} />}>
             <Route path="users" element={<UsersPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.categoriesManage} />}>
+            <Route path="ticket-categories" element={<TicketCategoriesPage />} />
           </Route>
           {/* Areas built by later stories: each story replaces its line with the real page routes. */}
           <Route element={<RequirePermission permission={permissions.ticketsView} />}>
