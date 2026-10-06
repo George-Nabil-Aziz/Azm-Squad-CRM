@@ -3,7 +3,11 @@ using Crm.Api.Channels;
 using Crm.Api.Endpoints;
 using Crm.Api.ErrorHandling;
 using Crm.Api.Localization;
+using Crm.Api.Notifications;
 using Crm.Application;
+using Crm.Application.Auth;
+using Crm.Application.Notifications;
+using Microsoft.AspNetCore.SignalR;
 using Crm.Application.Settings;
 using Crm.Infrastructure;
 using Crm.Infrastructure.Jobs;
@@ -27,6 +31,9 @@ if (builder.Configuration["DataProtection:KeysPath"] is { Length: > 0 } keysPath
 }
 
 builder.Services.AddHostedService<ChannelWorker>();
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IUserIdProvider, NotificationUserIdProvider>();
+builder.Services.AddSingleton<INotificationPublisher, SignalRNotificationPublisher>(); // replaces the no-op default
 
 var app = builder.Build();
 
@@ -58,6 +65,10 @@ app.MapTicketMessagesEndpoints();
 app.MapTicketAssignmentEndpoints();
 app.MapTicketStatusEndpoints();
 app.MapTicketHistoryEndpoints();
+app.MapNotificationsEndpoints();
+app.MapTasksEndpoints();
+app.MapQuickRepliesEndpoints();
+app.MapHub<NotificationsHub>(NotificationsHub.Path).RequireAuthorization(Permissions.NotificationsView);
 
 if (jobsEnabled)
 {

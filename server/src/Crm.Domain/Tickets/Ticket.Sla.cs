@@ -38,6 +38,28 @@ public sealed partial class Ticket
     public bool IsResolutionBreachedAt(DateTime utcNow) =>
         ResolutionDueAt is { } due && (ResolvedAt is { } resolved ? resolved > due : due <= utcNow);
 
+    /// <summary>
+    /// The SLA time that matters next (CRM-29): before the first response the earlier of the response and resolution due
+    /// times, afterwards the resolution due time. Null for a resolved ticket and for a ticket without due times.
+    /// </summary>
+    public DateTime? NextSlaDueAt
+    {
+        get
+        {
+            if (ResolvedAt is not null)
+            {
+                return null;
+            }
+
+            if (FirstResponseAt is null && ResponseDueAt is { } response)
+            {
+                return ResolutionDueAt is { } resolution && resolution < response ? resolution : response;
+            }
+
+            return ResolutionDueAt;
+        }
+    }
+
     /// <summary>Part of the response window after which the assignee is warned (CRM-22): 80 %.</summary>
     public const double WarningFraction = 0.8;
 

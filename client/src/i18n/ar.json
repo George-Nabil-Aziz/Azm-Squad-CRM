@@ -14,6 +14,9 @@
     "users": "المستخدمون",
     "ticketCategories": "فئات التذاكر",
     "slaPolicies": "سياسة SLA",
+    "assignment": "الإسناد",
+    "tasks": "المهام",
+    "quickReplies": "الردود السريعة",
     "auditLogs": "سجل التدقيق",
     "settings": "الإعدادات"
   },
@@ -27,7 +30,17 @@
     "apiStatus": "حالة الخادم",
     "apiOk": "يعمل",
     "apiLoading": "جارٍ التحميل",
-    "apiUnavailable": "غير متاح"
+    "apiUnavailable": "غير متاح",
+    "myTickets": {
+      "title": "تذاكري",
+      "loading": "جارٍ تحميل تذاكرك…",
+      "empty": "لا توجد تذاكر مسندة إليك.",
+      "counters": {
+        "open": "مفتوحة",
+        "pending": "معلّقة",
+        "breachedToday": "تجاوزت المهلة اليوم"
+      }
+    }
   },
   "auth": {
     "signInTitle": "تسجيل الدخول",
@@ -218,7 +231,9 @@
       "updated": "تم تحديث التذكرة.",
       "tabs": "أقسام التذكرة",
       "conversationTab": "المحادثة",
-      "historyTab": "السجل"
+      "historyTab": "السجل",
+      "mention": "الإشارة إلى زميل",
+      "mentionPlaceholder": "اختر زميلاً"
     },
     "history": {
       "title": "السجل",
@@ -233,6 +248,16 @@
         "priority": "الأولوية",
         "category": "الفئة"
       }
+    },
+    "customerPanel": {
+      "title": "العميل",
+      "loading": "جارٍ تحميل العميل…",
+      "openProfile": "فتح ملف العميل",
+      "deleted": "تم حذف هذا العميل.",
+      "noContacts": "لا توجد بيانات اتصال.",
+      "total": "إجمالي التذاكر: {{count}}",
+      "recent": "أحدث التذاكر",
+      "current": "هذه التذكرة"
     }
   },
   "sla": {
@@ -437,6 +462,71 @@
         "actions": "الإجراءات"
       }
     }
+  },
+  "assignment": {
+    "description": "تُسند التذاكر الجديدة إلى الموظف المتاح صاحب أقل عدد من التذاكر المفتوحة. يتم تجاوز الموظفين غير النشطين أو خارج الدوام.",
+    "loading": "جارٍ تحميل إعدادات الإسناد…",
+    "autoAssign": "إسناد التذاكر الجديدة تلقائياً",
+    "columns": {
+      "agent": "الاسم",
+      "openTickets": "التذاكر المفتوحة",
+      "onDuty": "على رأس العمل"
+    },
+    "onDutyFor": "على رأس العمل: {{name}}",
+    "noAgents": "لا يوجد موظفون بعد."
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "description": "أحدث إشعاراتك.",
+    "open": "الإشعارات",
+    "openWithCount": "الإشعارات ({{count}} غير مقروءة)",
+    "loading": "جارٍ تحميل الإشعارات…",
+    "empty": "لا توجد لديك إشعارات.",
+    "markRead": "تعليم كمقروء",
+    "markAllRead": "تعليم الكل كمقروء",
+    "types": {
+      "assignment": "تم إسناد التذكرة {{ticket}} إليك.",
+      "slaWarning": "التذكرة {{ticket}} قريبة من موعد الرد المحدد.",
+      "slaEscalation": "تجاوزت التذكرة {{ticket}} اتفاقية مستوى الخدمة (مستوى التصعيد {{level}}).",
+      "taskReminder": "مهمة مستحقة: {{text}}",
+      "mention": "تمت الإشارة إليك في التذكرة {{ticket}}."
+    }
+  },
+  "tasks": {
+    "description": "متابعاتك. ستصلك إشعار عند حلول موعد المهمة.",
+    "title": "العنوان",
+    "dueAt": "تاريخ ووقت الاستحقاق",
+    "ticket": "التذكرة",
+    "actions": "الإجراءات",
+    "add": "إضافة مهمة",
+    "titleRequired": "أدخل عنواناً.",
+    "dueInPast": "اختر تاريخاً ووقتاً في المستقبل.",
+    "loading": "جارٍ تحميل مهامك…",
+    "empty": "ليس لديك مهام مفتوحة.",
+    "markDone": "تعليم كمنجزة",
+    "markDoneFor": "تعليم كمنجزة: {{title}}"
+  },
+  "quickReplies": {
+    "description": "ردود محفوظة يمكنك إدراجها في رد التذكرة. استخدم {{customer.name}} و{{ticket.number}} و{{ticket.subject}} و{{agent.name}} لإدراج بيانات التذكرة.",
+    "picker": "الردود السريعة",
+    "search": "ابحث في الردود السريعة",
+    "empty": "لم يتم العثور على ردود سريعة.",
+    "loading": "جارٍ تحميل الردود السريعة…",
+    "title": "العنوان",
+    "shortcut": "الاختصار",
+    "body": "نص الرد",
+    "placeholders": "العناصر النائبة: {{customer.name}} و{{ticket.number}} و{{ticket.subject}} و{{agent.name}}.",
+    "share": "مشاركة مع الجميع",
+    "save": "حفظ الرد السريع",
+    "cancel": "إلغاء",
+    "titleRequired": "أدخل عنواناً.",
+    "bodyRequired": "أدخل نص الرد.",
+    "visibility": "الظهور",
+    "shared": "مشترك",
+    "personal": "شخصي",
+    "actions": "الإجراءات",
+    "edit": "تعديل",
+    "delete": "حذف"
   },
   "auditLogs": {
     "description": "سجل للقراءة فقط للإجراءات الحساسة: تسجيل الدخول وتغييرات المستخدمين والأدوار وتغييرات SLA وعمليات الحذف.",

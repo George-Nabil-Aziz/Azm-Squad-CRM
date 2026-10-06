@@ -9,14 +9,14 @@ public static class RolePermissions
     private static readonly IReadOnlyList<string> AgentPermissions =
     [
         Permissions.CustomersView, Permissions.CustomersManage,
-        Permissions.TicketsView, Permissions.TicketsManage,
+        Permissions.TicketsView, Permissions.TicketsManage, Permissions.NotificationsView, Permissions.TasksManage,
     ];
 
     private static readonly Dictionary<string, IReadOnlyList<string>> ByRole = new(StringComparer.Ordinal)
     {
         [Roles.SuperAdmin] = Permissions.All,
         [Roles.Admin] = [.. Permissions.All.Except([Permissions.UsersManageSuperAdmins, Permissions.SlaManage, Permissions.SettingsManage])],
-        [Roles.Supervisor] = InCatalogueOrder([.. AgentPermissions, Permissions.TicketsAssign, Permissions.ReportsView]),
+        [Roles.Supervisor] = InCatalogueOrder([.. AgentPermissions, Permissions.TicketsAssign, Permissions.ReportsView, Permissions.QuickRepliesManageShared]),
         [Roles.Agent] = AgentPermissions,
     };
 

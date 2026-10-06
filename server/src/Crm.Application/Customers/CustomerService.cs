@@ -149,7 +149,8 @@ public sealed class CustomerService(
             : throw new NotFoundException(CustomerText.ContactNotFound);
     }
 
-    private static CustomerResponse ToResponse(Customer customer) =>
+    /// <summary>The API shape of a customer (also used by the ticket customer panel).</summary>
+    public static CustomerResponse ToResponse(Customer customer) =>
         new(customer.Id, customer.Name, customer.Email, customer.Phone, customer.CreatedAt, customer.UpdatedAt,
             [.. customer.Contacts
                 .OrderBy(c => c.Type).ThenByDescending(c => c.IsPrimary).ThenBy(c => c.CreatedAt).ThenBy(c => c.Value)

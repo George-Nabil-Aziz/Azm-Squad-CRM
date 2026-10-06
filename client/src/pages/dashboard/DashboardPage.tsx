@@ -1,10 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { getHealth } from '@/api/health'
+import { permissions } from '@/auth/permissions'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Can } from '@/features/auth/Can'
 import { useCurrentUser } from '@/features/auth/useCurrentUser'
+import { MyTickets } from '@/features/dashboard/MyTickets'
 
-/** Placeholder dashboard: welcome line + API health. Real widgets come with the reports stories. */
+/** Dashboard: welcome line, my assigned tickets with counters (CRM-29) and API health. Report widgets come with the reports stories. */
 export function DashboardPage() {
   const { t } = useTranslation()
   const { data: user } = useCurrentUser()
@@ -22,6 +25,9 @@ export function DashboardPage() {
         <h1 className="text-2xl font-semibold">{t('nav.dashboard')}</h1>
         {user ? <p className="text-muted-foreground">{t('dashboard.welcome', { name: user.fullName })}</p> : null}
       </div>
+      <Can permission={permissions.ticketsView}>
+        <MyTickets />
+      </Can>
       <Card className="max-w-sm">
         <CardHeader>
           <CardTitle>{t('dashboard.apiStatus')}</CardTitle>

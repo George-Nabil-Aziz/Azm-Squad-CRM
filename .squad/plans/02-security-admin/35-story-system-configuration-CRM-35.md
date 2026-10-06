@@ -54,3 +54,9 @@ Holidays, per-department hours, key rotation, connection tests, live propagation
 - Security modes are sent lower-case by the client (`none|auto|starttls|sslonconnect`); the server reads them case-insensitively (existing `MailKitSecurity.Parse`).
 - Audit: `settings.updated` added to `AuditActions` and to the audit page labels.
 - Test host: `Asia/Riyadh` resolves on Windows and Linux (ICU / tzdata); an unresolvable stored zone makes business hours behave as off (24/7).
+
+## Merge note (main with CRM-27..33)
+
+- Overlap with CRM-27 `AppSettings` (key/value, non-null value <= 1000 chars, no secret flag, used for the auto-assign toggle): **kept separate** — `SystemSettings` needs nullable values, encryption and a per-key secret flag; the two tables hold different kinds of settings. `SettingsEndpoints` now maps both groups (`/api/settings/assignment` for `tickets.assign`, `/api/settings` for `settings.manage`).
+- Migrations: this branch's own `AddAuditLog` + `AddSystemSettings` were re-generated on top of main's snapshot as one migration `AddAuditLogAndSystemSettings` (the model diff is generated in one step); no migration of main was touched.
+- `TicketService` / `ChannelTicketService` take `ISystemSettingsProvider` before main's optional `IAutoAssignmentService`.

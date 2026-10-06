@@ -15,8 +15,6 @@ public interface ITicketSlaRepository
 
     void AddEvent(TicketSlaEvent slaEvent);
 
-    void AddNotification(Notification notification);
-
     /// <summary>Saves; false when another job run saved the same events first (unique index), nothing was stored.</summary>
     Task<bool> SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -1,4 +1,5 @@
 import type { TicketChannel, TicketPriority, TicketStatus } from '@/features/tickets/ticket-values'
+import type { Customer } from './customers'
 import { apiGet, apiPost, apiPut } from './client'
 import type { PagedResult } from './paging'
 
@@ -108,6 +109,8 @@ export interface AddTicketMessageRequest {
   internal: boolean
   /** Approved WhatsApp template sent instead of free text (needed more than 24 hours after the last customer message). */
   templateName?: string
+  /** Colleagues @mentioned in an internal note; each active one gets a notification (public replies ignore it). */
+  mentionedUserIds?: string[]
 }
 
 /** Moves the ticket along the workflow; 400 on `status` for a move the workflow does not allow (see `allowedStatuses`). */
@@ -180,4 +183,45 @@ export function getTicketHistory(ticketId: string, signal?: AbortSignal): Promis
 /** Changes the category (null = none; 400 on `categoryId` for an inactive category). */
 export function changeTicketCategory(ticketId: string, categoryId: string | null): Promise<Ticket> {
   return apiPut<Ticket>(`/api/tickets/${encodeURIComponent(ticketId)}/category`, { categoryId })
+}
+
+/** Counters of the agent dashboard (server: MyTicketCounters). `breachedToday` counts SLA breaches of the current UTC day. */
+export interface MyTicketCounters {
+  open: number
+  pending: number
+  breachedToday: number
+}
+
+/** GET /api/tickets/mine: my tickets that are not closed, nearest SLA due first, with the counters. */
+export interface MyTickets {
+  counters: MyTicketCounters
+  tickets: PagedResult<Ticket>
+}
+
+export function getMyTickets(signal?: AbortSignal): Promise<MyTickets> {
+  return apiGet<MyTickets>('/api/tickets/mine?pageSize=50', signal)
+}
+
+/** One of the customer's tickets in the customer panel (server: CustomerTicketSummary). */
+export interface CustomerTicketSummary {
+  id: string
+  number: string
+  subject: string
+  status: TicketStatus
+  priority: TicketPriority
+  createdAt: string
+  /** True for the ticket the panel is shown on. */
+  isCurrent: boolean
+}
+
+/** GET /api/tickets/{id}/customer-context: the ticket's current customer, their total ticket count and the last 5 tickets. */
+export interface TicketCustomerContext {
+  customer: Customer
+  customerDeleted: boolean
+  totalTickets: number
+  recentTickets: CustomerTicketSummary[]
+}
+
+export function getTicketCustomerContext(id: string, signal?: AbortSignal): Promise<TicketCustomerContext> {
+  return apiGet<TicketCustomerContext>(`/api/tickets/${encodeURIComponent(id)}/customer-context`, signal)
 }

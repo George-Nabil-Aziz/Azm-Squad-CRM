@@ -7,6 +7,7 @@ import { LoginPage } from '@/pages/auth/LoginPage'
 import { ComingSoonPage } from '@/pages/coming-soon/ComingSoonPage'
 import { CustomerDetailsPage } from '@/pages/customers/CustomerDetailsPage'
 import { CustomersPage } from '@/pages/customers/CustomersPage'
+import { AssignmentSettingsPage } from '@/pages/assignment/AssignmentSettingsPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
 import { AgentReportPage } from '@/pages/reports/AgentReportPage'
 import { DashboardReportPage } from '@/pages/reports/DashboardReportPage'
@@ -15,6 +16,8 @@ import { SlaReportPage } from '@/pages/reports/SlaReportPage'
 import { TicketReportPage } from '@/pages/reports/TicketReportPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { SlaPoliciesPage } from '@/pages/sla/SlaPoliciesPage'
+import { QuickRepliesPage } from '@/pages/quick-replies/QuickRepliesPage'
+import { TasksPage } from '@/pages/tasks/TasksPage'
 import { TicketCategoriesPage } from '@/pages/ticket-categories/TicketCategoriesPage'
 import { TicketDetailsPage } from '@/pages/tickets/TicketDetailsPage'
 import { TicketsPage } from '@/pages/tickets/TicketsPage'
@@ -32,6 +35,9 @@ export function AppRoutes() {
           {/* Same permission as the area's item in navigation.ts. */}
           <Route element={<RequirePermission permission={permissions.usersManage} />}>
             <Route path="users" element={<UsersPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.ticketsAssign} />}>
+            <Route path="assignment" element={<AssignmentSettingsPage />} />
           </Route>
           <Route element={<RequirePermission permission={permissions.categoriesManage} />}>
             <Route path="ticket-categories" element={<TicketCategoriesPage />} />
@@ -53,6 +59,12 @@ export function AppRoutes() {
           <Route element={<RequirePermission permission={permissions.customersView} />}>
             <Route path="customers" element={<CustomersPage />} />
             <Route path="customers/:id" element={<CustomerDetailsPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.tasksManage} />}>
+            <Route path="tasks" element={<TasksPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.ticketsManage} />}>
+            <Route path="quick-replies" element={<QuickRepliesPage />} />
           </Route>
           <Route path="knowledge-base" element={<ComingSoonPage area="knowledgeBase" />} />
           <Route element={<RequirePermission permission={permissions.reportsView} />}>

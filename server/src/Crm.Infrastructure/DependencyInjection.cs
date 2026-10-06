@@ -7,7 +7,10 @@ using Crm.Application.Customers.Notes;
 using Crm.Application.Customers.Timeline;
 using Crm.Application.Reports;
 using Crm.Application.Settings;
+using Crm.Application.Notifications;
+using Crm.Application.QuickReplies;
 using Crm.Application.Sla;
+using Crm.Application.Tasks;
 using Crm.Application.Tickets;
 using Crm.Application.Users;
 using Crm.Infrastructure.Audit;
@@ -15,10 +18,13 @@ using Crm.Infrastructure.Channels;
 using Crm.Infrastructure.Customers;
 using Crm.Infrastructure.Files;
 using Crm.Infrastructure.Identity;
+using Crm.Infrastructure.Notifications;
 using Crm.Infrastructure.Persistence;
 using Crm.Infrastructure.Reports;
 using Crm.Infrastructure.Settings;
+using Crm.Infrastructure.QuickReplies;
 using Crm.Infrastructure.Sla;
+using Crm.Infrastructure.Tasks;
 using Crm.Infrastructure.Tickets;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
@@ -72,7 +78,14 @@ public static class DependencyInjection
         services.AddScoped<ITicketMessageRepository, TicketMessageRepository>();
         services.AddScoped<ITicketHistoryRepository, TicketHistoryRepository>();
         services.AddScoped<ITicketSlaRepository, TicketSlaRepository>();
-        services.TryAddScoped<ISlaNotifier, LoggingSlaNotifier>();
+        services.AddScoped<IAssignmentRepository, AssignmentRepository>();
+        services.AddScoped<IMyTicketsRepository, MyTicketsRepository>();
+        services.AddScoped<ICustomerContextRepository, CustomerContextRepository>();
+        services.AddScoped<ITaskRepository, TaskRepository>();
+        services.AddScoped<IQuickReplyRepository, QuickReplyRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
+        services.AddScoped<IStaffDirectory, StaffDirectory>();
+        services.AddScoped<INotificationEmailSender, NotificationEmailSender>();
 
         // Uploaded files: a local folder (FileStorage:RootPath, default under the user's local app data). Read lazily
         // from the final configuration, so the test host can point it at a temp folder.

@@ -3,7 +3,9 @@ using Crm.Domain.Channels;
 using Crm.Domain.Customers;
 using Crm.Domain.Notifications;
 using Crm.Domain.Settings;
+using Crm.Domain.QuickReplies;
 using Crm.Domain.Sla;
+using Crm.Domain.Tasks;
 using Crm.Domain.Tickets;
 using Crm.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -47,6 +49,11 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<AuditLogEntry> AuditLog => Set<AuditLogEntry>();
 
     public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
+    public DbSet<AppSetting> AppSettings => Set<AppSetting>();
+
+    public DbSet<WorkTask> Tasks => Set<WorkTask>();
+
+    public DbSet<QuickReply> QuickReplies => Set<QuickReply>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -57,6 +64,7 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
             user.Property(u => u.FullName).HasMaxLength(200).IsRequired();
             // Rows that exist when the column is added (e.g. the seeded SuperAdmin) become active.
             user.Property(u => u.IsActive).HasDefaultValue(true).ValueGeneratedNever();
+            user.Property(u => u.IsOnDuty).HasDefaultValue(true).ValueGeneratedNever();
         });
 
         // Domain entities: one IEntityTypeConfiguration<T> per entity in Persistence/Configurations.

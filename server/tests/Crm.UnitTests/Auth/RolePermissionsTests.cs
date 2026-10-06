@@ -44,7 +44,7 @@ public class RolePermissionsTests
     {
         Assert.Equal(
             [Permissions.CustomersView, Permissions.CustomersManage, Permissions.TicketsView, Permissions.TicketsManage,
-             Permissions.TicketsAssign, Permissions.ReportsView],
+             Permissions.TicketsAssign, Permissions.NotificationsView, Permissions.TasksManage, Permissions.QuickRepliesManageShared, Permissions.ReportsView],
             RolePermissions.ForRole(Roles.Supervisor));
     }
 
@@ -70,7 +70,7 @@ public class RolePermissionsTests
     public void Agent_WorksTicketsAndCustomersOnly()
     {
         Assert.Equal(
-            [Permissions.CustomersView, Permissions.CustomersManage, Permissions.TicketsView, Permissions.TicketsManage],
+            [Permissions.CustomersView, Permissions.CustomersManage, Permissions.TicketsView, Permissions.TicketsManage, Permissions.NotificationsView, Permissions.TasksManage],
             RolePermissions.ForRole(Roles.Agent));
     }
 

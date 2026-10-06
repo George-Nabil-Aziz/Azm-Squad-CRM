@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { useCurrentUser } from '@/features/auth/useCurrentUser'
+import { NotificationBell } from '@/features/notifications/NotificationBell'
 
 /** Top bar: sidebar toggle, signed-in user, language switch, sign out. Sign out clears the token; RequireAuth then redirects to /login. */
 export function AppHeader() {
@@ -19,6 +20,7 @@ export function AppHeader() {
       <Separator orientation="vertical" className="me-2 data-[orientation=vertical]:h-4" />
       <div className="ms-auto flex items-center gap-3">
         {user ? <span className="text-sm text-muted-foreground">{user.fullName}</span> : null}
+        <NotificationBell />
         <LanguageSwitcher />
         <Button variant="outline" size="sm" onClick={signOut}>
           <LogOutIcon aria-hidden="true" />

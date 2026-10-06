@@ -10,6 +10,8 @@ Entry point for the **sla-automation** feature (SLA policy per priority, SLA tim
 | 20 | [20-story-sla-timers-CRM-20.md](20-story-sla-timers-CRM-20.md) | SLA timers on tickets | CRM-20 | 19, 13, 14 |
 | 21 | [21-story-sla-breach-detection-CRM-21.md](21-story-sla-breach-detection-CRM-21.md) | SLA breach detection (Hangfire job) | CRM-21 | 20 |
 | 22 | [22-story-sla-escalation-CRM-22.md](22-story-sla-escalation-CRM-22.md) | SLA escalation rules | CRM-22 | 21 |
+| 27 | [27-story-auto-assignment-CRM-27.md](27-story-auto-assignment-CRM-27.md) | Automatic ticket assignment | CRM-27 | 13, 16, 18, 23 |
+| 28 | [28-story-alerts-notifications-CRM-28.md](28-story-alerts-notifications-CRM-28.md) | Alerts & notifications (SignalR + email) | CRM-28 | 22, 27 |
 
 ## Dependency notes
 
@@ -19,3 +21,4 @@ Entry point for the **sla-automation** feature (SLA policy per priority, SLA tim
 - **Story 20 (CRM-20)** merges CRM-13/14 from `feature/group-b-tickets`, adds `Ticket.ResponseDueAt` / `ResolutionDueAt` (copied from the policy at creation and on `ChangePriority`) and the nullable `FirstResponseAt` / `ResolvedAt` (**set by CRM-15 / CRM-17** through `MarkFirstResponse` / `MarkResolved` / `Reopen`), `PUT /api/tickets/{id}/priority`, migration `AddTicketSlaTimers`, client SLA countdown in the ticket list.
 - **Story 21 (CRM-21)** adds Hangfire (SQL Server storage, not started in `Testing`), `SlaMonitorJob` (recurring `sla-monitor`, every minute), `Ticket.ResponseBreached` / `ResolutionBreached`, `TicketSlaEvents` (unique per ticket/type/level), migration `AddSlaBreaches`.
 - **Story 22 (CRM-22)** extends the job with the 80 % warning and escalation (`EscalationLevel`, `Escalated` history event, `Notifications` table, `ISlaNotifier` log implementation), migration `AddSlaEscalation`. CRM-18's history recorder should be called when merged.
+- **Stories 27–28 (Phase 2)** extend the feature after channels: CRM-27 adds the auto-assign setting (`AppSettings`), `ApplicationUser.IsOnDuty` and `AutoAssignmentService`; CRM-28 turns the `Notification` entity (CRM-22) into per-user in-app notifications (SignalR hub `/hubs/notifications`, e-mail, mark read, unread count) and replaces `LoggingSlaNotifier`.

@@ -12,7 +12,8 @@ public interface ITicketHistoryRecorder
 {
     /// <param name="oldValue">Value before, as text (status / priority code, assignee / category name); null = none.</param>
     /// <param name="newValue">Value after; null = none.</param>
-    void Record(Guid ticketId, TicketHistoryField field, string? oldValue, string? newValue, DateTime utcNow);
+    /// <param name="system">An automatic change (e.g. auto-assignment): recorded without the signed-in user as actor.</param>
+    void Record(Guid ticketId, TicketHistoryField field, string? oldValue, string? newValue, DateTime utcNow, bool system = false);
 }
 
 /// <summary>History storage (implemented in Crm.Infrastructure with EF Core).</summary>
@@ -27,6 +28,6 @@ public interface ITicketHistoryRepository
 
 public sealed class TicketHistoryRecorder(ITicketHistoryRepository history, ICurrentUser currentUser) : ITicketHistoryRecorder
 {
-    public void Record(Guid ticketId, TicketHistoryField field, string? oldValue, string? newValue, DateTime utcNow) =>
-        history.Add(TicketHistoryEntry.Create(ticketId, field, oldValue, newValue, currentUser.UserId, utcNow));
+    public void Record(Guid ticketId, TicketHistoryField field, string? oldValue, string? newValue, DateTime utcNow, bool system = false) =>
+        history.Add(TicketHistoryEntry.Create(ticketId, field, oldValue, newValue, system ? null : currentUser.UserId, utcNow));
 }
