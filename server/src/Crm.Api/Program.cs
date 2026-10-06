@@ -35,6 +35,7 @@ app.MapAuthEndpoints();
 app.MapUsersEndpoints();
 app.MapCustomersEndpoints();
 app.MapChannelsEndpoints();
+app.MapWhatsAppWebhookEndpoints();
 
 await using (var scope = app.Services.CreateAsyncScope())
 {

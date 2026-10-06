@@ -16,4 +16,12 @@ public static class ChannelText
     public static string ProviderMissing => LocalizedText.Get(
         "This channel cannot send messages.",
         "لا يمكن إرسال الرسائل عبر هذه القناة.");
+
+    public static string WebhookVerifyTokenInvalid => LocalizedText.Get(
+        "The webhook verify token is not valid.",
+        "رمز التحقق من الـ Webhook غير صحيح.");
+
+    public static string WebhookSignatureInvalid => LocalizedText.Get(
+        "The webhook signature is not valid.",
+        "توقيع الـ Webhook غير صحيح.");
 }

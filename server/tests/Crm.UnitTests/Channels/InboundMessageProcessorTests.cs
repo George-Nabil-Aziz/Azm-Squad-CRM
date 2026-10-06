@@ -99,6 +99,43 @@ public class InboundMessageProcessorTests
         Assert.Equal(first.Id, result.CustomerId);
     }
 
+    private static InboundChannelMessage WhatsApp(string from, string? name = "Nour", string id = "wamid.1") =>
+        new(ChannelKind.WhatsApp, id, from, name, null, "Where is my order?", Now.UtcDateTime.AddMinutes(-1));
+
+    [Fact]
+    public async Task KnownWhatsAppNumber_IsLinkedToThatCustomer()
+    {
+        var customer = _customers.AddCustomer("Nour Trading", whatsApp: "+966501234567");
+
+        var result = await CreateProcessor().ProcessAsync(WhatsApp("+966501234567"), CancellationToken.None);
+
+        Assert.Equal(customer.Id, result.CustomerId);
+        Assert.False(result.NewCustomer);
+        Assert.Empty(_customers.Created);
+    }
+
+    [Fact]
+    public async Task UnknownWhatsAppNumber_CreatesCustomer_WithWhatsAppContact()
+    {
+        var result = await CreateProcessor().ProcessAsync(WhatsApp("+966501234567", name: "Nour Ali"), CancellationToken.None);
+
+        var request = Assert.Single(_customers.Created);
+        Assert.Equal(("Nour Ali", (string?)null, "+966501234567"), (request.Name, request.Email, request.Phone));
+        var (customerId, contact) = Assert.Single(_customers.ContactsAdded);
+        Assert.Equal(result.CustomerId, customerId);
+        Assert.Equal(("whatsapp", "+966501234567", (bool?)true), (contact.Type, contact.Value, contact.IsPrimary));
+        Assert.True(result.NewCustomer);
+        Assert.Equal("+966501234567", Assert.Single(_received.Messages).From);
+    }
+
+    [Fact]
+    public async Task UnknownWhatsAppNumber_WithoutProfileName_IsNamedByTheNumber()
+    {
+        await CreateProcessor().ProcessAsync(WhatsApp("+966501234567", name: null), CancellationToken.None);
+
+        Assert.Equal("+966501234567", Assert.Single(_customers.Created).Name);
+    }
+
     [Fact]
     public async Task UnparseableSender_IsStoredWithoutCustomer()
     {

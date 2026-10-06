@@ -29,6 +29,8 @@ public class CrmApiFactory : WebApplicationFactory<Program>
     public const string SuperAdminPassword = "Test#Admin123";
     public const string JwtSigningKey = "test-signing-key-for-integration-tests-only-0123456789";
     public const string TestUserPassword = "Test#User123";
+    public const string WhatsAppVerifyToken = "test-verify-token";
+    public const string WhatsAppAppSecret = "test-app-secret-for-integration-tests";
 
     private readonly SqliteConnection _connection = new("DataSource=:memory:");
 
@@ -54,6 +56,9 @@ public class CrmApiFactory : WebApplicationFactory<Program>
             ["Seed:SuperAdminPassword"] = SuperAdminPassword,
             ["Database:StartupAction"] = "EnsureCreated",
             ["FileStorage:RootPath"] = FilesRoot,
+            // Test-only webhook values (CRM-26); no access token, so sending through WhatsApp is "not configured".
+            ["Channels:WhatsApp:VerifyToken"] = WhatsAppVerifyToken,
+            ["Channels:WhatsApp:AppSecret"] = WhatsAppAppSecret,
         }));
         builder.ConfigureLogging(logging => logging.AddProvider(Logs));
         builder.ConfigureTestServices(services =>

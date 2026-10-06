@@ -84,6 +84,12 @@ No frontend changes.
 2. Integration: `WhatsAppWebhookTests`.
 3. [P2] ticket tests above.
 
+**Deviations (Phase 1 as built):**
+- Deviation: implemented before CRM-25 (order 23 → 24 → 26 → 25 as planned); `WhatsAppWebhookParser` already reads `statuses[]` (tests for statuses and their application come with CRM-25).
+- Deviation: `WhatsAppChannelOptions` lives in `Crm.Application/Channels/` (not `Channels/WhatsApp/`) next to `EmailChannelOptions`; bound in `AddChannels()`. `CrmApiFactory` gets the test-only constants `WhatsAppVerifyToken` / `WhatsAppAppSecret` (in-memory configuration; no access token, so WhatsApp sending stays "not configured" in tests).
+- Deviation: extra tests — signature with upper-case hex / malformed headers / no secret, parser `Parse_MessageWithoutProfile_HasNoName` and invalid payload rows, `Verify_WithoutAConfiguredToken_ThrowsForbidden`, `Handle_WithoutAConfiguredSecret_ThrowsUnauthorized`, `UnknownWhatsAppNumber_WithoutProfileName_IsNamedByTheNumber`, integration `Post_UnknownPayload_WithAValidSignature_Returns200`. Payloads larger than 1 MB → 413.
+- Results after Phase 1 of CRM-26: `dotnet test` 377 unit + 237 integration.
+
 ---
 
 ## Verification Steps

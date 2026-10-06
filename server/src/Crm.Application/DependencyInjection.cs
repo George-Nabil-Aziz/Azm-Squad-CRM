@@ -1,4 +1,5 @@
 using Crm.Application.Channels;
+using Crm.Application.Channels.WhatsApp;
 using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
@@ -21,6 +22,7 @@ public static class DependencyInjection
         services.AddScoped<ICustomerAttachmentService, CustomerAttachmentService>();
         services.AddScoped<IChannelSender, ChannelSender>();
         services.AddScoped<IInboundMessageProcessor, InboundMessageProcessor>();
+        services.AddScoped<IWhatsAppWebhookService, WhatsAppWebhookService>();
         return services;
     }
 }

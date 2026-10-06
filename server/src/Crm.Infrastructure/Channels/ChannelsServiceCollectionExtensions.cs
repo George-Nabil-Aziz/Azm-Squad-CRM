@@ -18,6 +18,10 @@ public static class ChannelsServiceCollectionExtensions
             provider.GetRequiredService<IConfiguration>().GetSection(EmailChannelOptions.SectionName).Get<EmailChannelOptions>()
             ?? new EmailChannelOptions());
 
+        services.AddSingleton(provider =>
+            provider.GetRequiredService<IConfiguration>().GetSection(WhatsAppChannelOptions.SectionName).Get<WhatsAppChannelOptions>()
+            ?? new WhatsAppChannelOptions());
+
         services.AddSingleton<ISmtpTransport, MailKitSmtpTransport>();
         services.AddScoped<IChannelProvider, SmtpEmailProvider>();
         services.AddScoped<IOutboundMessageRepository, OutboundMessageRepository>();
