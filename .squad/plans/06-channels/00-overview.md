@@ -10,6 +10,7 @@ Entry point for the **channels** feature (email and WhatsApp: sending agent repl
 | 24 | [24-story-email-incoming-CRM-24.md](24-story-email-incoming-CRM-24.md) | Email: incoming email creates ticket | CRM-24 | 01–11, 23; Phase 2: 13, 15 |
 | 25 | [25-story-whatsapp-send-replies-CRM-25.md](25-story-whatsapp-send-replies-CRM-25.md) | WhatsApp: send replies | CRM-25 | 01–11, 23, 26 (webhook); Phase 2: 13, 15 |
 | 26 | [26-story-whatsapp-incoming-CRM-26.md](26-story-whatsapp-incoming-CRM-26.md) | WhatsApp: incoming message creates ticket | CRM-26 | 01–11, 24; Phase 2: 13, 15 |
+| 55 | [55-story-web-forms-CRM-55.md](55-story-web-forms-CRM-55.md) | Web forms | CRM-55 | 01–13, 23; 41 (pattern) |
 
 ## Dependency notes
 
@@ -22,4 +23,5 @@ Entry point for the **channels** feature (email and WhatsApp: sending agent repl
 - **Configuration** (`Channels:Email:*`, `Channels:WhatsApp:*`): non-secret defaults may live in `appsettings.json`; passwords, access tokens, app secret and verify token only in user-secrets / environment variables. Missing settings never crash startup: the provider reports "not configured" and sends fail as `Failed` with that reason.
 - **Customer matching** uses CRM-9 `ICustomerService.LookupAsync` / `CreateAsync` / `AddContactAsync` (see [../03-customer-management/09-story-customer-contacts-CRM-9.md](../03-customer-management/09-story-customer-contacts-CRM-9.md) section 6). Channel webhooks / jobs run without a user → timeline `ActorId` null ("System").
 - **Hangfire** is not in the solution yet (the SLA stories may add it). Until then the recurring work runs in `ChannelWorker` (`PeriodicTimer`); the job classes are plain classes so they can move to Hangfire recurring jobs without change.
+- **Phase 3 (CRM-55..57)** adds more ticket channels: web forms (`TicketChannel.WebForm`), live chat (`TicketChannel.Chat`, SignalR) and SMS (`ChannelKind.Sms` / `TicketChannel.Sms`). The shared `IRateLimiter` (`Crm.Application/Common/RateLimiting`) is created by CRM-55 and reused by CRM-56 and CRM-58.
 - **Not here:** SLA logic (CRM-19..22); ticket replies UI / `FirstResponseAt` (CRM-15) — Phase 2 only calls into them.
