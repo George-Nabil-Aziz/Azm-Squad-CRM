@@ -41,3 +41,8 @@
 ## Out of scope
 
 Export, per-agent SLA (47), editing SLA policies.
+
+## Deviations (as built)
+
+- Deviation: the **average minutes** are not summed in SQL. EF cannot translate `(a - b).TotalMinutes` on SQLite (the integration-test provider; SQL Server would need `DATEDIFF`). Counts (met / breached / pending) stay in SQL; the minutes are summed while streaming two datetime columns of the tickets that have a result (`MinutesAsync`).
+- Test clock: `FakeTimeProvider` cannot go back, so the SLA seed uses 2025 dates (past) and a 2099 due date for the "pending" ticket.

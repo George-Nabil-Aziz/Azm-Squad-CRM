@@ -8,6 +8,7 @@ import { ComingSoonPage } from '@/pages/coming-soon/ComingSoonPage'
 import { CustomerDetailsPage } from '@/pages/customers/CustomerDetailsPage'
 import { CustomersPage } from '@/pages/customers/CustomersPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
+import { SlaReportPage } from '@/pages/reports/SlaReportPage'
 import { TicketReportPage } from '@/pages/reports/TicketReportPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { SlaPoliciesPage } from '@/pages/sla/SlaPoliciesPage'
@@ -55,6 +56,7 @@ export function AppRoutes() {
             <Route path="reports" element={<ReportsLayout />}>
               <Route index element={<Navigate to="tickets" replace />} />
               <Route path="tickets" element={<TicketReportPage />} />
+              <Route path="sla" element={<SlaReportPage />} />
             </Route>
           </Route>
         </Route>

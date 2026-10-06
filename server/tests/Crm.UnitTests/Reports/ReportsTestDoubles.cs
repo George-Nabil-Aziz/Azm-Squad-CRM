@@ -1,3 +1,4 @@
+using Crm.Application.Common.Paging;
 using Crm.Application.Reports;
 using Crm.Domain.Tickets;
 
@@ -12,10 +13,32 @@ internal sealed class FakeReportsRepository : IReportsRepository
 
     public TicketReportFilter? LastTicketFilter { get; private set; }
 
+    public IReadOnlyList<SlaAggregate> SlaAggregates { get; set; } = [];
+
+    public SlaFilter? LastSlaFilter { get; private set; }
+
+    public PagedResult<BreachedTicketRow> Breaches { get; set; } = new([], 1, 20, 0);
+
+    public (int Page, int PageSize)? LastBreachPaging { get; private set; }
+
     public Task<TicketCounts> TicketCountsAsync(TicketReportFilter filter, CancellationToken cancellationToken)
     {
         LastTicketFilter = filter;
         return Task.FromResult(TicketCounts);
+    }
+
+    public Task<IReadOnlyList<SlaAggregate>> SlaAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken)
+    {
+        LastSlaFilter = filter;
+        return Task.FromResult(SlaAggregates);
+    }
+
+    public Task<PagedResult<BreachedTicketRow>> BreachedTicketsAsync(
+        SlaFilter filter, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        LastSlaFilter = filter;
+        LastBreachPaging = (page, pageSize);
+        return Task.FromResult(Breaches);
     }
 }
 

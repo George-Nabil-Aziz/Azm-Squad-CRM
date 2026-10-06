@@ -1,5 +1,6 @@
 import type { TicketChannel, TicketPriority, TicketStatus } from '@/features/tickets/ticket-values'
 import { apiGet, apiGetBlob } from './client'
+import type { PagedResult } from './paging'
 
 /** Export formats of a report (server: format=csv|xlsx). */
 export type ExportFormat = 'csv' | 'xlsx'
@@ -63,4 +64,57 @@ export function getTicketReport(params: TicketReportParams, signal?: AbortSignal
 /** The report as a file (authorized download); the same filters as the report. */
 export function exportTicketReport(params: TicketReportParams, format: ExportFormat): Promise<Blob> {
   return apiGetBlob(reportPath('/api/reports/tickets/export', { ...params, format }))
+}
+
+export interface SlaTargetStats {
+  met: number
+  breached: number
+  pending: number
+  /** null = nothing decided yet. */
+  compliancePercent: number | null
+  /** Minutes; null = no ticket has a result yet. */
+  averageMinutes: number | null
+}
+
+export interface SlaPriorityRow {
+  priority: TicketPriority | 'all'
+  tickets: number
+  response: SlaTargetStats
+  resolution: SlaTargetStats
+}
+
+/** GET /api/reports/sla (server: SlaReportResponse). */
+export interface SlaReport {
+  from: string
+  to: string
+  overall: SlaPriorityRow
+  priorities: SlaPriorityRow[]
+}
+
+export interface BreachedTicket {
+  ticketId: string
+  number: string
+  subject: string
+  priority: TicketPriority
+  assigneeName: string | null
+  createdAt: string
+  responseDueAt: string | null
+  firstResponseAt: string | null
+  resolutionDueAt: string | null
+  resolvedAt: string | null
+  responseBreached: boolean
+  resolutionBreached: boolean
+}
+
+export interface SlaBreachesParams extends ReportRangeParams {
+  page?: number
+  pageSize?: number
+}
+
+export function getSlaReport(params: ReportRangeParams, signal?: AbortSignal): Promise<SlaReport> {
+  return apiGet<SlaReport>(reportPath('/api/reports/sla', params), signal)
+}
+
+export function listSlaBreaches(params: SlaBreachesParams, signal?: AbortSignal): Promise<PagedResult<BreachedTicket>> {
+  return apiGet<PagedResult<BreachedTicket>>(reportPath('/api/reports/sla/breaches', params), signal)
 }

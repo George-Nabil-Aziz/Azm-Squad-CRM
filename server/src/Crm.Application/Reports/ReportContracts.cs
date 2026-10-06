@@ -1,3 +1,4 @@
+using Crm.Application.Common.Paging;
 using Crm.Domain.Tickets;
 
 namespace Crm.Application.Reports;
@@ -41,6 +42,13 @@ public sealed record TicketCounts(
 public interface IReportsRepository
 {
     Task<TicketCounts> TicketCountsAsync(TicketReportFilter filter, CancellationToken cancellationToken);
+
+    /// <summary>Per priority (only priorities that have tickets): SLA counts and minute sums of the tickets created in the range.</summary>
+    Task<IReadOnlyList<SlaAggregate>> SlaAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken);
+
+    /// <summary>Tickets of the range whose response or resolution is breached at <c>NowUtc</c>, newest first.</summary>
+    Task<PagedResult<BreachedTicketRow>> BreachedTicketsAsync(
+        SlaFilter filter, int page, int pageSize, CancellationToken cancellationToken);
 }
 
 public interface ITicketReportService

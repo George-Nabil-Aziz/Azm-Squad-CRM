@@ -3,7 +3,10 @@ import { NavLink, Outlet } from 'react-router'
 import { cn } from '@/lib/utils'
 
 /** Sub navigation of the reports area; every report is a child route. */
-const reportLinks = [{ id: 'tickets', path: '/reports/tickets' }] as const
+const reportLinks = [
+  { id: 'tickets', path: '/reports/tickets' },
+  { id: 'sla', path: '/reports/sla' },
+] as const
 
 export function ReportsLayout() {
   const { t } = useTranslation()

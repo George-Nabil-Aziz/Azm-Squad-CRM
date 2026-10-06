@@ -19,6 +19,14 @@ public static class ReportsEndpoints
                 ToFile(await reports.ExportAsync(query, format, cancellationToken)))
             .WithName("ExportTicketReport");
 
+        group.MapGet("/sla", async ([AsParameters] SlaQuery query, ISlaReportService reports, CancellationToken cancellationToken) =>
+                Results.Ok(await reports.GetAsync(query, cancellationToken)))
+            .WithName("GetSlaReport");
+
+        group.MapGet("/sla/breaches", async ([AsParameters] SlaBreachesQuery query, ISlaReportService reports, CancellationToken cancellationToken) =>
+                Results.Ok(await reports.ListBreachesAsync(query, cancellationToken)))
+            .WithName("ListSlaBreaches");
+
         return app;
     }
 

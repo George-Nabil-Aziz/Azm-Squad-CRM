@@ -20,6 +20,10 @@ public static class ReportText
     public static string PriorityInvalid => LocalizedText.Get(
         "Choose high, mid or low.", "اختر عالية أو متوسطة أو منخفضة.");
 
+    public static string PageField => LocalizedText.Get("Page", "الصفحة");
+
+    public static string PageSizeField => LocalizedText.Get("Page size", "حجم الصفحة");
+
     public static string FormatInvalid => LocalizedText.Get(
         "Choose csv or xlsx.", "اختر csv أو xlsx.");
 

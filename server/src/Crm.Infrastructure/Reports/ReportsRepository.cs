@@ -1,3 +1,4 @@
+using Crm.Application.Common.Paging;
 using Crm.Application.Reports;
 using Crm.Domain.Tickets;
 using Crm.Infrastructure.Persistence;
@@ -55,5 +56,92 @@ public sealed class ReportsRepository(CrmDbContext db) : IReportsRepository
             byPriority.ToDictionary(x => x.Key, x => x.Count),
             [.. byCategory.Select(x => new CategoryCountRow(x.CategoryId, x.Name, x.Count))],
             byDay.ToDictionary(x => DateOnly.FromDateTime(x.Day), x => x.Count));
+    }
+    public async Task<IReadOnlyList<SlaAggregate>> SlaAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken)
+    {
+        var now = filter.NowUtc;
+        var inRange = db.Tickets.AsNoTracking().Where(t => t.CreatedAt >= filter.FromUtc && t.CreatedAt < filter.ToUtcExclusive);
+        var rows = await inRange
+            .GroupBy(t => t.Priority)
+            .Select(g => new
+            {
+                Priority = g.Key,
+                Tickets = g.Count(),
+                ResponseMet = g.Count(t => t.ResponseDueAt != null && t.FirstResponseAt != null && t.FirstResponseAt <= t.ResponseDueAt),
+                ResponseBreached = g.Count(t => t.ResponseDueAt != null
+                    && ((t.FirstResponseAt != null && t.FirstResponseAt > t.ResponseDueAt) || (t.FirstResponseAt == null && t.ResponseDueAt <= now))),
+                ResponsePending = g.Count(t => t.ResponseDueAt != null && t.FirstResponseAt == null && t.ResponseDueAt > now),
+                ResponseMeasured = g.Count(t => t.FirstResponseAt != null),
+                ResolutionMet = g.Count(t => t.ResolutionDueAt != null && t.ResolvedAt != null && t.ResolvedAt <= t.ResolutionDueAt),
+                ResolutionBreached = g.Count(t => t.ResolutionDueAt != null
+                    && ((t.ResolvedAt != null && t.ResolvedAt > t.ResolutionDueAt) || (t.ResolvedAt == null && t.ResolutionDueAt <= now))),
+                ResolutionPending = g.Count(t => t.ResolutionDueAt != null && t.ResolvedAt == null && t.ResolutionDueAt > now),
+                ResolutionMeasured = g.Count(t => t.ResolvedAt != null),
+            })
+            .ToListAsync(cancellationToken);
+
+        // Time spans cannot be summed by every database provider (SQLite has no DATEDIFF), so the minutes are summed here
+        // from two columns of the tickets that have a result; the counts above stay in SQL.
+        var responseMinutes = await MinutesAsync(inRange.Where(t => t.FirstResponseAt != null).Select(t => new Span(t.Priority, t.CreatedAt, t.FirstResponseAt!.Value)), cancellationToken);
+        var resolutionMinutes = await MinutesAsync(inRange.Where(t => t.ResolvedAt != null).Select(t => new Span(t.Priority, t.CreatedAt, t.ResolvedAt!.Value)), cancellationToken);
+
+        return
+        [
+            .. rows.Select(r => new SlaAggregate(
+                r.Priority,
+                r.Tickets,
+                new SlaTargetAggregate(r.ResponseMet, r.ResponseBreached, r.ResponsePending, responseMinutes.GetValueOrDefault(r.Priority), r.ResponseMeasured),
+                new SlaTargetAggregate(r.ResolutionMet, r.ResolutionBreached, r.ResolutionPending, resolutionMinutes.GetValueOrDefault(r.Priority), r.ResolutionMeasured))),
+        ];
+    }
+
+    private sealed record Span(TicketPriority Priority, DateTime Start, DateTime End);
+
+    private static async Task<Dictionary<TicketPriority, double>> MinutesAsync(IQueryable<Span> spans, CancellationToken cancellationToken)
+    {
+        var sums = new Dictionary<TicketPriority, double>();
+        await foreach (var span in spans.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        {
+            sums[span.Priority] = sums.GetValueOrDefault(span.Priority) + (span.End - span.Start).TotalMinutes;
+        }
+
+        return sums;
+    }
+
+    public async Task<PagedResult<BreachedTicketRow>> BreachedTicketsAsync(
+        SlaFilter filter, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var now = filter.NowUtc;
+        var breached = db.Tickets.AsNoTracking()
+            .Where(t => t.CreatedAt >= filter.FromUtc && t.CreatedAt < filter.ToUtcExclusive)
+            .Where(t =>
+                (t.ResponseDueAt != null
+                 && ((t.FirstResponseAt != null && t.FirstResponseAt > t.ResponseDueAt) || (t.FirstResponseAt == null && t.ResponseDueAt <= now)))
+                || (t.ResolutionDueAt != null
+                    && ((t.ResolvedAt != null && t.ResolvedAt > t.ResolutionDueAt) || (t.ResolvedAt == null && t.ResolutionDueAt <= now))));
+
+        var totalCount = await breached.CountAsync(cancellationToken);
+        var items = await breached
+            .OrderByDescending(t => t.CreatedAt).ThenByDescending(t => t.Number)
+            .Skip((page - 1) * pageSize).Take(pageSize)
+            .Select(t => new BreachedTicketRow(
+                t.Id,
+                t.Prefix,
+                t.Number,
+                t.Subject,
+                t.Priority,
+                db.Users.Where(u => u.Id == t.AssigneeId).Select(u => u.FullName).FirstOrDefault(),
+                t.CreatedAt,
+                t.ResponseDueAt,
+                t.FirstResponseAt,
+                t.ResolutionDueAt,
+                t.ResolvedAt,
+                t.ResponseDueAt != null
+                    && ((t.FirstResponseAt != null && t.FirstResponseAt > t.ResponseDueAt) || (t.FirstResponseAt == null && t.ResponseDueAt <= now)),
+                t.ResolutionDueAt != null
+                    && ((t.ResolvedAt != null && t.ResolvedAt > t.ResolutionDueAt) || (t.ResolvedAt == null && t.ResolutionDueAt <= now))))
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<BreachedTicketRow>(items, page, pageSize, totalCount);
     }
 }

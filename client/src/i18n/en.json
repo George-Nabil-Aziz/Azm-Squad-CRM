@@ -555,7 +555,8 @@
     "description": "Management reports over a date range. Dates are whole UTC days; by default the last 30 days.",
     "navigation": "Reports",
     "nav": {
-      "tickets": "Tickets"
+      "tickets": "Tickets",
+      "sla": "SLA"
     },
     "loading": "Loading the report…",
     "count": "Count",
@@ -581,6 +582,27 @@
       "byDay": "By day",
       "day": "Day",
       "uncategorized": "Uncategorized"
+    },
+    "pageInfo": "Page {{page}} of {{pages}}",
+    "previous": "Previous",
+    "next": "Next",
+    "sla": {
+      "title": "SLA performance",
+      "range": "Tickets created from {{from}} to {{to}}",
+      "all": "All priorities",
+      "responseMet": "Response SLA met",
+      "avgResponse": "Average first response",
+      "resolutionMet": "Resolution SLA met",
+      "avgResolution": "Average resolution",
+      "breachedTitle": "Breached tickets",
+      "noBreaches": "No breached tickets in this period.",
+      "ticket": "Ticket",
+      "subject": "Subject",
+      "assignee": "Assignee",
+      "created": "Created",
+      "missed": "Missed target",
+      "targetResponse": "Response",
+      "targetResolution": "Resolution"
     }
   }
 }
