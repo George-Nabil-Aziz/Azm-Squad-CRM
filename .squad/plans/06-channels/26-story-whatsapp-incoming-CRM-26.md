@@ -100,8 +100,13 @@ No frontend changes.
 
 ## Done Criteria
 
-- [ ] [P1] hub.challenge returned for the right token — AC 1.
-- [ ] [P1] Invalid signature → 401 — AC 2.
-- [ ] [P1] Known number matched; [P2] open ticket / new ticket — AC 3.
-- [ ] [P1] Unknown number → new customer; [P2] + ticket — AC 4.
-- [ ] All builds and tests green.
+- [x] [P1] hub.challenge returned for the right token — AC 1.
+- [x] [P1] Invalid signature → 401 — AC 2.
+- [x] [P1] Known number matched; [P2] open ticket / new ticket — AC 3.
+- [x] [P1] Unknown number → new customer; [P2] + ticket — AC 4.
+- [x] All builds and tests green.
+
+## Phase 2 as built
+
+- Same pipeline as CRM-24: known number → newest open (not Resolved / Closed) WhatsApp ticket of the customer gets an Inbound `TicketMessage`; none → new `TicketChannel.WhatsApp` ticket (subject = first 80 characters of the text, SLA applied); unknown number → new customer + ticket. Duplicate wamids are ignored before any ticket work. Timeline `messageReceived`.
+- Tests: `ChannelTicketServiceTests.WhatsApp_*`, `ChannelTicketWiringTests.WhatsApp_*`.

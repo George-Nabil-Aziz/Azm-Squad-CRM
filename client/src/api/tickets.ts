@@ -103,6 +103,8 @@ export interface TicketMessage {
 export interface AddTicketMessageRequest {
   body: string
   internal: boolean
+  /** Approved WhatsApp template sent instead of free text (needed more than 24 hours after the last customer message). */
+  templateName?: string
 }
 
 /** The conversation of a ticket, oldest first (internal notes included for staff). */

@@ -131,4 +131,15 @@ public class TicketTests
             Assert.Equal(status != TicketStatus.Closed, ticket.AcceptsMessages);
         }
     }
+
+    [Fact]
+    public void RecordCustomerMessage_BumpsUpdatedAt_ButNeverFirstResponse()
+    {
+        var ticket = NewTicket();
+
+        ticket.RecordCustomerMessage(ticket.CreatedAt.AddHours(1));
+
+        Assert.Equal(ticket.CreatedAt.AddHours(1), ticket.UpdatedAt);
+        Assert.Null(ticket.FirstResponseAt);
+    }
 }

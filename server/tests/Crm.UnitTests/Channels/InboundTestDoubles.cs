@@ -105,7 +105,8 @@ internal sealed class FakeCustomerService : ICustomerService
     public Task<PagedResult<CustomerResponse>> ListAsync(ListCustomersQuery query, CancellationToken cancellationToken) =>
         throw new NotSupportedException();
 
-    public Task<CustomerResponse> GetAsync(Guid id, CancellationToken cancellationToken) => throw new NotSupportedException();
+    public Task<CustomerResponse> GetAsync(Guid id, CancellationToken cancellationToken) =>
+        Task.FromResult(Customers.First(c => c.Id == id));
 
     public Task<CustomerResponse> UpdateAsync(Guid id, CustomerRequest request, CancellationToken cancellationToken) =>
         throw new NotSupportedException();

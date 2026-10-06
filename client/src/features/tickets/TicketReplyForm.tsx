@@ -7,6 +7,7 @@ import { addTicketMessage } from '@/api/tickets'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ticketsQueryKey } from './useTickets'
 
@@ -17,12 +18,17 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
   const [text, setText] = useState('')
   const [internal, setInternal] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [template, setTemplate] = useState('')
+  const [templateOffered, setTemplateOffered] = useState(false)
 
   const send = useMutation({
-    mutationFn: (body: string) => addTicketMessage(ticketId, { body, internal }),
+    mutationFn: (body: string) =>
+      addTicketMessage(ticketId, template.trim() ? { body, internal, templateName: template.trim() } : { body, internal }),
     onSuccess: async () => {
       toast.success(t(internal ? 'tickets.details.noteAdded' : 'tickets.details.replySent'))
       setText('')
+      setTemplate('')
+      setTemplateOffered(false)
       setError(null)
       await queryClient.invalidateQueries({ queryKey: ticketsQueryKey })
     },
@@ -39,7 +45,8 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
       await send.mutateAsync(body)
     } catch (caught) {
       const problem = isApiError(caught) ? caught.problem?.errors : undefined
-      const message = problem?.body?.[0] ?? problem?.status?.[0]
+      const message = problem?.body?.[0] ?? problem?.status?.[0] ?? problem?.channel?.[0]
+      if (problem?.body?.[0]) setTemplateOffered(true) // e.g. the WhatsApp 24-hour window: a template can still be sent
       if (message) setError(message)
     }
   }
@@ -59,6 +66,17 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
           />
           {error ? <FieldError errors={[{ message: error }]} /> : null}
         </Field>
+        {templateOffered ? (
+          <Field>
+            <FieldLabel htmlFor="ticket-message-template">{t('tickets.details.templateName')}</FieldLabel>
+            <Input
+              id="ticket-message-template"
+              dir="ltr"
+              value={template}
+              onChange={(event) => setTemplate(event.target.value)}
+            />
+          </Field>
+        ) : null}
         <Field orientation="horizontal">
           <Checkbox id="ticket-message-internal" checked={internal} onCheckedChange={(checked) => setInternal(checked === true)} />
           <FieldLabel htmlFor="ticket-message-internal">{t('tickets.details.internalToggle')}</FieldLabel>

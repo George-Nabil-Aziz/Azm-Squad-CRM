@@ -112,8 +112,16 @@ No frontend changes ([P2] tickets created from email show up in the CRM-14 list 
 
 ## Done Criteria
 
-- [ ] [P1] Known sender matched (`KnownSender_IsLinkedToThatCustomer`); [P2] ticket linked — AC 1.
-- [ ] [P1] Unknown sender → new customer; [P2] + ticket — AC 2.
-- [ ] [P1] Tag extracted; [P2] appended to the existing ticket — AC 3.
-- [ ] [P1] Same Message-Id ignored (`SameMessageIdTwice_IsIgnored`, poller test) — AC 4.
-- [ ] All builds and tests green.
+- [x] [P1] Known sender matched (`KnownSender_IsLinkedToThatCustomer`); [P2] ticket linked — AC 1.
+- [x] [P1] Unknown sender → new customer; [P2] + ticket — AC 2.
+- [x] [P1] Tag extracted; [P2] appended to the existing ticket — AC 3.
+- [x] [P1] Same Message-Id ignored (`SameMessageIdTwice_IsIgnored`, poller test) — AC 4.
+- [x] All builds and tests green.
+
+## Phase 2 as built
+
+- `IChannelTicketService` / `ChannelTicketService` (Application/Tickets): `InboundMessageProcessor` stores the `ReceivedMessage`, then hands known / new customers to it. A `[TKT-n]` tag of an **open** ticket of the **same customer** appends an Inbound `TicketMessage` (`Ticket.RecordCustomerMessage`, never `FirstResponseAt`); otherwise a new `TicketChannel.Email` ticket (subject without the tag, description = body, `createdById` null, SLA due times via `ApplySla`, timeline `ticketCreated` + `messageReceived`). A tag for a closed / foreign / unknown ticket opens a new ticket.
+- `ReceivedMessage.TicketId` (nullable FK) + `LinkToTicket`; migration `LinkReceivedMessagesToTickets`. `InboundResult` carries `TicketId` / `TicketCreated`. `InteractionEvents.MessageReceived` added.
+- Shared `TicketNumbering.SaveNewAsync` (extracted from `TicketService`) so channel tickets use the same number lock.
+- Deviation: the message is stored first and linked in a second save, so a duplicate delivery is dropped before any ticket exists; a crash between the two saves leaves a stored message without ticket.
+- Tests: `ChannelTicketServiceTests`, `InboundMessageProcessorTests` (unit); `ChannelTicketWiringTests.Email_*`, `SameEmailTwice_CreatesOneTicket` (integration).

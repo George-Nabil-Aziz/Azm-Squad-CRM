@@ -146,4 +146,39 @@ public class InboundMessageProcessorTests
         Assert.Empty(_customers.Created);
         Assert.Null(Assert.Single(_received.Messages).CustomerId);
     }
+
+    [Fact]
+    public async Task Message_IsHandedToTheTicketStep_AndLinkedToTheTicket()
+    {
+        var customer = _customers.AddCustomer("Nour Trading", email: "nour@example.com");
+
+        var result = await CreateProcessor().ProcessAsync(Email("nour@example.com", "Re: x [TKT-000007]"), CancellationToken.None);
+
+        var call = Assert.Single(_tickets.Calls);
+        Assert.Equal((customer.Id, 7), (call.CustomerId, call.TicketNumber));
+        Assert.Equal(_tickets.TicketId, result.TicketId);
+        Assert.Equal(_tickets.TicketId, Assert.Single(_received.Messages).TicketId);
+    }
+
+    [Fact]
+    public async Task WithoutACustomer_NoTicketIsCreated()
+    {
+        var result = await CreateProcessor().ProcessAsync(Email("not-an-address"), CancellationToken.None);
+
+        Assert.Empty(_tickets.Calls);
+        Assert.Null(result.TicketId);
+    }
+
+    [Fact]
+    public async Task Duplicate_NoTicketIsCreated()
+    {
+        _customers.AddCustomer("Nour Trading", email: "nour@example.com");
+        var processor = CreateProcessor();
+        await processor.ProcessAsync(Email("nour@example.com"), CancellationToken.None);
+
+        var again = await processor.ProcessAsync(Email("nour@example.com"), CancellationToken.None);
+
+        Assert.True(again.Duplicate);
+        Assert.Single(_tickets.Calls);
+    }
 }

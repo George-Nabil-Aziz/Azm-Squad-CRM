@@ -151,8 +151,16 @@ public sealed class OutboundMessage
 
 ## Done Criteria
 
-- [ ] [P2] Reply on an email ticket sends to the primary email via SMTP — AC 1.
-- [ ] [P1] Subject tag `[TKT-000001]` (`TicketNumberTagTests`, `SmtpEmailProviderTests`); [P2] used by the reply — AC 2.
-- [ ] [P1] SMTP failure → `Failed` + retry (`OutboundMessageTests`, `ChannelSenderTests`, `ChannelRetryTests`) — AC 3.
-- [ ] [P1] Sending only through `IChannelProvider` (`ChannelSenderTests`) — AC 4.
-- [ ] `dotnet build` / `dotnet test` / `npm test` / `npm run build` / `npm run lint` green.
+- [x] [P2] Reply on an email ticket sends to the primary email via SMTP — AC 1.
+- [x] [P1] Subject tag `[TKT-000001]` (`TicketNumberTagTests`, `SmtpEmailProviderTests`); [P2] used by the reply — AC 2.
+- [x] [P1] SMTP failure → `Failed` + retry (`OutboundMessageTests`, `ChannelSenderTests`, `ChannelRetryTests`) — AC 3.
+- [x] [P1] Sending only through `IChannelProvider` (`ChannelSenderTests`) — AC 4.
+- [x] `dotnet build` / `dotnet test` / `npm test` / `npm run build` / `npm run lint` green.
+
+## Phase 2 as built
+
+- `ITicketReplyDispatcher` gained `ValidateAsync(ticket, templateName)` (runs before the reply is saved) and `DispatchAsync(message, templateName)`; `TicketMessageService.AddAsync` calls both; `AddTicketMessageRequest` has an optional `TemplateName`.
+- `ChannelTicketReplyDispatcher` (Application/Tickets, registered before the no-op): Email ticket → primary email contact (else `Customer.Email`), subject `Re: <subject> [TKT-000012]`, `SourceId` = ticket message id; no address → 400 on field `channel` (`ChannelText.CustomerHasNoEmail`). Manual / Portal tickets deliver nothing.
+- Delivery status: new `IChannelDeliveryObserver` (called by `ChannelSender` after send, retry and webhook status); `TicketDeliveryObserver` maps the outbound message to `TicketMessage.MarkSent(providerId)` / `MarkFailed()` inside the same unit of work, so a retried message turns Sent on the thread.
+- Deviation: no separate timeline entry in the dispatcher; CRM-15 already records `messageSent`.
+- Tests: `ChannelTicketReplyDispatcherTests` (unit), `ChannelTicketWiringTests.EmailTicketReply_*` (integration).

@@ -98,8 +98,16 @@
 
 ## Done Criteria
 
-- [ ] [P1] Cloud API client + provider; [P2] ticket reply sends — AC 1.
-- [ ] [P1] Window rule blocks free text, template allowed; [P2] agent told in the UI — AC 2.
-- [ ] [P1] Delivery status from the webhook — AC 3.
-- [ ] [P1] Through `IChannelProvider` — AC 4.
-- [ ] All builds and tests green.
+- [x] [P1] Cloud API client + provider; [P2] ticket reply sends — AC 1.
+- [x] [P1] Window rule blocks free text, template allowed; [P2] agent told in the UI — AC 2.
+- [x] [P1] Delivery status from the webhook — AC 3.
+- [x] [P1] Through `IChannelProvider` — AC 4.
+- [x] All builds and tests green.
+
+## Phase 2 as built
+
+- WhatsApp ticket reply → primary WhatsApp contact (else primary phone) through `ChannelTicketReplyDispatcher`. The 24-hour rule is checked **before the reply is saved**: `IChannelSender.EnsureCanSendAsync` (added to the interface; `SendAsync` uses it too) throws `ValidationException` on `body`, so the API answers 400 and nothing is stored. A `templateName` on the reply request sends the template.
+- Webhook statuses update the `OutboundMessage` and, through `IChannelDeliveryObserver`, the `TicketMessage` (delivered / read → Sent, failed → Failed).
+- Client: `TicketReplyForm` shows an "Approved WhatsApp template name" field after the server rejects the body, and sends `templateName`; delivery badge already existed from CRM-15 (`tickets.details.delivery.*`). Deviation: delivered / read are not shown separately (ticket delivery status is Pending / Sent / Failed).
+- Tests: `WhatsAppTicketReply_*`, `WhatsAppStatusWebhook_Failed_*` (integration), client test for the template prompt.
+- Developer must set (user-secrets / env): `Channels:WhatsApp:PhoneNumberId`, `AccessToken`, `AppSecret`, `VerifyToken` (optional `ApiBaseUrl`, `TemplateLanguage`).
