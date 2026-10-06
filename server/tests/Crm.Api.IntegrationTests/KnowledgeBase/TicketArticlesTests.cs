@@ -87,9 +87,9 @@ public class TicketArticlesTests(CrmApiFactory factory) : IClassFixture<CrmApiFa
         var list = await agent.GetFromJsonAsync<ListedBody[]>($"/api/tickets/{ticketId}/articles");
 
         Assert.Equal(["Second article", "First article"], list!.Select(l => l.Title));
-        Assert.Equal([second, first], list.Select(l => l.ArticleId));
-        Assert.All(list, l => Assert.NotNull(l.LinkedById));
-        Assert.All(list, l => Assert.Equal(DateTimeKind.Utc, l.LinkedAt.Kind));
+        Assert.Equal([second, first], list!.Select(l => l.ArticleId));
+        Assert.All(list!, l => Assert.NotNull(l.LinkedById));
+        Assert.All(list!, l => Assert.Equal(DateTimeKind.Utc, l.LinkedAt.Kind));
     }
 
     [Fact]

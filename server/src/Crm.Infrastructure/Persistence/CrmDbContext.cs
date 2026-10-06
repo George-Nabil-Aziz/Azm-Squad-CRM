@@ -2,6 +2,7 @@ using Crm.Domain.Channels;
 using Crm.Domain.Customers;
 using Crm.Domain.KnowledgeBase;
 using Crm.Domain.Notifications;
+using Crm.Domain.Portal;
 using Crm.Domain.Sla;
 using Crm.Domain.Tickets;
 using Crm.Infrastructure.Identity;
@@ -50,6 +51,10 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<KbFaq> KbFaqs => Set<KbFaq>();
 
     public DbSet<TicketArticleLink> TicketArticleLinks => Set<TicketArticleLink>();
+
+    public DbSet<PortalAccount> PortalAccounts => Set<PortalAccount>();
+
+    public DbSet<PortalLoginCode> PortalLoginCodes => Set<PortalLoginCode>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

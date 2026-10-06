@@ -1,3 +1,4 @@
+import { clearPortalSession, getPortalAccessToken } from '../auth/portal-session'
 import { clearSession, getAccessToken } from '../auth/session'
 import { getLanguage } from '../i18n/i18n'
 import { ApiError, type ProblemDetails } from './errors'
@@ -49,7 +50,9 @@ async function request<T>(
   // Accept-Language: the API answers validation messages and ProblemDetails in the UI language (ar / en).
   const headers: Record<string, string> = { Accept: 'application/json', 'Accept-Language': getLanguage() }
   if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json'
-  const accessToken = getAccessToken()
+  // Portal calls carry the customer's token, everything else the staff token (a customer is not a staff user).
+  const isPortal = path.startsWith('/api/portal/')
+  const accessToken = isPortal ? getPortalAccessToken() : getAccessToken()
   if (accessToken) headers.Authorization = `Bearer ${accessToken}`
 
   let response: Response
@@ -68,7 +71,10 @@ async function request<T>(
 
   if (!response.ok) {
     // Token expired or revoked: sign out, so the app shows the sign-in form again.
-    if (response.status === 401 && accessToken) clearSession()
+    if (response.status === 401 && accessToken) {
+      if (isPortal) clearPortalSession()
+      else clearSession()
+    }
     const problem = await readProblem(response)
     return fail(
       new ApiError(

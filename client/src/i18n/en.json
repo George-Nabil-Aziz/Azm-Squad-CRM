@@ -552,5 +552,41 @@
     "linked": {
       "title": "Linked articles"
     }
+  },
+  "portal": {
+    "title": "Support portal",
+    "navigation": "Portal navigation",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "nav": {
+      "help": "Help center",
+      "tickets": "My requests",
+      "newTicket": "New request"
+    },
+    "home": {
+      "title": "How can we help?",
+      "description": "Sign in to follow your requests."
+    },
+    "login": {
+      "title": "Sign in to the portal",
+      "description": "We email you a one-time code. No password needed.",
+      "emailStep": "Enter your email",
+      "codeStep": "Enter the code",
+      "email": "Email",
+      "emailHint": "Use the email address you contact support with.",
+      "emailRequired": "Enter your email.",
+      "emailInvalid": "Enter a valid email address.",
+      "sendCode": "Send me a code",
+      "sending": "Sending…",
+      "codeSent": "We sent a 6-digit code to {{email}}. It is valid for 10 minutes.",
+      "code": "Code",
+      "codeInvalid": "Enter the 6-digit code.",
+      "codeRejected": "The code is not valid or has expired. Request a new code.",
+      "verify": "Sign in",
+      "verifying": "Signing in…",
+      "changeEmail": "Use another email",
+      "resend": "Send a new code",
+      "codeResent": "A new code was sent to {{email}}."
+    }
   }
 }

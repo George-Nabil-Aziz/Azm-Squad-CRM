@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { BrowserRouter } from 'react-router'
 import { AppRoutes } from '@/app/AppRoutes'
 import { createQueryClient } from '@/app/query-client'
+import { getPortalAccessToken, subscribeToPortalSession } from '@/auth/portal-session'
 import { getAccessToken, subscribeToSession } from '@/auth/session'
 import { ApiErrorToaster } from '@/components/ApiErrorToaster'
 import { DirectionProvider } from '@/components/ui/direction'
@@ -19,6 +20,14 @@ function App() {
     () =>
       subscribeToSession(() => {
         if (getAccessToken() === null) queryClient.clear()
+      }),
+    [queryClient],
+  )
+
+  useEffect(
+    () =>
+      subscribeToPortalSession(() => {
+        if (getPortalAccessToken() === null) queryClient.clear()
       }),
     [queryClient],
   )

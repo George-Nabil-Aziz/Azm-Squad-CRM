@@ -54,7 +54,7 @@ public static class DependencyInjection
         services.AddScoped<ICustomerNoteRepository, CustomerNoteRepository>();
         services.AddScoped<ICustomerAttachmentRepository, CustomerAttachmentRepository>();
         services.AddKnowledgeBaseStorage();
-        services.AddPortalOptions();
+        services.AddPortalInfrastructure();
         services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
         services.AddScoped<ISlaPolicyRepository, SlaPolicyRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();

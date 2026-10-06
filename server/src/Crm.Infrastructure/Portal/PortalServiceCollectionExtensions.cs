@@ -7,11 +7,12 @@ namespace Crm.Infrastructure.Portal;
 public static class PortalServiceCollectionExtensions
 {
     /// <summary>
-    /// The portal settings (<c>Portal:*</c>), read lazily from the final configuration so the test host can set them.
+    /// The portal repositories and settings (<c>Portal:*</c>, read lazily from the final configuration so the test host can set them).
     /// Invalid values (zero or negative days) fall back to the defaults.
     /// </summary>
-    public static IServiceCollection AddPortalOptions(this IServiceCollection services)
+    public static IServiceCollection AddPortalInfrastructure(this IServiceCollection services)
     {
+        services.AddScoped<IPortalAccountRepository, PortalAccountRepository>();
         services.AddSingleton(provider =>
         {
             var options = provider.GetRequiredService<IConfiguration>().GetSection(PortalOptions.SectionName).Get<PortalOptions>()

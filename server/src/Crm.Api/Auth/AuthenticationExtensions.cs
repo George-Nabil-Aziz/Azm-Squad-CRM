@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Crm.Application.Auth;
 using Crm.Application.Common.Security;
+using Crm.Application.Portal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
@@ -58,6 +59,11 @@ public static class AuthenticationExtensions
                 .AddRequirements(new PermissionRequirement(permission)));
         }
 
+        // Portal customers (CRM-40): role Customer, no staff permission.
+        authorization.AddPolicy(PortalPolicies.Customer, policy => policy
+            .RequireAuthenticatedUser()
+            .RequireRole(PortalRoles.Customer));
+
         services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         return services;
     }
@@ -68,9 +74,13 @@ public static class AuthenticationExtensions
     /// </summary>
     private static async Task RejectInactiveUserAsync(TokenValidatedContext context)
     {
-        var checker = context.HttpContext.RequestServices.GetRequiredService<IActiveUserChecker>();
+        var services = context.HttpContext.RequestServices;
+        var cancellationToken = context.HttpContext.RequestAborted;
         var isActive = Guid.TryParse(context.Principal?.FindFirstValue(AuthClaimTypes.UserId), out var userId)
-                       && await checker.IsActiveAsync(userId, context.HttpContext.RequestAborted);
+                       && (context.Principal!.IsInRole(PortalRoles.Customer)
+                           // A portal customer must still exist (not deleted); a staff user must be active.
+                           ? await services.GetRequiredService<IPortalAccountRepository>().CustomerExistsAsync(userId, cancellationToken)
+                           : await services.GetRequiredService<IActiveUserChecker>().IsActiveAsync(userId, cancellationToken));
         if (!isActive)
         {
             context.Fail("The user is deactivated or no longer exists.");

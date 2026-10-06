@@ -38,3 +38,7 @@
 ## Verification / done
 
 All build / test / lint commands green; AC 1–4 each have a test.
+
+## As built
+
+- Migration `AddPortalAuth`. Deviation: a repeated code request within a minute silently sends nothing (the earlier code keeps working). The portal client token is chosen by path prefix `/api/portal/` in `api/client.ts`. `/portal` pages (layout, home) are public; protected portal routes use `RequirePortalAuth` (used from CRM-41).
