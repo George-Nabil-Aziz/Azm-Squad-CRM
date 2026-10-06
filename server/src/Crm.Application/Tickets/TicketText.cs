@@ -25,6 +25,18 @@ public static class TicketText
         "Choose an active category.",
         "اختر فئة نشطة.");
 
+    public static string StatusInvalid => LocalizedText.Get(
+        "Choose new, open, pending, resolved or closed.",
+        "اختر جديدة أو مفتوحة أو معلّقة أو محلولة أو مغلقة.");
+
+    public static string DateRangeInvalid => LocalizedText.Get(
+        "The end date must not be before the start date.",
+        "يجب ألا يكون تاريخ النهاية قبل تاريخ البداية.");
+
+    public static string AssigneeOrUnassigned => LocalizedText.Get(
+        "Filter by an assignee or by unassigned tickets, not both.",
+        "صفِّ حسب موظف محدد أو حسب التذاكر غير المسندة، وليس كليهما.");
+
     public static string NumberTaken => LocalizedText.Get(
         "Another ticket was created at the same moment. Please try again.",
         "أُنشئت تذكرة أخرى في اللحظة نفسها. حاول مرة أخرى.");

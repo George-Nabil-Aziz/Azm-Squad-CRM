@@ -1,3 +1,4 @@
+using Crm.Application.Common.Paging;
 using Crm.Domain.Tickets;
 
 namespace Crm.Application.Tickets;
@@ -21,4 +22,13 @@ public interface ITicketRepository
 
     /// <summary>The ticket with its customer name (also of a deleted customer), category and assignee names; or null.</summary>
     Task<TicketView?> GetViewAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// One page of the tickets matching <b>every</b> filter, newest first (CreatedAt, then Number, descending);
+    /// tickets of deleted customers included. <c>TotalCount</c> counts every match.
+    /// </summary>
+    Task<PagedResult<TicketView>> ListAsync(TicketListFilter filter, int page, int pageSize, CancellationToken cancellationToken);
+
+    /// <summary>Active staff users (with at least one role), ordered by name.</summary>
+    Task<IReadOnlyList<TicketAssigneeResponse>> ListAssigneesAsync(CancellationToken cancellationToken);
 }

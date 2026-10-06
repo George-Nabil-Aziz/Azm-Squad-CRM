@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createTicket, getTicket } from './tickets'
+import { createTicket, getTicket, listTicketAssignees, listTickets } from './tickets'
 
 function fakeFetch(status = 200, body: unknown = {}) {
   const fetchMock = vi.fn().mockResolvedValue(
@@ -41,5 +41,49 @@ describe('tickets API', () => {
     await getTicket('t1')
 
     expect(sent(fetchMock)).toMatchObject({ path: '/api/tickets/t1', method: 'GET' })
+  })
+
+  it('lists tickets without a query string by default', async () => {
+    const fetchMock = fakeFetch(200, { items: [], page: 1, pageSize: 20, totalCount: 0 })
+
+    await listTickets({})
+
+    expect(sent(fetchMock)).toMatchObject({ path: '/api/tickets', method: 'GET' })
+  })
+
+  it('sends every filter, the search and paging in the query string', async () => {
+    const fetchMock = fakeFetch(200, { items: [], page: 2, pageSize: 20, totalCount: 0 })
+
+    await listTickets({
+      status: 'open',
+      priority: 'high',
+      categoryId: 'k1',
+      assigneeId: 'u1',
+      createdFrom: '2026-10-01',
+      createdTo: '2026-10-05',
+      search: 'TKT-1',
+      page: 2,
+      pageSize: 20,
+    })
+
+    expect(sent(fetchMock).path).toBe(
+      '/api/tickets?status=open&priority=high&categoryId=k1&assigneeId=u1&createdFrom=2026-10-01&createdTo=2026-10-05&search=TKT-1&page=2&pageSize=20',
+    )
+  })
+
+  it('asks for unassigned tickets', async () => {
+    const fetchMock = fakeFetch(200, { items: [], page: 1, pageSize: 20, totalCount: 0 })
+
+    await listTickets({ unassigned: true, page: 1 })
+
+    expect(sent(fetchMock).path).toBe('/api/tickets?unassigned=true&page=1')
+  })
+
+  it('lists the assignees with GET /api/tickets/assignees', async () => {
+    const fetchMock = fakeFetch(200, [])
+
+    await listTicketAssignees()
+
+    expect(sent(fetchMock)).toMatchObject({ path: '/api/tickets/assignees', method: 'GET' })
   })
 })

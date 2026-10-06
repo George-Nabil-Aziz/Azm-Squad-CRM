@@ -140,7 +140,35 @@
       "email": "البريد الإلكتروني",
       "whatsapp": "واتساب",
       "portal": "البوابة"
-    }
+    },
+    "searchLabel": "البحث برقم التذكرة أو الموضوع",
+    "search": "بحث",
+    "filters": {
+      "status": "الحالة",
+      "priority": "الأولوية",
+      "category": "الفئة",
+      "assignee": "المسؤول",
+      "all": "الكل",
+      "unassigned": "غير مسندة",
+      "createdFrom": "تاريخ الإنشاء من",
+      "createdTo": "تاريخ الإنشاء إلى",
+      "clear": "مسح عوامل التصفية"
+    },
+    "columns": {
+      "number": "الرقم",
+      "subject": "الموضوع",
+      "customer": "العميل",
+      "status": "الحالة",
+      "priority": "الأولوية",
+      "category": "الفئة",
+      "assignee": "المسؤول",
+      "created": "تاريخ الإنشاء"
+    },
+    "empty": "لا توجد تذاكر.",
+    "loading": "جارٍ تحميل التذاكر…",
+    "pageInfo": "صفحة {{page}} من {{pages}}",
+    "previous": "السابق",
+    "next": "التالي"
   },
   "ticketCategories": {
     "description": "الفئات التي يختارها الموظفون عند إنشاء تذكرة.",

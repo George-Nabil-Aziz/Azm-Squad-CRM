@@ -111,6 +111,15 @@ public sealed record TicketAssigneeResponse(Guid Id, string FullName);
 
 ---
 
+## Deviations (as built)
+
+- Unit list tests live in a new `server/tests/Crm.UnitTests/Tickets/TicketListServiceTests.cs` (not in `TicketServiceTests.cs`); `TicketService` ctor gets `IValidator<ListTicketsQuery>` as its last parameter.
+- Client list / filter tests live in a new `client/src/pages/tickets/TicketsList.test.tsx`; `TicketsPage.test.tsx` keeps the new-ticket tests (mocks extended with `listTickets` / `listTicketAssignees`).
+- "Clear filters" returns to the unfiltered first page from the React Query cache (no new request), so its test checks the reset controls and that the next filter is sent alone.
+- Assignees query key is `['tickets', 'assignees']` (invalidated with the tickets prefix — harmless).
+
+---
+
 ## Edge Cases & Failure Modes
 
 - **Search "12"** → ticket TKT-000012 **and** tickets whose subject contains "12" (both are useful; documented).

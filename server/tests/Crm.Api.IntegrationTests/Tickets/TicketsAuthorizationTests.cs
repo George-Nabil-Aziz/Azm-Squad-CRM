@@ -15,6 +15,8 @@ public class TicketsAuthorizationTests(CrmApiFactory factory) : IClassFixture<Cr
     {
         { "POST", "/api/tickets" },
         { "GET", $"/api/tickets/{Guid.Empty}" },
+        { "GET", "/api/tickets" },
+        { "GET", "/api/tickets/assignees" },
     };
 
     private static HttpRequestMessage Request(string method, string path) => new(new HttpMethod(method), path)
@@ -59,6 +61,8 @@ public class TicketsAuthorizationTests(CrmApiFactory factory) : IClassFixture<Cr
         string[] write = [Permissions.TicketsManage, Permissions.TicketsView];
         Assert.Equal(write, policies["POST /api/tickets/"]);
         Assert.Equal(read, policies["GET /api/tickets/{id:guid}"]);
-        Assert.Equal(2, policies.Count);
+        Assert.Equal(read, policies["GET /api/tickets/"]);
+        Assert.Equal(read, policies["GET /api/tickets/assignees"]);
+        Assert.Equal(4, policies.Count);
     }
 }

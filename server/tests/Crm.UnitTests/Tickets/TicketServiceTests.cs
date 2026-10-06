@@ -21,7 +21,7 @@ public class TicketServiceTests
     {
         _tickets = new FakeTicketRepository(_categories);
         _service = new TicketService(_tickets, _categories, _timeline, new FakeCurrentUser(AgentId), _clock,
-            new CreateTicketRequestValidator());
+            new CreateTicketRequestValidator(), new ListTicketsQueryValidator());
         _customerId = _tickets.AddCustomer("Nour Trading");
         _billing = TicketCategory.Create("Billing", _clock.UtcNow.UtcDateTime);
         _categories.Add(_billing);

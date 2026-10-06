@@ -1,4 +1,5 @@
 using Crm.Application.Common.Exceptions;
+using Crm.Application.Common.Paging;
 using Crm.Application.Tickets;
 using Crm.Domain.Tickets;
 using Crm.Infrastructure.Persistence;
@@ -40,6 +41,71 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
 
     public async Task<TicketView?> GetViewAsync(Guid id, CancellationToken cancellationToken) =>
         (await Rows().FirstOrDefaultAsync(r => r.Ticket.Id == id, cancellationToken))?.ToView();
+
+    public async Task<PagedResult<TicketView>> ListAsync(
+        TicketListFilter filter, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var rows = Rows();
+        if (filter.Status is { } status)
+        {
+            rows = rows.Where(r => r.Ticket.Status == status);
+        }
+
+        if (filter.Priority is { } priority)
+        {
+            rows = rows.Where(r => r.Ticket.Priority == priority);
+        }
+
+        if (filter.CategoryId is { } categoryId)
+        {
+            rows = rows.Where(r => r.Ticket.CategoryId == categoryId);
+        }
+
+        if (filter.AssigneeId is { } assigneeId)
+        {
+            rows = rows.Where(r => r.Ticket.AssigneeId == assigneeId);
+        }
+
+        if (filter.Unassigned)
+        {
+            rows = rows.Where(r => r.Ticket.AssigneeId == null);
+        }
+
+        if (filter.CreatedFromUtc is { } from)
+        {
+            rows = rows.Where(r => r.Ticket.CreatedAt >= from);
+        }
+
+        if (filter.CreatedBeforeUtc is { } before)
+        {
+            rows = rows.Where(r => r.Ticket.CreatedAt < before);
+        }
+
+        if (filter.Search is { } search)
+        {
+            // A ticket number ("TKT-000012", "12") finds that ticket; any text also searches the subject
+            // (LIKE is case-insensitive on SQL Server and SQLite for ASCII; wildcards are escaped).
+            var pattern = LikePattern.Contains(search);
+            var number = filter.SearchNumber;
+            rows = rows.Where(r => (number != null && r.Ticket.Number == number)
+                                   || EF.Functions.Like(r.Ticket.Subject, pattern, LikePattern.EscapeCharacter));
+        }
+
+        var totalCount = await rows.CountAsync(cancellationToken);
+        var items = await rows
+            .OrderByDescending(r => r.Ticket.CreatedAt).ThenByDescending(r => r.Ticket.Number)
+            .Skip((page - 1) * pageSize).Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<TicketView>([.. items.Select(r => r.ToView())], page, pageSize, totalCount);
+    }
+
+    public async Task<IReadOnlyList<TicketAssigneeResponse>> ListAssigneesAsync(CancellationToken cancellationToken) =>
+        await db.Users.AsNoTracking()
+            .Where(u => u.IsActive && db.UserRoles.Any(role => role.UserId == u.Id))
+            .OrderBy(u => u.FullName).ThenBy(u => u.Id)
+            .Select(u => new TicketAssigneeResponse(u.Id, u.FullName))
+            .ToListAsync(cancellationToken);
 
     /// <summary>
     /// Tickets with customer (deleted ones included), category and assignee names; not tracked. A member-init

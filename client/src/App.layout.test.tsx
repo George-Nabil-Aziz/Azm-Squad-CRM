@@ -158,6 +158,7 @@ describe('App layout and routing', () => {
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Tickets' })).toBeInTheDocument()
     expect(await screen.findByRole('button', { name: 'New ticket' })).toBeInTheDocument()
+    expect(await screen.findByRole('row', { name: /TKT-000001/ })).toBeInTheDocument()
     expect(screen.queryByText('This area is coming soon.')).not.toBeInTheDocument()
     expect(window.location.pathname).toBe('/tickets')
   })

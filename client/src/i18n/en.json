@@ -140,7 +140,35 @@
       "email": "Email",
       "whatsapp": "WhatsApp",
       "portal": "Portal"
-    }
+    },
+    "searchLabel": "Search by ticket number or subject",
+    "search": "Search",
+    "filters": {
+      "status": "Status",
+      "priority": "Priority",
+      "category": "Category",
+      "assignee": "Assignee",
+      "all": "All",
+      "unassigned": "Unassigned",
+      "createdFrom": "Created from",
+      "createdTo": "Created to",
+      "clear": "Clear filters"
+    },
+    "columns": {
+      "number": "Number",
+      "subject": "Subject",
+      "customer": "Customer",
+      "status": "Status",
+      "priority": "Priority",
+      "category": "Category",
+      "assignee": "Assignee",
+      "created": "Created"
+    },
+    "empty": "No tickets found.",
+    "loading": "Loading tickets…",
+    "pageInfo": "Page {{page}} of {{pages}}",
+    "previous": "Previous",
+    "next": "Next"
   },
   "ticketCategories": {
     "description": "Categories agents choose when they create a ticket.",

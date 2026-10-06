@@ -5,7 +5,7 @@ import { getCurrentUser, type CurrentUser } from '@/api/auth'
 import { listCustomers, type Customer } from '@/api/customers'
 import { ApiError } from '@/api/errors'
 import { listTicketCategories, type TicketCategory } from '@/api/ticket-categories'
-import { createTicket, type Ticket } from '@/api/tickets'
+import { createTicket, listTicketAssignees, listTickets, type Ticket } from '@/api/tickets'
 import { createQueryClient } from '@/app/query-client'
 import { permissions } from '@/auth/permissions'
 import { ApiErrorToaster } from '@/components/ApiErrorToaster'
@@ -14,7 +14,7 @@ import { TicketsPage } from './TicketsPage'
 vi.mock('@/api/auth', () => ({ getCurrentUser: vi.fn() }))
 vi.mock('@/api/customers', () => ({ listCustomers: vi.fn() }))
 vi.mock('@/api/ticket-categories', () => ({ listTicketCategories: vi.fn() }))
-vi.mock('@/api/tickets', () => ({ createTicket: vi.fn() }))
+vi.mock('@/api/tickets', () => ({ createTicket: vi.fn(), listTickets: vi.fn(), listTicketAssignees: vi.fn() }))
 
 const signedInAgent: CurrentUser = {
   id: '2',
@@ -84,6 +84,8 @@ describe('TicketsPage — new ticket', () => {
       .mockResolvedValue({ items: [nour, omar], page: 1, pageSize: 20, totalCount: 2 })
     vi.mocked(listTicketCategories).mockReset().mockResolvedValue([billing])
     vi.mocked(createTicket).mockReset().mockResolvedValue(created)
+    vi.mocked(listTickets).mockReset().mockResolvedValue({ items: [], page: 1, pageSize: 20, totalCount: 0 })
+    vi.mocked(listTicketAssignees).mockReset().mockResolvedValue([])
   })
 
   it('creates a ticket with customer, subject, description, category and priority', async () => {

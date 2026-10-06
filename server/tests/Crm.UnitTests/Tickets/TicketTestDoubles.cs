@@ -1,4 +1,5 @@
 using Crm.Application.Common.Exceptions;
+using Crm.Application.Common.Paging;
 using Crm.Application.Common.Security;
 using Crm.Application.Customers.Timeline;
 using Crm.Application.Tickets;
@@ -76,6 +77,24 @@ internal sealed class FakeTicketRepository(FakeTicketCategoryRepository categori
         _pending.Clear();
         SaveCount++;
     }
+
+    public TicketListFilter? LastFilter { get; private set; }
+
+    public (int Page, int PageSize)? LastPaging { get; private set; }
+
+    public List<TicketAssigneeResponse> Assignees { get; } = [];
+
+    /// <summary>Records the filter; returns every saved ticket newest first (the real filtering is integration-tested).</summary>
+    public Task<PagedResult<TicketView>> ListAsync(TicketListFilter filter, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        LastFilter = filter;
+        LastPaging = (page, pageSize);
+        var all = Tickets.OrderByDescending(t => t.CreatedAt).ThenByDescending(t => t.Number).Select(View).ToList();
+        return Task.FromResult(new PagedResult<TicketView>([.. all.Skip((page - 1) * pageSize).Take(pageSize)], page, pageSize, all.Count));
+    }
+
+    public Task<IReadOnlyList<TicketAssigneeResponse>> ListAssigneesAsync(CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<TicketAssigneeResponse>>(Assignees);
 
     public Task<TicketView?> GetViewAsync(Guid id, CancellationToken cancellationToken) =>
         Task.FromResult(Tickets.FirstOrDefault(t => t.Id == id) is { } ticket ? View(ticket) : null);

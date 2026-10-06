@@ -1,3 +1,5 @@
+using Crm.Application.Common.Paging;
+
 namespace Crm.Application.Tickets;
 
 /// <summary>
@@ -11,4 +13,10 @@ public interface ITicketService
     Task<TicketResponse> CreateAsync(CreateTicketRequest request, CancellationToken cancellationToken);
 
     Task<TicketResponse> GetAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>One page of tickets matching every given filter, newest first.</summary>
+    Task<PagedResult<TicketResponse>> ListAsync(ListTicketsQuery query, CancellationToken cancellationToken);
+
+    /// <summary>Staff users tickets can be assigned to (active, with a role), ordered by name.</summary>
+    Task<IReadOnlyList<TicketAssigneeResponse>> ListAssigneesAsync(CancellationToken cancellationToken);
 }
