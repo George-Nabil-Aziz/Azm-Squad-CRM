@@ -203,6 +203,76 @@
       "added": "تمت إضافة جهة الاتصال.",
       "primaryChanged": "تم تغيير جهة الاتصال الأساسية.",
       "removed": "تمت إزالة جهة الاتصال."
+    },
+    "details": {
+      "back": "العودة إلى العملاء",
+      "contacts": "بيانات الاتصال",
+      "loading": "جارٍ تحميل العميل…",
+      "notFound": "العميل غير موجود."
+    },
+    "timeline": {
+      "title": "سجل التفاعلات",
+      "filter": "عرض",
+      "types": {
+        "all": "كل النشاط",
+        "customer": "تغييرات العميل",
+        "note": "الملاحظات",
+        "attachment": "المرفقات",
+        "ticket": "التذاكر",
+        "message": "الرسائل"
+      },
+      "events": {
+        "customerCreated": "تم إنشاء العميل",
+        "customerUpdated": "تم تحديث العميل",
+        "contactAdded": "تمت إضافة جهة اتصال",
+        "noteAdded": "تمت إضافة ملاحظة",
+        "attachmentAdded": "تم إرفاق ملف",
+        "other": "نشاط آخر"
+      },
+      "by": "بواسطة {{name}}",
+      "system": "النظام",
+      "empty": "لا يوجد أي نشاط بعد.",
+      "loading": "جارٍ تحميل السجل…",
+      "pageInfo": "صفحة {{page}} من {{pages}}",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "notes": {
+      "title": "الملاحظات",
+      "newNote": "ملاحظة جديدة",
+      "add": "إضافة الملاحظة",
+      "adding": "جارٍ الإضافة…",
+      "added": "تمت إضافة الملاحظة.",
+      "textRequired": "اكتب الملاحظة أولاً.",
+      "textTooLong": "يمكن أن تحتوي الملاحظة على 4000 حرف كحد أقصى.",
+      "empty": "لا توجد ملاحظات بعد.",
+      "loading": "جارٍ تحميل الملاحظات…",
+      "pageInfo": "صفحة {{page}} من {{pages}}",
+      "newer": "ملاحظات أحدث",
+      "older": "ملاحظات أقدم"
+    },
+    "attachments": {
+      "title": "المرفقات",
+      "file": "الملف",
+      "hint": "PDF أو صور (PNG وJPG وGIF وWEBP) أو نص أو CSV أو Word أو Excel؛ حتى 10 ميجابايت.",
+      "upload": "رفع",
+      "uploading": "جارٍ الرفع…",
+      "uploaded": "تم رفع الملف.",
+      "fileRequired": "اختر ملفاً لرفعه.",
+      "tooLarge": "حجم الملف أكبر من 10 ميجابايت.",
+      "typeNotAllowed": "نوع الملف غير مسموح به. المسموح: PDF والصور (PNG وJPG وGIF وWEBP) والنصوص وCSV وملفات Word وExcel.",
+      "empty": "لا توجد ملفات بعد.",
+      "loading": "جارٍ تحميل الملفات…",
+      "download": "تنزيل",
+      "sizeKb": "{{size}} كيلوبايت",
+      "sizeMb": "{{size}} ميجابايت",
+      "columns": {
+        "file": "الملف",
+        "size": "الحجم",
+        "uploadedBy": "رفعه",
+        "uploadedAt": "تاريخ الرفع",
+        "actions": "الإجراءات"
+      }
     }
   }
 }

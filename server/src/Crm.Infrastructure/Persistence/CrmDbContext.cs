@@ -17,6 +17,12 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<Customer> Customers => Set<Customer>();
 
+    public DbSet<CustomerInteraction> CustomerInteractions => Set<CustomerInteraction>();
+
+    public DbSet<CustomerNote> CustomerNotes => Set<CustomerNote>();
+
+    public DbSet<CustomerAttachment> CustomerAttachments => Set<CustomerAttachment>();
+
     public DbSet<TicketCategory> TicketCategories => Set<TicketCategory>();
 
     protected override void OnModelCreating(ModelBuilder builder)

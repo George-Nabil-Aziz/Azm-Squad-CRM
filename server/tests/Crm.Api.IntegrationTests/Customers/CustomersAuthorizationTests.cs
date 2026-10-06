@@ -22,12 +22,22 @@ public class CustomersAuthorizationTests(CrmApiFactory factory) : IClassFixture<
         { "POST", $"/api/customers/{Guid.Empty}/contacts" },
         { "POST", $"/api/customers/{Guid.Empty}/contacts/{Guid.Empty}/primary" },
         { "DELETE", $"/api/customers/{Guid.Empty}/contacts/{Guid.Empty}" },
+        { "GET", $"/api/customers/{Guid.Empty}/timeline" },
+        { "GET", $"/api/customers/{Guid.Empty}/notes" },
+        { "POST", $"/api/customers/{Guid.Empty}/notes" },
+        { "GET", $"/api/customers/{Guid.Empty}/attachments" },
+        { "POST", $"/api/customers/{Guid.Empty}/attachments" },
+        { "GET", $"/api/customers/{Guid.Empty}/attachments/{Guid.Empty}" },
     };
 
     private static HttpRequestMessage Request(string method, string path) => new(new HttpMethod(method), path)
     {
         // A valid body, so a missing authorization check would show up as 201/404 instead of 401/403.
-        Content = method is "POST" or "PUT" ? JsonContent.Create(new { name = "Blocked customer" }) : null,
+        // The upload accepts only multipart/form-data (other bodies get 415 from routing, before authorization).
+        Content = method is not ("POST" or "PUT") ? null
+            : path.EndsWith("/attachments", StringComparison.Ordinal)
+                ? new MultipartFormDataContent { { new ByteArrayContent("%PDF"u8.ToArray()), "file", "report.pdf" } }
+                : JsonContent.Create(new { name = "Blocked customer" }),
     };
 
     [Theory]
@@ -91,6 +101,12 @@ public class CustomersAuthorizationTests(CrmApiFactory factory) : IClassFixture<
         Assert.Equal(write, policies["POST /api/customers/{id:guid}/contacts"]);
         Assert.Equal(write, policies["POST /api/customers/{id:guid}/contacts/{contactId:guid}/primary"]);
         Assert.Equal(write, policies["DELETE /api/customers/{id:guid}/contacts/{contactId:guid}"]);
-        Assert.Equal(9, policies.Count);
+        Assert.Equal(read, policies["GET /api/customers/{id:guid}/timeline"]);
+        Assert.Equal(read, policies["GET /api/customers/{id:guid}/notes"]);
+        Assert.Equal(write, policies["POST /api/customers/{id:guid}/notes"]);
+        Assert.Equal(read, policies["GET /api/customers/{id:guid}/attachments"]);
+        Assert.Equal(write, policies["POST /api/customers/{id:guid}/attachments"]);
+        Assert.Equal(read, policies["GET /api/customers/{id:guid}/attachments/{attachmentId:guid}"]);
+        Assert.Equal(15, policies.Count);
     }
 }

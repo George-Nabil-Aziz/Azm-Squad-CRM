@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { apiGet, onApiError } from './client'
+import { apiGet, apiGetBlob, apiPostForm, onApiError } from './client'
 import { ApiError } from './errors'
 
 describe('apiGet errors', () => {
@@ -52,5 +52,36 @@ describe('apiGet errors', () => {
 
     expect(listener).toHaveBeenCalledTimes(1)
     expect(listener.mock.calls[0][0]).toBeInstanceOf(ApiError)
+  })
+})
+
+describe('form uploads and file downloads', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('posts FormData as is, without a JSON content type', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ id: 'a1' }), { status: 201, headers: { 'Content-Type': 'application/json' } }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    const form = new FormData()
+    form.append('file', new File(['x'], 'report.pdf'))
+
+    const result = await apiPostForm<{ id: string }>('/api/x', form)
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect(init.method).toBe('POST')
+    expect(init.body).toBe(form)
+    expect((init.headers as Record<string, string>)['Content-Type']).toBeUndefined()
+    expect(result).toEqual({ id: 'a1' })
+  })
+
+  it('reads a download as a Blob', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('%PDF', { status: 200 })))
+
+    const blob = await apiGetBlob('/api/x')
+
+    expect(await blob.text()).toBe('%PDF')
   })
 })

@@ -203,6 +203,76 @@
       "added": "Contact added.",
       "primaryChanged": "Primary contact changed.",
       "removed": "Contact removed."
+    },
+    "details": {
+      "back": "Back to customers",
+      "contacts": "Contact details",
+      "loading": "Loading customer…",
+      "notFound": "Customer not found."
+    },
+    "timeline": {
+      "title": "Interaction history",
+      "filter": "Show",
+      "types": {
+        "all": "All activity",
+        "customer": "Customer changes",
+        "note": "Notes",
+        "attachment": "Attachments",
+        "ticket": "Tickets",
+        "message": "Messages"
+      },
+      "events": {
+        "customerCreated": "Customer created",
+        "customerUpdated": "Customer updated",
+        "contactAdded": "Contact added",
+        "noteAdded": "Note added",
+        "attachmentAdded": "File attached",
+        "other": "Other activity"
+      },
+      "by": "by {{name}}",
+      "system": "System",
+      "empty": "Nothing has happened yet.",
+      "loading": "Loading history…",
+      "pageInfo": "Page {{page}} of {{pages}}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "notes": {
+      "title": "Notes",
+      "newNote": "New note",
+      "add": "Add note",
+      "adding": "Adding…",
+      "added": "Note added.",
+      "textRequired": "Write the note first.",
+      "textTooLong": "A note can have at most 4000 characters.",
+      "empty": "No notes yet.",
+      "loading": "Loading notes…",
+      "pageInfo": "Page {{page}} of {{pages}}",
+      "newer": "Newer notes",
+      "older": "Older notes"
+    },
+    "attachments": {
+      "title": "Attachments",
+      "file": "File",
+      "hint": "PDF, images (PNG, JPG, GIF, WEBP), text, CSV, Word or Excel; up to 10 MB.",
+      "upload": "Upload",
+      "uploading": "Uploading…",
+      "uploaded": "File uploaded.",
+      "fileRequired": "Choose a file to upload.",
+      "tooLarge": "The file is larger than 10 MB.",
+      "typeNotAllowed": "This file type is not allowed. Allowed: PDF, images (PNG, JPG, GIF, WEBP), text, CSV, Word and Excel files.",
+      "empty": "No files yet.",
+      "loading": "Loading files…",
+      "download": "Download",
+      "sizeKb": "{{size}} KB",
+      "sizeMb": "{{size}} MB",
+      "columns": {
+        "file": "File",
+        "size": "Size",
+        "uploadedBy": "Uploaded by",
+        "uploadedAt": "Uploaded",
+        "actions": "Actions"
+      }
     }
   }
 }

@@ -9,12 +9,58 @@ public class CustomerServiceTests
 {
     private readonly FakeCustomerRepository _repository = new();
     private readonly TestClock _clock = new(new DateTimeOffset(2026, 10, 1, 8, 0, 0, TimeSpan.Zero));
+    private readonly FakeInteractionRecorder _timeline = new();
     private readonly CustomerService _service;
 
     public CustomerServiceTests()
     {
         _service = new CustomerService(_repository, _clock, new ListCustomersQueryValidator(), new CustomerRequestValidator(),
-            new CustomerContactRequestValidator(), new CustomerLookupQueryValidator());
+            new CustomerContactRequestValidator(), new CustomerLookupQueryValidator(), _timeline);
+    }
+
+    [Fact]
+    public async Task Create_RecordsCustomerCreated()
+    {
+        var created = await _service.CreateAsync(new CustomerRequest("Nour", null, null), CancellationToken.None);
+
+        Assert.Equal(
+            [(created.Id, InteractionType.Customer, InteractionEvents.CustomerCreated, (string?)"Nour", (Guid?)null, _clock.UtcNow.UtcDateTime)],
+            _timeline.Entries);
+    }
+
+    [Fact]
+    public async Task Update_RecordsCustomerUpdated()
+    {
+        var created = await _service.CreateAsync(new CustomerRequest("Nour", null, null), CancellationToken.None);
+        _clock.UtcNow = _clock.UtcNow.AddMinutes(1);
+
+        await _service.UpdateAsync(created.Id, new CustomerRequest("Nour Trading", null, null), CancellationToken.None);
+
+        Assert.Equal(
+            (created.Id, InteractionType.Customer, InteractionEvents.CustomerUpdated, (string?)"Nour Trading", (Guid?)null, _clock.UtcNow.UtcDateTime),
+            _timeline.Entries[^1]);
+    }
+
+    [Fact]
+    public async Task AddContact_RecordsContactAdded()
+    {
+        var created = await _service.CreateAsync(new CustomerRequest("Nour", null, null), CancellationToken.None);
+
+        var contact = await _service.AddContactAsync(created.Id, new CustomerContactRequest("phone", "0501234567", null),
+            CancellationToken.None);
+
+        Assert.Equal(
+            (created.Id, InteractionType.Customer, InteractionEvents.ContactAdded, (string?)"+966501234567", (Guid?)contact.Id, _clock.UtcNow.UtcDateTime),
+            _timeline.Entries[^1]);
+    }
+
+    [Fact]
+    public async Task InvalidCreate_RecordsNothing()
+    {
+        await Assert.ThrowsAsync<ValidationException>(() =>
+            _service.CreateAsync(new CustomerRequest(" ", null, null), CancellationToken.None));
+
+        Assert.Empty(_timeline.Entries);
     }
 
     [Fact]
