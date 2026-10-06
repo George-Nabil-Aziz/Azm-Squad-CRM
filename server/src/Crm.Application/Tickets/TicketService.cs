@@ -150,7 +150,9 @@ public sealed class TicketService(
             ticket.FirstResponseAt,
             ticket.ResolvedAt,
             ticket.ResponseBreached,
-            ticket.ResolutionBreached);
+            ticket.ResolutionBreached,
+            ticket.EscalationLevel,
+            ticket.ResponseWarnedAt);
     }
 
     private static DateTime? StartOfUtcDay(DateOnly? day) =>

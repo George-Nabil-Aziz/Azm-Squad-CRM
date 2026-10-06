@@ -61,6 +61,8 @@ const created: Ticket = {
   resolvedAt: null,
   responseBreached: false,
   resolutionBreached: false,
+  escalationLevel: 0,
+  responseWarnedAt: null,
 }
 
 function renderPage() {

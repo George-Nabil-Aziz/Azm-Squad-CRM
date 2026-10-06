@@ -205,7 +205,8 @@
       "overdue": "overdue by {{time}}",
       "met": "met",
       "metLate": "met late",
-      "none": "No SLA"
+      "none": "No SLA",
+      "escalated": "Escalated (level {{level}})"
     }
   },
   "ticketCategories": {

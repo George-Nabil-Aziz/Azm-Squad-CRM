@@ -10,6 +10,8 @@ export interface TicketSlaTimes {
   firstResponseAt: string | null
   resolutionDueAt: string | null
   resolvedAt: string | null
+  /** How often the ticket escalated (CRM-22); 0 or missing = never. */
+  escalationLevel?: number
 }
 
 const variants = {
@@ -53,6 +55,9 @@ export function TicketSlaTimers({ times, now }: { times: TicketSlaTimes; now: Da
           {t(`sla.timer.${key}`, { status: describe(timer, t) })}
         </Badge>
       ))}
+      {times.escalationLevel ? (
+        <Badge variant="destructive">{t('sla.timer.escalated', { level: times.escalationLevel })}</Badge>
+      ) : null}
     </div>
   )
 }

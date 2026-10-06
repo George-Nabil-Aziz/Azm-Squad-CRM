@@ -39,7 +39,8 @@ public class SlaBreachDetectionTests(CrmApiFactory factory) : IClassFixture<CrmA
     {
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<CrmDbContext>();
-        return await db.TicketSlaEvents.Where(e => e.TicketId == id).Select(e => e.Type).ToListAsync();
+        return await db.TicketSlaEvents.Where(e => e.TicketId == id && (e.Type == SlaEventType.ResponseBreached || e.Type == SlaEventType.ResolutionBreached))
+            .Select(e => e.Type).ToListAsync(); // breach records only; escalation has its own tests (CRM-22)
     }
 
     // A fresh login each time: the tests move the clock, which expires earlier access tokens.

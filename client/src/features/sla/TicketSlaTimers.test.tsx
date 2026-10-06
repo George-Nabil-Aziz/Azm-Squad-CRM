@@ -49,4 +49,38 @@ describe('TicketSlaTimers', () => {
 
     expect(screen.getByText('No SLA')).toBeInTheDocument()
   })
+
+  it('shows the escalation level of an escalated ticket', () => {
+    render(
+      <TicketSlaTimers
+        times={{
+          responseDueAt: '2026-10-01T09:00:00Z',
+          firstResponseAt: null,
+          resolutionDueAt: '2026-10-01T18:00:00Z',
+          resolvedAt: null,
+          escalationLevel: 2,
+        }}
+        now={now}
+      />,
+    )
+
+    expect(screen.getByText('Escalated (level 2)')).toBeInTheDocument()
+  })
+
+  it('shows no escalation badge at level 0', () => {
+    render(
+      <TicketSlaTimers
+        times={{
+          responseDueAt: '2026-10-01T09:00:00Z',
+          firstResponseAt: null,
+          resolutionDueAt: '2026-10-01T18:00:00Z',
+          resolvedAt: null,
+          escalationLevel: 0,
+        }}
+        now={now}
+      />,
+    )
+
+    expect(screen.queryByText(/Escalated/)).not.toBeInTheDocument()
+  })
 })

@@ -205,7 +205,8 @@
       "overdue": "متأخر {{time}}",
       "met": "تم في الوقت",
       "metLate": "تم متأخرًا",
-      "none": "بدون SLA"
+      "none": "بدون SLA",
+      "escalated": "تم التصعيد (المستوى {{level}})"
     }
   },
   "ticketCategories": {

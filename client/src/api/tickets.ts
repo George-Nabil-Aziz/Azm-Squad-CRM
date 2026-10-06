@@ -81,6 +81,8 @@ export interface Ticket {
   resolvedAt: string | null
   responseBreached: boolean
   resolutionBreached: boolean
+  escalationLevel: number
+  responseWarnedAt: string | null
 }
 
 /** Body of "create ticket". Customer and subject are required; send null for no description / category. */

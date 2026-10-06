@@ -38,6 +38,51 @@ public sealed partial class Ticket
     public bool IsResolutionBreachedAt(DateTime utcNow) =>
         ResolutionDueAt is { } due && (ResolvedAt is { } resolved ? resolved > due : due <= utcNow);
 
+    /// <summary>Part of the response window after which the assignee is warned (CRM-22): 80 %.</summary>
+    public const double WarningFraction = 0.8;
+
+    /// <summary>When 80 % of the response window has passed (UTC); null for tickets created before CRM-22.</summary>
+    public DateTime? ResponseWarningAt { get; private set; }
+
+    /// <summary>When the "response is due soon" warning was sent; set once.</summary>
+    public DateTime? ResponseWarnedAt { get; private set; }
+
+    /// <summary>How often the ticket escalated (0 = never); each SLA breach raises it by one, never repeating a level.</summary>
+    public int EscalationLevel { get; private set; }
+
+    /// <summary>When the ticket last escalated (UTC).</summary>
+    public DateTime? EscalatedAt { get; private set; }
+
+    /// <summary>
+    /// Marks the response warning as sent when 80 % of the response window has passed but the due time has not, nobody
+    /// answered yet and the ticket is not resolved. False (and nothing changes) otherwise, and after the first warning.
+    /// </summary>
+    public bool TryWarnResponse(DateTime utcNow)
+    {
+        EnsureUtcTime(utcNow);
+        if (ResponseWarningAt is not { } warningAt || ResponseWarnedAt is not null || FirstResponseAt is not null
+            || ResolvedAt is not null || utcNow < warningAt || (ResponseDueAt is { } due && utcNow >= due))
+        {
+            return false;
+        }
+
+        ResponseWarnedAt = utcNow;
+        return true;
+    }
+
+    /// <summary>Raises the escalation level by one and returns it. A resolved ticket does not escalate.</summary>
+    public int Escalate(DateTime utcNow)
+    {
+        EnsureUtcTime(utcNow);
+        if (ResolvedAt is not null)
+        {
+            throw new InvalidOperationException("A resolved ticket cannot be escalated.");
+        }
+
+        EscalatedAt = utcNow;
+        return ++EscalationLevel;
+    }
+
     /// <summary>Flags the response breach; false when it was flagged before.</summary>
     public bool MarkResponseBreached()
     {
@@ -73,6 +118,7 @@ public sealed partial class Ticket
 
         ResponseDueAt = policy.ResponseDueAt(CreatedAt);
         ResolutionDueAt = policy.ResolutionDueAt(CreatedAt);
+        ResponseWarningAt = CreatedAt + (ResponseDueAt.Value - CreatedAt) * WarningFraction;
     }
 
     /// <summary>

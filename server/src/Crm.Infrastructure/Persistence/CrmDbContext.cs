@@ -1,4 +1,5 @@
 using Crm.Domain.Customers;
+using Crm.Domain.Notifications;
 using Crm.Domain.Sla;
 using Crm.Domain.Tickets;
 using Crm.Infrastructure.Identity;
@@ -31,6 +32,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<Ticket> Tickets => Set<Ticket>();
 
     public DbSet<TicketSlaEvent> TicketSlaEvents => Set<TicketSlaEvent>();
+
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

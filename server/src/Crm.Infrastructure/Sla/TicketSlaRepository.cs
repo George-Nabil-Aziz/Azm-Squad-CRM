@@ -1,4 +1,5 @@
 using Crm.Application.Sla;
+using Crm.Domain.Notifications;
 using Crm.Domain.Sla;
 using Crm.Domain.Tickets;
 using Crm.Infrastructure.Persistence;
@@ -19,6 +20,16 @@ public sealed class TicketSlaRepository(CrmDbContext db) : ITicketSlaRepository
             .OrderBy(t => t.CreatedAt)
             .Take(take)
             .ToListAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<Ticket>> ListWarningCandidatesAsync(DateTime utcNow, int take, CancellationToken cancellationToken) =>
+        await db.Tickets
+            .Where(t => t.ResponseWarningAt != null && t.ResponseWarningAt <= utcNow && t.ResponseWarnedAt == null
+                && t.FirstResponseAt == null && t.ResolvedAt == null && !t.ResponseBreached)
+            .OrderBy(t => t.CreatedAt)
+            .Take(take)
+            .ToListAsync(cancellationToken);
+
+    public void AddNotification(Notification notification) => db.Notifications.Add(notification);
 
     public void AddEvent(TicketSlaEvent slaEvent) => db.TicketSlaEvents.Add(slaEvent);
 

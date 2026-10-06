@@ -26,6 +26,7 @@ public sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         ticket.HasIndex(t => t.CreatedAt); // ticket list: newest first (CRM-14)
         ticket.HasIndex(t => t.ResponseDueAt); // SLA breach job (CRM-21)
         ticket.HasIndex(t => t.ResolutionDueAt);
+        ticket.HasIndex(t => t.ResponseWarningAt); // warning job (CRM-22)
         ticket.HasIndex(t => new { t.ResponseBreached, t.ResolutionBreached }); // job candidates
 
         // Rows a ticket points at are never physically deleted (customers are soft-deleted, categories deactivated,

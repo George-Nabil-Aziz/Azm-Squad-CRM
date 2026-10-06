@@ -103,3 +103,10 @@ Unit (`TicketEscalationTests`, `SlaMonitorJobTests`), integration (`SlaEscalatio
 - **Notifications UI (Phase 2):** read `Notifications` for the user (`RecipientUserId`) and their roles (`RecipientRole`); replace `LoggingSlaNotifier` with SignalR / e-mail.
 - **CRM-18:** show `TicketSlaEvents` (`ResponseWarning`, `ResponseBreached`, `ResolutionBreached`, `Escalated` level n) in the ticket history.
 - **CRM-16:** assigning sets `AssigneeId`, which the next warning targets.
+
+## Implementation notes (deviations)
+
+- `NotificationType` lives next to `Notification` in `Crm.Domain/Notifications/Notification.cs`; `SlaMonitorJob` now takes `ITicketSlaRepository`, `ISlaNotifier`, `TimeProvider`; `SlaMonitorResult` gained `Warnings` / `Escalations` (defaults 0).
+- One `SaveChanges` per run (breach flags, escalation, warnings, events, notifications); notices go to `ISlaNotifier` only after a successful save.
+- Each newly marked breach of an unresolved ticket escalates one level (response breach then resolution breach, even in one run, gives levels 1 and 2).
+- Assignee in integration tests is set by reflection on `Ticket.AssigneeId` (CRM-16 not built). **CRM-18:** call its history recorder where `SlaMonitorJob` adds the `Escalated` event when merged.
