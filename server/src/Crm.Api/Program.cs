@@ -70,6 +70,7 @@ app.MapTicketArticlesEndpoints();
 app.MapPortalKbEndpoints();
 app.MapPortalAuthEndpoints();
 app.MapPortalSurveyEndpoints();
+app.MapAiEndpoints();
 app.MapPortalTicketsEndpoints();
 app.MapTicketAttachmentsEndpoints();
 app.MapNotificationsEndpoints();

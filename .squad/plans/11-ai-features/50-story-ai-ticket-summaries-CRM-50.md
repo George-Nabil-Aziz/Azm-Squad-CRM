@@ -43,3 +43,9 @@ Automatic summaries, summary history, streaming.
 ## Verification / done
 
 `dotnet build` (0 warnings), `dotnet test`, `npm test`, `npm run build`, `npm run lint`; AC 1–4 each have a test; migration `AddTicketAiSummaries`.
+
+## As built
+
+- Shared foundation as planned (`Crm.Application/Ai/AiCore.cs`, `TicketSummaryService.cs`; `Crm.Infrastructure/Ai/`). `appsettings.json` carries only the non-secret `Ai:Model`, `Ai:ConfidenceThreshold`, `Ai:TimeoutSeconds`; the key is set with `dotnet user-secrets set "Ai:ApiKey" "<key>"` (Api project) or the environment variable `Ai__ApiKey`.
+- Migration `AddTicketAiSummaries`. `TicketsAuthorizationTests` lists the two new `/api/tickets/{id}/ai-summary` routes.
+- The ticket page test mocks `@/api/ai` (AI disabled by default) and has one test for the panel.

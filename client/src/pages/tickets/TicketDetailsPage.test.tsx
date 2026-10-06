@@ -2,6 +2,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { getAiStatus, getTicketSummary } from '@/api/ai'
 import { getCurrentUser, type CurrentUser } from '@/api/auth'
 import { ApiError } from '@/api/errors'
 import { listTicketCategories } from '@/api/ticket-categories'
@@ -25,6 +26,11 @@ import { permissions } from '@/auth/permissions'
 import { TicketDetailsPage } from './TicketDetailsPage'
 
 vi.mock('@/api/auth', () => ({ getCurrentUser: vi.fn() }))
+vi.mock('@/api/ai', () => ({
+  getAiStatus: vi.fn().mockResolvedValue({ enabled: false }),
+  getTicketSummary: vi.fn(),
+  generateTicketSummary: vi.fn(),
+}))
 vi.mock('@/api/ticket-categories', () => ({ listTicketCategories: vi.fn() }))
 vi.mock('@/api/tickets', () => ({
   getTicket: vi.fn(),
@@ -114,6 +120,8 @@ function renderPage() {
 describe('TicketDetailsPage', () => {
   beforeEach(() => {
     vi.mocked(getCurrentUser).mockReset().mockResolvedValue(signedInAgent)
+    vi.mocked(getAiStatus).mockReset().mockResolvedValue({ enabled: false })
+    vi.mocked(getTicketSummary).mockReset().mockResolvedValue({ text: 'Saved AI summary', language: 'en', generatedAt: '2026-10-01T08:00:00Z' })
     vi.mocked(getTicket).mockReset().mockResolvedValue(invoiceTicket)
     vi.mocked(listTicketMessages).mockReset().mockResolvedValue([])
     vi.mocked(addTicketMessage).mockReset().mockResolvedValue(message({}))
@@ -149,6 +157,20 @@ describe('TicketDetailsPage', () => {
     await waitFor(() => expect(getCurrentUser).toHaveBeenCalledTimes(2))
 
     expect(screen.queryByText('Total tickets: 4')).not.toBeInTheDocument()
+  })
+
+  it('shows the AI summary panel only when AI is configured', async () => {
+    const { unmount } = renderPage()
+    await screen.findByRole('heading', { name: 'Invoice is wrong' })
+    await waitFor(() => expect(getAiStatus).toHaveBeenCalled())
+    expect(screen.queryByRole('region', { name: 'AI summary' })).not.toBeInTheDocument()
+    unmount()
+
+    vi.mocked(getAiStatus).mockResolvedValue({ enabled: true })
+    renderPage()
+
+    expect(await screen.findByRole('region', { name: 'AI summary' })).toBeInTheDocument()
+    expect(await screen.findByText('Saved AI summary')).toBeInTheDocument()
   })
 
   it('shows the ticket with its customer, status and description', async () => {

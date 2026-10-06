@@ -1,3 +1,4 @@
+using Crm.Domain.Ai;
 using Crm.Domain.Audit;
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
@@ -59,6 +60,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<TicketAttachment> TicketAttachments => Set<TicketAttachment>();
 
     public DbSet<TicketSurvey> TicketSurveys => Set<TicketSurvey>();
+
+    public DbSet<TicketAiSummary> TicketAiSummaries => Set<TicketAiSummary>();
 
     public DbSet<PortalAccount> PortalAccounts => Set<PortalAccount>();
 

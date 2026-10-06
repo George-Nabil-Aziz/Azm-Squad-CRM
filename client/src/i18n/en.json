@@ -971,5 +971,15 @@
       "expired": "This survey link has expired.",
       "notFound": "This survey was not found."
     }
+  },
+  "ai": {
+    "summary": {
+      "title": "AI summary",
+      "generate": "Summarize with AI",
+      "regenerate": "Regenerate",
+      "generating": "Generating…",
+      "generatedAt": "Generated {{time}}",
+      "empty": "No summary yet. Generate one to see the key points of this ticket."
+    }
   }
 }
