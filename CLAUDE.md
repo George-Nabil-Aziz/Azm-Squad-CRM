@@ -21,7 +21,10 @@ client/   React app
 Every change goes through the squad-kit flow. No feature work outside it.
 
 1. **Story source = Notion.** Database "CRM User Stories", data source `collection://177d0836-2afb-41c4-9859-f817e905bc2a`. Each story has Story ID (CRM-n), Feature (= squad feature slug), Description, Acceptance Criteria, Status.
-2. **Intake:** `squad new-story <feature> --title "<title>"`, then fill `intake.md` from the Notion story (title, description, acceptance criteria verbatim, Story ID in the tracker id field).
+2. **Intake:** `squad new-story <NN-feature> --id CRM-<n> --title "<title>" --no-fetch -y`, then fill `intake.md` from the Notion story (title, description, acceptance criteria verbatim).
+   - **Feature folders are numbered** (same name under `.squad/plans/` and `.squad/stories/`). Notion's `Feature` value maps to:
+     `01-foundation`, `02-security-admin`, `03-customer-management`, `04-ticket-management`, `05-sla-automation`, `06-channels`, `07-agent-dashboard`, `08-knowledge-base`, `09-customer-portal`, `10-reports`, `11-ai-features`, `12-integrations`, `13-platform`.
+   - **Plan file name** must contain the Story ID so `squad list` finds it: `NN-story-<slug>-CRM-<n>.md` (e.g. `01-story-project-skeleton-CRM-1.md`).
 3. **Plan:** `/squad-plan <intake-path>`. Planning only, no source changes in that session.
 4. **Implement:** new session with only the plan file attached.
 5. **Update Notion Status:** Ready → Planned (plan written) → In Progress → Done, and fill "Squad Plan" with the plan path.
