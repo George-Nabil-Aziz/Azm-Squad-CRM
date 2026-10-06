@@ -4,6 +4,7 @@ import {
   assignTicket,
   changeTicketCategory,
   changeTicketStatus,
+  getMyTickets,
   getTicketHistory,
   changeTicketPriority,
   createTicket,
@@ -29,6 +30,14 @@ function sent(fetchMock: ReturnType<typeof vi.fn>) {
 describe('tickets API', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
+  })
+
+  it('reads my tickets with GET /api/tickets/mine', async () => {
+    const body = { counters: { open: 1, pending: 0, breachedToday: 0 }, tickets: { items: [], page: 1, pageSize: 50, totalCount: 0 } }
+    const fetchMock = fakeFetch(200, body)
+
+    expect(await getMyTickets()).toEqual(body)
+    expect(sent(fetchMock)).toEqual({ path: '/api/tickets/mine?pageSize=50', method: 'GET', body: undefined })
   })
 
   it('creates a ticket with POST /api/tickets', async () => {

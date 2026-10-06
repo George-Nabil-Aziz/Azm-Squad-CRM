@@ -181,3 +181,20 @@ export function getTicketHistory(ticketId: string, signal?: AbortSignal): Promis
 export function changeTicketCategory(ticketId: string, categoryId: string | null): Promise<Ticket> {
   return apiPut<Ticket>(`/api/tickets/${encodeURIComponent(ticketId)}/category`, { categoryId })
 }
+
+/** Counters of the agent dashboard (server: MyTicketCounters). `breachedToday` counts SLA breaches of the current UTC day. */
+export interface MyTicketCounters {
+  open: number
+  pending: number
+  breachedToday: number
+}
+
+/** GET /api/tickets/mine: my tickets that are not closed, nearest SLA due first, with the counters. */
+export interface MyTickets {
+  counters: MyTicketCounters
+  tickets: PagedResult<Ticket>
+}
+
+export function getMyTickets(signal?: AbortSignal): Promise<MyTickets> {
+  return apiGet<MyTickets>('/api/tickets/mine?pageSize=50', signal)
+}

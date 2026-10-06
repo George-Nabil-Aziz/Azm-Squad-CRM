@@ -20,6 +20,12 @@ public static class TicketsEndpoints
                 Results.Ok(await tickets.ListAssigneesAsync(cancellationToken)))
             .WithName("ListTicketAssignees");
 
+        // The agent dashboard (CRM-29): my tickets by SLA urgency + counters. "mine" is not a guid, so it never clashes with /{id}.
+        group.MapGet("/mine", async ([AsParameters] MyTicketsQuery query, IMyTicketsService myTickets,
+                    CancellationToken cancellationToken) =>
+                Results.Ok(await myTickets.GetAsync(query, cancellationToken)))
+            .WithName("ListMyTickets");
+
         group.MapPost("", async (CreateTicketRequest request, ITicketService tickets, CancellationToken cancellationToken) =>
             {
                 var ticket = await tickets.CreateAsync(request, cancellationToken);

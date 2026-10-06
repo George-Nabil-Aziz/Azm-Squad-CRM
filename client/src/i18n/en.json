@@ -26,7 +26,17 @@
     "apiStatus": "API status",
     "apiOk": "ok",
     "apiLoading": "loading",
-    "apiUnavailable": "unavailable"
+    "apiUnavailable": "unavailable",
+    "myTickets": {
+      "title": "My tickets",
+      "loading": "Loading your tickets…",
+      "empty": "No tickets are assigned to you.",
+      "counters": {
+        "open": "Open",
+        "pending": "Pending",
+        "breachedToday": "Breached today"
+      }
+    }
   },
   "auth": {
     "signInTitle": "Sign in",

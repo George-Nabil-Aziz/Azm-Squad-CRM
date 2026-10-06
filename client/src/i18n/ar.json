@@ -26,7 +26,17 @@
     "apiStatus": "حالة الخادم",
     "apiOk": "يعمل",
     "apiLoading": "جارٍ التحميل",
-    "apiUnavailable": "غير متاح"
+    "apiUnavailable": "غير متاح",
+    "myTickets": {
+      "title": "تذاكري",
+      "loading": "جارٍ تحميل تذاكرك…",
+      "empty": "لا توجد تذاكر مسندة إليك.",
+      "counters": {
+        "open": "مفتوحة",
+        "pending": "معلّقة",
+        "breachedToday": "تجاوزت المهلة اليوم"
+      }
+    }
   },
   "auth": {
     "signInTitle": "تسجيل الدخول",

@@ -94,6 +94,9 @@ export function fakeApi({ healthStatus = 200, me = superAdminMe }: FakeApiOption
     if (path.startsWith('/api/notifications')) {
       return json(200, { items: [], page: 1, pageSize: 20, totalCount: 0 })
     }
+    if (path.startsWith('/api/tickets/mine')) {
+      return json(200, { counters: { open: 0, pending: 0, breachedToday: 0 }, tickets: { items: [], page: 1, pageSize: 50, totalCount: 0 } })
+    }
     if (path === '/api/tickets/assignees') {
       return json(200, [{ id: superAdminMe.id, fullName: superAdminMe.fullName }])
     }
