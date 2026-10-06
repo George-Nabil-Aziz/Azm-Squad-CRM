@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.AddScoped<IAuditLogService, AuditLogService>();
         services.AddScoped<ITicketReportService, TicketReportService>();
         services.AddScoped<ISlaReportService, SlaReportService>();
+        services.AddScoped<ICsatReportService, CsatReportService>();
         services.AddScoped<ISystemSettingsService, SystemSettingsService>();
         services.AddScoped<ISystemSettingsProvider, SystemSettingsProvider>();
         services.AddScoped<IInteractionRecorder, InteractionRecorder>();

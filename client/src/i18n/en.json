@@ -556,7 +556,8 @@
     "navigation": "Reports",
     "nav": {
       "tickets": "Tickets",
-      "sla": "SLA"
+      "sla": "SLA",
+      "satisfaction": "Satisfaction"
     },
     "loading": "Loading the report…",
     "count": "Count",
@@ -603,6 +604,24 @@
       "missed": "Missed target",
       "targetResponse": "Response",
       "targetResolution": "Resolution"
+    },
+    "csat": {
+      "average": "Average rating",
+      "ratings": "{{count}} ratings",
+      "responseRate": "Survey response rate",
+      "answered": "{{ratings}} of {{sent}} surveys answered",
+      "distribution": "Rating distribution",
+      "rating": "Rating",
+      "stars": "{{count}} stars",
+      "trend": "Average rating by day",
+      "averageShort": "Average",
+      "byAgent": "By agent",
+      "byCategory": "By category",
+      "noAgent": "No agent",
+      "low": "Low ratings (1-2)",
+      "noLow": "No low ratings in this period.",
+      "comment": "Comment",
+      "date": "Date"
     }
   }
 }

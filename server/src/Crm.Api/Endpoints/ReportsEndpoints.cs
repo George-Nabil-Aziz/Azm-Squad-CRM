@@ -27,6 +27,10 @@ public static class ReportsEndpoints
                 Results.Ok(await reports.ListBreachesAsync(query, cancellationToken)))
             .WithName("ListSlaBreaches");
 
+        group.MapGet("/csat", async ([AsParameters] CsatQuery query, ICsatReportService reports, CancellationToken cancellationToken) =>
+                Results.Ok(await reports.GetAsync(query, cancellationToken)))
+            .WithName("GetCsatReport");
+
         return app;
     }
 

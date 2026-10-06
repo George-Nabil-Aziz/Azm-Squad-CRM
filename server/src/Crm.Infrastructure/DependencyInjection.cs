@@ -64,6 +64,8 @@ public static class DependencyInjection
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
         services.AddScoped<ISettingsRepository, SettingsRepository>();
         services.AddScoped<IReportsRepository, ReportsRepository>();
+        // CRM-44 (CSAT ratings) is built on another branch: wire to CRM-44 on merge by replacing this with an EF read model.
+        services.TryAddScoped<ICsatReadModel, EmptyCsatReadModel>();
         services.AddDataProtection().SetApplicationName("CustomerSupportCrm");
         services.AddSingleton<ISecretProtector, DataProtectionSecretProtector>();
         services.AddScoped<IChannelSettingsApplier, ChannelSettingsApplier>();

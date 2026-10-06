@@ -118,3 +118,39 @@ export function getSlaReport(params: ReportRangeParams, signal?: AbortSignal): P
 export function listSlaBreaches(params: SlaBreachesParams, signal?: AbortSignal): Promise<PagedResult<BreachedTicket>> {
   return apiGet<PagedResult<BreachedTicket>>(reportPath('/api/reports/sla/breaches', params), signal)
 }
+
+export interface CsatGroup {
+  /** null = ratings of tickets without an agent / category. */
+  id: string | null
+  name: string | null
+  averageRating: number
+  count: number
+}
+
+export interface LowRating {
+  ticketId: string
+  ticketNumber: string
+  rating: number
+  comment: string | null
+  ratedAt: string
+  agentName: string | null
+}
+
+/** GET /api/reports/csat (server: CsatReportResponse). */
+export interface CsatReport {
+  from: string
+  to: string
+  totalRatings: number
+  averageRating: number | null
+  distribution: { rating: number; count: number }[]
+  byDay: { date: string; averageRating: number | null; count: number }[]
+  byAgent: CsatGroup[]
+  byCategory: CsatGroup[]
+  lowRatings: LowRating[]
+  surveysSent: number
+  responseRatePercent: number | null
+}
+
+export function getCsatReport(params: ReportRangeParams, signal?: AbortSignal): Promise<CsatReport> {
+  return apiGet<CsatReport>(reportPath('/api/reports/csat', params), signal)
+}

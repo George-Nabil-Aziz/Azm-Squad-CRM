@@ -34,3 +34,8 @@
 ## Out of scope
 
 Collecting ratings / surveys (CRM-44), export.
+
+## Deviations (as built)
+
+- The service aggregates the ratings in memory (the read model returns the range's ratings), not in SQL: the rating table does not exist on this branch. The CRM-44 implementation may pre-filter in SQL.
+- `EmptyCsatReadModel` is registered with `TryAddScoped` so the CRM-44 registration (made before or after) wins when it uses `AddScoped`/`Replace`; integration tests replace it through `WithWebHostBuilder`.
