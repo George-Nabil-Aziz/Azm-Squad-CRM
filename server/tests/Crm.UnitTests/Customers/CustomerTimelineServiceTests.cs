@@ -72,22 +72,4 @@ public class CustomerTimelineServiceTests
 
         Assert.Null(_timeline.LastList);
     }
-
-    /// <summary>A repository that knows one customer (only <see cref="FindAsync"/> is used by the timeline).</summary>
-    private sealed class OneCustomerRepository(Customer customer) : ICustomerRepository
-    {
-        public Task<Customer?> FindAsync(Guid id, CancellationToken cancellationToken) =>
-            Task.FromResult(id == customer.Id ? customer : null);
-
-        public Task<PagedResult<Customer>> ListAsync(string? search, int page, int pageSize, CancellationToken cancellationToken) =>
-            throw new NotSupportedException();
-
-        public Task<IReadOnlyList<Customer>> FindByContactAsync(
-            IReadOnlyCollection<ContactType> types, string value, CancellationToken cancellationToken) =>
-            throw new NotSupportedException();
-
-        public void Add(Customer customer) => throw new NotSupportedException();
-
-        public Task SaveChangesAsync(CancellationToken cancellationToken) => throw new NotSupportedException();
-    }
 }

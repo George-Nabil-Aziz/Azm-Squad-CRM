@@ -48,4 +48,22 @@ public static class CustomerText
     public static string TimelineTypeInvalid => LocalizedText.Get(
         "Choose customer, note, attachment, ticket or message.",
         "اختر العميل أو الملاحظة أو المرفق أو التذكرة أو الرسالة.");
+
+    public static string NoteTextField => LocalizedText.Get("Note", "الملاحظة");
+
+    public static string AttachmentRequired => LocalizedText.Get("Choose a file to upload.", "اختر ملفاً لرفعه.");
+
+    public static string AttachmentEmpty => LocalizedText.Get("The file is empty.", "الملف فارغ.");
+
+    public static string AttachmentTooLarge => LocalizedText.Get(
+        "The file is larger than 10 MB.",
+        "حجم الملف أكبر من 10 ميجابايت.");
+
+    public static string AttachmentTypeNotAllowed => LocalizedText.Get(
+        "This file type is not allowed. Allowed: PDF, images (PNG, JPG, GIF, WEBP), text, CSV, Word and Excel files.",
+        "نوع الملف غير مسموح به. المسموح: PDF والصور (PNG وJPG وGIF وWEBP) والنصوص وCSV وملفات Word وExcel.");
+
+    public static string AttachmentNotFound => LocalizedText.Get(
+        "The attachment was not found.",
+        "المرفق غير موجود.");
 }

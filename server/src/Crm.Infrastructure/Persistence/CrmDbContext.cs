@@ -18,6 +18,10 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<CustomerInteraction> CustomerInteractions => Set<CustomerInteraction>();
 
+    public DbSet<CustomerNote> CustomerNotes => Set<CustomerNote>();
+
+    public DbSet<CustomerAttachment> CustomerAttachments => Set<CustomerAttachment>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

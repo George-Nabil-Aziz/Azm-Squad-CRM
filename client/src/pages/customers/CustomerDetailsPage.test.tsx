@@ -3,7 +3,14 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { MemoryRouter, Route, Routes } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getCurrentUser, type CurrentUser } from '@/api/auth'
-import { getCustomer, getCustomerTimeline, type Customer, type CustomerInteraction } from '@/api/customers'
+import {
+  getCustomer,
+  getCustomerTimeline,
+  listCustomerAttachments,
+  listCustomerNotes,
+  type Customer,
+  type CustomerInteraction,
+} from '@/api/customers'
 import { ApiError } from '@/api/errors'
 import type { PagedResult } from '@/api/paging'
 import { createQueryClient } from '@/app/query-client'
@@ -15,6 +22,8 @@ vi.mock('@/api/auth', () => ({ getCurrentUser: vi.fn() }))
 vi.mock('@/api/customers', () => ({
   getCustomer: vi.fn(),
   getCustomerTimeline: vi.fn(),
+  listCustomerNotes: vi.fn(),
+  listCustomerAttachments: vi.fn(),
   makeCustomerContactPrimary: vi.fn(),
   removeCustomerContact: vi.fn(),
 }))
@@ -75,6 +84,8 @@ describe('CustomerDetailsPage', () => {
   beforeEach(() => {
     vi.mocked(getCurrentUser).mockReset().mockResolvedValue(signedInAgent)
     vi.mocked(getCustomer).mockReset().mockResolvedValue(nour)
+    vi.mocked(listCustomerNotes).mockReset().mockResolvedValue({ items: [], page: 1, pageSize: 10, totalCount: 0 })
+    vi.mocked(listCustomerAttachments).mockReset().mockResolvedValue([])
     vi.mocked(getCustomerTimeline)
       .mockReset()
       .mockResolvedValue(
@@ -139,6 +150,20 @@ describe('CustomerDetailsPage', () => {
 
     expect(within(item).getByRole('heading')).toHaveTextContent('Other activity')
     expect(item).toHaveTextContent('System')
+  })
+
+  it('labels note and attachment entries', async () => {
+    vi.mocked(getCustomerTimeline).mockResolvedValue(
+      timelinePage([
+        entry(2, 'attachmentAdded', 'report.pdf', 'Sara Agent', 'attachment'),
+        entry(1, 'noteAdded', 'Prefers WhatsApp.', 'Sara Agent', 'note'),
+      ]),
+    )
+    renderPage()
+
+    const items = await timelineEntries()
+
+    expect(items.map((item) => within(item).getByRole('heading').textContent)).toEqual(['File attached', 'Note added'])
   })
 
   it('says when nothing happened yet', async () => {

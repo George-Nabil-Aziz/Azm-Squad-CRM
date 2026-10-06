@@ -2,11 +2,13 @@ import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
 import { isApiError } from '@/api/errors'
+import { CustomerAttachments } from '@/features/customers/CustomerAttachments'
 import { CustomerContactsTable } from '@/features/customers/CustomerContactsTable'
+import { CustomerNotes } from '@/features/customers/CustomerNotes'
 import { CustomerTimeline } from '@/features/customers/CustomerTimeline'
 import { useCustomer } from '@/features/customers/useCustomers'
 
-/** One customer: contacts and the interaction history (route customers/:id). */
+/** One customer: contacts, notes, attachments and the interaction history (route customers/:id). */
 export function CustomerDetailsPage() {
   const { t } = useTranslation()
   const { id = '' } = useParams()
@@ -35,6 +37,8 @@ export function CustomerDetailsPage() {
               <p className="text-muted-foreground">{t('customers.contacts.empty')}</p>
             )}
           </section>
+          <CustomerNotes customerId={id} />
+          <CustomerAttachments customerId={id} />
           <CustomerTimeline customerId={id} />
         </>
       ) : (

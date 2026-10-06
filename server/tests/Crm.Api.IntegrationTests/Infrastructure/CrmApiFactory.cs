@@ -32,6 +32,9 @@ public class CrmApiFactory : WebApplicationFactory<Program>
 
     private readonly SqliteConnection _connection = new("DataSource=:memory:");
 
+    /// <summary>Root of the uploaded files of this factory (a temp folder, deleted on dispose; never inside the repository).</summary>
+    public string FilesRoot { get; } = Path.Combine(Path.GetTempPath(), "crm-tests", Guid.NewGuid().ToString("N"));
+
     public TestLoggerProvider Logs { get; } = new();
 
     /// <summary>Clock used by the app (token issue time, expiry checks). Starts at the real current time.</summary>
@@ -50,6 +53,7 @@ public class CrmApiFactory : WebApplicationFactory<Program>
             ["Jwt:SigningKey"] = JwtSigningKey,
             ["Seed:SuperAdminPassword"] = SuperAdminPassword,
             ["Database:StartupAction"] = "EnsureCreated",
+            ["FileStorage:RootPath"] = FilesRoot,
         }));
         builder.ConfigureLogging(logging => logging.AddProvider(Logs));
         builder.ConfigureTestServices(services =>
@@ -113,6 +117,10 @@ public class CrmApiFactory : WebApplicationFactory<Program>
         if (disposing)
         {
             _connection.Dispose();
+            if (Directory.Exists(FilesRoot))
+            {
+                Directory.Delete(FilesRoot, recursive: true);
+            }
         }
     }
 

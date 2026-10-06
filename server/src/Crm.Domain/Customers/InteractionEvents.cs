@@ -11,4 +11,8 @@ public static class InteractionEvents
     public const string CustomerUpdated = "customerUpdated";
 
     public const string ContactAdded = "contactAdded";
+
+    public const string NoteAdded = "noteAdded";
+
+    public const string AttachmentAdded = "attachmentAdded";
 }

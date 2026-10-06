@@ -33,14 +33,22 @@ async function readProblem(response: Response): Promise<ProblemDetails | undefin
 }
 
 interface RequestOptions {
+  /** JSON body; a FormData body is sent as multipart/form-data (the browser sets the boundary). */
   body?: unknown
   signal?: AbortSignal
+  /** 'blob' reads a file download instead of JSON. */
+  responseType?: 'json' | 'blob'
 }
 
-async function request<T>(method: string, path: string, { body, signal }: RequestOptions = {}): Promise<T> {
+async function request<T>(
+  method: string,
+  path: string,
+  { body, signal, responseType = 'json' }: RequestOptions = {},
+): Promise<T> {
+  const isForm = body instanceof FormData
   // Accept-Language: the API answers validation messages and ProblemDetails in the UI language (ar / en).
   const headers: Record<string, string> = { Accept: 'application/json', 'Accept-Language': getLanguage() }
-  if (body !== undefined) headers['Content-Type'] = 'application/json'
+  if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json'
   const accessToken = getAccessToken()
   if (accessToken) headers.Authorization = `Bearer ${accessToken}`
 
@@ -49,7 +57,7 @@ async function request<T>(method: string, path: string, { body, signal }: Reques
     response = await fetch(path, {
       method,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
       signal,
     })
   } catch (error) {
@@ -73,7 +81,18 @@ async function request<T>(method: string, path: string, { body, signal }: Reques
   }
 
   if (response.status === 204) return undefined as T
+  if (responseType === 'blob') return (await response.blob()) as T
   return (await response.json()) as T
+}
+
+/** POST of a multipart form (file uploads). */
+export function apiPostForm<T>(path: string, form: FormData, signal?: AbortSignal): Promise<T> {
+  return request<T>('POST', path, { body: form, signal })
+}
+
+/** GET of a file: the response body as a Blob (sent with the access token, unlike a plain link). */
+export function apiGetBlob(path: string, signal?: AbortSignal): Promise<Blob> {
+  return request<Blob>('GET', path, { signal, responseType: 'blob' })
 }
 
 export function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {

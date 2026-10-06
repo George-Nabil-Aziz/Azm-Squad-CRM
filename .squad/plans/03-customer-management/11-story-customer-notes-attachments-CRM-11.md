@@ -139,6 +139,12 @@ Agents keep notes and files about a customer on the customer page.
 3. Guards unchanged: `PermissionPolicyTests` (new routes; `{}` JSON to the upload → 415, never 401/403), `SoftDeleteModelTests`, `LayerDependencyTests` (Application keeps no ASP.NET reference: `IFormFile` stays in Api), `LocalizedTextCatalogTests` (new `CustomerText` rows).
 4. Client: `customers.test.ts` (+5), `client.test.ts` (+2), `CustomerNotesAttachments.test.tsx` (8), `CustomerDetailsPage.test.tsx` (mocks); guards `translations`, `no-hardcoded-text`, `theme`.
 
+**Deviations (as built):**
+- An endpoint with an `IFormFile` parameter only accepts `multipart/form-data`: routing answers **415 before authorization** for any other body. `CustomersAuthorizationTests.Request` therefore sends a small multipart body to `POST …/attachments` (it already sends "a valid body" to every write route), so the 401 / 403 rows still prove authorization. `PermissionPolicyTests` is unchanged (415 is neither 401 nor 403).
+- Client tests: `customers.test.ts` got 2 tests (notes; attachments list + upload + download) and its `fakeFetch` now creates a new `Response` per call (a body can be read once); `CustomerDetailsPage.test.tsx` got `labels note and attachment entries`. Both hooks live in `client/src/features/customers/useCustomerNotes.ts` (`useCustomerNotes`, `useCustomerAttachments`). The notes pager uses "Newer notes" / "Older notes" (the timeline already has "Previous" / "Next" on the same page) and is shown only when there is more than one page.
+- Unit fakes (`FakeNoteRepository`, `FakeAttachmentRepository`, `FakeFileStorage`, `OneCustomerRepository`, `ManualClock`) are shared in `server/tests/Crm.UnitTests/Customers/TimelineTestDoubles.cs`; the CRM-10 nested `OneCustomerRepository` moved there.
+- Results: `dotnet test` 299 unit + 213 integration; `npm test` 771 in 26 files; build and lint green.
+
 ---
 
 ## Migration / Rollback

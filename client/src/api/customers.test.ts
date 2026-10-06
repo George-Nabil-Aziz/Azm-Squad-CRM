@@ -1,8 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   addCustomerContact,
+  addCustomerNote,
   createCustomer,
   deleteCustomer,
+  downloadCustomerAttachment,
+  listCustomerAttachments,
+  listCustomerNotes,
+  uploadCustomerAttachment,
   getCustomer,
   getCustomerTimeline,
   listCustomers,
@@ -12,7 +17,8 @@ import {
 } from './customers'
 
 function fakeFetch(status = 200, body: unknown = {}) {
-  const fetchMock = vi.fn().mockResolvedValue(
+  // A new Response per call: a body can be read only once.
+  const fetchMock = vi.fn().mockImplementation(async () =>
     status === 204
       ? new Response(null, { status })
       : new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } }),
@@ -112,6 +118,38 @@ describe('customers API', () => {
     await getCustomerTimeline('c1', { type: 'note', page: 2, pageSize: 10 })
 
     expect(sent(fetchMock)).toMatchObject({ path: '/api/customers/c1/timeline?type=note&page=2&pageSize=10', method: 'GET' })
+  })
+
+  it('lists notes with paging and adds a note', async () => {
+    const fetchMock = fakeFetch(200, { items: [], page: 2, pageSize: 10, totalCount: 0 })
+
+    await listCustomerNotes('c1', { page: 2, pageSize: 10 })
+    await addCustomerNote('c1', 'Prefers WhatsApp.')
+
+    expect(sent(fetchMock)).toMatchObject({ path: '/api/customers/c1/notes?page=2&pageSize=10', method: 'GET' })
+    const [path, init] = fetchMock.mock.calls[1] as [string, RequestInit]
+    expect([path, init.method, JSON.parse(String(init.body))]).toEqual([
+      '/api/customers/c1/notes',
+      'POST',
+      { text: 'Prefers WhatsApp.' },
+    ])
+  })
+
+  it('lists attachments, uploads a file as multipart field "file" and downloads a file', async () => {
+    const fetchMock = fakeFetch(200, [])
+    const file = new File(['%PDF'], 'report.pdf', { type: 'application/pdf' })
+
+    await listCustomerAttachments('c1')
+    await uploadCustomerAttachment('c1', file)
+    await downloadCustomerAttachment('c1', 'a1')
+
+    const calls = fetchMock.mock.calls as [string, RequestInit][]
+    expect(calls.map(([path, init]) => [path, init.method])).toEqual([
+      ['/api/customers/c1/attachments', 'GET'],
+      ['/api/customers/c1/attachments', 'POST'],
+      ['/api/customers/c1/attachments/a1', 'GET'],
+    ])
+    expect((calls[1][1].body as FormData).get('file')).toBe(file)
   })
 
   it('reads the whole timeline without a query string by default', async () => {
