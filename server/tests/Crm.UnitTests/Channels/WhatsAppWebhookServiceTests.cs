@@ -9,9 +9,39 @@ public class WhatsAppWebhookServiceTests
     private const string Secret = "test-app-secret";
 
     private readonly RecordingProcessor _processor = new();
+    private readonly RecordingSender _sender = new();
 
     private WhatsAppWebhookService CreateService(string? verifyToken = "verify-me", string? secret = Secret) =>
-        new(new WhatsAppChannelOptions { VerifyToken = verifyToken, AppSecret = secret }, _processor);
+        new(new WhatsAppChannelOptions { VerifyToken = verifyToken, AppSecret = secret }, _processor, _sender);
+
+    private sealed class RecordingSender : IChannelSender
+    {
+        public List<(string Id, Crm.Domain.Channels.DeliveryStatus Status, string? Error)> Statuses { get; } = [];
+
+        public Task<bool> ApplyDeliveryStatusAsync(
+            string providerMessageId, Crm.Domain.Channels.DeliveryStatus status, string? error, CancellationToken cancellationToken)
+        {
+            Statuses.Add((providerMessageId, status, error));
+            return Task.FromResult(true);
+        }
+
+        public Task<OutboundMessageResponse> SendAsync(ChannelReply reply, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<int> RetryDueAsync(CancellationToken cancellationToken) => throw new NotSupportedException();
+
+        public ChannelStatusResponse GetStatus() => throw new NotSupportedException();
+    }
+
+    [Fact]
+    public async Task Handle_AppliesDeliveryStatuses()
+    {
+        var body = WhatsAppPayloads.Status("wamid.OUT9", "failed", 1_791_273_600, "Message undeliverable");
+
+        await CreateService().HandleAsync(body, WhatsAppSignature.Compute(body, Secret), CancellationToken.None);
+
+        Assert.Equal(("wamid.OUT9", Crm.Domain.Channels.DeliveryStatus.Failed, "Message undeliverable"), Assert.Single(_sender.Statuses));
+    }
 
     private sealed class RecordingProcessor : IInboundMessageProcessor
     {

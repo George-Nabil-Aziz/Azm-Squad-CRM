@@ -4,7 +4,7 @@ using Crm.Application.Common.Exceptions;
 
 namespace Crm.Application.Channels.WhatsApp;
 
-public sealed class WhatsAppWebhookService(WhatsAppChannelOptions options, IInboundMessageProcessor processor)
+public sealed class WhatsAppWebhookService(WhatsAppChannelOptions options, IInboundMessageProcessor processor, IChannelSender sender)
     : IWhatsAppWebhookService
 {
     public string VerifySubscription(string? mode, string? verifyToken, string? challenge)
@@ -29,6 +29,11 @@ public sealed class WhatsAppWebhookService(WhatsAppChannelOptions options, IInbo
         foreach (var message in payload.Messages)
         {
             await processor.ProcessAsync(message, cancellationToken);
+        }
+
+        foreach (var status in payload.Statuses)
+        {
+            await sender.ApplyDeliveryStatusAsync(status.MessageId, status.Status, status.Error, cancellationToken);
         }
     }
 

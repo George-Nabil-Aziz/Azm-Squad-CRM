@@ -38,6 +38,32 @@ public class WhatsAppWebhookParserTests
             WhatsAppPayloads.Image("wamid.A3", "966501234567", Timestamp)).Messages).Body);
 
     [Theory]
+    [InlineData("sent", DeliveryStatus.Sent)]
+    [InlineData("delivered", DeliveryStatus.Delivered)]
+    [InlineData("read", DeliveryStatus.Read)]
+    public void Parse_Status_ReadsIdStatusAndTime(string status, DeliveryStatus expected)
+    {
+        var payload = WhatsAppWebhookParser.Parse(WhatsAppPayloads.Status("wamid.OUT1", status, Timestamp));
+
+        var update = Assert.Single(payload.Statuses);
+        Assert.Equal(("wamid.OUT1", expected, At, (string?)null), (update.MessageId, update.Status, update.Timestamp, update.Error));
+        Assert.Empty(payload.Messages);
+    }
+
+    [Fact]
+    public void Parse_FailedStatus_ReadsTheError()
+    {
+        var update = Assert.Single(WhatsAppWebhookParser.Parse(
+            WhatsAppPayloads.Status("wamid.OUT2", "failed", Timestamp, "Re-engagement message")).Statuses);
+
+        Assert.Equal((DeliveryStatus.Failed, "Re-engagement message"), (update.Status, update.Error));
+    }
+
+    [Fact]
+    public void Parse_UnknownStatus_IsSkipped() =>
+        Assert.Empty(WhatsAppWebhookParser.Parse(WhatsAppPayloads.Status("wamid.OUT3", "deleted", Timestamp)).Statuses);
+
+    [Theory]
     [InlineData("")]
     [InlineData("not json")]
     [InlineData("[]")]

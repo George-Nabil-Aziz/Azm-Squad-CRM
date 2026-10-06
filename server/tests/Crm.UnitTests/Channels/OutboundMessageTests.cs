@@ -94,6 +94,34 @@ public class OutboundMessageTests
     }
 
     [Fact]
+    public void ApplyDeliveryStatus_NeverGoesBackwards()
+    {
+        var message = NewMessage();
+        message.MarkSent("wamid.1", Now);
+
+        message.ApplyDeliveryStatus(DeliveryStatus.Read, null, Now.AddMinutes(2));
+        message.ApplyDeliveryStatus(DeliveryStatus.Delivered, null, Now.AddMinutes(3)); // late webhook
+        message.ApplyDeliveryStatus(DeliveryStatus.Sent, null, Now.AddMinutes(4));
+
+        Assert.Equal(DeliveryStatus.Read, message.Status);
+        Assert.Equal(Now.AddMinutes(2), message.UpdatedAt);
+    }
+
+    [Fact]
+    public void ApplyDeliveryStatus_Failed_StoresTheError_AndIsNotRetried()
+    {
+        var message = NewMessage();
+        message.MarkSent("wamid.1", Now);
+
+        message.ApplyDeliveryStatus(DeliveryStatus.Failed, "Message undeliverable", Now.AddMinutes(1));
+
+        Assert.Equal(DeliveryStatus.Failed, message.Status);
+        Assert.Equal("Message undeliverable", message.LastError);
+        Assert.Null(message.NextAttemptAt);
+        Assert.False(message.IsDueForRetry(Now.AddDays(1)));
+    }
+
+    [Fact]
     public void MarkFailed_CutsLongErrors()
     {
         var message = NewMessage();

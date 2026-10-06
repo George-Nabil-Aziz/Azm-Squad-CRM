@@ -17,6 +17,10 @@ public static class ChannelText
         "This channel cannot send messages.",
         "لا يمكن إرسال الرسائل عبر هذه القناة.");
 
+    public static string WhatsAppWindowClosed => LocalizedText.Get(
+        "The last customer message is older than 24 hours. Send an approved template instead.",
+        "مرّ أكثر من 24 ساعة على آخر رسالة من العميل. أرسل قالباً معتمداً بدلاً من ذلك.");
+
     public static string WebhookVerifyTokenInvalid => LocalizedText.Get(
         "The webhook verify token is not valid.",
         "رمز التحقق من الـ Webhook غير صحيح.");

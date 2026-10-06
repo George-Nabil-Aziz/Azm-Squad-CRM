@@ -35,7 +35,7 @@ public class WhatsAppWebhookTests(CrmApiFactory factory) : IClassFixture<CrmApiF
     }
 
     /// <summary>A random Saudi mobile number as WhatsApp sends it (digits, no "+").</summary>
-    private static string NewWaId() => "9665" + Random.Shared.Next(10_000_000, 99_999_999).ToString(System.Globalization.CultureInfo.InvariantCulture);
+    private static string NewWaId() => "96650" + Random.Shared.Next(1_000_000, 9_999_999).ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     [Fact]
     public async Task Verify_WithTheRightToken_ReturnsTheChallenge()

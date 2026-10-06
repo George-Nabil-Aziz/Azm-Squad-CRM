@@ -1,5 +1,6 @@
 using Crm.Application.Channels;
 using Crm.Infrastructure.Channels.Email;
+using Crm.Infrastructure.Channels.WhatsApp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,6 +25,8 @@ public static class ChannelsServiceCollectionExtensions
 
         services.AddSingleton<ISmtpTransport, MailKitSmtpTransport>();
         services.AddScoped<IChannelProvider, SmtpEmailProvider>();
+        services.AddHttpClient<WhatsAppCloudClient>();
+        services.AddScoped<IChannelProvider, WhatsAppChannelProvider>();
         services.AddScoped<IOutboundMessageRepository, OutboundMessageRepository>();
 
         services.AddSingleton<IImapMailbox, MailKitImapMailbox>();
