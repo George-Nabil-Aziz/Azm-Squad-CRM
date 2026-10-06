@@ -10,7 +10,8 @@ import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { QuickReplyPicker } from './QuickReplyPicker'
-import { ticketsQueryKey } from './useTickets'
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
+import { ticketsQueryKey, useTicketAssignees } from './useTickets'
 
 /** Reply box of a ticket: a reply to the customer, or (toggle) an internal note the customer never sees. */
 export function TicketReplyForm({ ticketId }: { ticketId: string }) {
@@ -21,13 +22,24 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
   const [error, setError] = useState<string | null>(null)
   const [template, setTemplate] = useState('')
   const [templateOffered, setTemplateOffered] = useState(false)
+  const [mentions, setMentions] = useState<{ id: string; name: string }[]>([])
+  const assignees = useTicketAssignees()
 
   const send = useMutation({
-    mutationFn: (body: string) =>
-      addTicketMessage(ticketId, template.trim() ? { body, internal, templateName: template.trim() } : { body, internal }),
+    mutationFn: (body: string) => {
+      // Only colleagues whose @Name is still in the note are mentioned, and only internal notes mention anybody.
+      const mentionedUserIds = internal ? mentions.filter((m) => body.includes(`@${m.name}`)).map((m) => m.id) : []
+      return addTicketMessage(ticketId, {
+        body,
+        internal,
+        ...(template.trim() ? { templateName: template.trim() } : {}),
+        ...(mentionedUserIds.length > 0 ? { mentionedUserIds } : {}),
+      })
+    },
     onSuccess: async () => {
       toast.success(t(internal ? 'tickets.details.noteAdded' : 'tickets.details.replySent'))
       setText('')
+      setMentions([])
       setTemplate('')
       setTemplateOffered(false)
       setError(null)
@@ -77,6 +89,28 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
               value={template}
               onChange={(event) => setTemplate(event.target.value)}
             />
+          </Field>
+        ) : null}
+        {internal ? (
+          <Field>
+            <FieldLabel htmlFor="ticket-message-mention">{t('tickets.details.mention')}</FieldLabel>
+            <NativeSelect
+              id="ticket-message-mention"
+              value=""
+              onChange={(event) => {
+                const colleague = assignees.data?.find((a) => a.id === event.target.value)
+                if (!colleague) return
+                setMentions((current) => [...current.filter((m) => m.id !== colleague.id), { id: colleague.id, name: colleague.fullName }])
+                setText((current) => `${current}${current && !current.endsWith(' ') ? ' ' : ''}@${colleague.fullName} `)
+              }}
+            >
+              <NativeSelectOption value="">{t('tickets.details.mentionPlaceholder')}</NativeSelectOption>
+              {assignees.data?.map((assignee) => (
+                <NativeSelectOption key={assignee.id} value={assignee.id}>
+                  {assignee.fullName}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
           </Field>
         ) : null}
         <Field orientation="horizontal">

@@ -216,6 +216,42 @@ describe('TicketDetailsPage', () => {
     await waitFor(() => expect(addTicketMessage).toHaveBeenCalledWith('t1', { body: 'Customer is a VIP.', internal: true }))
   })
 
+  it('mentions a colleague in an internal note and sends the id', async () => {
+    renderPage()
+    await screen.findByRole('heading', { name: 'Invoice is wrong' })
+    expect(screen.queryByLabelText('Mention a colleague')).not.toBeInTheDocument() // replies to the customer cannot mention anybody
+
+    fireEvent.click(await screen.findByRole('checkbox', { name: 'Internal note (the customer never sees it)' }))
+    await waitFor(() => expect(listTicketAssignees).toHaveBeenCalled())
+    const select = await screen.findByLabelText('Mention a colleague')
+    await screen.findByRole('option', { name: 'Omar Agent' })
+    fireEvent.change(select, { target: { value: '4' } })
+    expect(screen.getByLabelText('Message')).toHaveValue('@Omar Agent ')
+    fireEvent.change(screen.getByLabelText('Message'), { target: { value: '@Omar Agent please check the invoice' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Add note' }))
+
+    await waitFor(() =>
+      expect(addTicketMessage).toHaveBeenCalledWith('t1', {
+        body: '@Omar Agent please check the invoice',
+        internal: true,
+        mentionedUserIds: ['4'],
+      }),
+    )
+  })
+
+  it('does not send a mention whose @name was removed from the note', async () => {
+    renderPage()
+    await screen.findByRole('heading', { name: 'Invoice is wrong' })
+    fireEvent.click(await screen.findByRole('checkbox', { name: 'Internal note (the customer never sees it)' }))
+    await screen.findByRole('option', { name: 'Omar Agent' })
+    fireEvent.change(await screen.findByLabelText('Mention a colleague'), { target: { value: '4' } })
+
+    fireEvent.change(screen.getByLabelText('Message'), { target: { value: 'never mind' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Add note' }))
+
+    await waitFor(() => expect(addTicketMessage).toHaveBeenCalledWith('t1', { body: 'never mind', internal: true }))
+  })
+
   it('does not send an empty message', async () => {
     renderPage()
     await screen.findByRole('heading', { name: 'Invoice is wrong' })

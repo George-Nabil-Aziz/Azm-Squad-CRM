@@ -229,7 +229,9 @@
       "updated": "تم تحديث التذكرة.",
       "tabs": "أقسام التذكرة",
       "conversationTab": "المحادثة",
-      "historyTab": "السجل"
+      "historyTab": "السجل",
+      "mention": "الإشارة إلى زميل",
+      "mentionPlaceholder": "اختر زميلاً"
     },
     "history": {
       "title": "السجل",

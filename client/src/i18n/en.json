@@ -229,7 +229,9 @@
       "updated": "The ticket was updated.",
       "tabs": "Ticket sections",
       "conversationTab": "Conversation",
-      "historyTab": "History"
+      "historyTab": "History",
+      "mention": "Mention a colleague",
+      "mentionPlaceholder": "Choose a colleague"
     },
     "history": {
       "title": "History",
