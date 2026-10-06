@@ -199,7 +199,17 @@
       "assign": "Assign",
       "assignToMe": "Assign to me",
       "assigned": "The ticket was assigned.",
-      "unassigned": "The ticket is now unassigned."
+      "unassigned": "The ticket is now unassigned.",
+      "resolvedAt": "Resolved at",
+      "statusChanged": "The ticket is now {{status}}.",
+      "statusActions": {
+        "title": "Change status",
+        "open": "Open",
+        "pending": "Set pending",
+        "resolved": "Resolve",
+        "closed": "Close",
+        "reopen": "Reopen"
+      }
     }
   },
   "ticketCategories": {

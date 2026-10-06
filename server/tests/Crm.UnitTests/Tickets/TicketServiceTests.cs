@@ -172,7 +172,8 @@ public class TicketServiceTests
 
         var found = await _service.GetAsync(created.Id, CancellationToken.None);
 
-        Assert.Equal(created, found);
+        Assert.Equal(created with { AllowedStatuses = found.AllowedStatuses }, found);
+        Assert.Equal(created.AllowedStatuses, found.AllowedStatuses);
     }
 
     [Fact]

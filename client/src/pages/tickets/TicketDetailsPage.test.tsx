@@ -7,6 +7,7 @@ import { ApiError } from '@/api/errors'
 import {
   addTicketMessage,
   assignTicket,
+  changeTicketStatus,
   getTicket,
   listTicketAssignees,
   listTicketMessages,
@@ -23,6 +24,7 @@ vi.mock('@/api/tickets', () => ({
   listTicketMessages: vi.fn(),
   addTicketMessage: vi.fn(),
   assignTicket: vi.fn(),
+  changeTicketStatus: vi.fn(),
   listTicketAssignees: vi.fn(),
 }))
 
@@ -61,6 +63,8 @@ const invoiceTicket: Ticket = {
   createdAt: '2026-10-01T08:00:00Z',
   updatedAt: '2026-10-01T08:00:00Z',
   firstResponseAt: null,
+  resolvedAt: null,
+  allowedStatuses: [],
 }
 
 function message(overrides: Partial<TicketMessage>): TicketMessage {
@@ -101,6 +105,7 @@ describe('TicketDetailsPage', () => {
       { id: '4', fullName: 'Omar Agent' },
     ])
     vi.mocked(assignTicket).mockReset().mockResolvedValue({ ...invoiceTicket, assigneeId: '4', assigneeName: 'Omar Agent' })
+    vi.mocked(changeTicketStatus).mockReset().mockResolvedValue({ ...invoiceTicket, status: 'pending' })
   })
 
   it('shows the ticket with its customer, status and description', async () => {
@@ -279,6 +284,70 @@ describe('TicketDetailsPage', () => {
       await screen.findByRole('heading', { name: 'Invoice is wrong' })
       expect(screen.queryByLabelText('Assign to')).not.toBeInTheDocument()
       expect(screen.queryByRole('button', { name: 'Assign to me' })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('status workflow', () => {
+    function withStatus(status: Ticket['status'], allowedStatuses: Ticket['allowedStatuses'], resolvedAt: string | null = null) {
+      vi.mocked(getTicket).mockResolvedValue({ ...invoiceTicket, status, allowedStatuses, resolvedAt })
+    }
+
+    it('offers only the allowed moves of an open ticket', async () => {
+      withStatus('open', ['pending', 'resolved'])
+      renderPage()
+
+      expect(await screen.findByRole('button', { name: 'Set pending' })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Resolve' })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument()
+    })
+
+    it('sends the chosen status', async () => {
+      withStatus('open', ['pending', 'resolved'])
+      renderPage()
+
+      fireEvent.click(await screen.findByRole('button', { name: 'Set pending' }))
+
+      await waitFor(() => expect(changeTicketStatus).toHaveBeenCalledWith('t1', 'pending'))
+    })
+
+    it('offers Close and Reopen on a resolved ticket and shows when it was resolved', async () => {
+      withStatus('resolved', ['open', 'closed'], '2026-10-02T10:00:00Z')
+      renderPage()
+
+      expect(await screen.findByRole('button', { name: 'Close' })).toBeInTheDocument()
+      fireEvent.click(screen.getByRole('button', { name: 'Reopen' }))
+
+      await waitFor(() => expect(changeTicketStatus).toHaveBeenCalledWith('t1', 'open'))
+      expect(screen.getByText('Resolved at')).toBeInTheDocument()
+    })
+
+    it('offers only Reopen on a closed ticket', async () => {
+      withStatus('closed', ['open'])
+      renderPage()
+
+      expect(await screen.findByRole('button', { name: 'Reopen' })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument()
+    })
+
+    it('shows the server message when the move is refused', async () => {
+      withStatus('open', ['pending', 'resolved'])
+      vi.mocked(changeTicketStatus).mockRejectedValue(
+        new ApiError('bad', 400, { status: 400, errors: { status: ['A closed ticket can only move to: open.'] } }),
+      )
+      renderPage()
+
+      fireEvent.click(await screen.findByRole('button', { name: 'Resolve' }))
+
+      expect(await screen.findByText('A closed ticket can only move to: open.')).toBeInTheDocument()
+    })
+
+    it('shows no status actions without the manage permission', async () => {
+      vi.mocked(getCurrentUser).mockResolvedValue(viewer)
+      withStatus('open', ['pending', 'resolved'])
+      renderPage()
+
+      await screen.findByRole('heading', { name: 'Invoice is wrong' })
+      expect(screen.queryByRole('button', { name: 'Resolve' })).not.toBeInTheDocument()
     })
   })
 })

@@ -29,6 +29,10 @@ public static class TicketText
         "Choose new, open, pending, resolved or closed.",
         "اختر جديدة أو مفتوحة أو معلّقة أو محلولة أو مغلقة.");
 
+    public static string StatusTargetInvalid => LocalizedText.Get(
+        "Choose open, pending, resolved or closed.",
+        "اختر مفتوحة أو معلّقة أو محلولة أو مغلقة.");
+
     public static string DateRangeInvalid => LocalizedText.Get(
         "The end date must not be before the start date.",
         "يجب ألا يكون تاريخ النهاية قبل تاريخ البداية.");
@@ -48,6 +52,11 @@ public static class TicketText
     public static string AssignForbidden => LocalizedText.Get(
         "You may only assign a ticket to yourself.",
         "يمكنك إسناد التذكرة إلى نفسك فقط.");
+
+    /// <summary>"A closed ticket can only move to: open."</summary>
+    public static string StatusTransitionInvalid(string from, IEnumerable<string> allowed) => LocalizedText.Get(
+        $"A {from} ticket can only move to: {string.Join(", ", allowed)}.",
+        $"التذكرة في حالة {from} يمكن نقلها فقط إلى: {string.Join("، ", allowed)}.");
 
     public static string NotFound => LocalizedText.Get(
         "The ticket was not found.",

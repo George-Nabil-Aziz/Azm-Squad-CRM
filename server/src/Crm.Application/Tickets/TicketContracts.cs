@@ -28,7 +28,9 @@ public sealed record TicketResponse(
     string? AssigneeName,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    DateTime? FirstResponseAt);
+    DateTime? FirstResponseAt,
+    DateTime? ResolvedAt,
+    IReadOnlyList<string> AllowedStatuses);
 
 /// <summary>A ticket with the names it shows (read model filled by the repository).</summary>
 public sealed record TicketView(Ticket Ticket, string CustomerName, string? CategoryName, string? AssigneeName);

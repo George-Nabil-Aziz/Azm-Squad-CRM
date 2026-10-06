@@ -159,6 +159,72 @@ public class TicketTests
     }
 
     [Fact]
+    public void ChangeStatus_MovesTheTicket_AndBumpsUpdatedAt()
+    {
+        var ticket = NewTicket();
+
+        ticket.ChangeStatus(TicketStatus.Open, Now.AddMinutes(5));
+
+        Assert.Equal(TicketStatus.Open, ticket.Status);
+        Assert.Equal(Now.AddMinutes(5), ticket.UpdatedAt);
+        Assert.Null(ticket.ResolvedAt);
+    }
+
+    [Fact]
+    public void ChangeStatus_ToResolved_SetsResolvedAt_AndOtherMovesKeepIt()
+    {
+        var ticket = NewTicket();
+        ticket.ChangeStatus(TicketStatus.Open, Now);
+        var resolvedTime = Now.AddHours(1);
+
+        ticket.ChangeStatus(TicketStatus.Resolved, resolvedTime);
+        ticket.ChangeStatus(TicketStatus.Closed, Now.AddDays(1));
+
+        Assert.Equal(resolvedTime, ticket.ResolvedAt);
+        Assert.Equal(DateTimeKind.Utc, ticket.ResolvedAt!.Value.Kind);
+    }
+
+    [Theory]
+    [InlineData(TicketStatus.Resolved)]
+    [InlineData(TicketStatus.Closed)]
+    public void Reopen_ClearsResolvedAt(TicketStatus from)
+    {
+        var ticket = NewTicket();
+        ticket.ChangeStatus(TicketStatus.Open, Now);
+        ticket.ChangeStatus(TicketStatus.Resolved, Now.AddHours(1));
+        if (from == TicketStatus.Closed)
+        {
+            ticket.ChangeStatus(TicketStatus.Closed, Now.AddHours(2));
+        }
+
+        ticket.ChangeStatus(TicketStatus.Open, Now.AddHours(3));
+
+        Assert.Equal(TicketStatus.Open, ticket.Status);
+        Assert.Null(ticket.ResolvedAt);
+    }
+
+    [Fact]
+    public void ChangeStatus_WithAnIllegalMove_ThrowsAndChangesNothing()
+    {
+        var ticket = NewTicket();
+        TicketTestSupport.SetStatus(ticket, TicketStatus.Closed);
+
+        var error = Assert.Throws<InvalidTicketStatusTransitionException>(() => ticket.ChangeStatus(TicketStatus.Pending, Now.AddMinutes(1)));
+
+        Assert.Equal((TicketStatus.Closed, TicketStatus.Pending), (error.From, error.To));
+        Assert.Equal(TicketStatus.Closed, ticket.Status);
+        Assert.Equal(Now, ticket.UpdatedAt);
+    }
+
+    [Fact]
+    public void ChangeStatus_ToTheSameStatus_Throws() =>
+        Assert.Throws<InvalidTicketStatusTransitionException>(() => NewTicket().ChangeStatus(TicketStatus.New, Now));
+
+    [Fact]
+    public void ChangeStatus_WithNonUtcTime_Throws() =>
+        Assert.Throws<ArgumentException>(() => NewTicket().ChangeStatus(TicketStatus.Open, DateTime.SpecifyKind(Now, DateTimeKind.Local)));
+
+    [Fact]
     public void AcceptsMessages_IsFalseOnlyWhenClosed()
     {
         foreach (var status in Enum.GetValues<TicketStatus>())

@@ -86,7 +86,7 @@ Tickets move through one consistent flow.
 
 ## Done Criteria
 
-- [ ] AC 1–4 covered by unit + integration (+ client) tests; migration applies; strings in en + ar.
+- [x] AC 1–4 covered by unit + integration (+ client) tests; migration applies; strings in en + ar.
 
 ## How later stories build on this
 
@@ -95,4 +95,5 @@ Tickets move through one consistent flow.
 
 ## Deviations (as built)
 
-(none yet)
+- Status move errors: unknown name -> `StatusTargetInvalid` (open, pending, resolved or closed); illegal move -> `StatusTransitionInvalid` listing the allowed targets.
+- Client status buttons filter out `new` (nothing moves back to New). Migration `AddTicketResolvedAt`.

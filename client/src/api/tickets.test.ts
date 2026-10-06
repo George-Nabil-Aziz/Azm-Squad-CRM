@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   addTicketMessage,
   assignTicket,
+  changeTicketStatus,
   createTicket,
   getTicket,
   listTicketAssignees,
@@ -129,5 +130,13 @@ describe('tickets API', () => {
     await assignTicket('t1', null)
 
     expect(sent(fetchMock).body).toEqual({ assigneeId: null })
+  })
+
+  it('changes the status with PUT /api/tickets/{id}/status', async () => {
+    const fetchMock = fakeFetch(200, { id: 't1' })
+
+    await changeTicketStatus('t1', 'resolved')
+
+    expect(sent(fetchMock)).toEqual({ path: '/api/tickets/t1/status', method: 'PUT', body: { status: 'resolved' } })
   })
 })

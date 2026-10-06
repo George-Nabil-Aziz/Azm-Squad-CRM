@@ -1,5 +1,5 @@
 import type { TicketChannel, TicketPriority, TicketStatus } from '@/features/tickets/ticket-values'
-import { apiGet, apiPost } from './client'
+import { apiGet, apiPost, apiPut } from './client'
 import type { PagedResult } from './paging'
 
 /**
@@ -77,6 +77,10 @@ export interface Ticket {
   updatedAt: string
   /** When an agent first answered the customer (UTC ISO); null until then. */
   firstResponseAt: string | null
+  /** When the ticket became resolved (UTC ISO); null while it is not (cleared on reopen). */
+  resolvedAt: string | null
+  /** Statuses the ticket may move to now (workflow order); empty when none. */
+  allowedStatuses: TicketStatus[]
 }
 
 /** One entry of a ticket thread (server: TicketMessageResponse). "internal" notes are never shown to the customer. */
@@ -97,6 +101,11 @@ export interface TicketMessage {
 export interface AddTicketMessageRequest {
   body: string
   internal: boolean
+}
+
+/** Moves the ticket along the workflow; 400 on `status` for a move the workflow does not allow (see `allowedStatuses`). */
+export function changeTicketStatus(ticketId: string, status: TicketStatus): Promise<Ticket> {
+  return apiPut<Ticket>(`/api/tickets/${encodeURIComponent(ticketId)}/status`, { status })
 }
 
 /**

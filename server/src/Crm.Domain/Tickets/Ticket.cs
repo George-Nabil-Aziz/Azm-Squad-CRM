@@ -51,6 +51,9 @@ public sealed class Ticket
     /// <summary>When an agent first answered the customer (UTC); null until then. Used by SLA. Set by <see cref="RecordAgentReply"/> only.</summary>
     public DateTime? FirstResponseAt { get; private set; }
 
+    /// <summary>When the ticket became Resolved (UTC); null while it is not. Cleared when the ticket is reopened.</summary>
+    public DateTime? ResolvedAt { get; private set; }
+
     /// <summary>A closed ticket takes no replies or notes (until it is reopened).</summary>
     public bool AcceptsMessages => Status != TicketStatus.Closed;
 
@@ -112,6 +115,35 @@ public sealed class Ticket
         }
 
         FirstResponseAt ??= utcNow;
+        UpdatedAt = utcNow;
+    }
+
+    /// <summary>
+    /// Moves the ticket along the workflow (<see cref="TicketStatusRules"/>). Becoming Resolved sets <see cref="ResolvedAt"/>;
+    /// reopening (Resolved / Closed → Open) clears it. Throws <see cref="InvalidTicketStatusTransitionException"/> for an illegal move.
+    /// </summary>
+    public void ChangeStatus(TicketStatus to, DateTime utcNow)
+    {
+        if (utcNow.Kind != DateTimeKind.Utc)
+        {
+            throw new ArgumentException("The time must be UTC (DateTimeKind.Utc).", nameof(utcNow));
+        }
+
+        if (!TicketStatusRules.CanMove(Status, to))
+        {
+            throw new InvalidTicketStatusTransitionException(Status, to);
+        }
+
+        if (to == TicketStatus.Resolved)
+        {
+            ResolvedAt = utcNow;
+        }
+        else if (TicketStatusRules.IsReopen(Status, to))
+        {
+            ResolvedAt = null;
+        }
+
+        Status = to;
         UpdatedAt = utcNow;
     }
 

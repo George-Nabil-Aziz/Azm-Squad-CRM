@@ -199,7 +199,17 @@
       "assign": "إسناد",
       "assignToMe": "إسناد إليّ",
       "assigned": "تم إسناد التذكرة.",
-      "unassigned": "أصبحت التذكرة غير مسندة."
+      "unassigned": "أصبحت التذكرة غير مسندة.",
+      "resolvedAt": "وقت الحل",
+      "statusChanged": "أصبحت حالة التذكرة: {{status}}.",
+      "statusActions": {
+        "title": "تغيير الحالة",
+        "open": "فتح",
+        "pending": "تعليق",
+        "resolved": "حل",
+        "closed": "إغلاق",
+        "reopen": "إعادة فتح"
+      }
     }
   },
   "ticketCategories": {

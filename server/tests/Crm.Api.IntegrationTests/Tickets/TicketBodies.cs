@@ -23,7 +23,9 @@ public sealed record TicketBody(
     string? AssigneeName,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    DateTime? FirstResponseAt = null);
+    DateTime? FirstResponseAt = null,
+    DateTime? ResolvedAt = null,
+    string[]? AllowedStatuses = null);
 
 /// <summary>Arranges customers, categories and tickets through the real API.</summary>
 public static class TicketArrange
