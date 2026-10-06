@@ -29,9 +29,26 @@ internal sealed class FakeReportsRepository : IReportsRepository
         return Task.FromResult(AgentAggregates);
     }
 
+    public int OpenTickets { get; set; }
+
+    public int BreachedToday { get; set; }
+
+    public (DateTime Start, DateTime End, DateTime Now)? LastToday { get; private set; }
+
+    public Task<int> OpenTicketsAsync(CancellationToken cancellationToken) => Task.FromResult(OpenTickets);
+
+    public Task<int> BreachedTodayAsync(DateTime dayStartUtc, DateTime dayEndUtc, DateTime nowUtc, CancellationToken cancellationToken)
+    {
+        LastToday = (dayStartUtc, dayEndUtc, nowUtc);
+        return Task.FromResult(BreachedToday);
+    }
+
+    public List<TicketReportFilter> TicketFilters { get; } = [];
+
     public Task<TicketCounts> TicketCountsAsync(TicketReportFilter filter, CancellationToken cancellationToken)
     {
         LastTicketFilter = filter;
+        TicketFilters.Add(filter);
         return Task.FromResult(TicketCounts);
     }
 

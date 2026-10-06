@@ -40,6 +40,10 @@ public static class ReportsEndpoints
                 ToFile(await reports.ExportAsync(query, format, cancellationToken)))
             .WithName("ExportAgentReport");
 
+        group.MapGet("/dashboard", async (IDashboardService dashboard, CancellationToken cancellationToken) =>
+                Results.Ok(await dashboard.GetAsync(cancellationToken)))
+            .WithName("GetManagementDashboard");
+
         return app;
     }
 

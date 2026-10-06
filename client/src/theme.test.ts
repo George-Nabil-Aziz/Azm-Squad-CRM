@@ -63,6 +63,9 @@ describe('theme', () => {
 
   it('uses no hard-coded hex colors in source files', () => {
     const offenders = Object.entries(sources)
+      // The generated shadcn chart only names Recharts' default "#ccc" / "#fff" attributes in selectors to restyle them
+      // with theme variables; it paints nothing with a hex color.
+      .filter(([path]) => path !== './components/ui/chart.tsx')
       .filter(([, text]) => /#[0-9a-fA-F]{3,8}\b/.test(text))
       .map(([path]) => path)
     expect(offenders).toEqual([])

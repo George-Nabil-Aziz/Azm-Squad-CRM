@@ -47,6 +47,12 @@ public interface IReportsRepository
     /// <summary>Per assignee: tickets created in the range with their SLA counts and minute sums (unassigned tickets are left out).</summary>
     Task<IReadOnlyList<AgentAggregate>> AgentAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken);
 
+    /// <summary>Tickets that are not resolved or closed, now.</summary>
+    Task<int> OpenTicketsAsync(CancellationToken cancellationToken);
+
+    /// <summary>Tickets with a response or resolution due time inside the day (UTC) that is breached at <c>nowUtc</c>.</summary>
+    Task<int> BreachedTodayAsync(DateTime dayStartUtc, DateTime dayEndUtc, DateTime nowUtc, CancellationToken cancellationToken);
+
     Task<IReadOnlyList<SlaAggregate>> SlaAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken);
 
     /// <summary>Tickets of the range whose response or resolution is breached at <c>NowUtc</c>, newest first.</summary>

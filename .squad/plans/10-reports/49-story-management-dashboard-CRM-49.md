@@ -32,3 +32,9 @@ A live dashboard for managers: `GET /api/reports/dashboard` and the page `/repor
 ## Out of scope
 
 SignalR push, per-user layouts, drill-down from the charts, configurable windows.
+
+## Deviations (as built)
+
+- `theme.test.ts` (hex-color guard) skips the generated `components/ui/chart.tsx`: it only names Recharts' default `#ccc` / `#fff` attributes inside selectors to restyle them with theme variables.
+- The reports area opens on the dashboard (`/reports` redirects to `/reports/dashboard`); ticket / SLA / agents / satisfaction reports stay in the sub navigation.
+- Real time = 30 s polling (`refetchInterval`), no SignalR (as planned).

@@ -95,6 +95,17 @@ public sealed class ReportsRepository(CrmDbContext db) : IReportsRepository
         ];
     }
 
+    public Task<int> OpenTicketsAsync(CancellationToken cancellationToken) =>
+        db.Tickets.AsNoTracking().CountAsync(t => t.Status != TicketStatus.Resolved && t.Status != TicketStatus.Closed, cancellationToken);
+
+    public Task<int> BreachedTodayAsync(DateTime dayStartUtc, DateTime dayEndUtc, DateTime nowUtc, CancellationToken cancellationToken) =>
+        db.Tickets.AsNoTracking().CountAsync(t =>
+            (t.ResponseDueAt != null && t.ResponseDueAt >= dayStartUtc && t.ResponseDueAt < dayEndUtc
+             && ((t.FirstResponseAt != null && t.FirstResponseAt > t.ResponseDueAt) || (t.FirstResponseAt == null && t.ResponseDueAt <= nowUtc)))
+            || (t.ResolutionDueAt != null && t.ResolutionDueAt >= dayStartUtc && t.ResolutionDueAt < dayEndUtc
+                && ((t.ResolvedAt != null && t.ResolvedAt > t.ResolutionDueAt) || (t.ResolvedAt == null && t.ResolutionDueAt <= nowUtc))),
+            cancellationToken);
+
     public async Task<IReadOnlyList<AgentAggregate>> AgentAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken)
     {
         var now = filter.NowUtc;

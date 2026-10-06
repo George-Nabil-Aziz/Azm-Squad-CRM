@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 
 /** Sub navigation of the reports area; every report is a child route. */
 const reportLinks = [
+  { id: 'dashboard', path: '/reports/dashboard' },
   { id: 'tickets', path: '/reports/tickets' },
   { id: 'sla', path: '/reports/sla' },
   { id: 'agents', path: '/reports/agents' },

@@ -558,7 +558,8 @@
       "tickets": "Tickets",
       "sla": "SLA",
       "satisfaction": "Satisfaction",
-      "agents": "Agents"
+      "agents": "Agents",
+      "dashboard": "Dashboard"
     },
     "loading": "Loading the report…",
     "count": "Count",
@@ -632,6 +633,16 @@
       "handled": "Tickets handled",
       "sla": "SLA met",
       "csat": "Average CSAT"
+    },
+    "dashboard": {
+      "updated": "Updated at {{time}} (refreshes every 30 seconds)",
+      "open": "Open tickets",
+      "breachedToday": "Breached today",
+      "avgResponse": "Average response time",
+      "avgCsat": "Average CSAT",
+      "last30": "Last 30 days",
+      "perDay": "Tickets per day",
+      "byChannel": "Tickets by channel"
     }
   }
 }

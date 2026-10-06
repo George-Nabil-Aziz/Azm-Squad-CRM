@@ -180,3 +180,19 @@ export function getAgentReport(params: ReportRangeParams, signal?: AbortSignal):
 export function exportAgentReport(params: ReportRangeParams, format: ExportFormat): Promise<Blob> {
   return apiGetBlob(reportPath('/api/reports/agents/export', { ...params, format }))
 }
+
+/** GET /api/reports/dashboard (server: DashboardResponse). */
+export interface Dashboard {
+  generatedAt: string
+  openTickets: number
+  breachedToday: number
+  averageResponseMinutes: number | null
+  averageCsat: number | null
+  csatCount: number
+  ticketsPerDay: DailyCount[]
+  ticketsByChannel: ReportCount<TicketChannel>[]
+}
+
+export function getDashboard(signal?: AbortSignal): Promise<Dashboard> {
+  return apiGet<Dashboard>('/api/reports/dashboard', signal)
+}
