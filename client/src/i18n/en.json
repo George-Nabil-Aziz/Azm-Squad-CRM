@@ -108,6 +108,38 @@
       "high": "High",
       "mid": "Mid",
       "low": "Low"
+    },
+    "description": "Customer requests tracked until they are solved.",
+    "new": "New ticket",
+    "createTitle": "New ticket",
+    "createDescription": "Customer and subject are required. The ticket starts as New.",
+    "customer": "Customer",
+    "customerSearch": "Search customers",
+    "customerFind": "Find",
+    "customerPlaceholder": "Select a customer",
+    "subject": "Subject",
+    "descriptionField": "Description",
+    "category": "Category",
+    "noCategory": "No category",
+    "priority": "Priority",
+    "create": "Create ticket",
+    "creating": "Creating…",
+    "cancel": "Cancel",
+    "customerRequired": "Choose a customer.",
+    "subjectRequired": "Enter a subject.",
+    "created": "Ticket {{number}} was created.",
+    "statuses": {
+      "new": "New",
+      "open": "Open",
+      "pending": "Pending",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "channels": {
+      "manual": "Created by an agent",
+      "email": "Email",
+      "whatsapp": "WhatsApp",
+      "portal": "Portal"
     }
   },
   "ticketCategories": {
@@ -227,7 +259,8 @@
         "contactAdded": "Contact added",
         "noteAdded": "Note added",
         "attachmentAdded": "File attached",
-        "other": "Other activity"
+        "other": "Other activity",
+        "ticketCreated": "Ticket created"
       },
       "by": "by {{name}}",
       "system": "System",

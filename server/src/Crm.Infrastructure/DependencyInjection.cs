@@ -49,6 +49,7 @@ public static class DependencyInjection
         services.AddScoped<ICustomerNoteRepository, CustomerNoteRepository>();
         services.AddScoped<ICustomerAttachmentRepository, CustomerAttachmentRepository>();
         services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
+        services.AddScoped<ITicketRepository, TicketRepository>();
 
         // Uploaded files: a local folder (FileStorage:RootPath, default under the user's local app data). Read lazily
         // from the final configuration, so the test host can point it at a temp folder.

@@ -25,6 +25,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<TicketCategory> TicketCategories => Set<TicketCategory>();
 
+    public DbSet<Ticket> Tickets => Set<Ticket>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

@@ -10,7 +10,7 @@ const PAGE_SIZE = 10
 const filterTypes: readonly InteractionType[] = ['customer', 'note', 'attachment', 'ticket', 'message']
 
 /** Event codes with a label in customers.timeline.events (later stories add theirs here and in en/ar.json). */
-const knownEvents = ['customerCreated', 'customerUpdated', 'contactAdded', 'noteAdded', 'attachmentAdded'] as const
+const knownEvents = ['customerCreated', 'customerUpdated', 'contactAdded', 'noteAdded', 'attachmentAdded', 'ticketCreated'] as const
 type KnownEvent = (typeof knownEvents)[number]
 
 function isKnownEvent(event: string): event is KnownEvent {

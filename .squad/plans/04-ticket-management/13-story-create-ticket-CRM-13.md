@@ -8,6 +8,15 @@
 - CRM-10 (customer interaction timeline) is developed in parallel on another branch — **do not** record a timeline entry in this story; see section "Follow-up after CRM-10 merges".
 - **One new shadcn component: `textarea`** (`npx shadcn@latest add textarea`, never hand-edited). No new packages. One migration: **`AddTickets`**.
 
+## Deviations (as built — these override the text below)
+
+- **CRM-10 / CRM-11 merged first.** They reached `main` while this story was implemented and were merged into this branch (`AddTicketCategories` regenerated on top of `AddCustomerNotesAndAttachments`; the shadcn `textarea` came with CRM-11). So CRM-13 records the `ticketCreated` timeline entry itself (CRM-10 AC 2) — section "Customer timeline entry (CRM-10 AC 2)" replaces the planned follow-up.
+- **Ticket numbers:** no retry loop inside the repository. `ITicketRepository` = `CustomerExistsAsync`, `NextNumberAsync` (`MAX(Number) + 1`), `Add`, `SaveChangesAsync`, `GetViewAsync`. `TicketService.CreateAsync` holds a process-wide `SemaphoreSlim` around "next number → `AssignNumber` → `Add` → timeline `Record` → `SaveChangesAsync`", so one API instance never produces a collision and the timeline entry can contain the number. With several instances the unique index `IX_Tickets_Number` still rejects a duplicate: `TicketRepository.SaveChangesAsync` turns it into `ConflictException(TicketText.NumberTaken)` → **409** "Another ticket was created at the same moment. Please try again." (a silent retry would leave a stale timeline entry in the unit of work). Unit test `Create_ConcurrentRequests_GetDistinctConsecutiveNumbers` (10 parallel creations → TKT-000001..10).
+- **`TicketService` ctor** also takes `IInteractionRecorder timeline`.
+- **Projection:** `TicketRepository.Rows()` is a member-init `TicketRow` projection (EF cannot filter on a constructor-projected record); `GetViewAsync` and CRM-14 filter / order / page on it, then map to `TicketView`.
+- **EF warning not suppressed** (`CrmDbContext` only gets the `DbSet`): CRM-10/11 entities already raise the same query-filter warning.
+- **Client:** the "manual" channel label is "Created by an agent" (the bare word "Agent" is a role literal in `api/users.ts` and trips `no-hardcoded-text.test.ts`). The dialog also invalidates `['customers']` queries so an open customer timeline reloads.
+
 ---
 
 ## Story Goal
@@ -146,13 +155,13 @@ All commands from `client/`.
 
 ---
 
-## Follow-up after CRM-10 merges: record a TicketCreated timeline entry
+## Customer timeline entry (CRM-10 AC 2)
 
-CRM-10 (other branch) adds `Crm.Application/Customers/Timeline/IInteractionRecorder` (`Record(Guid customerId, InteractionType type, string @event, string? details, Guid? sourceId, DateTime utcNow)`, called **before** the feature's own `SaveChangesAsync` so the entry is saved in the same unit of work), `Crm.Domain/Customers/InteractionType.Ticket` and `InteractionEvents` (event codes, client labels `customers.timeline.events.<code>`). When both branches are on `main`:
+Originally planned as "Follow-up after CRM-10 merges: record a TicketCreated timeline entry"; built in this story because CRM-10 merged first. `IInteractionRecorder` (`Crm.Application/Customers/Timeline`, `Record(Guid customerId, InteractionType type, string @event, string? details, Guid? sourceId, DateTime utcNow)`) adds the entry to the unit of work, so the ticket's `SaveChangesAsync` saves both together.
 
-1. Add `public const string TicketCreated = "ticketCreated";` to `Crm.Domain/Customers/InteractionEvents.cs`, and `customers.timeline.events.ticketCreated` ("Ticket created" / "تم إنشاء تذكرة") to `client/src/i18n/{en,ar}.json`.
-2. Inject `IInteractionRecorder` into `TicketService` and call `recorder.Record(ticket.CustomerId, InteractionType.Ticket, InteractionEvents.TicketCreated, ticket.Subject, ticket.Id, now)` **before** `tickets.AddAsync(ticket, …)` (that call saves; the entry joins the same save and is retried with the ticket when the number collides).
-3. Tests first: `TicketServiceTests.Create_RecordsATicketCreatedTimelineEntry` (fake recorder) and an integration test that `GET /api/customers/{id}/timeline?type=ticket` lists the new ticket.
+1. `Crm.Domain/Customers/InteractionEvents.TicketCreated = "ticketCreated"`; client label `customers.timeline.events.ticketCreated` ("Ticket created" / "تم إنشاء تذكرة") and `'ticketCreated'` in `knownEvents` of `client/src/features/customers/CustomerTimeline.tsx`.
+2. `TicketService.CreateAsync` calls `timeline.Record(customerId, InteractionType.Ticket, InteractionEvents.TicketCreated, "<TKT-000001> <subject>", ticket.Id, now)` after the number is assigned and **before** `SaveChangesAsync`.
+3. Tests: `TicketServiceTests.Create_RecordsATicketCreatedTimelineEntry_SavedWithTheTicket`, `Create_InvalidRequest_RecordsNoTimelineEntry`; integration `TicketCreationTests.CreateTicket_AddsATimelineEntry` (`GET /api/customers/{id}/timeline?type=ticket`); client `CustomerDetailsPage.test.tsx` "labels ticket entries (CRM-13)".
 
 ---
 

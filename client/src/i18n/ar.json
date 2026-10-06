@@ -108,6 +108,38 @@
       "high": "عالية",
       "mid": "متوسطة",
       "low": "منخفضة"
+    },
+    "description": "طلبات العملاء التي تُتابَع حتى تُحل.",
+    "new": "تذكرة جديدة",
+    "createTitle": "تذكرة جديدة",
+    "createDescription": "العميل والموضوع إلزاميان. تبدأ التذكرة بحالة جديدة.",
+    "customer": "العميل",
+    "customerSearch": "البحث عن العملاء",
+    "customerFind": "بحث",
+    "customerPlaceholder": "اختر عميلاً",
+    "subject": "الموضوع",
+    "descriptionField": "الوصف",
+    "category": "الفئة",
+    "noCategory": "بدون فئة",
+    "priority": "الأولوية",
+    "create": "إنشاء التذكرة",
+    "creating": "جارٍ الإنشاء…",
+    "cancel": "إلغاء",
+    "customerRequired": "اختر عميلاً.",
+    "subjectRequired": "أدخل الموضوع.",
+    "created": "تم إنشاء التذكرة {{number}}.",
+    "statuses": {
+      "new": "جديدة",
+      "open": "مفتوحة",
+      "pending": "معلّقة",
+      "resolved": "محلولة",
+      "closed": "مغلقة"
+    },
+    "channels": {
+      "manual": "أنشأها موظف",
+      "email": "البريد الإلكتروني",
+      "whatsapp": "واتساب",
+      "portal": "البوابة"
     }
   },
   "ticketCategories": {
@@ -227,7 +259,8 @@
         "contactAdded": "تمت إضافة جهة اتصال",
         "noteAdded": "تمت إضافة ملاحظة",
         "attachmentAdded": "تم إرفاق ملف",
-        "other": "نشاط آخر"
+        "other": "نشاط آخر",
+        "ticketCreated": "تم إنشاء تذكرة"
       },
       "by": "بواسطة {{name}}",
       "system": "النظام",
