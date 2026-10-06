@@ -121,6 +121,44 @@ public class TicketTests
         Assert.Throws<ArgumentException>(() => NewTicket().RecordAgentReply(DateTime.SpecifyKind(Now, DateTimeKind.Local)));
 
     [Fact]
+    public void AssignTo_SetsTheAssignee_AndBumpsUpdatedAt_ReturningTrue()
+    {
+        var ticket = NewTicket();
+        var agentId = Guid.NewGuid();
+        var later = Now.AddMinutes(10);
+
+        var changed = ticket.AssignTo(agentId, later);
+
+        Assert.True(changed);
+        Assert.Equal(agentId, ticket.AssigneeId);
+        Assert.Equal(later, ticket.UpdatedAt);
+    }
+
+    [Fact]
+    public void AssignTo_TheSameAssignee_ChangesNothing_ReturningFalse()
+    {
+        var ticket = NewTicket();
+        var agentId = Guid.NewGuid();
+        ticket.AssignTo(agentId, Now.AddMinutes(10));
+
+        var changed = ticket.AssignTo(agentId, Now.AddMinutes(20));
+
+        Assert.False(changed);
+        Assert.Equal(Now.AddMinutes(10), ticket.UpdatedAt);
+    }
+
+    [Fact]
+    public void AssignTo_Null_Unassigns_AndNonUtcTimeThrows()
+    {
+        var ticket = NewTicket();
+        ticket.AssignTo(Guid.NewGuid(), Now);
+
+        Assert.True(ticket.AssignTo(null, Now.AddMinutes(1)));
+        Assert.Null(ticket.AssigneeId);
+        Assert.Throws<ArgumentException>(() => ticket.AssignTo(Guid.NewGuid(), DateTime.SpecifyKind(Now, DateTimeKind.Local)));
+    }
+
+    [Fact]
     public void AcceptsMessages_IsFalseOnlyWhenClosed()
     {
         foreach (var status in Enum.GetValues<TicketStatus>())

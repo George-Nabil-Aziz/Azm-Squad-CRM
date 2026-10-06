@@ -115,6 +115,24 @@ public sealed class Ticket
         UpdatedAt = utcNow;
     }
 
+    /// <summary>Gives the ticket to a staff user (null = unassigned). Returns false, changing nothing, when it already is theirs.</summary>
+    public bool AssignTo(Guid? assigneeId, DateTime utcNow)
+    {
+        if (utcNow.Kind != DateTimeKind.Utc)
+        {
+            throw new ArgumentException("The time must be UTC (DateTimeKind.Utc).", nameof(utcNow));
+        }
+
+        if (AssigneeId == assigneeId)
+        {
+            return false;
+        }
+
+        AssigneeId = assigneeId;
+        UpdatedAt = utcNow;
+        return true;
+    }
+
     /// <summary>1 → "TKT-000001" (at least six digits).</summary>
     public static string FormatNumber(int number) =>
         NumberPrefix + number.ToString("D6", CultureInfo.InvariantCulture);

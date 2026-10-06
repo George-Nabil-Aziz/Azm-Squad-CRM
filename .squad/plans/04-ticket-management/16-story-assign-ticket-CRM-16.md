@@ -78,7 +78,7 @@ Every ticket gets a clear owner.
 
 ## Done Criteria
 
-- [ ] AC 1–4 covered by unit + integration (+ client) tests; migration `AddTicketHistory` applies; strings in en + ar.
+- [x] AC 1–4 covered by unit + integration (+ client) tests; migration `AddTicketHistory` applies; strings in en + ar.
 
 ## How later stories build on this
 
@@ -87,4 +87,7 @@ Every ticket gets a clear owner.
 
 ## Deviations (as built)
 
-(none yet)
+- The assign endpoint is mapped directly (`POST /api/tickets/{id:guid}/assign`) with `tickets.view` + `tickets.manage`; the `tickets.assign` rule is enforced in `TicketAssignmentService` (403).
+- The old assignee name for history comes from `GetViewAsync` (works for a since-deactivated assignee); the new one from `FindAssigneeAsync`.
+- `TicketHistoryEntry` lives with `ITicketHistoryRecorder` / `ITicketHistoryRepository` in `Application/Tickets/TicketHistory.cs`.
+- Client: "Assign to me" shows for users without `tickets.assign` only; migration `AddTicketHistory`.

@@ -103,6 +103,12 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
         return new PagedResult<TicketView>([.. items.Select(r => r.ToView())], page, pageSize, totalCount);
     }
 
+    public Task<TicketAssigneeResponse?> FindAssigneeAsync(Guid userId, CancellationToken cancellationToken) =>
+        db.Users.AsNoTracking()
+            .Where(u => u.Id == userId && u.IsActive && db.UserRoles.Any(role => role.UserId == u.Id))
+            .Select(u => new TicketAssigneeResponse(u.Id, u.FullName))
+            .FirstOrDefaultAsync(cancellationToken);
+
     public async Task<IReadOnlyList<TicketAssigneeResponse>> ListAssigneesAsync(CancellationToken cancellationToken) =>
         await db.Users.AsNoTracking()
             .Where(u => u.IsActive && db.UserRoles.Any(role => role.UserId == u.Id))

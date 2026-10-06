@@ -194,7 +194,12 @@
       "sending": "Sending…",
       "replySent": "Your reply was added.",
       "noteAdded": "The note was added.",
-      "closedNotice": "This ticket is closed. Reopen it to reply or add a note."
+      "closedNotice": "This ticket is closed. Reopen it to reply or add a note.",
+      "assignTo": "Assign to",
+      "assign": "Assign",
+      "assignToMe": "Assign to me",
+      "assigned": "The ticket was assigned.",
+      "unassigned": "The ticket is now unassigned."
     }
   },
   "ticketCategories": {

@@ -41,6 +41,14 @@ public static class TicketText
         "Another ticket was created at the same moment. Please try again.",
         "أُنشئت تذكرة أخرى في اللحظة نفسها. حاول مرة أخرى.");
 
+    public static string AssigneeUnavailable => LocalizedText.Get(
+        "Choose an active staff user.",
+        "اختر موظفاً نشطاً.");
+
+    public static string AssignForbidden => LocalizedText.Get(
+        "You may only assign a ticket to yourself.",
+        "يمكنك إسناد التذكرة إلى نفسك فقط.");
+
     public static string NotFound => LocalizedText.Get(
         "The ticket was not found.",
         "التذكرة غير موجودة.");

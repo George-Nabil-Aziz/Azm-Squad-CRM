@@ -4,7 +4,15 @@ import { MemoryRouter, Route, Routes } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getCurrentUser, type CurrentUser } from '@/api/auth'
 import { ApiError } from '@/api/errors'
-import { addTicketMessage, getTicket, listTicketMessages, type Ticket, type TicketMessage } from '@/api/tickets'
+import {
+  addTicketMessage,
+  assignTicket,
+  getTicket,
+  listTicketAssignees,
+  listTicketMessages,
+  type Ticket,
+  type TicketMessage,
+} from '@/api/tickets'
 import { createQueryClient } from '@/app/query-client'
 import { permissions } from '@/auth/permissions'
 import { TicketDetailsPage } from './TicketDetailsPage'
@@ -14,6 +22,8 @@ vi.mock('@/api/tickets', () => ({
   getTicket: vi.fn(),
   listTicketMessages: vi.fn(),
   addTicketMessage: vi.fn(),
+  assignTicket: vi.fn(),
+  listTicketAssignees: vi.fn(),
 }))
 
 const signedInAgent: CurrentUser = {
@@ -25,6 +35,14 @@ const signedInAgent: CurrentUser = {
 }
 
 const viewer: CurrentUser = { ...signedInAgent, permissions: [permissions.ticketsView] }
+
+const signedInSupervisor: CurrentUser = {
+  ...signedInAgent,
+  id: '3',
+  fullName: 'Team Lead',
+  roles: ['Supervisor'],
+  permissions: [...signedInAgent.permissions, permissions.ticketsAssign],
+}
 
 const invoiceTicket: Ticket = {
   id: 't1',
@@ -78,6 +96,11 @@ describe('TicketDetailsPage', () => {
     vi.mocked(getTicket).mockReset().mockResolvedValue(invoiceTicket)
     vi.mocked(listTicketMessages).mockReset().mockResolvedValue([])
     vi.mocked(addTicketMessage).mockReset().mockResolvedValue(message({}))
+    vi.mocked(listTicketAssignees).mockReset().mockResolvedValue([
+      { id: '2', fullName: 'Sara Agent' },
+      { id: '4', fullName: 'Omar Agent' },
+    ])
+    vi.mocked(assignTicket).mockReset().mockResolvedValue({ ...invoiceTicket, assigneeId: '4', assigneeName: 'Omar Agent' })
   })
 
   it('shows the ticket with its customer, status and description', async () => {
@@ -189,5 +212,73 @@ describe('TicketDetailsPage', () => {
     renderPage()
 
     expect(await screen.findByText('The ticket was not found.')).toBeInTheDocument()
+  })
+
+  describe('assigning', () => {
+    it('lets a supervisor choose an agent and assign', async () => {
+      vi.mocked(getCurrentUser).mockResolvedValue(signedInSupervisor)
+      renderPage()
+
+      const select = await screen.findByLabelText('Assign to')
+      expect(within(select).getAllByRole('option').map((option) => option.textContent)).toEqual([
+        'Unassigned',
+        'Sara Agent',
+        'Omar Agent',
+      ])
+      fireEvent.change(select, { target: { value: '4' } })
+      fireEvent.click(screen.getByRole('button', { name: 'Assign' }))
+
+      await waitFor(() => expect(assignTicket).toHaveBeenCalledWith('t1', '4'))
+    })
+
+    it('unassigns when "Unassigned" is chosen', async () => {
+      vi.mocked(getCurrentUser).mockResolvedValue(signedInSupervisor)
+      vi.mocked(getTicket).mockResolvedValue({ ...invoiceTicket, assigneeId: '4', assigneeName: 'Omar Agent' })
+      renderPage()
+
+      fireEvent.change(await screen.findByLabelText('Assign to'), { target: { value: '' } })
+      fireEvent.click(screen.getByRole('button', { name: 'Assign' }))
+
+      await waitFor(() => expect(assignTicket).toHaveBeenCalledWith('t1', null))
+    })
+
+    it('shows the server message when the assignment is refused', async () => {
+      vi.mocked(getCurrentUser).mockResolvedValue(signedInSupervisor)
+      vi.mocked(assignTicket).mockRejectedValue(
+        new ApiError('bad', 400, { status: 400, errors: { assigneeId: ['Choose an active staff user.'] } }),
+      )
+      renderPage()
+
+      fireEvent.change(await screen.findByLabelText('Assign to'), { target: { value: '4' } })
+      fireEvent.click(screen.getByRole('button', { name: 'Assign' }))
+
+      expect(await screen.findByText('Choose an active staff user.')).toBeInTheDocument()
+    })
+
+    it('gives an agent without the assign permission only "Assign to me"', async () => {
+      renderPage()
+
+      fireEvent.click(await screen.findByRole('button', { name: 'Assign to me' }))
+
+      expect(screen.queryByLabelText('Assign to')).not.toBeInTheDocument()
+      await waitFor(() => expect(assignTicket).toHaveBeenCalledWith('t1', '2'))
+    })
+
+    it('hides "Assign to me" when the ticket is already the agent\'s', async () => {
+      vi.mocked(getTicket).mockResolvedValue({ ...invoiceTicket, assigneeId: '2', assigneeName: 'Sara Agent' })
+      renderPage()
+
+      await screen.findByLabelText('Message')
+      expect(screen.queryByRole('button', { name: 'Assign to me' })).not.toBeInTheDocument()
+    })
+
+    it('shows no assign controls to a viewer', async () => {
+      vi.mocked(getCurrentUser).mockResolvedValue(viewer)
+      renderPage()
+
+      await screen.findByRole('heading', { name: 'Invoice is wrong' })
+      expect(screen.queryByLabelText('Assign to')).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Assign to me' })).not.toBeInTheDocument()
+    })
   })
 })

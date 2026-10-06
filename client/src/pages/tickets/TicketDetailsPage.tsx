@@ -6,6 +6,7 @@ import type { Ticket } from '@/api/tickets'
 import { permissions } from '@/auth/permissions'
 import { Badge } from '@/components/ui/badge'
 import { Can } from '@/features/auth/Can'
+import { TicketAssignControl } from '@/features/tickets/TicketAssignControl'
 import { TicketReplyForm } from '@/features/tickets/TicketReplyForm'
 import { TicketThread } from '@/features/tickets/TicketThread'
 import { useTicket } from '@/features/tickets/useTickets'
@@ -78,6 +79,8 @@ function TicketDetails({ ticket }: { ticket: Ticket }) {
           )}
         </Detail>
       </dl>
+
+      <TicketAssignControl ticket={ticket} />
 
       {ticket.description ? (
         <p dir="auto" className="whitespace-pre-line wrap-break-word rounded-lg border p-3">

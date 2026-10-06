@@ -24,6 +24,9 @@ public interface ITicketRepository
     /// <summary>The tracked ticket (change it, then <see cref="SaveChangesAsync"/>), or null.</summary>
     Task<Ticket?> FindAsync(Guid id, CancellationToken cancellationToken);
 
+    /// <summary>The active staff user (with a role) a ticket can be assigned to, or null for an unknown, inactive or role-less user.</summary>
+    Task<TicketAssigneeResponse?> FindAssigneeAsync(Guid userId, CancellationToken cancellationToken);
+
     Task<TicketView?> GetViewAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>

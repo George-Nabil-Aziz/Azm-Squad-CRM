@@ -1,5 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { addTicketMessage, createTicket, getTicket, listTicketAssignees, listTicketMessages, listTickets } from './tickets'
+import {
+  addTicketMessage,
+  assignTicket,
+  createTicket,
+  getTicket,
+  listTicketAssignees,
+  listTicketMessages,
+  listTickets,
+} from './tickets'
 
 function fakeFetch(status = 200, body: unknown = {}) {
   const fetchMock = vi.fn().mockResolvedValue(
@@ -105,5 +113,21 @@ describe('tickets API', () => {
       method: 'POST',
       body: { body: 'We are on it.', internal: false },
     })
+  })
+
+  it('assigns a ticket with POST /api/tickets/{id}/assign', async () => {
+    const fetchMock = fakeFetch(200, { id: 't1' })
+
+    await assignTicket('t1', 'u1')
+
+    expect(sent(fetchMock)).toEqual({ path: '/api/tickets/t1/assign', method: 'POST', body: { assigneeId: 'u1' } })
+  })
+
+  it('unassigns a ticket by sending a null assignee', async () => {
+    const fetchMock = fakeFetch(200, { id: 't1' })
+
+    await assignTicket('t1', null)
+
+    expect(sent(fetchMock).body).toEqual({ assigneeId: null })
   })
 })

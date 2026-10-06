@@ -106,7 +106,19 @@ internal sealed class FakeTicketRepository(FakeTicketCategoryRepository categori
         ticket,
         AllCustomerNames[ticket.CustomerId],
         categories.Categories.FirstOrDefault(c => c.Id == ticket.CategoryId)?.Name,
-        null);
+        Assignees.FirstOrDefault(a => a.Id == ticket.AssigneeId)?.FullName);
+
+    public Task<TicketAssigneeResponse?> FindAssigneeAsync(Guid userId, CancellationToken cancellationToken) =>
+        Task.FromResult(Assignees.FirstOrDefault(a => a.Id == userId));
+}
+
+/// <summary>History entries a service recorded (the real recorder adds them to the unit of work).</summary>
+internal sealed class FakeTicketHistoryRecorder : ITicketHistoryRecorder
+{
+    public List<(Guid TicketId, TicketHistoryField Field, string? OldValue, string? NewValue, DateTime UtcNow)> Entries { get; } = [];
+
+    public void Record(Guid ticketId, TicketHistoryField field, string? oldValue, string? newValue, DateTime utcNow) =>
+        Entries.Add((ticketId, field, oldValue, newValue, utcNow));
 }
 
 /// <summary>Test-only access to ticket state the Domain changes in later stories (status workflow, CRM-17).</summary>

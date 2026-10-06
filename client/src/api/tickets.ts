@@ -99,6 +99,14 @@ export interface AddTicketMessageRequest {
   internal: boolean
 }
 
+/**
+ * Gives the ticket to a staff user, or unassigns it (null). Anyone with tickets.manage may take a ticket for themselves;
+ * assigning to someone else needs tickets.assign (403), an inactive user is a 400 on `assigneeId`.
+ */
+export function assignTicket(ticketId: string, assigneeId: string | null): Promise<Ticket> {
+  return apiPost<Ticket>(`/api/tickets/${encodeURIComponent(ticketId)}/assign`, { assigneeId })
+}
+
 /** The conversation of a ticket, oldest first (internal notes included for staff). */
 export function listTicketMessages(ticketId: string, signal?: AbortSignal): Promise<TicketMessage[]> {
   return apiGet<TicketMessage[]>(`/api/tickets/${encodeURIComponent(ticketId)}/messages`, signal)

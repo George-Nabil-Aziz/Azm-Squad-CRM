@@ -23,6 +23,8 @@ public static class DependencyInjection
         services.AddScoped<ITicketCategoryService, TicketCategoryService>();
         services.AddScoped<ITicketService, TicketService>();
         services.AddScoped<ITicketMessageService, TicketMessageService>();
+        services.AddScoped<ITicketHistoryRecorder, TicketHistoryRecorder>();
+        services.AddScoped<ITicketAssignmentService, TicketAssignmentService>();
         services.TryAddScoped<ITicketReplyDispatcher, NoopTicketReplyDispatcher>(); // channel stories register theirs first
         return services;
     }
