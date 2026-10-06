@@ -22,11 +22,19 @@ public sealed class ChannelWorker(
 
         var seconds = configuration.GetValue("Channels:WorkerIntervalSeconds", 60);
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(Math.Max(5, seconds)));
-        do
+        try
         {
-            await RunOnceAsync(stoppingToken);
+            do
+            {
+                await RunOnceAsync(stoppingToken);
+            }
+            while (await timer.WaitForNextTickAsync(stoppingToken));
         }
-        while (await timer.WaitForNextTickAsync(stoppingToken));
+        catch (OperationCanceledException)
+        {
+            // Normal shutdown: the host cancelled the worker. Ending quietly keeps a shutdown (or a failed start,
+            // e.g. the port is already in use) from being reported as a crashed background service.
+        }
     }
 
     private async Task RunOnceAsync(CancellationToken cancellationToken)
