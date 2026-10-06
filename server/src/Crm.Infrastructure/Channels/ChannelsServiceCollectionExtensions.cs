@@ -21,6 +21,10 @@ public static class ChannelsServiceCollectionExtensions
         services.AddSingleton<ISmtpTransport, MailKitSmtpTransport>();
         services.AddScoped<IChannelProvider, SmtpEmailProvider>();
         services.AddScoped<IOutboundMessageRepository, OutboundMessageRepository>();
+
+        services.AddSingleton<IImapMailbox, MailKitImapMailbox>();
+        services.AddScoped<EmailInboxPoller>();
+        services.AddScoped<IReceivedMessageRepository, ReceivedMessageRepository>();
         return services;
     }
 }

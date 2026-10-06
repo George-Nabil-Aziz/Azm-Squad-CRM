@@ -25,6 +25,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<OutboundMessage> OutboundMessages => Set<OutboundMessage>();
 
+    public DbSet<ReceivedMessage> ReceivedMessages => Set<ReceivedMessage>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

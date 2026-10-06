@@ -88,6 +88,13 @@ No frontend changes ([P2] tickets created from email show up in the CRM-14 list 
 2. Integration: `EmailMessageParserTests`, `EmailInboxPollerTests`.
 3. [P2] the four ticket tests above.
 
+**Deviations (Phase 1 as built):**
+- Deviation: `IImapMailbox` has one method `ReadUnseenAsync(settings, max, handle, ct)` (one IMAP connection per poll; a message is flagged `\Seen` only when the handler returns true) instead of `FetchUnseenAsync` + `MarkSeenAsync`.
+- Deviation: `EmailMessageParser.Parse` returns null for an email without sender address (the poller marks it seen and logs a warning); `ReceivedAt` is the poll time (UTC) from `TimeProvider`, not the sender-controlled `Date` header.
+- Deviation: the WhatsApp branch of `InboundMessageProcessor` (phone lookup, new customer + WhatsApp contact) is written in this story because the class is shared; its tests come with CRM-26. Extra tests: `UnknownSender_WithoutName_IsNamedByTheAddress`, `ConcurrentDuplicate_DetectedOnSave_IsIgnored`, `Create_WithNonUtcTime_Throws`, parser `Parse_WithoutSender_ReturnsNull`, poller `Poll_WhenImapIsNotConfigured_DoesNothing`.
+- Known limit: in a duplicate race, a customer created for the first copy stays (rare; no data loss).
+- Results after Phase 1 of CRM-24: `dotnet test` 343 unit + 229 integration.
+
 ---
 
 ## Migration / Rollback
