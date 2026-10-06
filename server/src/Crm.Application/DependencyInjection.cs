@@ -14,6 +14,7 @@ using Crm.Application.QuickReplies;
 using Crm.Application.Sla;
 using Crm.Application.Tasks;
 using Crm.Application.Tickets;
+using Crm.Application.WebForms;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -49,6 +50,7 @@ public static class DependencyInjection
         services.AddScoped<ITicketCategoryService, TicketCategoryService>();
         services.AddKnowledgeBase();
         services.AddPortal();
+        services.AddWebForms();
         services.AddScoped<ISlaPolicyService, SlaPolicyService>();
         services.AddScoped<ITicketService, TicketService>();
         services.AddScoped<SlaMonitorJob>();

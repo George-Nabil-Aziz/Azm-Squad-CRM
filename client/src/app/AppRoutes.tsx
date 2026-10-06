@@ -2,6 +2,8 @@ import { Navigate, Route, Routes } from 'react-router'
 import { permissions } from '@/auth/permissions'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { PortalLayout } from '@/components/portal/PortalLayout'
+import { ContactFormPage } from '@/pages/public/ContactFormPage'
+import { WebFormsPage } from '@/pages/settings/WebFormsPage'
 import { PortalArticlePage } from '@/pages/portal/PortalArticlePage'
 import { PortalHomePage } from '@/pages/portal/PortalHomePage'
 import { PortalLoginPage } from '@/pages/portal/PortalLoginPage'
@@ -38,6 +40,7 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/embed/contact" element={<ContactFormPage />} />
       <Route path="/portal" element={<PortalLayout />}>
         <Route index element={<PortalHomePage />} />
         <Route path="login" element={<PortalLoginPage />} />
@@ -70,6 +73,9 @@ export function AppRoutes() {
           </Route>
           <Route element={<RequirePermission permission={permissions.settingsManage} />}>
             <Route path="settings" element={<SettingsPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.channelsManage} />}>
+            <Route path="web-forms" element={<WebFormsPage />} />
           </Route>
           {/* Areas built by later stories: each story replaces its line with the real page routes. */}
           <Route element={<RequirePermission permission={permissions.ticketsView} />}>

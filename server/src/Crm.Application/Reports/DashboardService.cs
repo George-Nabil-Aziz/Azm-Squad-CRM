@@ -56,7 +56,7 @@ public sealed class DashboardService(IReportsRepository repository, ICsatReadMod
             ratings.Count,
             [.. Enumerable.Range(0, ChartDays).Select(offset => chartFrom.AddDays(offset))
                 .Select(day => new DailyCount(day, counts.ByDay.GetValueOrDefault(day)))],
-            [.. Enumerable.Range(1, 4).Select(value => (TicketChannel)value)
+            [.. Enum.GetValues<TicketChannel>()
                 .Select(channel => new ReportCount(TicketValues.ChannelName(channel), counts.ByChannel.GetValueOrDefault(channel)))]);
     }
 }

@@ -18,7 +18,8 @@
     "tasks": "Tasks",
     "quickReplies": "Quick replies",
     "auditLogs": "Audit log",
-    "settings": "Settings"
+    "settings": "Settings",
+    "webForms": "Web forms"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -970,6 +971,35 @@
       "yourRating": "Your rating: {{count}} out of 5.",
       "expired": "This survey link has expired.",
       "notFound": "This survey was not found."
+    }
+  },
+  "webForms": {
+    "form": {
+      "title": "Contact us",
+      "name": "Your name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "nameRequired": "Enter your name.",
+      "emailInvalid": "Enter a valid email address.",
+      "subjectRequired": "Enter a subject.",
+      "messageRequired": "Write your message.",
+      "captchaRequired": "Complete the captcha check first.",
+      "tooManyRequests": "Too many requests. Please wait a minute and try again.",
+      "send": "Send",
+      "sending": "Sending...",
+      "thanks": "Thank you, we received your request.",
+      "number": "Your ticket number:",
+      "emailSent": "We also emailed you a confirmation.",
+      "honeypot": "Leave this field empty"
+    },
+    "admin": {
+      "description": "Embed the contact form on your website. Every submission becomes a ticket and the sender gets a confirmation email.",
+      "embedCode": "Embed code",
+      "copy": "Copy code",
+      "copied": "Copied",
+      "open": "Open the form",
+      "captchaHint": "Set WebForms__CaptchaSecret and WebForms__CaptchaSiteKey on the server to turn on the captcha (Cloudflare Turnstile)."
     }
   }
 }

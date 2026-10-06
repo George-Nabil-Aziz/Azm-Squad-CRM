@@ -91,4 +91,11 @@ Unit (rate limiter, validator, service, dispatcher), integration (`WebFormTests`
 
 ## Done Criteria
 
-- [ ] AC 1 ticket with channel WebForm. - [ ] AC 2 captcha + 429. - [ ] AC 3 400 on missing fields. - [ ] AC 4 confirmation email with number. - [ ] All builds and tests green.
+- [x] AC 1 ticket with channel WebForm. - [x] AC 2 captcha + 429. - [x] AC 3 400 on missing fields. - [x] AC 4 confirmation email with number. - [x] All builds and tests green.
+
+## As built
+
+- Deviation: the rate limiter and 429 handling live in `Crm.Application/Common/RateLimiting` (shared); `RateLimitExceededException` is mapped by `GlobalExceptionHandler` (with `Retry-After`).
+- Deviation: the admin page is a sidebar item `Web forms` (`/web-forms`, permission `channels.manage`) rather than a sub-page of Settings; the four layout / i18n navigation-label tests list it.
+- Deviation: report tests that enumerate ticket channels now include `webform`.
+- Config keys: `WebForms:RateLimitRequests` (5), `WebForms:RateLimitWindowSeconds` (60), `WebForms:CaptchaSecret` (user-secrets / env), `WebForms:CaptchaSiteKey`, `WebForms:CaptchaVerifyUrl`.

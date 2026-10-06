@@ -57,6 +57,7 @@ app.MapReportsEndpoints();
 app.MapCustomersEndpoints();
 app.MapChannelsEndpoints();
 app.MapWhatsAppWebhookEndpoints();
+app.MapWebFormsEndpoints();
 app.MapTicketCategoriesEndpoints();
 app.MapSlaPoliciesEndpoints();
 app.MapTicketsEndpoints();

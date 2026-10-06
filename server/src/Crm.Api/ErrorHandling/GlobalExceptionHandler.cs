@@ -1,5 +1,6 @@
 using Crm.Application.Common.Exceptions;
 using Crm.Application.Common.Localization;
+using Crm.Application.Common.RateLimiting;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,6 +40,10 @@ public sealed class GlobalExceptionHandler(
         }
 
         httpContext.Response.StatusCode = problem.Status ?? StatusCodes.Status500InternalServerError;
+        if (exception is RateLimitExceededException limited)
+        {
+            httpContext.Response.Headers.RetryAfter = Math.Max(1, (int)Math.Ceiling(limited.RetryAfter.TotalSeconds)).ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
 
         return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
         {
@@ -78,6 +83,11 @@ public sealed class GlobalExceptionHandler(
             Status = StatusCodes.Status409Conflict,
             Title = ErrorText.Conflict,
             Detail = conflict.Message,
+        },
+        RateLimitExceededException => new ProblemDetails
+        {
+            Status = StatusCodes.Status429TooManyRequests,
+            Title = ErrorText.TooManyRequests,
         },
         ForbiddenException forbidden => new ProblemDetails
         {

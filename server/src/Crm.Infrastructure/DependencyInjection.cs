@@ -28,6 +28,7 @@ using Crm.Infrastructure.QuickReplies;
 using Crm.Infrastructure.Sla;
 using Crm.Infrastructure.Tasks;
 using Crm.Infrastructure.Tickets;
+using Crm.Infrastructure.WebForms;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -68,6 +69,7 @@ public static class DependencyInjection
         services.AddScoped<ICustomerAttachmentRepository, CustomerAttachmentRepository>();
         services.AddKnowledgeBaseStorage();
         services.AddPortalInfrastructure();
+        services.AddWebFormsInfrastructure();
         services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
         services.AddScoped<ISlaPolicyRepository, SlaPolicyRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();

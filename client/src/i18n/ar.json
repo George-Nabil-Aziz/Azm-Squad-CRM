@@ -18,7 +18,8 @@
     "tasks": "المهام",
     "quickReplies": "الردود السريعة",
     "auditLogs": "سجل التدقيق",
-    "settings": "الإعدادات"
+    "settings": "الإعدادات",
+    "webForms": "نماذج الويب"
   },
   "shell": {
     "mainNavigation": "التنقل الرئيسي",
@@ -970,6 +971,35 @@
       "yourRating": "تقييمك: {{count}} من 5.",
       "expired": "انتهت صلاحية رابط الاستبيان.",
       "notFound": "لم يتم العثور على هذا الاستبيان."
+    }
+  },
+  "webForms": {
+    "form": {
+      "title": "تواصل معنا",
+      "name": "اسمك",
+      "email": "البريد الإلكتروني",
+      "subject": "الموضوع",
+      "message": "الرسالة",
+      "nameRequired": "أدخل اسمك.",
+      "emailInvalid": "أدخل بريداً إلكترونياً صحيحاً.",
+      "subjectRequired": "أدخل الموضوع.",
+      "messageRequired": "اكتب رسالتك.",
+      "captchaRequired": "أكمل التحقق من الكابتشا أولاً.",
+      "tooManyRequests": "طلبات كثيرة جداً. انتظر دقيقة ثم حاول مرة أخرى.",
+      "send": "إرسال",
+      "sending": "جارٍ الإرسال...",
+      "thanks": "شكراً لك، استلمنا طلبك.",
+      "number": "رقم تذكرتك:",
+      "emailSent": "أرسلنا لك أيضاً رسالة تأكيد بالبريد الإلكتروني.",
+      "honeypot": "اترك هذا الحقل فارغاً"
+    },
+    "admin": {
+      "description": "ضع نموذج التواصل في موقعك. كل إرسال يتحول إلى تذكرة ويصل المرسل بريد تأكيد.",
+      "embedCode": "كود التضمين",
+      "copy": "نسخ الكود",
+      "copied": "تم النسخ",
+      "open": "فتح النموذج",
+      "captchaHint": "اضبط WebForms__CaptchaSecret و WebForms__CaptchaSiteKey على الخادم لتفعيل الكابتشا (Cloudflare Turnstile)."
     }
   }
 }

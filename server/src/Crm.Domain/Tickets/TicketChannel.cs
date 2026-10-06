@@ -7,4 +7,5 @@ public enum TicketChannel
     Email = 2,
     WhatsApp = 3,
     Portal = 4,
+    WebForm = 5,
 }
