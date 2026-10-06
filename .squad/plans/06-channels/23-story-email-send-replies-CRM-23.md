@@ -126,6 +126,12 @@ public sealed class OutboundMessage
 2. Integration: `SmtpEmailProviderTests`, `ChannelStatusTests`, `ChannelRetryTests`; `PermissionPolicyTests` picks up `/api/channels/status`.
 3. [P2] `EmailTicketReply_*` integration tests.
 
+**Deviations (Phase 1 as built):**
+- Deviation: channel registrations live in `Crm.Infrastructure/Channels/ChannelsServiceCollectionExtensions.cs` (`AddChannels()`, called once from `AddInfrastructure`) to keep the shared DI file small for the parallel groups.
+- Deviation: `ChannelWorker` is always registered; it returns immediately in the `Testing` environment (checked through `IHostEnvironment` at run time instead of in `Program.cs`).
+- Deviation: extra unit tests `Send_ForAChannelWithoutProvider_MarksFailed`, `GetStatus_ReportsWhichChannelsAreConfigured`, `IsDueForRetry_OnlyWhenFailedAndTheTimeHasCome`, `MarkFailed_CutsLongErrors`, `Create_WithoutRecipient_Throws`; `ChannelRetryTests` is one test (`FailedSend_IsStoredAsFailed_AndRetriedWhenDue`) using `factory.WithWebHostBuilder` to replace the providers with a scripted fake. `OutboundMessageResponse` does not expose `ProviderMessageId`. `ChannelValues` (API names `email` / `whatsapp`, `pending` … `failed`) added.
+- Results after Phase 1 of CRM-23: `dotnet test` 332 unit + 220 integration; `npm test` 771; build and lint green.
+
 ---
 
 ## Migration / Rollback

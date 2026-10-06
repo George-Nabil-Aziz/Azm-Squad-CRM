@@ -1,4 +1,5 @@
 using Crm.Api.Auth;
+using Crm.Api.Channels;
 using Crm.Api.Endpoints;
 using Crm.Api.ErrorHandling;
 using Crm.Api.Localization;
@@ -14,6 +15,7 @@ builder.Services.AddCrmErrorHandling();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
 builder.Services.AddCrmAuthentication(builder.Configuration);
+builder.Services.AddHostedService<ChannelWorker>();
 
 var app = builder.Build();
 
@@ -32,6 +34,7 @@ app.MapHealthEndpoints();
 app.MapAuthEndpoints();
 app.MapUsersEndpoints();
 app.MapCustomersEndpoints();
+app.MapChannelsEndpoints();
 
 await using (var scope = app.Services.CreateAsyncScope())
 {

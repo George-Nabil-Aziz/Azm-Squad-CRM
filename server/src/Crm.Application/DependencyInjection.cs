@@ -1,3 +1,4 @@
+using Crm.Application.Channels;
 using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
@@ -18,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<ICustomerTimelineService, CustomerTimelineService>();
         services.AddScoped<ICustomerNoteService, CustomerNoteService>();
         services.AddScoped<ICustomerAttachmentService, CustomerAttachmentService>();
+        services.AddScoped<IChannelSender, ChannelSender>();
         return services;
     }
 }

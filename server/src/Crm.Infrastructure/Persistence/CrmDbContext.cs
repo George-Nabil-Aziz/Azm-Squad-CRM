@@ -1,3 +1,4 @@
+using Crm.Domain.Channels;
 using Crm.Domain.Customers;
 using Crm.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -21,6 +22,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<CustomerNote> CustomerNotes => Set<CustomerNote>();
 
     public DbSet<CustomerAttachment> CustomerAttachments => Set<CustomerAttachment>();
+
+    public DbSet<OutboundMessage> OutboundMessages => Set<OutboundMessage>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

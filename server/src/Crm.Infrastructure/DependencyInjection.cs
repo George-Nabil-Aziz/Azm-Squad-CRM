@@ -5,6 +5,7 @@ using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
 using Crm.Application.Customers.Timeline;
 using Crm.Application.Users;
+using Crm.Infrastructure.Channels;
 using Crm.Infrastructure.Customers;
 using Crm.Infrastructure.Files;
 using Crm.Infrastructure.Identity;
@@ -52,6 +53,7 @@ public static class DependencyInjection
         services.AddSingleton<IFileStorage>(provider =>
             new LocalFileStorage(provider.GetRequiredService<IConfiguration>()["FileStorage:RootPath"]));
         services.AddScoped<CrmDbInitializer>();
+        services.AddChannels();
         return services;
     }
 }
