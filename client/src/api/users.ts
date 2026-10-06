@@ -1,4 +1,8 @@
 import { apiGet, apiPost, apiPut } from './client'
+import type { PagedResult } from './paging'
+
+// PagedResult moved to ./paging (shared by every list); re-exported for the existing imports.
+export type { PagedResult }
 
 /** Role names seeded by the API (server: Crm.Application.Auth.Roles). Labels: t(`users.roleNames.${role}`). */
 export const roleNames = ['SuperAdmin', 'Admin', 'Supervisor', 'Agent'] as const
@@ -10,14 +14,6 @@ export interface User {
   fullName: string
   roles: RoleName[]
   isActive: boolean
-}
-
-/** One page of a list (server: PagedResult<T>). */
-export interface PagedResult<T> {
-  items: T[]
-  page: number
-  pageSize: number
-  totalCount: number
 }
 
 export interface ListUsersParams {

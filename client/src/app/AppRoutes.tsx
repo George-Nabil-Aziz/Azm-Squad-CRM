@@ -3,6 +3,7 @@ import { permissions } from '@/auth/permissions'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { ComingSoonPage } from '@/pages/coming-soon/ComingSoonPage'
+import { CustomersPage } from '@/pages/customers/CustomersPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
 import { UsersPage } from '@/pages/users/UsersPage'
 import { RequireAuth } from './RequireAuth'
@@ -24,7 +25,7 @@ export function AppRoutes() {
             <Route path="tickets" element={<ComingSoonPage area="tickets" />} />
           </Route>
           <Route element={<RequirePermission permission={permissions.customersView} />}>
-            <Route path="customers" element={<ComingSoonPage area="customers" />} />
+            <Route path="customers" element={<CustomersPage />} />
           </Route>
           <Route path="knowledge-base" element={<ComingSoonPage area="knowledgeBase" />} />
           <Route element={<RequirePermission permission={permissions.reportsView} />}>

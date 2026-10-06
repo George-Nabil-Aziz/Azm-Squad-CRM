@@ -87,3 +87,7 @@ export function apiPost<T>(path: string, body: unknown, signal?: AbortSignal): P
 export function apiPut<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
   return request<T>('PUT', path, { body, signal })
 }
+
+export function apiDelete<T = void>(path: string, signal?: AbortSignal): Promise<T> {
+  return request<T>('DELETE', path, { signal })
+}

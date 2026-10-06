@@ -70,6 +70,17 @@ export function fakeApi({ healthStatus = 200, me = superAdminMe }: FakeApiOption
       const { id, email, fullName, roles } = superAdminMe
       return json(200, { items: [{ id, email, fullName, roles, isActive: true }], page: 1, pageSize: 20, totalCount: 1 })
     }
+    if (path === '/api/customers' || path.startsWith('/api/customers?')) {
+      const customer = {
+        id: 'c1',
+        name: 'Nour Trading',
+        email: 'info@nour.example',
+        phone: '+966 50 123 4567',
+        createdAt: '2026-10-01T08:00:00Z',
+        updatedAt: '2026-10-01T08:00:00Z',
+      }
+      return json(200, { items: [customer], page: 1, pageSize: 20, totalCount: 1 })
+    }
     return json(404, { status: 404 }, 'application/problem+json')
   })
 }

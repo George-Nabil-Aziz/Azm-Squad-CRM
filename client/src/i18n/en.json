@@ -101,5 +101,42 @@
       "Supervisor": "Team supervisor",
       "Agent": "Support agent"
     }
+  },
+  "customers": {
+    "description": "Customer profiles that tickets belong to.",
+    "add": "Add customer",
+    "searchLabel": "Search by name, phone or email",
+    "search": "Search",
+    "columns": {
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "actions": "Actions"
+    },
+    "edit": "Edit",
+    "delete": "Delete",
+    "empty": "No customers found.",
+    "loading": "Loading customers…",
+    "pageInfo": "Page {{page}} of {{pages}}",
+    "previous": "Previous",
+    "next": "Next",
+    "createTitle": "New customer",
+    "createDescription": "Only the name is required.",
+    "editTitle": "Edit customer",
+    "editDescription": "Change the name, phone or email.",
+    "name": "Name",
+    "phone": "Phone",
+    "email": "Email",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "nameRequired": "Enter the customer name.",
+    "emailInvalid": "Enter a valid email address.",
+    "phoneInvalid": "Enter a phone number with at least 6 digits; it may start with + and contain spaces, dashes or brackets.",
+    "created": "Customer {{name}} was created.",
+    "updated": "Customer {{name}} was saved.",
+    "deleteTitle": "Delete {{name}}?",
+    "deleteDescription": "The customer disappears from the list. Their tickets are kept.",
+    "deleted": "Customer {{name}} was deleted."
   }
 }

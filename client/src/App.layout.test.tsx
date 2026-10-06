@@ -6,7 +6,7 @@ import { ADMIN_PASSWORD, callsTo, fakeApi, inOneHour, submitSignIn } from './tes
 
 const NAVIGATION_LABELS = ['Dashboard', 'Tickets', 'Customers', 'Knowledge base', 'Reports', 'Users']
 /** Areas whose story is not built yet (each later story removes its label from this list). */
-const COMING_SOON_LABELS = ['Tickets', 'Customers', 'Knowledge base', 'Reports']
+const COMING_SOON_LABELS = ['Tickets', 'Knowledge base', 'Reports']
 
 function renderAt(path: string) {
   window.history.replaceState(null, '', path)
@@ -132,6 +132,20 @@ describe('App layout and routing', () => {
     expect(await screen.findByRole('row', { name: /System Administrator/ })).toBeInTheDocument()
     expect(window.location.pathname).toBe('/users')
     expect(within(navigation).getByRole('link', { name: 'Users' })).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('opens the customers page from the sidebar', async () => {
+    signedIn()
+    vi.stubGlobal('fetch', fakeApi())
+    renderAt('/')
+    const navigation = await screen.findByRole('navigation', { name: 'Main navigation' })
+
+    fireEvent.click(await within(navigation).findByRole('link', { name: 'Customers' }))
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Customers' })).toBeInTheDocument()
+    expect(await screen.findByRole('row', { name: /Nour Trading/ })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/customers')
+    expect(within(navigation).getByRole('link', { name: 'Customers' })).toHaveAttribute('aria-current', 'page')
   })
 
   it('opens a page for every navigation item (areas not built yet say "coming soon")', async () => {
