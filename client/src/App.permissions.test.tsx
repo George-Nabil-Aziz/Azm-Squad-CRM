@@ -1,6 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
+import { permissions } from './auth/permissions'
 import { saveSession } from './auth/session'
 import { agentMe, callsTo, fakeApi, inOneHour, supervisorMe } from './test/fake-api'
 
@@ -53,5 +54,37 @@ describe('Menu and pages follow the user permissions', () => {
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Users' })).toBeInTheDocument()
     expect(window.location.pathname).toBe('/users')
+  })
+  it('shows the Audit log to an admin but not to a supervisor', async () => {
+    const adminMe = { ...agentMe, id: '9', roles: ['Admin' as const], permissions: [...agentMe.permissions, permissions.auditView] }
+    vi.stubGlobal('fetch', fakeApi({ me: adminMe }))
+    renderSignedInAt('/')
+
+    expect(await navigationLinks()).toContain('Audit log')
+  })
+
+  it('sends a supervisor from /audit-logs to the dashboard', async () => {
+    vi.stubGlobal('fetch', fakeApi({ me: supervisorMe }))
+    renderSignedInAt('/audit-logs')
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Dashboard' })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/')
+  })
+  it('opens the reports area for a supervisor, on the dashboard', async () => {
+    vi.stubGlobal('fetch', fakeApi({ me: supervisorMe }))
+    renderSignedInAt('/reports')
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Reports' })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/reports/dashboard')
+    expect(await screen.findByRole('link', { name: 'Dashboard', current: 'page' })).toBeInTheDocument()
+  })
+
+  it('sends an agent from /reports to the dashboard without calling the reports API', async () => {
+    const fetchMock = fakeApi({ me: agentMe })
+    vi.stubGlobal('fetch', fetchMock)
+    renderSignedInAt('/reports/tickets')
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Dashboard' })).toBeInTheDocument()
+    expect(fetchMock.mock.calls.some(([path]) => String(path).startsWith('/api/reports'))).toBe(false)
   })
 })

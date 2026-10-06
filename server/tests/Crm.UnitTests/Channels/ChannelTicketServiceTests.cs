@@ -24,7 +24,8 @@ public class ChannelTicketServiceTests
         _tickets = new FakeTicketRepository(_categories);
         _customer = _tickets.AddCustomer("Nour");
         _service = new ChannelTicketService(_tickets, _messages, _timeline,
-            new Crm.UnitTests.Sla.FakeSlaPolicyRepository(Now.UtcDateTime), new ChannelClock(Now));
+            new Crm.UnitTests.Sla.FakeSlaPolicyRepository(Now.UtcDateTime), new ChannelClock(Now),
+            new Crm.UnitTests.Settings.FakeSystemSettingsProvider());
     }
 
     private static InboundChannelMessage Email(string? subject, string body = "It does not print.") =>

@@ -10,12 +10,13 @@ public class CustomerServiceTests
     private readonly FakeCustomerRepository _repository = new();
     private readonly TestClock _clock = new(new DateTimeOffset(2026, 10, 1, 8, 0, 0, TimeSpan.Zero));
     private readonly FakeInteractionRecorder _timeline = new();
+    private readonly Audit.FakeAuditLogger _audit = new();
     private readonly CustomerService _service;
 
     public CustomerServiceTests()
     {
         _service = new CustomerService(_repository, _clock, new ListCustomersQueryValidator(), new CustomerRequestValidator(),
-            new CustomerContactRequestValidator(), new CustomerLookupQueryValidator(), _timeline);
+            new CustomerContactRequestValidator(), new CustomerLookupQueryValidator(), _timeline, _audit);
     }
 
     [Fact]
@@ -290,6 +291,42 @@ public class CustomerServiceTests
             SaveCount++;
             return Task.CompletedTask;
         }
+    }
+
+    [Fact]
+    public async Task Delete_IsLogged_WithTheOldValues()
+    {
+        var created = await _service.CreateAsync(new CustomerRequest("Nour", "nour@example.com", null), CancellationToken.None);
+
+        await _service.DeleteAsync(created.Id, CancellationToken.None);
+
+        var logged = Assert.Single(_audit.Events);
+        Assert.Equal("customer.deleted", logged.Action);
+        Assert.Equal("Customer", logged.EntityType);
+        Assert.Equal(created.Id.ToString(), logged.EntityId);
+        Assert.Contains("Nour", System.Text.Json.JsonSerializer.Serialize(logged.OldValues));
+    }
+
+    [Fact]
+    public async Task Delete_OfAnUnknownCustomer_IsNotLogged()
+    {
+        await Assert.ThrowsAsync<NotFoundException>(() => _service.DeleteAsync(Guid.NewGuid(), CancellationToken.None));
+
+        Assert.Empty(_audit.Events);
+    }
+
+    [Fact]
+    public async Task RemoveContact_IsLogged()
+    {
+        var created = await _service.CreateAsync(new CustomerRequest("Nour", null, null), CancellationToken.None);
+        var contact = await _service.AddContactAsync(
+            created.Id, new CustomerContactRequest("phone", "+966501234567", null), CancellationToken.None);
+
+        await _service.RemoveContactAsync(created.Id, contact.Id, CancellationToken.None);
+
+        var logged = Assert.Single(_audit.Events);
+        Assert.Equal("customer-contact.removed", logged.Action);
+        Assert.Equal(contact.Id.ToString(), logged.EntityId);
     }
 
     /// <summary>A clock the test sets by hand (the app uses TimeProvider.System).</summary>

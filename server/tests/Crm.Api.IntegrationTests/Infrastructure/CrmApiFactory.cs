@@ -70,6 +70,7 @@ public class CrmApiFactory : WebApplicationFactory<Program>
             services.RemoveAll<TimeProvider>();
             services.AddSingleton<TimeProvider>(Time);
 
+            services.AddTransient<IStartupFilter, RemoteIpStartupFilter>();
             services.AddTransient<IStartupFilter, TestEndpointsStartupFilter>();
             services.AddScoped<FluentValidation.IValidator<SampleRequest>, SampleRequestValidator>();
         });

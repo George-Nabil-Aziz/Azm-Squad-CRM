@@ -16,7 +16,9 @@
     "slaPolicies": "SLA policy",
     "assignment": "Assignment",
     "tasks": "Tasks",
-    "quickReplies": "Quick replies"
+    "quickReplies": "Quick replies",
+    "auditLogs": "Audit log",
+    "settings": "Settings"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -525,6 +527,213 @@
     "actions": "Actions",
     "edit": "Edit",
     "delete": "Delete"
+  },
+  "auditLogs": {
+    "description": "Read-only record of sensitive actions: logins, user and role changes, SLA changes and deletions.",
+    "loading": "Loading the audit log…",
+    "empty": "No log entries found.",
+    "unknownUser": "Unknown",
+    "pageInfo": "Page {{page}} of {{pages}}",
+    "previous": "Previous",
+    "next": "Next",
+    "filters": {
+      "user": "User",
+      "action": "Action",
+      "from": "From",
+      "to": "To",
+      "all": "All",
+      "clear": "Clear filters"
+    },
+    "columns": {
+      "time": "Time",
+      "user": "User",
+      "action": "Action",
+      "entity": "Entity",
+      "oldValues": "Old values",
+      "newValues": "New values",
+      "ip": "IP address"
+    },
+    "actions": {
+      "loginSucceeded": "Login succeeded",
+      "loginFailed": "Login failed",
+      "userCreated": "User created",
+      "userUpdated": "User changed",
+      "userDeactivated": "User deactivated",
+      "userReactivated": "User reactivated",
+      "slaPolicyUpdated": "SLA policy changed",
+      "customerDeleted": "Customer deleted",
+      "customerContactRemoved": "Customer contact removed",
+      "settingsUpdated": "Settings changed"
+    }
+  },
+  "settings": {
+    "description": "Business hours, time zone, ticket number prefix and the email and WhatsApp credentials.",
+    "loading": "Loading settings…",
+    "save": "Save settings",
+    "saving": "Saving…",
+    "saved": "Settings were saved.",
+    "timeInvalid": "Enter a time as HH:mm.",
+    "timeZoneRequired": "Enter the time zone.",
+    "prefixInvalid": "Use 1 to 10 letters or digits, optionally ending with a dash.",
+    "emailInvalid": "Enter a valid email address.",
+    "portInvalid": "Enter a port from 1 to 65535.",
+    "daysRequired": "Select at least one working day.",
+    "endBeforeStart": "The closing time must be after the opening time.",
+    "weekDays": {
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday"
+    },
+    "businessHours": {
+      "title": "Business hours",
+      "description": "When on, SLA times of new tickets count only the minutes inside these hours.",
+      "enabled": "Count SLA time only during business hours",
+      "days": "Working days",
+      "start": "Opening time",
+      "end": "Closing time"
+    },
+    "general": {
+      "title": "General",
+      "timeZone": "Time zone",
+      "timeZoneHint": "For example Asia/Riyadh. Business hours are in this time zone.",
+      "ticketPrefix": "Ticket number prefix",
+      "ticketPrefixHint": "Applies to new tickets, for example SUP- gives SUP-000123."
+    },
+    "email": {
+      "title": "Email",
+      "description": "Sending replies (SMTP) and reading the support mailbox (IMAP).",
+      "fromAddress": "Sender address",
+      "fromName": "Sender name",
+      "smtpHost": "SMTP server",
+      "smtpPort": "SMTP port",
+      "smtpSecurity": "SMTP security",
+      "smtpUserName": "SMTP user name",
+      "imapHost": "IMAP server",
+      "imapPort": "IMAP port",
+      "imapSecurity": "IMAP security",
+      "imapUserName": "IMAP user name",
+      "imapFolder": "IMAP folder"
+    },
+    "whatsApp": {
+      "title": "WhatsApp",
+      "description": "WhatsApp Cloud API credentials.",
+      "phoneNumberId": "Phone number ID"
+    },
+    "secrets": {
+      "smtpPassword": "SMTP password",
+      "imapPassword": "IMAP password",
+      "whatsAppAccessToken": "WhatsApp access token",
+      "whatsAppAppSecret": "WhatsApp app secret",
+      "whatsAppVerifyToken": "WhatsApp verify token",
+      "isSet": "A value is saved. It is never shown.",
+      "notSet": "No value is saved.",
+      "keepPlaceholder": "Leave empty to keep the saved value",
+      "remove": "Remove the saved {{name}}"
+    },
+    "securityModes": {
+      "none": "None",
+      "auto": "Automatic",
+      "starttls": "STARTTLS",
+      "sslonconnect": "SSL/TLS"
+    }
+  },
+  "reports": {
+    "description": "Management reports over a date range. Dates are whole UTC days; by default the last 30 days.",
+    "navigation": "Reports",
+    "nav": {
+      "tickets": "Tickets",
+      "sla": "SLA",
+      "satisfaction": "Satisfaction",
+      "agents": "Agents",
+      "dashboard": "Dashboard"
+    },
+    "loading": "Loading the report…",
+    "count": "Count",
+    "exportCsv": "Export CSV",
+    "exportExcel": "Export Excel",
+    "filters": {
+      "from": "From",
+      "to": "To",
+      "status": "Status",
+      "category": "Category",
+      "channel": "Channel",
+      "priority": "Priority",
+      "all": "All",
+      "clear": "Clear filters"
+    },
+    "tickets": {
+      "total": "Tickets in the period",
+      "range": "Tickets created from {{from}} to {{to}}",
+      "byStatus": "By status",
+      "byCategory": "By category",
+      "byChannel": "By channel",
+      "byPriority": "By priority",
+      "byDay": "By day",
+      "day": "Day",
+      "uncategorized": "Uncategorized"
+    },
+    "pageInfo": "Page {{page}} of {{pages}}",
+    "previous": "Previous",
+    "next": "Next",
+    "sla": {
+      "title": "SLA performance",
+      "range": "Tickets created from {{from}} to {{to}}",
+      "all": "All priorities",
+      "responseMet": "Response SLA met",
+      "avgResponse": "Average first response",
+      "resolutionMet": "Resolution SLA met",
+      "avgResolution": "Average resolution",
+      "breachedTitle": "Breached tickets",
+      "noBreaches": "No breached tickets in this period.",
+      "ticket": "Ticket",
+      "subject": "Subject",
+      "assignee": "Assignee",
+      "created": "Created",
+      "missed": "Missed target",
+      "targetResponse": "Response",
+      "targetResolution": "Resolution"
+    },
+    "csat": {
+      "average": "Average rating",
+      "ratings": "{{count}} ratings",
+      "responseRate": "Survey response rate",
+      "answered": "{{ratings}} of {{sent}} surveys answered",
+      "distribution": "Rating distribution",
+      "rating": "Rating",
+      "stars": "{{count}} stars",
+      "trend": "Average rating by day",
+      "averageShort": "Average",
+      "byAgent": "By agent",
+      "byCategory": "By category",
+      "noAgent": "No agent",
+      "low": "Low ratings (1-2)",
+      "noLow": "No low ratings in this period.",
+      "comment": "Comment",
+      "date": "Date"
+    },
+    "agents": {
+      "title": "Agent performance",
+      "scope": "Tickets assigned to each agent and created from {{from}} to {{to}}. All agents are shown (there are no teams yet).",
+      "empty": "No agent handled tickets in this period.",
+      "agent": "Agent name",
+      "handled": "Tickets handled",
+      "sla": "SLA met",
+      "csat": "Average CSAT"
+    },
+    "dashboard": {
+      "updated": "Updated at {{time}} (refreshes every 30 seconds)",
+      "open": "Open tickets",
+      "breachedToday": "Breached today",
+      "avgResponse": "Average response time",
+      "avgCsat": "Average CSAT",
+      "last30": "Last 30 days",
+      "perDay": "Tickets per day",
+      "byChannel": "Tickets by channel"
+    }
   },
   "knowledgeBase": {
     "description": "Help articles for agents and customers, in Arabic and English.",

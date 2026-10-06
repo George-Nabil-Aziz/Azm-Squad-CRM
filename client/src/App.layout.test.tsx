@@ -4,9 +4,9 @@ import App from './App'
 import { getAccessToken, saveSession } from './auth/session'
 import { ADMIN_PASSWORD, callsTo, fakeApi, inOneHour, submitSignIn } from './test/fake-api'
 
-const NAVIGATION_LABELS = ['Dashboard', 'Tickets', 'Customers', 'Tasks', 'Quick replies', 'Knowledge base', 'Reports', 'Users', 'Assignment', 'Ticket categories', 'SLA policy']
+const NAVIGATION_LABELS = ['Dashboard', 'Tickets', 'Customers', 'Tasks', 'Quick replies', 'Knowledge base', 'Reports', 'Users', 'Assignment', 'Ticket categories', 'SLA policy', 'Audit log', 'Settings']
 /** Areas whose story is not built yet (each later story removes its label from this list). */
-const COMING_SOON_LABELS = ['Reports']
+const COMING_SOON_LABELS: string[] = []
 
 function renderAt(path: string) {
   window.history.replaceState(null, '', path)

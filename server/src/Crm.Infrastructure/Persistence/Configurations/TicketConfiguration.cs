@@ -18,6 +18,8 @@ public sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         ticket.Property(t => t.Number).ValueGeneratedNever(); // highest + 1, set by the service
         ticket.HasIndex(t => t.Number).IsUnique(); // ticket numbers are unique, also across API instances
         ticket.Ignore(t => t.DisplayNumber);
+        // CRM-35: the prefix in force when the ticket was created (older tickets keep the default).
+        ticket.Property(t => t.Prefix).HasMaxLength(Ticket.PrefixMaxLength + 1).IsRequired().HasDefaultValue(Ticket.NumberPrefix);
         ticket.Property(t => t.Subject).HasMaxLength(Ticket.SubjectMaxLength).IsRequired();
         ticket.Property(t => t.Description).HasMaxLength(Ticket.DescriptionMaxLength);
         ticket.Property(t => t.Status).HasConversion<string>().HasMaxLength(EnumMaxLength);

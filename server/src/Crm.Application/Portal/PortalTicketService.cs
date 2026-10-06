@@ -144,7 +144,9 @@ public sealed class PortalTicketService(
             return;
         }
 
-        var number = Ticket.TryParseNumber(ticket.Number, out var parsed) ? parsed : 0;
+        // The display number may carry a custom prefix (CRM-35, "ACME-000007"): the tag uses the sequence part.
+        var digits = new string([.. ticket.Number.Reverse().TakeWhile(char.IsAsciiDigit).Reverse()]);
+        var number = int.TryParse(digits, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var parsed) ? parsed : 0;
         await sender.SendAsync(
             new ChannelReply(
                 ChannelKind.Email, email, TicketNumberTag.AppendTo(PortalText.ConfirmationSubject, number),

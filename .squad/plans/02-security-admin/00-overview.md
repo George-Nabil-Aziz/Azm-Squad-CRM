@@ -8,6 +8,8 @@ Entry point for the **security-admin** feature (staff users, roles and permissio
 |----|------|-------|------------|------------|
 | 06 | [06-story-user-management-CRM-6.md](06-story-user-management-CRM-6.md) | User management | CRM-6 | 01–05 (foundation) |
 | 07 | [07-story-roles-permissions-CRM-7.md](07-story-roles-permissions-CRM-7.md) | Roles & permissions | CRM-7 | 03, 04, 05, 06 |
+| 34 | [34-story-audit-logs-CRM-34.md](34-story-audit-logs-CRM-34.md) | Audit logs | CRM-34 | 06, 07, 19 (Phase 2) |
+| 35 | [35-story-system-configuration-CRM-35.md](35-story-system-configuration-CRM-35.md) | System configuration | CRM-35 | 07, 19, 23..26, 34 (Phase 2) |
 
 ## Dependency notes
 

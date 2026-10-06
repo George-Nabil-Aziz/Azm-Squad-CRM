@@ -3,6 +3,7 @@ using Crm.Application.Common.Paging;
 using Crm.Application.Common.Security;
 using Crm.Application.Common.Validation;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Settings;
 using Crm.Application.Sla;
 using Crm.Domain.Customers;
 using Crm.Domain.Tickets;
@@ -25,6 +26,7 @@ public sealed class TicketService(
     IValidator<ListTicketsQuery> listValidator,
     ISlaPolicyRepository slaPolicies,
     ITicketHistoryRecorder history,
+    ISystemSettingsProvider settings,
     IAutoAssignmentService? autoAssigner = null) : ITicketService
 {
     public Task<TicketResponse> CreateAsync(CreateTicketRequest request, CancellationToken cancellationToken) =>
@@ -52,12 +54,13 @@ public sealed class TicketService(
 
         var priority = TicketValues.TryParsePriority(request.Priority, out var parsed) ? parsed : TicketPriority.Mid;
         var now = timeProvider.GetUtcNow().UtcDateTime;
+        var runtime = await settings.GetAsync(cancellationToken); // CRM-35: business hours + ticket prefix
         var ticket = Ticket.Create(customerId, request.Subject!, request.Description, request.CategoryId, priority,
             channel, createdById, now);
         // CRM-20: due times come from the policy of the priority now; later policy changes do not move them.
         if (await slaPolicies.FindAsync(priority, cancellationToken) is { } policy)
         {
-            ticket.ApplySla(policy);
+            ticket.ApplySla(policy, runtime.Calendar);
         }
 
         var autoAssignee = autoAssigner is null
@@ -65,7 +68,7 @@ public sealed class TicketService(
             : await autoAssigner.TryAssignAsync(ticket, now, cancellationToken); // CRM-27: before the save, so the history joins it
 
         // CRM-10 AC 2: the ticket shows in the customer's timeline; the entry is saved together with the ticket.
-        await TicketNumbering.SaveNewAsync(tickets, ticket, () => timeline.Record(
+        await TicketNumbering.SaveNewAsync(tickets, ticket, runtime.TicketPrefix, () => timeline.Record(
             customerId, InteractionType.Ticket, InteractionEvents.TicketCreated,
             $"{ticket.DisplayNumber} {ticket.Subject}", ticket.Id, now), cancellationToken);
 
@@ -124,7 +127,8 @@ public sealed class TicketService(
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var old = ticket.Priority;
         // CRM-20 AC 2: the due times are recalculated from CreatedAt with the new priority current policy.
-        ticket.ChangePriority(priority, await slaPolicies.FindAsync(priority, cancellationToken), now);
+        var calendar = (await settings.GetAsync(cancellationToken)).Calendar;
+        ticket.ChangePriority(priority, await slaPolicies.FindAsync(priority, cancellationToken), now, calendar);
         if (old != priority)
         {
             history.Record(ticket.Id, TicketHistoryField.Priority, TicketValues.PriorityName(old), TicketValues.PriorityName(priority), now);

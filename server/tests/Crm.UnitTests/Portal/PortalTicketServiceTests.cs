@@ -35,7 +35,8 @@ public class PortalTicketServiceTests
         _tickets.Customers[_customer.Id] = _customer.Name;
         _tickets.AllCustomerNames[_customer.Id] = _customer.Name;
         var tickets = new TicketService(_tickets, _categories, _timeline, new Crm.UnitTests.Tickets.FakeCurrentUser(null), _clock,
-            new CreateTicketRequestValidator(), new ListTicketsQueryValidator(), _policies, new FakeTicketHistoryRecorder());
+            new CreateTicketRequestValidator(), new ListTicketsQueryValidator(), _policies, new FakeTicketHistoryRecorder(),
+            new Crm.UnitTests.Settings.FakeSystemSettingsProvider());
         _service = new PortalTicketService(
             tickets, _attachments, _storage, _sender, _customers, _categories, _clock,
             new PortalSubmitTicketRequestValidator(new UploadAttachmentRequestValidator()));

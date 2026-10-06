@@ -8,13 +8,20 @@ import { PortalLoginPage } from '@/pages/portal/PortalLoginPage'
 import { PortalNewTicketPage } from '@/pages/portal/PortalNewTicketPage'
 import { PortalTicketDetailsPage } from '@/pages/portal/PortalTicketDetailsPage'
 import { PortalTicketsPage } from '@/pages/portal/PortalTicketsPage'
+import { ReportsLayout } from '@/features/reports/ReportsLayout'
+import { AuditLogsPage } from '@/pages/audit/AuditLogsPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
-import { ComingSoonPage } from '@/pages/coming-soon/ComingSoonPage'
 import { CustomerDetailsPage } from '@/pages/customers/CustomerDetailsPage'
 import { CustomersPage } from '@/pages/customers/CustomersPage'
 import { AssignmentSettingsPage } from '@/pages/assignment/AssignmentSettingsPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
 import { KnowledgeBasePage } from '@/pages/knowledge-base/KnowledgeBasePage'
+import { AgentReportPage } from '@/pages/reports/AgentReportPage'
+import { DashboardReportPage } from '@/pages/reports/DashboardReportPage'
+import { CsatReportPage } from '@/pages/reports/CsatReportPage'
+import { SlaReportPage } from '@/pages/reports/SlaReportPage'
+import { TicketReportPage } from '@/pages/reports/TicketReportPage'
+import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { SlaPoliciesPage } from '@/pages/sla/SlaPoliciesPage'
 import { QuickRepliesPage } from '@/pages/quick-replies/QuickRepliesPage'
 import { TasksPage } from '@/pages/tasks/TasksPage'
@@ -56,6 +63,12 @@ export function AppRoutes() {
           <Route element={<RequirePermission permission={permissions.slaManage} />}>
             <Route path="sla-policies" element={<SlaPoliciesPage />} />
           </Route>
+          <Route element={<RequirePermission permission={permissions.auditView} />}>
+            <Route path="audit-logs" element={<AuditLogsPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.settingsManage} />}>
+            <Route path="settings" element={<SettingsPage />} />
+          </Route>
           {/* Areas built by later stories: each story replaces its line with the real page routes. */}
           <Route element={<RequirePermission permission={permissions.ticketsView} />}>
             <Route path="tickets" element={<TicketsPage />} />
@@ -75,7 +88,14 @@ export function AppRoutes() {
             <Route path="quick-replies" element={<QuickRepliesPage />} />
           </Route>
           <Route element={<RequirePermission permission={permissions.reportsView} />}>
-            <Route path="reports" element={<ComingSoonPage area="reports" />} />
+            <Route path="reports" element={<ReportsLayout />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<DashboardReportPage />} />
+              <Route path="tickets" element={<TicketReportPage />} />
+              <Route path="sla" element={<SlaReportPage />} />
+              <Route path="agents" element={<AgentReportPage />} />
+              <Route path="satisfaction" element={<CsatReportPage />} />
+            </Route>
           </Route>
         </Route>
       </Route>

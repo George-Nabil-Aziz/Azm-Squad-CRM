@@ -35,7 +35,7 @@ public class RolePermissionsTests
     public void Admin_HasEverythingExceptTheSuperAdminOnlyPermissions()
     {
         Assert.Equal(
-            Permissions.All.Except([Permissions.UsersManageSuperAdmins, Permissions.SlaManage]),
+            Permissions.All.Except([Permissions.UsersManageSuperAdmins, Permissions.SlaManage, Permissions.SettingsManage]),
             RolePermissions.ForRole(Roles.Admin));
     }
 
@@ -46,6 +46,24 @@ public class RolePermissionsTests
             [Permissions.CustomersView, Permissions.CustomersManage, Permissions.TicketsView, Permissions.TicketsManage,
              Permissions.TicketsAssign, Permissions.NotificationsView, Permissions.TasksManage, Permissions.QuickRepliesManageShared, Permissions.ReportsView, Permissions.KbView],
             RolePermissions.ForRole(Roles.Supervisor));
+    }
+
+    [Fact]
+    public void SettingsManage_IsForSuperAdminOnly()
+    {
+        Assert.True(RolePermissions.HasPermission([Roles.SuperAdmin], Permissions.SettingsManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Admin], Permissions.SettingsManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Supervisor], Permissions.SettingsManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Agent], Permissions.SettingsManage));
+    }
+
+    [Fact]
+    public void AuditView_IsForSuperAdminAndAdminOnly()
+    {
+        Assert.True(RolePermissions.HasPermission([Roles.SuperAdmin], Permissions.AuditView));
+        Assert.True(RolePermissions.HasPermission([Roles.Admin], Permissions.AuditView));
+        Assert.False(RolePermissions.HasPermission([Roles.Supervisor], Permissions.AuditView));
+        Assert.False(RolePermissions.HasPermission([Roles.Agent], Permissions.AuditView));
     }
 
     [Fact]
@@ -72,6 +90,8 @@ public class RolePermissionsTests
     [InlineData(Permissions.CategoriesManage)]
     [InlineData(Permissions.SlaManage)]
     [InlineData(Permissions.ChannelsManage)]
+    [InlineData(Permissions.AuditView)]
+    [InlineData(Permissions.SettingsManage)]
     public void Agent_HasNoAdminSettingsPermission(string permission)
     {
         Assert.False(RolePermissions.HasPermission([Roles.Agent], permission));

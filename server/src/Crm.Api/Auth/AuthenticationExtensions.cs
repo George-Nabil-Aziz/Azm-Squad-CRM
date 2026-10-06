@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Crm.Application.Audit;
 using Crm.Application.Auth;
 using Crm.Application.Common.Security;
 using Crm.Application.Portal;
@@ -48,6 +49,7 @@ public static class AuthenticationExtensions
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, HttpCurrentUser>();
+        services.AddScoped<IClientInfo, HttpClientInfo>();
 
         // One policy per permission, named like the permission (Permissions.All). Endpoints name the permission they
         // need; PermissionAuthorizationHandler checks it against the user's role claims (RolePermissions).

@@ -1,3 +1,4 @@
+using Crm.Domain.Audit;
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
 using Crm.Domain.KnowledgeBase;
@@ -60,6 +61,9 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<PortalAccount> PortalAccounts => Set<PortalAccount>();
 
     public DbSet<PortalLoginCode> PortalLoginCodes => Set<PortalLoginCode>();
+    public DbSet<AuditLogEntry> AuditLog => Set<AuditLogEntry>();
+
+    public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
     public DbSet<AppSetting> AppSettings => Set<AppSetting>();
 
     public DbSet<WorkTask> Tasks => Set<WorkTask>();

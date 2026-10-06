@@ -158,7 +158,7 @@ public class TicketServiceAutoAssignTests
         _service = new TicketService(_tickets, _categories, new FakeInteractionRecorder(), new FakeCurrentUser(Guid.NewGuid()),
             _clock, new CreateTicketRequestValidator(), new ListTicketsQueryValidator(),
             new Crm.UnitTests.Sla.FakeSlaPolicyRepository(_clock.UtcNow.UtcDateTime), _history,
-            new AutoAssignmentService(_assignment, _history));
+            new Crm.UnitTests.Settings.FakeSystemSettingsProvider(), new AutoAssignmentService(_assignment, _history));
         _customerId = _tickets.AddCustomer("Nour Trading");
     }
 

@@ -1,9 +1,11 @@
+using Crm.Application.Audit;
 using Crm.Application.Auth;
 using Crm.Application.Common.Exceptions;
 using Crm.Application.Common.Paging;
 using Crm.Application.Common.Security;
 using Crm.Application.Common.Validation;
 using Crm.Application.Users;
+using Crm.Domain.Audit;
 using Crm.Infrastructure.Persistence;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
@@ -19,7 +21,8 @@ public sealed class UserService(
     ICurrentUser currentUser,
     IValidator<ListUsersQuery> listValidator,
     IValidator<CreateUserRequest> createValidator,
-    IValidator<UpdateUserRequest> updateValidator) : IUserService
+    IValidator<UpdateUserRequest> updateValidator,
+    IAuditLogger audit) : IUserService
 {
     private const string LikeEscape = "\\";
 
@@ -83,6 +86,9 @@ public sealed class UserService(
         ThrowIfFailed(await userManager.CreateAsync(user, request.Password!));
         ThrowIfFailed(await userManager.AddToRolesAsync(user, roles));
         await transaction.CommitAsync(cancellationToken);
+        await audit.LogAsync(
+            new AuditEvent(AuditActions.UserCreated, "User", user.Id.ToString(), NewValues: Snapshot(user, roles)),
+            cancellationToken);
 
         return ToResponse(user, roles);
     }
@@ -103,6 +109,7 @@ public sealed class UserService(
             throw EmailTaken();
         }
 
+        var oldValues = Snapshot(user, currentRoles);
         user.Email = email;
         user.UserName = email;
         user.FullName = request.FullName!.Trim();
@@ -113,6 +120,9 @@ public sealed class UserService(
         ThrowIfFailed(await userManager.RemoveFromRolesAsync(user, currentRoles.Except(roles)));
         ThrowIfFailed(await userManager.AddToRolesAsync(user, roles.Except(currentRoles)));
         await transaction.CommitAsync(cancellationToken);
+        await audit.LogAsync(
+            new AuditEvent(AuditActions.UserUpdated, "User", user.Id.ToString(), oldValues, Snapshot(user, roles)),
+            cancellationToken);
 
         return ToResponse(user, roles);
     }
@@ -126,17 +136,17 @@ public sealed class UserService(
         }
 
         EnsureMayManage(await userManager.GetRolesAsync(user));
-        await SetActiveAsync(user, false);
+        await SetActiveAsync(user, false, cancellationToken);
     }
 
     public async Task ReactivateAsync(Guid id, CancellationToken cancellationToken)
     {
         var user = await FindAsync(id);
         EnsureMayManage(await userManager.GetRolesAsync(user));
-        await SetActiveAsync(user, true);
+        await SetActiveAsync(user, true, cancellationToken);
     }
 
-    private async Task SetActiveAsync(ApplicationUser user, bool isActive)
+    private async Task SetActiveAsync(ApplicationUser user, bool isActive, CancellationToken cancellationToken)
     {
         if (user.IsActive == isActive)
         {
@@ -145,7 +155,15 @@ public sealed class UserService(
 
         user.IsActive = isActive;
         ThrowIfFailed(await userManager.UpdateAsync(user));
+        await audit.LogAsync(
+            new AuditEvent(isActive ? AuditActions.UserReactivated : AuditActions.UserDeactivated, "User", user.Id.ToString(),
+                new { isActive = !isActive }, new { isActive }),
+            cancellationToken);
     }
+
+    /// <summary>What the audit log keeps of a user: never the password or its hash.</summary>
+    private static object Snapshot(ApplicationUser user, IEnumerable<string> roles) =>
+        new { email = user.Email, fullName = user.FullName, roles = roles.Order(StringComparer.Ordinal).ToArray() };
 
     private async Task<ApplicationUser> FindAsync(Guid id) =>
         await userManager.FindByIdAsync(id.ToString()) ?? throw new NotFoundException(UserText.NotFound);

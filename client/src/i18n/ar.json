@@ -16,7 +16,9 @@
     "slaPolicies": "سياسة SLA",
     "assignment": "الإسناد",
     "tasks": "المهام",
-    "quickReplies": "الردود السريعة"
+    "quickReplies": "الردود السريعة",
+    "auditLogs": "سجل التدقيق",
+    "settings": "الإعدادات"
   },
   "shell": {
     "mainNavigation": "التنقل الرئيسي",
@@ -525,6 +527,213 @@
     "actions": "الإجراءات",
     "edit": "تعديل",
     "delete": "حذف"
+  },
+  "auditLogs": {
+    "description": "سجل للقراءة فقط للإجراءات الحساسة: تسجيل الدخول وتغييرات المستخدمين والأدوار وتغييرات SLA وعمليات الحذف.",
+    "loading": "جارٍ تحميل سجل التدقيق…",
+    "empty": "لا توجد سجلات.",
+    "unknownUser": "غير معروف",
+    "pageInfo": "صفحة {{page}} من {{pages}}",
+    "previous": "السابق",
+    "next": "التالي",
+    "filters": {
+      "user": "المستخدم",
+      "action": "الإجراء",
+      "from": "من",
+      "to": "إلى",
+      "all": "الكل",
+      "clear": "مسح التصفية"
+    },
+    "columns": {
+      "time": "الوقت",
+      "user": "المستخدم",
+      "action": "الإجراء",
+      "entity": "الكيان",
+      "oldValues": "القيم السابقة",
+      "newValues": "القيم الجديدة",
+      "ip": "عنوان IP"
+    },
+    "actions": {
+      "loginSucceeded": "نجاح تسجيل الدخول",
+      "loginFailed": "فشل تسجيل الدخول",
+      "userCreated": "إنشاء مستخدم",
+      "userUpdated": "تعديل مستخدم",
+      "userDeactivated": "إيقاف مستخدم",
+      "userReactivated": "إعادة تفعيل مستخدم",
+      "slaPolicyUpdated": "تغيير سياسة SLA",
+      "customerDeleted": "حذف عميل",
+      "customerContactRemoved": "حذف وسيلة اتصال عميل",
+      "settingsUpdated": "تغيير الإعدادات"
+    }
+  },
+  "settings": {
+    "description": "ساعات العمل والمنطقة الزمنية وبادئة رقم التذكرة وبيانات اعتماد البريد الإلكتروني وواتساب.",
+    "loading": "جارٍ تحميل الإعدادات…",
+    "save": "حفظ الإعدادات",
+    "saving": "جارٍ الحفظ…",
+    "saved": "تم حفظ الإعدادات.",
+    "timeInvalid": "أدخل الوقت بصيغة HH:mm.",
+    "timeZoneRequired": "أدخل المنطقة الزمنية.",
+    "prefixInvalid": "استخدم من 1 إلى 10 أحرف أو أرقام، وقد تنتهي بشرطة.",
+    "emailInvalid": "أدخل عنوان بريد إلكتروني صحيحاً.",
+    "portInvalid": "أدخل منفذاً من 1 إلى 65535.",
+    "daysRequired": "اختر يوم عمل واحداً على الأقل.",
+    "endBeforeStart": "يجب أن يكون وقت الإغلاق بعد وقت الفتح.",
+    "weekDays": {
+      "sunday": "الأحد",
+      "monday": "الاثنين",
+      "tuesday": "الثلاثاء",
+      "wednesday": "الأربعاء",
+      "thursday": "الخميس",
+      "friday": "الجمعة",
+      "saturday": "السبت"
+    },
+    "businessHours": {
+      "title": "ساعات العمل",
+      "description": "عند التفعيل تحسب أوقات SLA للتذاكر الجديدة الدقائق الواقعة داخل هذه الساعات فقط.",
+      "enabled": "احتساب وقت SLA خلال ساعات العمل فقط",
+      "days": "أيام العمل",
+      "start": "وقت الفتح",
+      "end": "وقت الإغلاق"
+    },
+    "general": {
+      "title": "عام",
+      "timeZone": "المنطقة الزمنية",
+      "timeZoneHint": "مثال Asia/Riyadh. ساعات العمل بحسب هذه المنطقة الزمنية.",
+      "ticketPrefix": "بادئة رقم التذكرة",
+      "ticketPrefixHint": "تنطبق على التذاكر الجديدة، مثلاً SUP- تعطي SUP-000123."
+    },
+    "email": {
+      "title": "البريد الإلكتروني",
+      "description": "إرسال الردود (SMTP) وقراءة صندوق الدعم (IMAP).",
+      "fromAddress": "عنوان المرسل",
+      "fromName": "اسم المرسل",
+      "smtpHost": "خادم SMTP",
+      "smtpPort": "منفذ SMTP",
+      "smtpSecurity": "أمان SMTP",
+      "smtpUserName": "اسم مستخدم SMTP",
+      "imapHost": "خادم IMAP",
+      "imapPort": "منفذ IMAP",
+      "imapSecurity": "أمان IMAP",
+      "imapUserName": "اسم مستخدم IMAP",
+      "imapFolder": "مجلد IMAP"
+    },
+    "whatsApp": {
+      "title": "واتساب",
+      "description": "بيانات اعتماد WhatsApp Cloud API.",
+      "phoneNumberId": "معرّف رقم الهاتف"
+    },
+    "secrets": {
+      "smtpPassword": "كلمة مرور SMTP",
+      "imapPassword": "كلمة مرور IMAP",
+      "whatsAppAccessToken": "رمز وصول واتساب",
+      "whatsAppAppSecret": "سر تطبيق واتساب",
+      "whatsAppVerifyToken": "رمز التحقق من واتساب",
+      "isSet": "توجد قيمة محفوظة ولا تُعرض أبداً.",
+      "notSet": "لا توجد قيمة محفوظة.",
+      "keepPlaceholder": "اتركه فارغاً للإبقاء على القيمة المحفوظة",
+      "remove": "حذف {{name}} المحفوظ"
+    },
+    "securityModes": {
+      "none": "بدون",
+      "auto": "تلقائي",
+      "starttls": "STARTTLS (ترقية الاتصال)",
+      "sslonconnect": "SSL/TLS (اتصال مشفّر)"
+    }
+  },
+  "reports": {
+    "description": "تقارير إدارية عن فترة زمنية. التواريخ أيام كاملة بتوقيت UTC، وافتراضياً آخر 30 يوماً.",
+    "navigation": "التقارير",
+    "nav": {
+      "tickets": "التذاكر",
+      "sla": "اتفاقية الخدمة",
+      "satisfaction": "الرضا",
+      "agents": "الموظفون",
+      "dashboard": "لوحة الإدارة"
+    },
+    "loading": "جارٍ تحميل التقرير…",
+    "count": "العدد",
+    "exportCsv": "تصدير CSV",
+    "exportExcel": "تصدير Excel",
+    "filters": {
+      "from": "من",
+      "to": "إلى",
+      "status": "الحالة",
+      "category": "الفئة",
+      "channel": "القناة",
+      "priority": "الأولوية",
+      "all": "الكل",
+      "clear": "مسح التصفية"
+    },
+    "tickets": {
+      "total": "التذاكر في الفترة",
+      "range": "التذاكر المنشأة من {{from}} إلى {{to}}",
+      "byStatus": "حسب الحالة",
+      "byCategory": "حسب الفئة",
+      "byChannel": "حسب القناة",
+      "byPriority": "حسب الأولوية",
+      "byDay": "حسب اليوم",
+      "day": "اليوم",
+      "uncategorized": "بدون فئة"
+    },
+    "pageInfo": "صفحة {{page}} من {{pages}}",
+    "previous": "السابق",
+    "next": "التالي",
+    "sla": {
+      "title": "أداء اتفاقية مستوى الخدمة",
+      "range": "التذاكر المنشأة من {{from}} إلى {{to}}",
+      "all": "كل الأولويات",
+      "responseMet": "الالتزام بزمن الاستجابة",
+      "avgResponse": "متوسط أول استجابة",
+      "resolutionMet": "الالتزام بزمن الحل",
+      "avgResolution": "متوسط زمن الحل",
+      "breachedTitle": "التذاكر المخالفة",
+      "noBreaches": "لا توجد تذاكر مخالفة في هذه الفترة.",
+      "ticket": "التذكرة",
+      "subject": "الموضوع",
+      "assignee": "المسؤول",
+      "created": "تاريخ الإنشاء",
+      "missed": "الهدف الفائت",
+      "targetResponse": "الاستجابة",
+      "targetResolution": "الحل"
+    },
+    "csat": {
+      "average": "متوسط التقييم",
+      "ratings": "{{count}} تقييماً",
+      "responseRate": "نسبة الاستجابة للاستبيان",
+      "answered": "تمت الإجابة على {{ratings}} من {{sent}} استبياناً",
+      "distribution": "توزيع التقييمات",
+      "rating": "التقييم",
+      "stars": "{{count}} نجوم",
+      "trend": "متوسط التقييم حسب اليوم",
+      "averageShort": "المتوسط",
+      "byAgent": "حسب الموظف",
+      "byCategory": "حسب الفئة",
+      "noAgent": "بدون موظف",
+      "low": "التقييمات المنخفضة (1-2)",
+      "noLow": "لا توجد تقييمات منخفضة في هذه الفترة.",
+      "comment": "التعليق",
+      "date": "التاريخ"
+    },
+    "agents": {
+      "title": "أداء الموظفين",
+      "scope": "التذاكر المسندة لكل موظف والمنشأة من {{from}} إلى {{to}}. يظهر جميع الموظفين (لا توجد فرق بعد).",
+      "empty": "لم يعالج أي موظف تذاكر في هذه الفترة.",
+      "agent": "الموظف",
+      "handled": "التذاكر المعالجة",
+      "sla": "الالتزام بـ SLA",
+      "csat": "متوسط رضا العملاء"
+    },
+    "dashboard": {
+      "updated": "آخر تحديث {{time}} (يتجدد كل 30 ثانية)",
+      "open": "التذاكر المفتوحة",
+      "breachedToday": "المخالفات اليوم",
+      "avgResponse": "متوسط زمن الاستجابة",
+      "avgCsat": "متوسط رضا العملاء",
+      "last30": "آخر 30 يوماً",
+      "perDay": "التذاكر حسب اليوم",
+      "byChannel": "التذاكر حسب القناة"
+    }
   },
   "knowledgeBase": {
     "description": "مقالات مساعدة للموظفين والعملاء، بالعربية والإنجليزية.",

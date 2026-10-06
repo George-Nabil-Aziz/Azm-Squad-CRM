@@ -2,6 +2,8 @@ import {
   BookOpenIcon,
   ChartColumnIcon,
   LayoutDashboardIcon,
+  ScrollTextIcon,
+  SettingsIcon,
   ShuffleIcon,
   ListChecksIcon,
   MessageSquareTextIcon,
@@ -41,4 +43,6 @@ export const navigationItems: readonly NavigationItem[] = [
   { id: 'assignment', path: '/assignment', icon: ShuffleIcon, permission: permissions.ticketsAssign },
   { id: 'ticketCategories', path: '/ticket-categories', icon: TagsIcon, permission: permissions.categoriesManage },
   { id: 'slaPolicies', path: '/sla-policies', icon: TimerIcon, permission: permissions.slaManage },
+  { id: 'auditLogs', path: '/audit-logs', icon: ScrollTextIcon, permission: permissions.auditView },
+  { id: 'settings', path: '/settings', icon: SettingsIcon, permission: permissions.settingsManage },
 ]
