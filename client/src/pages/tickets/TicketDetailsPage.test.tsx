@@ -65,6 +65,12 @@ const invoiceTicket: Ticket = {
   firstResponseAt: null,
   resolvedAt: null,
   allowedStatuses: [],
+  responseDueAt: null,
+  resolutionDueAt: null,
+  responseBreached: false,
+  resolutionBreached: false,
+  escalationLevel: 0,
+  responseWarnedAt: null,
 }
 
 function message(overrides: Partial<TicketMessage>): TicketMessage {

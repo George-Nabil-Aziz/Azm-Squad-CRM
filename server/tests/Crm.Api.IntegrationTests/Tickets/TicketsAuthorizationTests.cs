@@ -64,6 +64,7 @@ public class TicketsAuthorizationTests(CrmApiFactory factory) : IClassFixture<Cr
         string[] read = [Permissions.TicketsView];
         string[] write = [Permissions.TicketsManage, Permissions.TicketsView];
         Assert.Equal(write, policies["POST /api/tickets/"]);
+        Assert.Equal(write, policies["PUT /api/tickets/{id:guid}/priority"]);
         Assert.Equal(read, policies["GET /api/tickets/{id:guid}"]);
         Assert.Equal(read, policies["GET /api/tickets/"]);
         Assert.Equal(read, policies["GET /api/tickets/assignees"]);
@@ -71,6 +72,6 @@ public class TicketsAuthorizationTests(CrmApiFactory factory) : IClassFixture<Cr
         Assert.Equal(read, policies["GET /api/tickets/{id:guid}/messages/"]);
         Assert.Equal(write, policies["POST /api/tickets/{id:guid}/assign"]);
         Assert.Equal(write, policies["PUT /api/tickets/{id:guid}/status"]);
-        Assert.Equal(8, policies.Count);
+        Assert.Equal(9, policies.Count);
     }
 }

@@ -4,12 +4,14 @@ using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Sla;
 using Crm.Application.Tickets;
 using Crm.Application.Users;
 using Crm.Infrastructure.Customers;
 using Crm.Infrastructure.Files;
 using Crm.Infrastructure.Identity;
 using Crm.Infrastructure.Persistence;
+using Crm.Infrastructure.Sla;
 using Crm.Infrastructure.Tickets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -49,9 +51,12 @@ public static class DependencyInjection
         services.AddScoped<ICustomerNoteRepository, CustomerNoteRepository>();
         services.AddScoped<ICustomerAttachmentRepository, CustomerAttachmentRepository>();
         services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
+        services.AddScoped<ISlaPolicyRepository, SlaPolicyRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();
         services.AddScoped<ITicketMessageRepository, TicketMessageRepository>();
         services.AddScoped<ITicketHistoryRepository, TicketHistoryRepository>();
+        services.AddScoped<ITicketSlaRepository, TicketSlaRepository>();
+        services.TryAddScoped<ISlaNotifier, LoggingSlaNotifier>();
 
         // Uploaded files: a local folder (FileStorage:RootPath, default under the user's local app data). Read lazily
         // from the final configuration, so the test host can point it at a temp folder.

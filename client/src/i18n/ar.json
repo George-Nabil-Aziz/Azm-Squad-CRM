@@ -12,7 +12,8 @@
     "knowledgeBase": "قاعدة المعرفة",
     "reports": "التقارير",
     "users": "المستخدمون",
-    "ticketCategories": "فئات التذاكر"
+    "ticketCategories": "فئات التذاكر",
+    "slaPolicies": "سياسة SLA"
   },
   "shell": {
     "mainNavigation": "التنقل الرئيسي",
@@ -162,7 +163,8 @@
       "priority": "الأولوية",
       "category": "الفئة",
       "assignee": "المسؤول",
-      "created": "تاريخ الإنشاء"
+      "created": "تاريخ الإنشاء",
+      "sla": "اتفاقية مستوى الخدمة"
     },
     "empty": "لا توجد تذاكر.",
     "loading": "جارٍ تحميل التذاكر…",
@@ -210,6 +212,43 @@
         "closed": "إغلاق",
         "reopen": "إعادة فتح"
       }
+    }
+  },
+  "sla": {
+    "description": "الوقت المسموح لأول رد ولحل التذكرة، لكل أولوية. تنطبق الأوقات الجديدة على التذاكر الجديدة فقط.",
+    "columns": {
+      "priority": "الأولوية",
+      "response": "وقت الاستجابة",
+      "resolution": "وقت الحل",
+      "actions": "الإجراءات"
+    },
+    "edit": "تعديل",
+    "loading": "جارٍ تحميل سياسة SLA…",
+    "editTitle": "تعديل SLA: {{priority}}",
+    "editDescription": "بالدقائق الكاملة. يجب ألا يقل وقت الحل عن وقت الاستجابة.",
+    "responseMinutes": "وقت الاستجابة (بالدقائق)",
+    "resolutionMinutes": "وقت الحل (بالدقائق)",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ…",
+    "cancel": "إلغاء",
+    "minutesInvalid": "أدخل عددًا صحيحًا من الدقائق أكبر من 0.",
+    "minutesTooLarge": "لا يمكن أن يتجاوز الوقت سنة واحدة (525600 دقيقة).",
+    "resolutionBelowResponse": "يجب ألا يقل وقت الحل عن وقت الاستجابة.",
+    "updated": "تم حفظ SLA للأولوية {{priority}}.",
+    "duration": {
+      "minutes": "{{minutes}} د",
+      "hours": "{{hours}} س",
+      "hoursMinutes": "{{hours}} س {{minutes}} د"
+    },
+    "timer": {
+      "response": "الاستجابة: {{status}}",
+      "resolution": "الحل: {{status}}",
+      "left": "متبقٍ {{time}}",
+      "overdue": "متأخر {{time}}",
+      "met": "تم في الوقت",
+      "metLate": "تم متأخرًا",
+      "none": "بدون SLA",
+      "escalated": "تم التصعيد (المستوى {{level}})"
     }
   },
   "ticketCategories": {

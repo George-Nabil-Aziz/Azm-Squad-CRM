@@ -4,6 +4,7 @@ import {
   LayoutDashboardIcon,
   TagsIcon,
   TicketIcon,
+  TimerIcon,
   UserCogIcon,
   UsersIcon,
   type LucideIcon,
@@ -33,4 +34,5 @@ export const navigationItems: readonly NavigationItem[] = [
   { id: 'reports', path: '/reports', icon: ChartColumnIcon, permission: permissions.reportsView },
   { id: 'users', path: '/users', icon: UserCogIcon, permission: permissions.usersManage },
   { id: 'ticketCategories', path: '/ticket-categories', icon: TagsIcon, permission: permissions.categoriesManage },
+  { id: 'slaPolicies', path: '/sla-policies', icon: TimerIcon, permission: permissions.slaManage },
 ]

@@ -2,6 +2,7 @@ using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Sla;
 using Crm.Application.Tickets;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,9 @@ public static class DependencyInjection
         services.AddScoped<ICustomerNoteService, CustomerNoteService>();
         services.AddScoped<ICustomerAttachmentService, CustomerAttachmentService>();
         services.AddScoped<ITicketCategoryService, TicketCategoryService>();
+        services.AddScoped<ISlaPolicyService, SlaPolicyService>();
         services.AddScoped<ITicketService, TicketService>();
+        services.AddScoped<SlaMonitorJob>();
         services.AddScoped<ITicketMessageService, TicketMessageService>();
         services.AddScoped<ITicketHistoryRecorder, TicketHistoryRecorder>();
         services.AddScoped<ITicketAssignmentService, TicketAssignmentService>();

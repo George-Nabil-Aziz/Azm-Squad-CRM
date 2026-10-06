@@ -75,12 +75,17 @@ export interface Ticket {
   assigneeName: string | null
   createdAt: string
   updatedAt: string
-  /** When an agent first answered the customer (UTC ISO); null until then. */
+  responseDueAt: string | null
+  resolutionDueAt: string | null
   firstResponseAt: string | null
   /** When the ticket became resolved (UTC ISO); null while it is not (cleared on reopen). */
   resolvedAt: string | null
   /** Statuses the ticket may move to now (workflow order); empty when none. */
   allowedStatuses: TicketStatus[]
+  responseBreached: boolean
+  resolutionBreached: boolean
+  escalationLevel: number
+  responseWarnedAt: string | null
 }
 
 /** One entry of a ticket thread (server: TicketMessageResponse). "internal" notes are never shown to the customer. */
@@ -142,4 +147,9 @@ export function createTicket(request: CreateTicketRequest): Promise<Ticket> {
 
 export function getTicket(id: string, signal?: AbortSignal): Promise<Ticket> {
   return apiGet<Ticket>(`/api/tickets/${encodeURIComponent(id)}`, signal)
+}
+
+/** Changes the priority; the server recalculates the SLA due times from the creation time (CRM-20). */
+export function changeTicketPriority(id: string, priority: TicketPriority): Promise<Ticket> {
+  return apiPut<Ticket>(`/api/tickets/${encodeURIComponent(id)}/priority`, { priority })
 }

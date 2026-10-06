@@ -7,7 +7,7 @@ namespace Crm.Domain.Tickets;
 /// ("TKT-000001"), given by the repository when the ticket is first saved. Tickets are never deleted (they are
 /// closed). Times are UTC and come from the caller (the Application layer passes the injected TimeProvider's time).
 /// </summary>
-public sealed class Ticket
+public sealed partial class Ticket
 {
     public const int SubjectMaxLength = 200;
     public const int DescriptionMaxLength = 10_000;
@@ -47,12 +47,6 @@ public sealed class Ticket
     public DateTime CreatedAt { get; private set; }
 
     public DateTime UpdatedAt { get; private set; }
-
-    /// <summary>When an agent first answered the customer (UTC); null until then. Used by SLA. Set by <see cref="RecordAgentReply"/> only.</summary>
-    public DateTime? FirstResponseAt { get; private set; }
-
-    /// <summary>When the ticket became Resolved (UTC); null while it is not. Cleared when the ticket is reopened.</summary>
-    public DateTime? ResolvedAt { get; private set; }
 
     /// <summary>A closed ticket takes no replies or notes (until it is reopened).</summary>
     public bool AcceptsMessages => Status != TicketStatus.Closed;
@@ -114,7 +108,7 @@ public sealed class Ticket
             throw new ArgumentException("The time must be UTC (DateTimeKind.Utc).", nameof(utcNow));
         }
 
-        FirstResponseAt ??= utcNow;
+        MarkFirstResponse(utcNow); // the one place that sets FirstResponseAt (Ticket.Sla.cs), which SLA reads
         UpdatedAt = utcNow;
     }
 
@@ -136,11 +130,11 @@ public sealed class Ticket
 
         if (to == TicketStatus.Resolved)
         {
-            ResolvedAt = utcNow;
+            MarkResolved(utcNow);
         }
         else if (TicketStatusRules.IsReopen(Status, to))
         {
-            ResolvedAt = null;
+            Reopen();
         }
 
         Status = to;
