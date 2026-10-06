@@ -124,3 +124,5 @@ Unit (`TicketSlaTests`, `TicketServiceTests`), integration (`TicketSlaTimersTest
 - **CRM-17 (status workflow):** on → Resolved call `ticket.MarkResolved(utcNow)`; on reopen call `ticket.Reopen()`; priority changes go through `Ticket.ChangePriority(priority, policy, utcNow)` (or reuse `PUT /api/tickets/{id}/priority`).
 - **CRM-21:** job compares `UtcNow` with `ResponseDueAt` / `ResolutionDueAt` and checks `FirstResponseAt` / `ResolvedAt`; indexes exist.
 - **CRM-23..26 (channels):** after `Ticket.Create(…)` call `ticket.ApplySla(policy)` (or go through a shared `TicketService` path).
+
+> **Deviation:** after `git merge main` (CRM-15) the migrations `AddSlaPolicies`, `AddTicketSlaTimers`, `AddSlaBreaches` and `AddSlaEscalation` were replaced by ONE regenerated migration **`AddSla`** on top of main's `AddTicketMessages` (SLA policies + seed, ticket SLA columns, `TicketSlaEvents`, `Notifications`). `Ticket.FirstResponseAt` is the single field set by CRM-15's `RecordAgentReply`, which now calls `MarkFirstResponse`.

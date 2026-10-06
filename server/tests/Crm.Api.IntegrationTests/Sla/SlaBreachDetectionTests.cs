@@ -76,6 +76,23 @@ public class SlaBreachDetectionTests(CrmApiFactory factory) : IClassFixture<CrmA
     }
 
     [Fact]
+    public async Task FirstAgentReplyThroughTheApi_IsSeenBySla_AndPreventsAResponseBreach()
+    {
+        var (agent, id) = await HighTicketAsync();
+        factory.Time.Advance(TimeSpan.FromMinutes(10));
+        var reply = await agent.PostAsJsonAsync($"/api/tickets/{id}/messages", new { body = "We are on it." });
+        Assert.True(reply.IsSuccessStatusCode);
+
+        factory.Time.Advance(TimeSpan.FromMinutes(200)); // far past the 2 h response time
+        await RunJobAsync();
+
+        var ticket = await ReadAsync(id);
+        Assert.NotNull(ticket.FirstResponseAt); // CRM-15 sets the same field SLA reads
+        Assert.False(ticket.ResponseBreached);
+        Assert.DoesNotContain(SlaEventType.ResponseBreached, await EventsAsync(id));
+    }
+
+    [Fact]
     public async Task TicketResolvedAfterResolutionDue_IsResolutionBreached()
     {
         var (_, id) = await HighTicketAsync();
@@ -106,5 +123,5 @@ public class SlaBreachDetectionTests(CrmApiFactory factory) : IClassFixture<CrmA
         Assert.Equal(2, (await EventsAsync(id)).Count);
     }
 
-    private sealed record BreachBody(Guid Id, bool ResponseBreached, bool ResolutionBreached);
+    private sealed record BreachBody(Guid Id, bool ResponseBreached, bool ResolutionBreached, DateTime? FirstResponseAt);
 }

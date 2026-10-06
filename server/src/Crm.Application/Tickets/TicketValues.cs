@@ -41,4 +41,8 @@ public static class TicketValues
     public static string StatusName(TicketStatus status) => status.ToString().ToLowerInvariant();
 
     public static string ChannelName(TicketChannel channel) => channel.ToString().ToLowerInvariant();
+
+    /// <summary>"inbound", "outbound" or "internal".</summary>
+    public static string DirectionName(MessageDirection direction) =>
+        direction == MessageDirection.InternalNote ? "internal" : direction.ToString().ToLowerInvariant();
 }

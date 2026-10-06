@@ -39,6 +39,7 @@ app.MapTicketCategoriesEndpoints();
 app.MapSlaPoliciesEndpoints();
 app.MapTicketsEndpoints();
 app.MapTicketSlaEndpoints();
+app.MapTicketMessagesEndpoints();
 
 if (jobsEnabled)
 {

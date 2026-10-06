@@ -85,6 +85,36 @@ export interface Ticket {
   responseWarnedAt: string | null
 }
 
+/** One entry of a ticket thread (server: TicketMessageResponse). "internal" notes are never shown to the customer. */
+export interface TicketMessage {
+  id: string
+  direction: 'inbound' | 'outbound' | 'internal'
+  isInternal: boolean
+  body: string
+  channel: TicketChannel
+  authorId: string | null
+  /** Null for customer messages. */
+  authorName: string | null
+  createdAt: string
+  deliveryStatus: 'pending' | 'sent' | 'failed' | null
+}
+
+/** Body of "add a message": a reply to the customer, or (internal) a note for the team. */
+export interface AddTicketMessageRequest {
+  body: string
+  internal: boolean
+}
+
+/** The conversation of a ticket, oldest first (internal notes included for staff). */
+export function listTicketMessages(ticketId: string, signal?: AbortSignal): Promise<TicketMessage[]> {
+  return apiGet<TicketMessage[]>(`/api/tickets/${encodeURIComponent(ticketId)}/messages`, signal)
+}
+
+/** Replies to the customer or adds an internal note (400 when the ticket is closed). */
+export function addTicketMessage(ticketId: string, request: AddTicketMessageRequest): Promise<TicketMessage> {
+  return apiPost<TicketMessage>(`/api/tickets/${encodeURIComponent(ticketId)}/messages`, request)
+}
+
 /** Body of "create ticket". Customer and subject are required; send null for no description / category. */
 export interface CreateTicketRequest {
   customerId: string

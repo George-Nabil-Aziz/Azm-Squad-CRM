@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Crm.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(CrmDbContext))]
-    [Migration("20261006052332_AddSlaPolicies")]
-    partial class AddSlaPolicies
+    [Migration("20261006101232_AddTicketMessages")]
+    partial class AddTicketMessages
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -168,49 +168,6 @@ namespace Crm.Infrastructure.Persistence.Migrations
                     b.ToTable("CustomerNotes", (string)null);
                 });
 
-            modelBuilder.Entity("Crm.Domain.Sla.SlaPolicy", b =>
-                {
-                    b.Property<string>("Priority")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<int>("ResolutionMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ResponseMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Priority");
-
-                    b.ToTable("SlaPolicies", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Priority = "High",
-                            ResolutionMinutes = 480,
-                            ResponseMinutes = 120,
-                            UpdatedAt = new DateTime(2026, 10, 6, 0, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Priority = "Mid",
-                            ResolutionMinutes = 1440,
-                            ResponseMinutes = 240,
-                            UpdatedAt = new DateTime(2026, 10, 6, 0, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Priority = "Low",
-                            ResolutionMinutes = 4320,
-                            ResponseMinutes = 480,
-                            UpdatedAt = new DateTime(2026, 10, 6, 0, 0, 0, 0, DateTimeKind.Utc)
-                        });
-                });
-
             modelBuilder.Entity("Crm.Domain.Tickets.Ticket", b =>
                 {
                     b.Property<Guid>("Id")
@@ -239,6 +196,9 @@ namespace Crm.Infrastructure.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(10000)
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FirstResponseAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Number")
                         .HasColumnType("int");
@@ -309,6 +269,52 @@ namespace Crm.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("TicketCategories", (string)null);
+                });
+
+            modelBuilder.Entity("Crm.Domain.Tickets.TicketMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AuthorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(10000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Channel")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeliveryStatus")
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<string>("Direction")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<string>("ExternalMessageId")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("TicketId", "CreatedAt");
+
+                    b.ToTable("TicketMessages", (string)null);
                 });
 
             modelBuilder.Entity("Crm.Infrastructure.Identity.ApplicationRole", b =>
@@ -606,6 +612,20 @@ namespace Crm.Infrastructure.Persistence.Migrations
                     b.HasOne("Crm.Domain.Customers.Customer", null)
                         .WithMany()
                         .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Crm.Domain.Tickets.TicketMessage", b =>
+                {
+                    b.HasOne("Crm.Infrastructure.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Crm.Domain.Tickets.Ticket", null)
+                        .WithMany()
+                        .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

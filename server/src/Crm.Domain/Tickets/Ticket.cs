@@ -48,6 +48,9 @@ public sealed partial class Ticket
 
     public DateTime UpdatedAt { get; private set; }
 
+    /// <summary>A closed ticket takes no replies or notes (until it is reopened).</summary>
+    public bool AcceptsMessages => Status != TicketStatus.Closed;
+
     /// <summary>"TKT-000001".</summary>
     public string DisplayNumber => FormatNumber(Number);
 
@@ -95,6 +98,18 @@ public sealed partial class Ticket
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(number);
         Number = number;
+    }
+
+    /// <summary>An agent sent a public reply: the first one sets <see cref="FirstResponseAt"/>; every one bumps <see cref="UpdatedAt"/>.</summary>
+    public void RecordAgentReply(DateTime utcNow)
+    {
+        if (utcNow.Kind != DateTimeKind.Utc)
+        {
+            throw new ArgumentException("The time must be UTC (DateTimeKind.Utc).", nameof(utcNow));
+        }
+
+        MarkFirstResponse(utcNow); // the one place that sets FirstResponseAt (Ticket.Sla.cs), which SLA reads
+        UpdatedAt = utcNow;
     }
 
     /// <summary>1 → "TKT-000001" (at least six digits).</summary>

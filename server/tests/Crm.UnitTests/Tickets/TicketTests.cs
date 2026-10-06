@@ -99,4 +99,36 @@ public class TicketTests
         Assert.Throws<ArgumentOutOfRangeException>(() => ticket.AssignNumber(0));
         Assert.Throws<ArgumentOutOfRangeException>(() => ticket.AssignNumber(-1));
     }
+
+    [Fact]
+    public void RecordAgentReply_SetsFirstResponseAtOnce_AndBumpsUpdatedAt()
+    {
+        var ticket = NewTicket();
+        Assert.Null(ticket.FirstResponseAt);
+        var first = Now.AddMinutes(5);
+        var second = Now.AddMinutes(30);
+
+        ticket.RecordAgentReply(first);
+        ticket.RecordAgentReply(second);
+
+        Assert.Equal(first, ticket.FirstResponseAt);
+        Assert.Equal(DateTimeKind.Utc, ticket.FirstResponseAt!.Value.Kind);
+        Assert.Equal(second, ticket.UpdatedAt);
+    }
+
+    [Fact]
+    public void RecordAgentReply_WithNonUtcTime_Throws() =>
+        Assert.Throws<ArgumentException>(() => NewTicket().RecordAgentReply(DateTime.SpecifyKind(Now, DateTimeKind.Local)));
+
+    [Fact]
+    public void AcceptsMessages_IsFalseOnlyWhenClosed()
+    {
+        foreach (var status in Enum.GetValues<TicketStatus>())
+        {
+            var ticket = NewTicket();
+            TicketTestSupport.SetStatus(ticket, status);
+
+            Assert.Equal(status != TicketStatus.Closed, ticket.AcceptsMessages);
+        }
+    }
 }

@@ -22,7 +22,8 @@ public sealed record TicketBody(
     Guid? AssigneeId,
     string? AssigneeName,
     DateTime CreatedAt,
-    DateTime UpdatedAt);
+    DateTime UpdatedAt,
+    DateTime? FirstResponseAt = null);
 
 /// <summary>Arranges customers, categories and tickets through the real API.</summary>
 public static class TicketArrange

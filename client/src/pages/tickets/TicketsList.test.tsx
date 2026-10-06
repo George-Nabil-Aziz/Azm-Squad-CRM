@@ -1,5 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { MemoryRouter } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getCurrentUser, type CurrentUser } from '@/api/auth'
 import type { PagedResult } from '@/api/paging'
@@ -84,7 +85,9 @@ function pageOf(items: Ticket[], totalCount = items.length, page = 1): PagedResu
 function renderPage() {
   return render(
     <QueryClientProvider client={createQueryClient()}>
-      <TicketsPage />
+      <MemoryRouter>
+        <TicketsPage />
+      </MemoryRouter>
       <ApiErrorToaster />
     </QueryClientProvider>,
   )
@@ -100,6 +103,13 @@ describe('TicketsPage — list and filters', () => {
     vi.mocked(listTickets).mockReset().mockResolvedValue(pageOf([newer, older]))
     vi.mocked(listTicketAssignees).mockReset().mockResolvedValue([{ id: 'u1', fullName: 'Omar Lead' }])
     vi.mocked(listTicketCategories).mockReset().mockResolvedValue([billing, legacy])
+  })
+
+  it('links each ticket number to its details page', async () => {
+    renderPage()
+
+    const row = await screen.findByRole('row', { name: /TKT-000002/ })
+    expect(within(row).getByRole('link', { name: 'TKT-000002' })).toHaveAttribute('href', '/tickets/t2')
   })
 
   it('lists tickets newest first (as the API returns them) with translated status and priority', async () => {

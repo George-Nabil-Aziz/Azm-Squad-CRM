@@ -6,6 +6,7 @@ using Crm.Application.Sla;
 using Crm.Application.Tickets;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Crm.Application;
 
@@ -24,6 +25,8 @@ public static class DependencyInjection
         services.AddScoped<ISlaPolicyService, SlaPolicyService>();
         services.AddScoped<ITicketService, TicketService>();
         services.AddScoped<SlaMonitorJob>();
+        services.AddScoped<ITicketMessageService, TicketMessageService>();
+        services.TryAddScoped<ITicketReplyDispatcher, NoopTicketReplyDispatcher>(); // channel stories register theirs first
         return services;
     }
 }

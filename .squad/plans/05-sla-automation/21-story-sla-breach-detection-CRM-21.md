@@ -104,3 +104,5 @@ Unit (`TicketBreachTests`, `SlaMonitorJobTests`), integration (`SlaBreachDetecti
 - **CRM-22:** extend `SlaMonitorJob.RunAsync` (same recurring job) with warnings and escalation; add `SlaEventType.ResponseWarning` / `Escalated` (levels 1, 2) to `TicketSlaEvents`.
 - **CRM-18 (history):** show `TicketSlaEvents` rows in the ticket history.
 - **CRM-15 / CRM-17:** setting `FirstResponseAt` / `ResolvedAt` is all the job needs.
+
+> **Deviation:** after `git merge main` (CRM-15) the migrations `AddSlaPolicies`, `AddTicketSlaTimers`, `AddSlaBreaches` and `AddSlaEscalation` were replaced by ONE regenerated migration **`AddSla`** on top of main's `AddTicketMessages` (SLA policies + seed, ticket SLA columns, `TicketSlaEvents`, `Notifications`). `Ticket.FirstResponseAt` is the single field set by CRM-15's `RecordAgentReply`, which now calls `MarkFirstResponse`.

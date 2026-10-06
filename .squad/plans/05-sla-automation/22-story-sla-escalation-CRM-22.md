@@ -110,3 +110,5 @@ Unit (`TicketEscalationTests`, `SlaMonitorJobTests`), integration (`SlaEscalatio
 - One `SaveChanges` per run (breach flags, escalation, warnings, events, notifications); notices go to `ISlaNotifier` only after a successful save.
 - Each newly marked breach of an unresolved ticket escalates one level (response breach then resolution breach, even in one run, gives levels 1 and 2).
 - Assignee in integration tests is set by reflection on `Ticket.AssigneeId` (CRM-16 not built). **CRM-18:** call its history recorder where `SlaMonitorJob` adds the `Escalated` event when merged.
+
+> **Deviation:** after `git merge main` (CRM-15) the migrations `AddSlaPolicies`, `AddTicketSlaTimers`, `AddSlaBreaches` and `AddSlaEscalation` were replaced by ONE regenerated migration **`AddSla`** on top of main's `AddTicketMessages` (SLA policies + seed, ticket SLA columns, `TicketSlaEvents`, `Notifications`). `Ticket.FirstResponseAt` is the single field set by CRM-15's `RecordAgentReply`, which now calls `MarkFirstResponse`.

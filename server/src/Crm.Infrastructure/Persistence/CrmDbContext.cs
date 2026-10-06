@@ -31,6 +31,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<Ticket> Tickets => Set<Ticket>();
 
+    public DbSet<TicketMessage> TicketMessages => Set<TicketMessage>();
+
     public DbSet<TicketSlaEvent> TicketSlaEvents => Set<TicketSlaEvent>();
 
     public DbSet<Notification> Notifications => Set<Notification>();

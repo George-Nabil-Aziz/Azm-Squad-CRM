@@ -157,3 +157,5 @@ All commands from `client/`.
 - **CRM-20 (timers):** on ticket create read the policy of the ticket priority (`ISlaPolicyRepository.FindAsync(priority)` or a read-only `ISlaPolicyProvider`) and store `ResponseDueAt = policy.ResponseDueAt(createdAt)`, `ResolutionDueAt = policy.ResolutionDueAt(createdAt)` **on the ticket** — changing the policy later does not move them (CRM-20 AC 4).
 - **CRM-21 / CRM-22:** compare `UtcNow` to the ticket's stored due times; 80 % warning = `CreatedAt + 0.8 × (ResponseDueAt − CreatedAt)` (no policy read needed).
 - Policy changes are not audited (no history table); add one if a later story asks.
+
+> **Deviation:** after `git merge main` (CRM-15) the migrations `AddSlaPolicies`, `AddTicketSlaTimers`, `AddSlaBreaches` and `AddSlaEscalation` were replaced by ONE regenerated migration **`AddSla`** on top of main's `AddTicketMessages` (SLA policies + seed, ticket SLA columns, `TicketSlaEvents`, `Notifications`). `Ticket.FirstResponseAt` is the single field set by CRM-15's `RecordAgentReply`, which now calls `MarkFirstResponse`.
