@@ -4,6 +4,7 @@ import {
   createCustomer,
   deleteCustomer,
   getCustomer,
+  getCustomerTimeline,
   listCustomers,
   makeCustomerContactPrimary,
   removeCustomerContact,
@@ -103,5 +104,21 @@ describe('customers API', () => {
     await removeCustomerContact('c1', 'k1')
 
     expect(sent(fetchMock)).toEqual({ path: '/api/customers/c1/contacts/k1', method: 'DELETE', body: undefined })
+  })
+
+  it('reads the timeline with type and paging in the query string', async () => {
+    const fetchMock = fakeFetch(200, { items: [], page: 2, pageSize: 10, totalCount: 0 })
+
+    await getCustomerTimeline('c1', { type: 'note', page: 2, pageSize: 10 })
+
+    expect(sent(fetchMock)).toMatchObject({ path: '/api/customers/c1/timeline?type=note&page=2&pageSize=10', method: 'GET' })
+  })
+
+  it('reads the whole timeline without a query string by default', async () => {
+    const fetchMock = fakeFetch(200, { items: [], page: 1, pageSize: 20, totalCount: 0 })
+
+    await getCustomerTimeline('c1', {})
+
+    expect(sent(fetchMock)).toMatchObject({ path: '/api/customers/c1/timeline', method: 'GET' })
   })
 })

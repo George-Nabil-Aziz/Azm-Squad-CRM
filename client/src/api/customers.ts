@@ -76,6 +76,46 @@ export function makeCustomerContactPrimary(customerId: string, contactId: string
   )
 }
 
+/** Category of a timeline entry (server: InteractionTypes). */
+export type InteractionType = 'customer' | 'note' | 'attachment' | 'ticket' | 'message'
+
+/**
+ * One entry of a customer's timeline (server: CustomerInteractionResponse). `event` is a code such as
+ * "customerCreated" (translated under customers.timeline.events); `actorName` is null for system / channel entries.
+ */
+export interface CustomerInteraction {
+  id: number
+  type: InteractionType
+  event: string
+  details: string | null
+  sourceId: string | null
+  actorId: string | null
+  actorName: string | null
+  occurredAt: string
+}
+
+/** Query of GET /api/customers/{id}/timeline: optional type filter and paging. */
+export interface TimelineParams {
+  type?: InteractionType
+  page?: number
+  pageSize?: number
+}
+
+/** The customer's interaction history, newest first. */
+export function getCustomerTimeline(
+  id: string,
+  { type, page, pageSize }: TimelineParams,
+  signal?: AbortSignal,
+): Promise<PagedResult<CustomerInteraction>> {
+  const query = new URLSearchParams()
+  if (type) query.set('type', type)
+  if (page !== undefined) query.set('page', String(page))
+  if (pageSize !== undefined) query.set('pageSize', String(pageSize))
+  const queryString = query.toString()
+  const path = `/api/customers/${encodeURIComponent(id)}/timeline`
+  return apiGet<PagedResult<CustomerInteraction>>(queryString ? `${path}?${queryString}` : path, signal)
+}
+
 /** Removes the contact; when it was primary, the next contact of its type becomes primary. */
 export function removeCustomerContact(customerId: string, contactId: string): Promise<void> {
   return apiDelete(`/api/customers/${encodeURIComponent(customerId)}/contacts/${encodeURIComponent(contactId)}`)

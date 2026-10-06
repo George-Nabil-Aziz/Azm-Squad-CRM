@@ -1,5 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { MemoryRouter } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getCurrentUser, type CurrentUser } from '@/api/auth'
 import { createCustomer, deleteCustomer, listCustomers, updateCustomer, type Customer } from '@/api/customers'
@@ -56,7 +57,9 @@ function pageOf(items: Customer[], totalCount = items.length, page = 1): PagedRe
 function renderPage() {
   return render(
     <QueryClientProvider client={createQueryClient()}>
-      <CustomersPage />
+      <MemoryRouter>
+        <CustomersPage />
+      </MemoryRouter>
       <ApiErrorToaster />
     </QueryClientProvider>,
   )
@@ -92,6 +95,14 @@ describe('CustomersPage', () => {
     expect(within(row).getByText('info@nour.example')).toBeInTheDocument()
     expect(rowOf('Omar Walk-in')).toBeInTheDocument()
     expect(listCustomers).toHaveBeenCalledWith({ search: undefined, page: 1, pageSize: 20 }, expect.anything())
+  })
+
+  it('links each customer name to its details page', async () => {
+    renderPage()
+
+    const row = await screen.findByRole('row', { name: /Nour Trading/ })
+
+    expect(within(row).getByRole('link', { name: 'Nour Trading' })).toHaveAttribute('href', '/customers/c1')
   })
 
   it('searches by name, phone or email and starts again at page 1', async () => {

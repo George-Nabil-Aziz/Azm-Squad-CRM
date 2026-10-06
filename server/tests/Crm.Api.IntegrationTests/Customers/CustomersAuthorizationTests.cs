@@ -22,6 +22,7 @@ public class CustomersAuthorizationTests(CrmApiFactory factory) : IClassFixture<
         { "POST", $"/api/customers/{Guid.Empty}/contacts" },
         { "POST", $"/api/customers/{Guid.Empty}/contacts/{Guid.Empty}/primary" },
         { "DELETE", $"/api/customers/{Guid.Empty}/contacts/{Guid.Empty}" },
+        { "GET", $"/api/customers/{Guid.Empty}/timeline" },
     };
 
     private static HttpRequestMessage Request(string method, string path) => new(new HttpMethod(method), path)
@@ -91,6 +92,7 @@ public class CustomersAuthorizationTests(CrmApiFactory factory) : IClassFixture<
         Assert.Equal(write, policies["POST /api/customers/{id:guid}/contacts"]);
         Assert.Equal(write, policies["POST /api/customers/{id:guid}/contacts/{contactId:guid}/primary"]);
         Assert.Equal(write, policies["DELETE /api/customers/{id:guid}/contacts/{contactId:guid}"]);
-        Assert.Equal(9, policies.Count);
+        Assert.Equal(read, policies["GET /api/customers/{id:guid}/timeline"]);
+        Assert.Equal(10, policies.Count);
     }
 }

@@ -147,6 +147,8 @@ All commands from `client/`. No new package or shadcn component.
 5. Unchanged guards: `PermissionPolicyTests`, `SoftDeleteModelTests`, `LayerDependencyTests`.
 6. Client (new): `CustomerDetailsPage.test.tsx` (5); (modified) `customers.test.ts` (+2), `CustomersPage.test.tsx` (+1); guards `translations.test.ts`, `no-hardcoded-text.test.ts`, `theme.test.ts`.
 
+**Deviations (as built):** the unit-test fakes shared by several test classes live in `server/tests/Crm.UnitTests/Customers/TimelineTestDoubles.cs` (`FakeInteractionRecorder`, `FakeTimelineRepository`, `FakeCurrentUser`); the client got one extra test (`says when nothing happened yet`, 6 in `CustomerDetailsPage.test.tsx`); because the customer name is now a `<Link>`, `renderPage` in `CustomersPage.test.tsx` and `CustomerContacts.test.tsx` wraps the page in a `MemoryRouter`. Results: `dotnet test` 241 unit + 185 integration, `npm test` 659 in 25 files, build and lint green.
+
 ---
 
 ## Migration / Rollback

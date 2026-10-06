@@ -169,6 +169,37 @@
       "added": "Contact added.",
       "primaryChanged": "Primary contact changed.",
       "removed": "Contact removed."
+    },
+    "details": {
+      "back": "Back to customers",
+      "contacts": "Contact details",
+      "loading": "Loading customer…",
+      "notFound": "Customer not found."
+    },
+    "timeline": {
+      "title": "Interaction history",
+      "filter": "Show",
+      "types": {
+        "all": "All activity",
+        "customer": "Customer changes",
+        "note": "Notes",
+        "attachment": "Attachments",
+        "ticket": "Tickets",
+        "message": "Messages"
+      },
+      "events": {
+        "customerCreated": "Customer created",
+        "customerUpdated": "Customer updated",
+        "contactAdded": "Contact added",
+        "other": "Other activity"
+      },
+      "by": "by {{name}}",
+      "system": "System",
+      "empty": "Nothing has happened yet.",
+      "loading": "Loading history…",
+      "pageInfo": "Page {{page}} of {{pages}}",
+      "previous": "Previous",
+      "next": "Next"
     }
   }
 }

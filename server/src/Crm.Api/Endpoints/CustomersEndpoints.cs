@@ -1,5 +1,6 @@
 using Crm.Application.Auth;
 using Crm.Application.Customers;
+using Crm.Application.Customers.Timeline;
 
 namespace Crm.Api.Endpoints;
 
@@ -26,6 +27,12 @@ public static class CustomersEndpoints
         group.MapGet("/{id:guid}", async (Guid id, ICustomerService customers, CancellationToken cancellationToken) =>
                 Results.Ok(await customers.GetAsync(id, cancellationToken)))
             .WithName("GetCustomer");
+
+        // Interaction history, newest first; ?type= filters (customer, note, attachment, ticket, message).
+        group.MapGet("/{id:guid}/timeline", async (Guid id, [AsParameters] CustomerTimelineQuery query,
+                    ICustomerTimelineService timeline, CancellationToken cancellationToken) =>
+                Results.Ok(await timeline.ListAsync(id, query, cancellationToken)))
+            .WithName("GetCustomerTimeline");
 
         group.MapPost("", async (CustomerRequest request, ICustomerService customers, CancellationToken cancellationToken) =>
             {

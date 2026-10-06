@@ -1,5 +1,6 @@
 using Crm.Application.Auth;
 using Crm.Application.Customers;
+using Crm.Application.Customers.Timeline;
 using Crm.Application.Users;
 using Crm.Infrastructure.Customers;
 using Crm.Infrastructure.Identity;
@@ -38,6 +39,7 @@ public static class DependencyInjection
         services.AddScoped<IActiveUserChecker, ActiveUserChecker>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<ICustomerTimelineRepository, CustomerTimelineRepository>();
         services.AddScoped<CrmDbInitializer>();
         return services;
     }

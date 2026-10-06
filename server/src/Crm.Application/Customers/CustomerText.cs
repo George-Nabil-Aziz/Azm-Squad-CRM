@@ -42,4 +42,10 @@ public static class CustomerText
     public static string LookupPhoneOrEmailOnly => LocalizedText.Get(
         "Look up by phone or by email, not both.",
         "ابحث برقم الهاتف أو بالبريد الإلكتروني، وليس بكليهما.");
+
+    public static string TimelineTypeField => LocalizedText.Get("Type", "النوع");
+
+    public static string TimelineTypeInvalid => LocalizedText.Get(
+        "Choose customer, note, attachment, ticket or message.",
+        "اختر العميل أو الملاحظة أو المرفق أو التذكرة أو الرسالة.");
 }
