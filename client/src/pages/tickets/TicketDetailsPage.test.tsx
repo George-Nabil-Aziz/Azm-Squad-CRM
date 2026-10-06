@@ -13,6 +13,7 @@ import {
   changeTicketStatus,
   getTicketHistory,
   getTicket,
+  getTicketCustomerContext,
   listTicketAssignees,
   listTicketMessages,
   type Ticket,
@@ -34,6 +35,7 @@ vi.mock('@/api/tickets', () => ({
   changeTicketCategory: vi.fn(),
   changeTicketPriority: vi.fn(),
   getTicketHistory: vi.fn(),
+  getTicketCustomerContext: vi.fn(),
   listTicketAssignees: vi.fn(),
 }))
 
@@ -122,12 +124,31 @@ describe('TicketDetailsPage', () => {
     vi.mocked(assignTicket).mockReset().mockResolvedValue({ ...invoiceTicket, assigneeId: '4', assigneeName: 'Omar Agent' })
     vi.mocked(changeTicketStatus).mockReset().mockResolvedValue({ ...invoiceTicket, status: 'pending' })
     vi.mocked(getTicketHistory).mockReset().mockResolvedValue([])
+    vi.mocked(getTicketCustomerContext).mockReset().mockResolvedValue({
+      customer: { id: 'c1', name: 'Nour Trading', email: null, phone: null, createdAt: '2026-10-01T08:00:00Z', updatedAt: '2026-10-01T08:00:00Z', contacts: [] },
+      customerDeleted: false,
+      totalTickets: 4,
+      recentTickets: [],
+    })
     vi.mocked(changeTicketCategory).mockReset().mockResolvedValue(invoiceTicket)
     vi.mocked(changeTicketPriority).mockReset().mockResolvedValue(invoiceTicket)
     vi.mocked(listTicketCategories).mockReset().mockResolvedValue([
       { id: 'k1', name: 'Billing', isActive: true, createdAt: '2026-10-01T08:00:00Z', updatedAt: '2026-10-01T08:00:00Z' },
       { id: 'k2', name: 'Support', isActive: true, createdAt: '2026-10-01T08:00:00Z', updatedAt: '2026-10-01T08:00:00Z' },
     ])
+  })
+
+  it('shows the customer panel to a user who may see customers, and not to one who may not', async () => {
+    const { unmount } = renderPage()
+    expect(await screen.findByText('Total tickets: 4')).toBeInTheDocument()
+    unmount()
+
+    vi.mocked(getCurrentUser).mockResolvedValue(viewer)
+    renderPage()
+    await screen.findByRole('heading', { level: 1, name: 'Invoice is wrong' })
+    await waitFor(() => expect(getCurrentUser).toHaveBeenCalledTimes(2))
+
+    expect(screen.queryByText('Total tickets: 4')).not.toBeInTheDocument()
   })
 
   it('shows the ticket with its customer, status and description', async () => {

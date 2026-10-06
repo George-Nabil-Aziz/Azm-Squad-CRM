@@ -43,6 +43,7 @@ public static class DependencyInjection
         services.AddScoped<ITicketAssignmentService, TicketAssignmentService>();
         services.AddScoped<IAutoAssignmentService, AutoAssignmentService>();
         services.AddScoped<IMyTicketsService, MyTicketsService>();
+        services.AddScoped<ITicketCustomerContextService, TicketCustomerContextService>();
         services.AddScoped<IAssignmentSettingsService, AssignmentSettingsService>();
         services.AddScoped<ITicketStatusService, TicketStatusService>();
         services.AddScoped<ITicketHistoryService, TicketHistoryService>();

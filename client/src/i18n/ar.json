@@ -242,6 +242,16 @@
         "priority": "الأولوية",
         "category": "الفئة"
       }
+    },
+    "customerPanel": {
+      "title": "العميل",
+      "loading": "جارٍ تحميل العميل…",
+      "openProfile": "فتح ملف العميل",
+      "deleted": "تم حذف هذا العميل.",
+      "noContacts": "لا توجد بيانات اتصال.",
+      "total": "إجمالي التذاكر: {{count}}",
+      "recent": "أحدث التذاكر",
+      "current": "هذه التذكرة"
     }
   },
   "sla": {

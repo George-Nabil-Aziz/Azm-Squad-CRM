@@ -18,6 +18,7 @@ public class TicketsAuthorizationTests(CrmApiFactory factory) : IClassFixture<Cr
         { "GET", "/api/tickets" },
         { "GET", "/api/tickets/assignees" },
         { "GET", "/api/tickets/mine" },
+        { "GET", $"/api/tickets/{Guid.Empty}/customer-context" },
         { "GET", $"/api/tickets/{Guid.Empty}/messages" },
         { "POST", $"/api/tickets/{Guid.Empty}/messages" },
         { "POST", $"/api/tickets/{Guid.Empty}/assign" },
@@ -72,12 +73,14 @@ public class TicketsAuthorizationTests(CrmApiFactory factory) : IClassFixture<Cr
         Assert.Equal(read, policies["GET /api/tickets/"]);
         Assert.Equal(read, policies["GET /api/tickets/assignees"]);
         Assert.Equal(read, policies["GET /api/tickets/mine"]);
+        string[] withCustomers = [Permissions.CustomersView, Permissions.TicketsView];
+        Assert.Equal(withCustomers, policies["GET /api/tickets/{id:guid}/customer-context"]);
         Assert.Equal(write, policies["POST /api/tickets/{id:guid}/messages/"]);
         Assert.Equal(read, policies["GET /api/tickets/{id:guid}/messages/"]);
         Assert.Equal(write, policies["POST /api/tickets/{id:guid}/assign"]);
         Assert.Equal(write, policies["PUT /api/tickets/{id:guid}/status"]);
         Assert.Equal(read, policies["GET /api/tickets/{id:guid}/history"]);
         Assert.Equal(write, policies["PUT /api/tickets/{id:guid}/category"]);
-        Assert.Equal(12, policies.Count);
+        Assert.Equal(13, policies.Count);
     }
 }

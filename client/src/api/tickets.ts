@@ -1,4 +1,5 @@
 import type { TicketChannel, TicketPriority, TicketStatus } from '@/features/tickets/ticket-values'
+import type { Customer } from './customers'
 import { apiGet, apiPost, apiPut } from './client'
 import type { PagedResult } from './paging'
 
@@ -197,4 +198,28 @@ export interface MyTickets {
 
 export function getMyTickets(signal?: AbortSignal): Promise<MyTickets> {
   return apiGet<MyTickets>('/api/tickets/mine?pageSize=50', signal)
+}
+
+/** One of the customer's tickets in the customer panel (server: CustomerTicketSummary). */
+export interface CustomerTicketSummary {
+  id: string
+  number: string
+  subject: string
+  status: TicketStatus
+  priority: TicketPriority
+  createdAt: string
+  /** True for the ticket the panel is shown on. */
+  isCurrent: boolean
+}
+
+/** GET /api/tickets/{id}/customer-context: the ticket's current customer, their total ticket count and the last 5 tickets. */
+export interface TicketCustomerContext {
+  customer: Customer
+  customerDeleted: boolean
+  totalTickets: number
+  recentTickets: CustomerTicketSummary[]
+}
+
+export function getTicketCustomerContext(id: string, signal?: AbortSignal): Promise<TicketCustomerContext> {
+  return apiGet<TicketCustomerContext>(`/api/tickets/${encodeURIComponent(id)}/customer-context`, signal)
 }

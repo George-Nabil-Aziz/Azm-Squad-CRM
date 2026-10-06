@@ -5,6 +5,7 @@ import {
   changeTicketCategory,
   changeTicketStatus,
   getMyTickets,
+  getTicketCustomerContext,
   getTicketHistory,
   changeTicketPriority,
   createTicket,
@@ -38,6 +39,13 @@ describe('tickets API', () => {
 
     expect(await getMyTickets()).toEqual(body)
     expect(sent(fetchMock)).toEqual({ path: '/api/tickets/mine?pageSize=50', method: 'GET', body: undefined })
+  })
+
+  it('reads the customer context with GET /api/tickets/{id}/customer-context', async () => {
+    const fetchMock = fakeFetch(200, { totalTickets: 3 })
+
+    expect(await getTicketCustomerContext('t1')).toEqual({ totalTickets: 3 })
+    expect(sent(fetchMock)).toEqual({ path: '/api/tickets/t1/customer-context', method: 'GET', body: undefined })
   })
 
   it('creates a ticket with POST /api/tickets', async () => {

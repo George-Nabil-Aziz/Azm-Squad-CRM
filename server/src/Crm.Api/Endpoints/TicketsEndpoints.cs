@@ -38,6 +38,13 @@ public static class TicketsEndpoints
                 Results.Ok(await tickets.GetAsync(id, cancellationToken)))
             .WithName("GetTicket");
 
+        // The customer panel of the ticket page (CRM-30): customer data needs customers.view on top of tickets.view.
+        group.MapGet("/{id:guid}/customer-context", async (Guid id, ITicketCustomerContextService context,
+                    CancellationToken cancellationToken) =>
+                Results.Ok(await context.GetAsync(id, cancellationToken)))
+            .RequireAuthorization(Permissions.CustomersView)
+            .WithName("GetTicketCustomerContext");
+
         return app;
     }
 }

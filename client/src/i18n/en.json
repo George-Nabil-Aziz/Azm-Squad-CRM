@@ -242,6 +242,16 @@
         "priority": "Priority",
         "category": "Category"
       }
+    },
+    "customerPanel": {
+      "title": "Customer",
+      "loading": "Loading customer…",
+      "openProfile": "Open customer profile",
+      "deleted": "This customer was deleted.",
+      "noContacts": "No contact details.",
+      "total": "Total tickets: {{count}}",
+      "recent": "Recent tickets",
+      "current": "This ticket"
     }
   },
   "sla": {
