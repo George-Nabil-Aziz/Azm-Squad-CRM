@@ -12,7 +12,8 @@
     "knowledgeBase": "قاعدة المعرفة",
     "reports": "التقارير",
     "users": "المستخدمون",
-    "ticketCategories": "فئات التذاكر"
+    "ticketCategories": "فئات التذاكر",
+    "slaPolicies": "سياسة SLA"
   },
   "shell": {
     "mainNavigation": "التنقل الرئيسي",
@@ -108,6 +109,33 @@
       "high": "عالية",
       "mid": "متوسطة",
       "low": "منخفضة"
+    }
+  },
+  "sla": {
+    "description": "الوقت المسموح لأول رد ولحل التذكرة، لكل أولوية. تنطبق الأوقات الجديدة على التذاكر الجديدة فقط.",
+    "columns": {
+      "priority": "الأولوية",
+      "response": "وقت الاستجابة",
+      "resolution": "وقت الحل",
+      "actions": "الإجراءات"
+    },
+    "edit": "تعديل",
+    "loading": "جارٍ تحميل سياسة SLA…",
+    "editTitle": "تعديل SLA: {{priority}}",
+    "editDescription": "بالدقائق الكاملة. يجب ألا يقل وقت الحل عن وقت الاستجابة.",
+    "responseMinutes": "وقت الاستجابة (بالدقائق)",
+    "resolutionMinutes": "وقت الحل (بالدقائق)",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ…",
+    "cancel": "إلغاء",
+    "minutesInvalid": "أدخل عددًا صحيحًا من الدقائق أكبر من 0.",
+    "minutesTooLarge": "لا يمكن أن يتجاوز الوقت سنة واحدة (525600 دقيقة).",
+    "resolutionBelowResponse": "يجب ألا يقل وقت الحل عن وقت الاستجابة.",
+    "updated": "تم حفظ SLA للأولوية {{priority}}.",
+    "duration": {
+      "minutes": "{{minutes}} د",
+      "hours": "{{hours}} س",
+      "hoursMinutes": "{{hours}} س {{minutes}} د"
     }
   },
   "ticketCategories": {

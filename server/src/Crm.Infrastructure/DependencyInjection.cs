@@ -1,10 +1,12 @@
 using Crm.Application.Auth;
 using Crm.Application.Customers;
+using Crm.Application.Sla;
 using Crm.Application.Tickets;
 using Crm.Application.Users;
 using Crm.Infrastructure.Customers;
 using Crm.Infrastructure.Identity;
 using Crm.Infrastructure.Persistence;
+using Crm.Infrastructure.Sla;
 using Crm.Infrastructure.Tickets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -41,6 +43,7 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
+        services.AddScoped<ISlaPolicyRepository, SlaPolicyRepository>();
         services.AddScoped<CrmDbInitializer>();
         return services;
     }

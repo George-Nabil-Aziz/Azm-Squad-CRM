@@ -12,7 +12,8 @@
     "knowledgeBase": "Knowledge base",
     "reports": "Reports",
     "users": "Users",
-    "ticketCategories": "Ticket categories"
+    "ticketCategories": "Ticket categories",
+    "slaPolicies": "SLA policy"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -108,6 +109,33 @@
       "high": "High",
       "mid": "Mid",
       "low": "Low"
+    }
+  },
+  "sla": {
+    "description": "Time allowed for the first response and for resolving a ticket, per priority. New times apply to new tickets only.",
+    "columns": {
+      "priority": "Priority",
+      "response": "Response time",
+      "resolution": "Resolution time",
+      "actions": "Actions"
+    },
+    "edit": "Edit",
+    "loading": "Loading the SLA policy…",
+    "editTitle": "Edit SLA: {{priority}}",
+    "editDescription": "Whole minutes. The resolution time must be at least the response time.",
+    "responseMinutes": "Response time (minutes)",
+    "resolutionMinutes": "Resolution time (minutes)",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "minutesInvalid": "Enter a whole number of minutes greater than 0.",
+    "minutesTooLarge": "The time can be at most one year (525600 minutes).",
+    "resolutionBelowResponse": "The resolution time must be at least the response time.",
+    "updated": "SLA for {{priority}} was saved.",
+    "duration": {
+      "minutes": "{{minutes}} min",
+      "hours": "{{hours}} h",
+      "hoursMinutes": "{{hours}} h {{minutes}} min"
     }
   },
   "ticketCategories": {

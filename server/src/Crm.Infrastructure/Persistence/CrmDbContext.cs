@@ -1,4 +1,5 @@
 using Crm.Domain.Customers;
+using Crm.Domain.Sla;
 using Crm.Domain.Tickets;
 using Crm.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -18,6 +19,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<Customer> Customers => Set<Customer>();
 
     public DbSet<TicketCategory> TicketCategories => Set<TicketCategory>();
+
+    public DbSet<SlaPolicy> SlaPolicies => Set<SlaPolicy>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

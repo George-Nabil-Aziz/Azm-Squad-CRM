@@ -5,6 +5,7 @@ import { LoginPage } from '@/pages/auth/LoginPage'
 import { ComingSoonPage } from '@/pages/coming-soon/ComingSoonPage'
 import { CustomersPage } from '@/pages/customers/CustomersPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
+import { SlaPoliciesPage } from '@/pages/sla/SlaPoliciesPage'
 import { TicketCategoriesPage } from '@/pages/ticket-categories/TicketCategoriesPage'
 import { UsersPage } from '@/pages/users/UsersPage'
 import { RequireAuth } from './RequireAuth'
@@ -23,6 +24,9 @@ export function AppRoutes() {
           </Route>
           <Route element={<RequirePermission permission={permissions.categoriesManage} />}>
             <Route path="ticket-categories" element={<TicketCategoriesPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.slaManage} />}>
+            <Route path="sla-policies" element={<SlaPoliciesPage />} />
           </Route>
           {/* Areas built by later stories: each story replaces its line with the real page routes. */}
           <Route element={<RequirePermission permission={permissions.ticketsView} />}>

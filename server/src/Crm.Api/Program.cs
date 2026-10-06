@@ -33,6 +33,7 @@ app.MapAuthEndpoints();
 app.MapUsersEndpoints();
 app.MapCustomersEndpoints();
 app.MapTicketCategoriesEndpoints();
+app.MapSlaPoliciesEndpoints();
 
 await using (var scope = app.Services.CreateAsyncScope())
 {
