@@ -12,6 +12,7 @@ Entry point for the **ticket-management** feature (ticket categories & prioritie
 | 15 | [15-story-ticket-details-replies-CRM-15.md](15-story-ticket-details-replies-CRM-15.md) | Ticket details & replies | CRM-15 | 01–05, 06, 07, 08, 10, 12, 13, 14 |
 | 16 | [16-story-assign-ticket-CRM-16.md](16-story-assign-ticket-CRM-16.md) | Assign ticket to agent | CRM-16 | 01–05, 06, 07, 12, 13, 14, 15 |
 | 17 | [17-story-ticket-status-workflow-CRM-17.md](17-story-ticket-status-workflow-CRM-17.md) | Ticket status workflow | CRM-17 | 01–05, 06, 07, 12, 13, 15, 16 |
+| 18 | [18-story-ticket-history-CRM-18.md](18-story-ticket-history-CRM-18.md) | Ticket history (audit trail) | CRM-18 | 01–05, 06, 07, 12, 13, 16, 17, 22 |
 
 ## Dependency notes
 
@@ -23,3 +24,4 @@ Entry point for the **ticket-management** feature (ticket categories & prioritie
 - **Story 15 (CRM-15)** adds `TicketMessage` (Inbound / Outbound / InternalNote), `Ticket.FirstResponseAt`, `GET|POST /api/tickets/{id}/messages`, `ITicketReplyDispatcher` (no-op until the channel stories) and the details page `tickets/:id`; migration `AddTicketMessages`.
 - **Story 16 (CRM-16)** adds `POST /api/tickets/{id}/assign` (`tickets.assign` for anyone, an agent may only take / release their own ticket), `Ticket.AssignTo`, and the shared history storage `TicketHistoryEntry` + `ITicketHistoryRecorder` (migration `AddTicketHistory`); CRM-17 / 18 / SLA write history through the recorder.
 - **Story 17 (CRM-17)** adds the status flow (`TicketStatusRules`: New → Open → Pending ⇄ Open → Resolved → Closed, reopen to Open), `PUT /api/tickets/{id}/status`, `Ticket.ResolvedAt` (set on Resolved, cleared on reopen), `allowedStatuses` / `resolvedAt` on `TicketResponse`; migration `AddTicketResolvedAt`; status changes are written to the history.
+- **Story 18 (CRM-18)** records priority and category changes through `ITicketHistoryRecorder` (new `PUT /api/tickets/{id}/category`), adds the read-only `GET /api/tickets/{id}/history` (history rows plus SLA `Escalated` events, oldest first) and the History tab. No migration.
