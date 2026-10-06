@@ -89,6 +89,11 @@ public sealed class KbArticleRepository(CrmDbContext db) : IKbArticleRepository
 
     public void Add(KbArticle article) => db.KbArticles.Add(article);
 
+    public async Task<IReadOnlyDictionary<Guid, int>> CountPublishedByCategoryAsync(CancellationToken cancellationToken) =>
+        await db.KbArticles.AsNoTracking().Where(a => a.Status == KbArticleStatus.Published)
+            .GroupBy(a => a.CategoryId).Select(g => new { g.Key, Count = g.Count() })
+            .ToDictionaryAsync(g => g.Key, g => g.Count, cancellationToken);
+
     public Task SaveChangesAsync(CancellationToken cancellationToken) => db.SaveChangesAsync(cancellationToken);
 
     private IQueryable<ArticleRow> Rows() =>

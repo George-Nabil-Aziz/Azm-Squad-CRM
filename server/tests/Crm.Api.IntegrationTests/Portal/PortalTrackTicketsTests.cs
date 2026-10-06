@@ -190,7 +190,7 @@ public class PortalTrackTicketsTests(CrmApiFactory factory) : IClassFixture<CrmA
         var history = await customer.GetFromJsonAsync<HistoryBody[]>($"/api/portal/tickets/{ticket.Id}/history");
 
         Assert.Equal(["created", "status", "status", "status"], history!.Select(h => h.Type));
-        Assert.Equal([null, "open", "resolved", "open"], history.Select(h => h.Status));
+        Assert.Equal([null, "open", "resolved", "open"], history!.Select(h => h.Status));
     }
 
     [Fact]

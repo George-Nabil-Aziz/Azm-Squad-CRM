@@ -112,6 +112,24 @@ public sealed class KbArticle : ISoftDeletable
         UpdatedAt = utcNow;
     }
 
+    /// <summary>A portal visitor answered "Was this helpful?": raises the matching counter. Only published articles take votes.</summary>
+    public void RecordFeedback(bool helpful)
+    {
+        if (!IsPublished || IsDeleted)
+        {
+            throw new InvalidOperationException("Only a published article takes feedback.");
+        }
+
+        if (helpful)
+        {
+            HelpfulCount++;
+        }
+        else
+        {
+            NotHelpfulCount++;
+        }
+    }
+
     /// <summary>An agent inserted the article into a ticket reply: raises <see cref="LinkedCount"/>. Only published articles can be linked.</summary>
     public void RecordLinked()
     {

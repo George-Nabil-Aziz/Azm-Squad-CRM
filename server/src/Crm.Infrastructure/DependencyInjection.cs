@@ -18,7 +18,6 @@ using Crm.Infrastructure.KnowledgeBase;
 using Crm.Infrastructure.Persistence;
 using Crm.Infrastructure.Portal;
 using Crm.Infrastructure.Notifications;
-using Crm.Infrastructure.Persistence;
 using Crm.Infrastructure.QuickReplies;
 using Crm.Infrastructure.Sla;
 using Crm.Infrastructure.Tasks;

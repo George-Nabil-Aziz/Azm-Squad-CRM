@@ -655,7 +655,18 @@
     },
     "home": {
       "title": "How can we help?",
-      "description": "Sign in to follow your requests."
+      "description": "Search the help center, or sign in to follow your requests.",
+      "searchLabel": "Search help articles and FAQs",
+      "searchPlaceholder": "Search for an answer…",
+      "search": "Search",
+      "results": "Search results",
+      "noResults": "Nothing found. Try other words, or submit a request.",
+      "faqs": "Frequently asked questions",
+      "noFaqs": "No FAQs yet.",
+      "articles": "Help articles",
+      "categories": "Article categories",
+      "allCategories": "All",
+      "noArticles": "No articles yet."
     },
     "login": {
       "title": "Sign in to the portal",
@@ -728,6 +739,15 @@
       "history": "History",
       "historyCreated": "Request created",
       "historyStatus": "Status changed to {{status}}"
+    },
+    "article": {
+      "back": "Back to the help center",
+      "notFound": "This article was not found.",
+      "helpfulQuestion": "Was this helpful?",
+      "yes": "Yes",
+      "no": "No",
+      "thanks": "Thank you for your feedback.",
+      "counts": "{{yes}} found this helpful, {{no}} did not."
     }
   }
 }

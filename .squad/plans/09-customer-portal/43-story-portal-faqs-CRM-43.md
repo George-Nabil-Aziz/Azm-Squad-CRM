@@ -36,3 +36,7 @@
 ## Verification / done
 
 All build / test / lint commands green; AC 1–4 each have a test.
+
+## As built
+
+- No migration. Home page of the portal is now the help center. `IKbArticleRepository.CountPublishedByCategoryAsync` added. Vote is remembered per browser in localStorage.

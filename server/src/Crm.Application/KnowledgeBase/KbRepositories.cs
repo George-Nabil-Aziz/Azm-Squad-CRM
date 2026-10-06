@@ -33,5 +33,8 @@ public interface IKbArticleRepository
 
     void Add(KbArticle article);
 
+    /// <summary>How many published, non-deleted articles each category has (categories without any are absent).</summary>
+    Task<IReadOnlyDictionary<Guid, int>> CountPublishedByCategoryAsync(CancellationToken cancellationToken);
+
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -13,6 +13,7 @@ public static class PortalApplicationServiceCollectionExtensions
         services.AddScoped<IPortalAuthService, PortalAuthService>();
         services.AddScoped<IPortalTicketService, PortalTicketService>();
         services.AddScoped<IPortalTicketTracker, PortalTicketTracker>();
+        services.AddScoped<IPortalKbService, PortalKbService>();
         services.AddScoped<ITicketAttachmentService, TicketAttachmentService>();
         return services;
     }

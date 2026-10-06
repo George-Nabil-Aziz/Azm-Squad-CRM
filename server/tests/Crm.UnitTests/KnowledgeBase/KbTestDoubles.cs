@@ -96,6 +96,10 @@ internal sealed class FakeKbArticleRepository : IKbArticleRepository
 
     public void Add(KbArticle article) => Articles.Add(article);
 
+    public Task<IReadOnlyDictionary<Guid, int>> CountPublishedByCategoryAsync(CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyDictionary<Guid, int>>(Articles
+            .Where(a => a.IsPublished && !a.IsDeleted).GroupBy(a => a.CategoryId).ToDictionary(g => g.Key, g => g.Count()));
+
     public Task SaveChangesAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
     private KbArticleView View(KbArticle article)

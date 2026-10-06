@@ -12,7 +12,11 @@ public static class PortalText
         "The code is not valid or has expired. Request a new code.",
         "الرمز غير صحيح أو منتهي الصلاحية. اطلب رمزاً جديداً.");
 
-    public static string CodeEmailSubject => LocalizedText.Get("Your sign-in code", "رمز تسجيل الدخول");
+    public static string HelpfulRequired => LocalizedText.Get(
+        "Say whether the article was helpful (true or false).",
+        "حدد ما إذا كان المقال مفيداً (true أو false).");
+
+    public static string CodeEmailSubject =>LocalizedText.Get("Your sign-in code", "رمز تسجيل الدخول");
 
     public static string CodeEmailBody(string code, int minutes) => LocalizedText.Get(
         $"Your sign-in code for the support portal is {code}.\nIt is valid for {minutes} minutes and works once.\nIf you did not ask for it, you can ignore this email.",

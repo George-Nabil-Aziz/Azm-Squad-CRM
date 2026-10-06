@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router'
 import { permissions } from '@/auth/permissions'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { PortalLayout } from '@/components/portal/PortalLayout'
+import { PortalArticlePage } from '@/pages/portal/PortalArticlePage'
 import { PortalHomePage } from '@/pages/portal/PortalHomePage'
 import { PortalLoginPage } from '@/pages/portal/PortalLoginPage'
 import { PortalNewTicketPage } from '@/pages/portal/PortalNewTicketPage'
@@ -32,6 +33,7 @@ export function AppRoutes() {
       <Route path="/portal" element={<PortalLayout />}>
         <Route index element={<PortalHomePage />} />
         <Route path="login" element={<PortalLoginPage />} />
+        <Route path="kb/articles/:id" element={<PortalArticlePage />} />
         <Route element={<RequirePortalAuth />}>
           <Route path="tickets" element={<PortalTicketsPage />} />
           <Route path="tickets/new" element={<PortalNewTicketPage />} />
