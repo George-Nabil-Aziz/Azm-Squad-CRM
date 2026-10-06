@@ -3,6 +3,7 @@ using Crm.Application.Common.Paging;
 using Crm.Application.Common.Security;
 using Crm.Application.Common.Validation;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Sla;
 using Crm.Domain.Customers;
 using Crm.Domain.Tickets;
 using FluentValidation;
@@ -21,7 +22,8 @@ public sealed class TicketService(
     ICurrentUser currentUser,
     TimeProvider timeProvider,
     IValidator<CreateTicketRequest> createValidator,
-    IValidator<ListTicketsQuery> listValidator) : ITicketService
+    IValidator<ListTicketsQuery> listValidator,
+    ISlaPolicyRepository slaPolicies) : ITicketService
 {
     /// <summary>
     /// One ticket at a time takes "highest number + 1" and saves, so tickets created through this API instance never
@@ -48,6 +50,11 @@ public sealed class TicketService(
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var ticket = Ticket.Create(customerId, request.Subject!, request.Description, request.CategoryId, priority,
             TicketChannel.Manual, currentUser.UserId, now);
+        // CRM-20: due times come from the policy of the priority now; later policy changes do not move them.
+        if (await slaPolicies.FindAsync(priority, cancellationToken) is { } policy)
+        {
+            ticket.ApplySla(policy);
+        }
 
         await NumberLock.WaitAsync(cancellationToken);
         try
@@ -102,6 +109,22 @@ public sealed class TicketService(
     public Task<IReadOnlyList<TicketAssigneeResponse>> ListAssigneesAsync(CancellationToken cancellationToken) =>
         tickets.ListAssigneesAsync(cancellationToken);
 
+    public async Task<TicketResponse> ChangePriorityAsync(
+        Guid id, ChangeTicketPriorityRequest request, CancellationToken cancellationToken)
+    {
+        if (!TicketValues.TryParsePriority(request.Priority, out var priority))
+        {
+            throw FieldError("priority", TicketText.PriorityInvalid);
+        }
+
+        var ticket = await tickets.FindAsync(id, cancellationToken) ?? throw new NotFoundException(TicketText.NotFound);
+        // CRM-20 AC 2: the due times are recalculated from CreatedAt with the new priority's current policy.
+        ticket.ChangePriority(priority, await slaPolicies.FindAsync(priority, cancellationToken),
+            timeProvider.GetUtcNow().UtcDateTime);
+        await tickets.SaveChangesAsync(cancellationToken);
+        return await GetAsync(id, cancellationToken);
+    }
+
     /// <summary>The API shape of a ticket view (also used by the list).</summary>
     public static TicketResponse ToResponse(TicketView view)
     {
@@ -121,7 +144,11 @@ public sealed class TicketService(
             ticket.AssigneeId,
             view.AssigneeName,
             ticket.CreatedAt,
-            ticket.UpdatedAt);
+            ticket.UpdatedAt,
+            ticket.ResponseDueAt,
+            ticket.ResolutionDueAt,
+            ticket.FirstResponseAt,
+            ticket.ResolvedAt);
     }
 
     private static DateTime? StartOfUtcDay(DateOnly? day) =>

@@ -55,6 +55,10 @@ const created: Ticket = {
   assigneeName: null,
   createdAt: '2026-10-01T08:00:00Z',
   updatedAt: '2026-10-01T08:00:00Z',
+  responseDueAt: null,
+  resolutionDueAt: null,
+  firstResponseAt: null,
+  resolvedAt: null,
 }
 
 function renderPage() {

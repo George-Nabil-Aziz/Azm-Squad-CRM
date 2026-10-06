@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createTicket, getTicket, listTicketAssignees, listTickets } from './tickets'
+import { changeTicketPriority, createTicket, getTicket, listTicketAssignees, listTickets } from './tickets'
 
 function fakeFetch(status = 200, body: unknown = {}) {
   const fetchMock = vi.fn().mockResolvedValue(
@@ -77,6 +77,14 @@ describe('tickets API', () => {
     await listTickets({ unassigned: true, page: 1 })
 
     expect(sent(fetchMock).path).toBe('/api/tickets?unassigned=true&page=1')
+  })
+
+  it('changes the priority with PUT /api/tickets/{id}/priority', async () => {
+    const fetchMock = fakeFetch(200, {})
+
+    await changeTicketPriority('t1', 'high')
+
+    expect(sent(fetchMock)).toMatchObject({ path: '/api/tickets/t1/priority', method: 'PUT' })
   })
 
   it('lists the assignees with GET /api/tickets/assignees', async () => {

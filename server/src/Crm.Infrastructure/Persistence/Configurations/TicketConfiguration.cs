@@ -24,6 +24,8 @@ public sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         ticket.Property(t => t.Priority).HasConversion<string>().HasMaxLength(EnumMaxLength);
         ticket.Property(t => t.Channel).HasConversion<string>().HasMaxLength(EnumMaxLength);
         ticket.HasIndex(t => t.CreatedAt); // ticket list: newest first (CRM-14)
+        ticket.HasIndex(t => t.ResponseDueAt); // SLA breach job (CRM-21)
+        ticket.HasIndex(t => t.ResolutionDueAt);
 
         // Rows a ticket points at are never physically deleted (customers are soft-deleted, categories deactivated,
         // users deactivated), so every relationship is Restrict. No navigations: the Domain knows ids only.

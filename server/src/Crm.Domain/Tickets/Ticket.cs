@@ -7,7 +7,7 @@ namespace Crm.Domain.Tickets;
 /// ("TKT-000001"), given by the repository when the ticket is first saved. Tickets are never deleted (they are
 /// closed). Times are UTC and come from the caller (the Application layer passes the injected TimeProvider's time).
 /// </summary>
-public sealed class Ticket
+public sealed partial class Ticket
 {
     public const int SubjectMaxLength = 200;
     public const int DescriptionMaxLength = 10_000;

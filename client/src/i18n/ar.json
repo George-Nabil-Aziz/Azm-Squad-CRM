@@ -163,7 +163,8 @@
       "priority": "الأولوية",
       "category": "الفئة",
       "assignee": "المسؤول",
-      "created": "تاريخ الإنشاء"
+      "created": "تاريخ الإنشاء",
+      "sla": "اتفاقية مستوى الخدمة"
     },
     "empty": "لا توجد تذاكر.",
     "loading": "جارٍ تحميل التذاكر…",
@@ -196,6 +197,15 @@
       "minutes": "{{minutes}} د",
       "hours": "{{hours}} س",
       "hoursMinutes": "{{hours}} س {{minutes}} د"
+    },
+    "timer": {
+      "response": "الاستجابة: {{status}}",
+      "resolution": "الحل: {{status}}",
+      "left": "متبقٍ {{time}}",
+      "overdue": "متأخر {{time}}",
+      "met": "تم في الوقت",
+      "metLate": "تم متأخرًا",
+      "none": "بدون SLA"
     }
   },
   "ticketCategories": {

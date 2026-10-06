@@ -96,6 +96,9 @@ internal sealed class FakeTicketRepository(FakeTicketCategoryRepository categori
     public Task<IReadOnlyList<TicketAssigneeResponse>> ListAssigneesAsync(CancellationToken cancellationToken) =>
         Task.FromResult<IReadOnlyList<TicketAssigneeResponse>>(Assignees);
 
+    public Task<Ticket?> FindAsync(Guid id, CancellationToken cancellationToken) =>
+        Task.FromResult(Tickets.FirstOrDefault(t => t.Id == id));
+
     public Task<TicketView?> GetViewAsync(Guid id, CancellationToken cancellationToken) =>
         Task.FromResult(Tickets.FirstOrDefault(t => t.Id == id) is { } ticket ? View(ticket) : null);
 

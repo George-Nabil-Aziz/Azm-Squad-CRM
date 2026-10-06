@@ -163,7 +163,8 @@
       "priority": "Priority",
       "category": "Category",
       "assignee": "Assignee",
-      "created": "Created"
+      "created": "Created",
+      "sla": "SLA"
     },
     "empty": "No tickets found.",
     "loading": "Loading tickets…",
@@ -196,6 +197,15 @@
       "minutes": "{{minutes}} min",
       "hours": "{{hours}} h",
       "hoursMinutes": "{{hours}} h {{minutes}} min"
+    },
+    "timer": {
+      "response": "Response: {{status}}",
+      "resolution": "Resolution: {{status}}",
+      "left": "{{time}} left",
+      "overdue": "overdue by {{time}}",
+      "met": "met",
+      "metLate": "met late",
+      "none": "No SLA"
     }
   },
   "ticketCategories": {

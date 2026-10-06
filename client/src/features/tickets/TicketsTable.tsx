@@ -1,11 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import type { Ticket } from '@/api/tickets'
 import { Badge } from '@/components/ui/badge'
+import { TicketSlaTimers } from '@/features/sla/TicketSlaTimers'
+import { useNow } from '@/features/sla/useNow'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 /** Tickets in the order the API returns them (newest first). */
 export function TicketsTable({ tickets }: { tickets: Ticket[] }) {
   const { t, i18n } = useTranslation()
+  const now = useNow()
   const formatTime = new Intl.DateTimeFormat(i18n.language, { dateStyle: 'medium', timeStyle: 'short' })
 
   return (
@@ -19,6 +22,7 @@ export function TicketsTable({ tickets }: { tickets: Ticket[] }) {
           <TableHead>{t('tickets.columns.priority')}</TableHead>
           <TableHead>{t('tickets.columns.category')}</TableHead>
           <TableHead>{t('tickets.columns.assignee')}</TableHead>
+          <TableHead>{t('tickets.columns.sla')}</TableHead>
           <TableHead>{t('tickets.columns.created')}</TableHead>
         </TableRow>
       </TableHeader>
@@ -42,6 +46,9 @@ export function TicketsTable({ tickets }: { tickets: Ticket[] }) {
             <TableCell>{ticket.categoryName}</TableCell>
             <TableCell className={ticket.assigneeName ? undefined : 'text-muted-foreground'}>
               {ticket.assigneeName ?? t('tickets.filters.unassigned')}
+            </TableCell>
+            <TableCell>
+              <TicketSlaTimers times={ticket} now={now} />
             </TableCell>
             <TableCell>
               <time dateTime={ticket.createdAt}>{formatTime.format(new Date(ticket.createdAt))}</time>

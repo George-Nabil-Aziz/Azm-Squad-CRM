@@ -1,5 +1,5 @@
 import type { TicketChannel, TicketPriority, TicketStatus } from '@/features/tickets/ticket-values'
-import { apiGet, apiPost } from './client'
+import { apiGet, apiPost, apiPut } from './client'
 import type { PagedResult } from './paging'
 
 /**
@@ -75,6 +75,10 @@ export interface Ticket {
   assigneeName: string | null
   createdAt: string
   updatedAt: string
+  responseDueAt: string | null
+  resolutionDueAt: string | null
+  firstResponseAt: string | null
+  resolvedAt: string | null
 }
 
 /** Body of "create ticket". Customer and subject are required; send null for no description / category. */
@@ -93,4 +97,9 @@ export function createTicket(request: CreateTicketRequest): Promise<Ticket> {
 
 export function getTicket(id: string, signal?: AbortSignal): Promise<Ticket> {
   return apiGet<Ticket>(`/api/tickets/${encodeURIComponent(id)}`, signal)
+}
+
+/** Changes the priority; the server recalculates the SLA due times from the creation time (CRM-20). */
+export function changeTicketPriority(id: string, priority: TicketPriority): Promise<Ticket> {
+  return apiPut<Ticket>(`/api/tickets/${encodeURIComponent(id)}/priority`, { priority })
 }
