@@ -102,6 +102,7 @@ export function fakeApi({ healthStatus = 200, me = superAdminMe }: FakeApiOption
         assigneeName: null,
         createdAt: '2026-10-01T08:00:00Z',
         updatedAt: '2026-10-01T08:00:00Z',
+        firstResponseAt: null,
       }
       return json(200, { items: [ticket], page: 1, pageSize: 20, totalCount: 1 })
     }

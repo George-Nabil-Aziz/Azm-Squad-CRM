@@ -83,7 +83,7 @@ An agent handles a request on one screen: `tickets/:id` shows the ticket, its co
 
 ## Done Criteria
 
-- [ ] AC 1–4 each covered by unit + integration (+ client) tests; migration applied cleanly; strings in en + ar.
+- [x] AC 1–4 each covered by unit + integration (+ client) tests; migration applied cleanly; strings in en + ar.
 
 ## How later stories build on this
 
@@ -93,4 +93,8 @@ An agent handles a request on one screen: `tickets/:id` shows the ticket, its co
 
 ## Deviations (as built)
 
-(none yet)
+- Closed-ticket unit tests set the status through a reflection helper (`TicketTestSupport.SetStatus`) because the status workflow arrives with CRM-17.
+- `ITicketMessageRepository` has no save method: messages are saved by `ITicketRepository.SaveChangesAsync` (same scoped `CrmDbContext`).
+- The reply form is a plain controlled form (not react-hook-form): one field plus a toggle; server errors on `body` or `status` show under the field.
+- `TicketsPage` tests are wrapped in `MemoryRouter` (the number cell is now a link). `Ticket` (client) and `TicketBody` (tests) carry `firstResponseAt`.
+- Migration: `AddTicketMessages` (table `TicketMessages` + `Tickets.FirstResponseAt`).

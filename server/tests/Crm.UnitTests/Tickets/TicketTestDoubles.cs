@@ -96,6 +96,9 @@ internal sealed class FakeTicketRepository(FakeTicketCategoryRepository categori
     public Task<IReadOnlyList<TicketAssigneeResponse>> ListAssigneesAsync(CancellationToken cancellationToken) =>
         Task.FromResult<IReadOnlyList<TicketAssigneeResponse>>(Assignees);
 
+    public Task<Ticket?> FindAsync(Guid id, CancellationToken cancellationToken) =>
+        Task.FromResult(Tickets.FirstOrDefault(t => t.Id == id));
+
     public Task<TicketView?> GetViewAsync(Guid id, CancellationToken cancellationToken) =>
         Task.FromResult(Tickets.FirstOrDefault(t => t.Id == id) is { } ticket ? View(ticket) : null);
 
@@ -104,6 +107,46 @@ internal sealed class FakeTicketRepository(FakeTicketCategoryRepository categori
         AllCustomerNames[ticket.CustomerId],
         categories.Categories.FirstOrDefault(c => c.Id == ticket.CategoryId)?.Name,
         null);
+}
+
+/// <summary>Test-only access to ticket state the Domain changes in later stories (status workflow, CRM-17).</summary>
+internal static class TicketTestSupport
+{
+    public static void SetStatus(Ticket ticket, TicketStatus status) =>
+        typeof(Ticket).GetProperty(nameof(Ticket.Status))!.SetValue(ticket, status);
+}
+
+/// <summary>Reply dispatches the service made (the real dispatcher is implemented by the channel stories).</summary>
+internal sealed class FakeTicketReplyDispatcher : ITicketReplyDispatcher
+{
+    public List<TicketMessage> Dispatched { get; } = [];
+
+    public Task DispatchAsync(TicketMessage message, CancellationToken cancellationToken)
+    {
+        Dispatched.Add(message);
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>In-memory message storage with the same contract as the EF Core repository (authors are named by <see cref="Authors"/>).</summary>
+internal sealed class FakeTicketMessageRepository : ITicketMessageRepository
+{
+    public List<TicketMessage> Messages { get; } = [];
+
+    public Dictionary<Guid, string> Authors { get; } = [];
+
+    public void Add(TicketMessage message) => Messages.Add(message);
+
+    public Task<TicketMessageResponse?> GetAsync(Guid id, CancellationToken cancellationToken) =>
+        Task.FromResult(Messages.FirstOrDefault(m => m.Id == id) is { } message ? ToResponse(message) : null);
+
+    public Task<IReadOnlyList<TicketMessageResponse>> ListAsync(Guid ticketId, bool includeInternal, CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<TicketMessageResponse>>([.. Messages
+            .Where(m => m.TicketId == ticketId && (includeInternal || !m.IsInternal))
+            .OrderBy(m => m.CreatedAt).Select(ToResponse)]);
+
+    private TicketMessageResponse ToResponse(TicketMessage message) => TicketMessageService.ToResponse(
+        message, message.AuthorId is { } id && Authors.TryGetValue(id, out var name) ? name : null);
 }
 
 /// <summary>A clock the test sets by hand (the app uses TimeProvider.System).</summary>

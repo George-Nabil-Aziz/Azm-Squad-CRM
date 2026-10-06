@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { listTicketAssignees, listTickets, type TicketListParams } from '@/api/tickets'
+import { getTicket, listTicketAssignees, listTicketMessages, listTickets, type TicketListParams } from '@/api/tickets'
 
-/** Prefix of every tickets query: creating or changing a ticket invalidates it so every list reloads. */
+/** Prefix of every tickets query: creating or changing a ticket invalidates it so every list and page reloads. */
 export const ticketsQueryKey = ['tickets'] as const
 
 /** One page of GET /api/tickets. The previous page stays visible while the next one loads. */
@@ -10,6 +10,22 @@ export function useTickets(params: TicketListParams) {
     queryKey: [...ticketsQueryKey, params],
     queryFn: ({ signal }) => listTickets(params, signal),
     placeholderData: keepPreviousData,
+  })
+}
+
+/** One ticket (GET /api/tickets/{id}). */
+export function useTicket(id: string) {
+  return useQuery({
+    queryKey: [...ticketsQueryKey, 'detail', id],
+    queryFn: ({ signal }) => getTicket(id, signal),
+  })
+}
+
+/** The conversation of a ticket, oldest first. */
+export function useTicketMessages(id: string) {
+  return useQuery({
+    queryKey: [...ticketsQueryKey, 'messages', id],
+    queryFn: ({ signal }) => listTicketMessages(id, signal),
   })
 }
 

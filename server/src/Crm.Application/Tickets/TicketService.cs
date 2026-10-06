@@ -121,7 +121,8 @@ public sealed class TicketService(
             ticket.AssigneeId,
             view.AssigneeName,
             ticket.CreatedAt,
-            ticket.UpdatedAt);
+            ticket.UpdatedAt,
+            ticket.FirstResponseAt);
     }
 
     private static DateTime? StartOfUtcDay(DateOnly? day) =>

@@ -21,6 +21,9 @@ public interface ITicketRepository
     Task SaveChangesAsync(CancellationToken cancellationToken);
 
     /// <summary>The ticket with its customer name (also of a deleted customer), category and assignee names; or null.</summary>
+    /// <summary>The tracked ticket (change it, then <see cref="SaveChangesAsync"/>), or null.</summary>
+    Task<Ticket?> FindAsync(Guid id, CancellationToken cancellationToken);
+
     Task<TicketView?> GetViewAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>

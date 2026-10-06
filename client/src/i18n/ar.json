@@ -168,7 +168,34 @@
     "loading": "جارٍ تحميل التذاكر…",
     "pageInfo": "صفحة {{page}} من {{pages}}",
     "previous": "السابق",
-    "next": "التالي"
+    "next": "التالي",
+    "details": {
+      "back": "العودة إلى التذاكر",
+      "loading": "جارٍ تحميل التذكرة…",
+      "notFound": "التذكرة غير موجودة.",
+      "channel": "القناة",
+      "firstResponse": "أول رد",
+      "noResponseYet": "لا يوجد رد بعد",
+      "conversation": "المحادثة",
+      "loadingMessages": "جارٍ تحميل المحادثة…",
+      "noMessages": "لا توجد رسائل بعد.",
+      "system": "النظام",
+      "internalNote": "ملاحظة داخلية",
+      "delivery": {
+        "pending": "جارٍ الإرسال…",
+        "sent": "تم الإرسال",
+        "failed": "لم يتم التسليم"
+      },
+      "message": "الرسالة",
+      "messageRequired": "اكتب رسالة أولاً.",
+      "internalToggle": "ملاحظة داخلية (لا يراها العميل أبداً)",
+      "sendReply": "إرسال الرد",
+      "addNote": "إضافة ملاحظة",
+      "sending": "جارٍ الإرسال…",
+      "replySent": "تمت إضافة ردك.",
+      "noteAdded": "تمت إضافة الملاحظة.",
+      "closedNotice": "هذه التذكرة مغلقة. أعد فتحها للرد أو لإضافة ملاحظة."
+    }
   },
   "ticketCategories": {
     "description": "الفئات التي يختارها الموظفون عند إنشاء تذكرة.",

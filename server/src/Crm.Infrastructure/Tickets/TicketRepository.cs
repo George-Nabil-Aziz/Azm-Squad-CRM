@@ -39,6 +39,9 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
         }
     }
 
+    public Task<Ticket?> FindAsync(Guid id, CancellationToken cancellationToken) =>
+        db.Tickets.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+
     public async Task<TicketView?> GetViewAsync(Guid id, CancellationToken cancellationToken) =>
         (await Rows().FirstOrDefaultAsync(r => r.Ticket.Id == id, cancellationToken))?.ToView();
 

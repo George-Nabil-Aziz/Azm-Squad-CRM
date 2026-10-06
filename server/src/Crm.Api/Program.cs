@@ -34,6 +34,7 @@ app.MapUsersEndpoints();
 app.MapCustomersEndpoints();
 app.MapTicketCategoriesEndpoints();
 app.MapTicketsEndpoints();
+app.MapTicketMessagesEndpoints();
 
 await using (var scope = app.Services.CreateAsyncScope())
 {

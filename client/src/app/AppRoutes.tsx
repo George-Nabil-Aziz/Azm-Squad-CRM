@@ -7,6 +7,7 @@ import { CustomerDetailsPage } from '@/pages/customers/CustomerDetailsPage'
 import { CustomersPage } from '@/pages/customers/CustomersPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
 import { TicketCategoriesPage } from '@/pages/ticket-categories/TicketCategoriesPage'
+import { TicketDetailsPage } from '@/pages/tickets/TicketDetailsPage'
 import { TicketsPage } from '@/pages/tickets/TicketsPage'
 import { UsersPage } from '@/pages/users/UsersPage'
 import { RequireAuth } from './RequireAuth'
@@ -29,6 +30,7 @@ export function AppRoutes() {
           {/* Areas built by later stories: each story replaces its line with the real page routes. */}
           <Route element={<RequirePermission permission={permissions.ticketsView} />}>
             <Route path="tickets" element={<TicketsPage />} />
+            <Route path="tickets/:id" element={<TicketDetailsPage />} />
           </Route>
           <Route element={<RequirePermission permission={permissions.customersView} />}>
             <Route path="customers" element={<CustomersPage />} />

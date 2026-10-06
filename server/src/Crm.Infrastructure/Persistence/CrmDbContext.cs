@@ -27,6 +27,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<Ticket> Tickets => Set<Ticket>();
 
+    public DbSet<TicketMessage> TicketMessages => Set<TicketMessage>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

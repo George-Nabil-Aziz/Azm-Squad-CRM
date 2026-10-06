@@ -1,5 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { MemoryRouter } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getCurrentUser, type CurrentUser } from '@/api/auth'
 import { listCustomers, type Customer } from '@/api/customers'
@@ -55,12 +56,15 @@ const created: Ticket = {
   assigneeName: null,
   createdAt: '2026-10-01T08:00:00Z',
   updatedAt: '2026-10-01T08:00:00Z',
+  firstResponseAt: null,
 }
 
 function renderPage() {
   return render(
     <QueryClientProvider client={createQueryClient()}>
-      <TicketsPage />
+      <MemoryRouter>
+        <TicketsPage />
+      </MemoryRouter>
       <ApiErrorToaster />
     </QueryClientProvider>,
   )

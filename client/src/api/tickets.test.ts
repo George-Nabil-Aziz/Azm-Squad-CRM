@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createTicket, getTicket, listTicketAssignees, listTickets } from './tickets'
+import { addTicketMessage, createTicket, getTicket, listTicketAssignees, listTicketMessages, listTickets } from './tickets'
 
 function fakeFetch(status = 200, body: unknown = {}) {
   const fetchMock = vi.fn().mockResolvedValue(
@@ -85,5 +85,25 @@ describe('tickets API', () => {
     await listTicketAssignees()
 
     expect(sent(fetchMock)).toMatchObject({ path: '/api/tickets/assignees', method: 'GET' })
+  })
+
+  it('lists the thread with GET /api/tickets/{id}/messages', async () => {
+    const fetchMock = fakeFetch(200, [])
+
+    await listTicketMessages('t1')
+
+    expect(sent(fetchMock)).toMatchObject({ path: '/api/tickets/t1/messages', method: 'GET' })
+  })
+
+  it('sends a reply with POST /api/tickets/{id}/messages', async () => {
+    const fetchMock = fakeFetch(201, { id: 'm1' })
+
+    await addTicketMessage('t1', { body: 'We are on it.', internal: false })
+
+    expect(sent(fetchMock)).toEqual({
+      path: '/api/tickets/t1/messages',
+      method: 'POST',
+      body: { body: 'We are on it.', internal: false },
+    })
   })
 })

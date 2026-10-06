@@ -27,7 +27,8 @@ public sealed record TicketResponse(
     Guid? AssigneeId,
     string? AssigneeName,
     DateTime CreatedAt,
-    DateTime UpdatedAt);
+    DateTime UpdatedAt,
+    DateTime? FirstResponseAt);
 
 /// <summary>A ticket with the names it shows (read model filled by the repository).</summary>
 public sealed record TicketView(Ticket Ticket, string CustomerName, string? CategoryName, string? AssigneeName);

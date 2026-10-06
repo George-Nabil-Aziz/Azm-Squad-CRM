@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 import type { Ticket } from '@/api/tickets'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -27,7 +28,9 @@ export function TicketsTable({ tickets }: { tickets: Ticket[] }) {
           <TableRow key={ticket.id}>
             {/* Ticket numbers read left to right in Arabic too. */}
             <TableCell dir="ltr" className="text-start font-medium">
-              {ticket.number}
+              <Link to={`/tickets/${ticket.id}`} className="text-primary underline-offset-4 hover:underline">
+                {ticket.number}
+              </Link>
             </TableCell>
             <TableCell>{ticket.subject}</TableCell>
             <TableCell>{ticket.customerName}</TableCell>
