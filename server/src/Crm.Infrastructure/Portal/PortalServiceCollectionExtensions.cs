@@ -13,6 +13,7 @@ public static class PortalServiceCollectionExtensions
     public static IServiceCollection AddPortalInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IPortalAccountRepository, PortalAccountRepository>();
+        services.AddScoped<ISurveyRepository, SurveyRepository>();
         services.AddSingleton(provider =>
         {
             var options = provider.GetRequiredService<IConfiguration>().GetSection(PortalOptions.SectionName).Get<PortalOptions>()

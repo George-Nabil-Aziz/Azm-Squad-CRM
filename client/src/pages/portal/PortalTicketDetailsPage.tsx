@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
+import { TicketFeedback } from '@/features/portal/TicketFeedback'
 
 /** One of the customer's requests: status, public conversation, history, reply box and reopen button. */
 export function PortalTicketDetailsPage() {
@@ -113,6 +114,8 @@ function Details({ ticket }: { ticket: PortalTicketSummary }) {
           </div>
         </div>
       ) : null}
+
+      {ticket.status === 'resolved' || ticket.status === 'closed' ? <TicketFeedback ticketId={ticket.id} status={ticket.status} /> : null}
 
       <section aria-label={t('portal.details.conversation')} className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">{t('portal.details.conversation')}</h2>

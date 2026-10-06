@@ -14,6 +14,7 @@ public static class PortalApplicationServiceCollectionExtensions
         services.AddScoped<IPortalTicketService, PortalTicketService>();
         services.AddScoped<IPortalTicketTracker, PortalTicketTracker>();
         services.AddScoped<IPortalKbService, PortalKbService>();
+        services.AddScoped<ISurveyService, SurveyService>();
         services.AddScoped<ITicketAttachmentService, TicketAttachmentService>();
         return services;
     }

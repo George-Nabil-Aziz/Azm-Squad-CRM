@@ -39,3 +39,7 @@
 ## Verification / done
 
 All build / test / lint commands green; AC 1–4 each have a test; migration `AddTicketSurveys`.
+
+## As built
+
+- Migration `AddTicketSurveys` (on top of main's snapshot). `CsatReadModel` replaces `EmptyCsatReadModel` in `Crm.Infrastructure/DependencyInjection.cs` (the empty class stays in Application, unused). Surveys are issued from `TicketStatusService` (optional `ISurveyService`). `PortalSurveyTests.ASubmittedRating_ShowsInTheCsatReport` covers the report integration.

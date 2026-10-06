@@ -957,6 +957,19 @@
       "no": "No",
       "thanks": "Thank you for your feedback.",
       "counts": "{{yes}} found this helpful, {{no}} did not."
+    },
+    "survey": {
+      "title": "How did we do?",
+      "form": "Rate our support",
+      "question": "How satisfied are you with the support you received?",
+      "stars": "{{count}} stars",
+      "comment": "Comment (optional)",
+      "send": "Send rating",
+      "ratingRequired": "Choose 1 to 5 stars.",
+      "thanks": "Thank you for your feedback.",
+      "yourRating": "Your rating: {{count}} out of 5.",
+      "expired": "This survey link has expired.",
+      "notFound": "This survey was not found."
     }
   }
 }

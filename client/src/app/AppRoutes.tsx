@@ -6,6 +6,7 @@ import { PortalArticlePage } from '@/pages/portal/PortalArticlePage'
 import { PortalHomePage } from '@/pages/portal/PortalHomePage'
 import { PortalLoginPage } from '@/pages/portal/PortalLoginPage'
 import { PortalNewTicketPage } from '@/pages/portal/PortalNewTicketPage'
+import { PortalSurveyPage } from '@/pages/portal/PortalSurveyPage'
 import { PortalTicketDetailsPage } from '@/pages/portal/PortalTicketDetailsPage'
 import { PortalTicketsPage } from '@/pages/portal/PortalTicketsPage'
 import { ReportsLayout } from '@/features/reports/ReportsLayout'
@@ -41,6 +42,7 @@ export function AppRoutes() {
         <Route index element={<PortalHomePage />} />
         <Route path="login" element={<PortalLoginPage />} />
         <Route path="kb/articles/:id" element={<PortalArticlePage />} />
+        <Route path="survey/:token" element={<PortalSurveyPage />} />
         <Route element={<RequirePortalAuth />}>
           <Route path="tickets" element={<PortalTicketsPage />} />
           <Route path="tickets/new" element={<PortalNewTicketPage />} />

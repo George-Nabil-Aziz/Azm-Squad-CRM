@@ -19,7 +19,8 @@ public interface ITicketStatusService
 public sealed class TicketStatusService(
     ITicketRepository tickets,
     ITicketHistoryRecorder history,
-    TimeProvider timeProvider) : ITicketStatusService
+    TimeProvider timeProvider,
+    Crm.Application.Portal.ISurveyService? surveys = null) : ITicketStatusService
 {
     public async Task<TicketResponse> ChangeAsync(Guid ticketId, ChangeTicketStatusRequest request, CancellationToken cancellationToken)
     {
@@ -41,6 +42,10 @@ public sealed class TicketStatusService(
         ticket.ChangeStatus(target, now);
         history.Record(ticket.Id, TicketHistoryField.Status, TicketValues.StatusName(from), TicketValues.StatusName(target), now);
         await tickets.SaveChangesAsync(cancellationToken);
+        if (target == TicketStatus.Resolved && surveys is not null)
+        {
+            await surveys.OnTicketResolvedAsync(ticket, cancellationToken); // CRM-44: the customer gets the satisfaction survey
+        }
 
         return TicketService.ToResponse(await tickets.GetViewAsync(ticketId, cancellationToken)
                                         ?? throw new InvalidOperationException("The saved ticket was not found."));

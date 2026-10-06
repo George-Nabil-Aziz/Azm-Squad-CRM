@@ -129,3 +129,37 @@ export function replyToPortalTicket(id: string, body: string): Promise<PortalMes
 export function reopenPortalTicket(id: string): Promise<PortalTicketSummary> {
   return apiPost<PortalTicketSummary>(`/api/portal/tickets/${encodeURIComponent(id)}/reopen`, {})
 }
+
+/** A satisfaction survey (server: SurveyInfoResponse). `state`: open, answered, expired, or none (the ticket has no survey). */
+export interface PortalSurvey {
+  ticketNumber: string
+  subject: string
+  state: 'open' | 'answered' | 'expired' | 'none'
+  rating: number | null
+  comment: string | null
+  expiresAt: string | null
+}
+
+export interface SurveyAnswer {
+  rating: number
+  comment: string
+}
+
+/** The survey behind the emailed link (public; 404 for an unknown token). */
+export function getPortalSurvey(token: string, signal?: AbortSignal): Promise<PortalSurvey> {
+  return apiGet<PortalSurvey>(`/api/portal/surveys/${encodeURIComponent(token)}`, signal)
+}
+
+/** 400 on `rating` (outside 1-5, already answered) or `token` (the link expired). */
+export function submitPortalSurvey(token: string, answer: SurveyAnswer): Promise<PortalSurvey> {
+  return apiPost<PortalSurvey>(`/api/portal/surveys/${encodeURIComponent(token)}`, answer)
+}
+
+/** The survey of the signed-in customer's own ticket. */
+export function getPortalTicketFeedback(ticketId: string, signal?: AbortSignal): Promise<PortalSurvey> {
+  return apiGet<PortalSurvey>(`/api/portal/tickets/${encodeURIComponent(ticketId)}/feedback`, signal)
+}
+
+export function submitPortalTicketFeedback(ticketId: string, answer: SurveyAnswer): Promise<PortalSurvey> {
+  return apiPost<PortalSurvey>(`/api/portal/tickets/${encodeURIComponent(ticketId)}/feedback`, answer)
+}
