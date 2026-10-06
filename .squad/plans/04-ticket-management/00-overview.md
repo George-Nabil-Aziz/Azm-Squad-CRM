@@ -11,6 +11,7 @@ Entry point for the **ticket-management** feature (ticket categories & prioritie
 | 14 | [14-story-ticket-list-CRM-14.md](14-story-ticket-list-CRM-14.md) | Ticket list & filters | CRM-14 | 01–05, 06, 07, 08, 12, 13 |
 | 15 | [15-story-ticket-details-replies-CRM-15.md](15-story-ticket-details-replies-CRM-15.md) | Ticket details & replies | CRM-15 | 01–05, 06, 07, 08, 10, 12, 13, 14 |
 | 16 | [16-story-assign-ticket-CRM-16.md](16-story-assign-ticket-CRM-16.md) | Assign ticket to agent | CRM-16 | 01–05, 06, 07, 12, 13, 14, 15 |
+| 17 | [17-story-ticket-status-workflow-CRM-17.md](17-story-ticket-status-workflow-CRM-17.md) | Ticket status workflow | CRM-17 | 01–05, 06, 07, 12, 13, 15, 16 |
 
 ## Dependency notes
 
@@ -21,3 +22,4 @@ Entry point for the **ticket-management** feature (ticket categories & prioritie
 - **Story 14 (CRM-14)** adds `GET /api/tickets` (filters status / priority / category / assignee or unassigned / created date range, search by number or subject, paged newest first; `TicketListFilter` applied on `TicketRepository.Rows()`), `GET /api/tickets/assignees` (active staff for pickers), and the Tickets page filter bar + paged table. No migration.
 - **Story 15 (CRM-15)** adds `TicketMessage` (Inbound / Outbound / InternalNote), `Ticket.FirstResponseAt`, `GET|POST /api/tickets/{id}/messages`, `ITicketReplyDispatcher` (no-op until the channel stories) and the details page `tickets/:id`; migration `AddTicketMessages`.
 - **Story 16 (CRM-16)** adds `POST /api/tickets/{id}/assign` (`tickets.assign` for anyone, an agent may only take / release their own ticket), `Ticket.AssignTo`, and the shared history storage `TicketHistoryEntry` + `ITicketHistoryRecorder` (migration `AddTicketHistory`); CRM-17 / 18 / SLA write history through the recorder.
+- **Story 17 (CRM-17)** adds the status flow (`TicketStatusRules`: New → Open → Pending ⇄ Open → Resolved → Closed, reopen to Open), `PUT /api/tickets/{id}/status`, `Ticket.ResolvedAt` (set on Resolved, cleared on reopen), `allowedStatuses` / `resolvedAt` on `TicketResponse`; migration `AddTicketResolvedAt`; status changes are written to the history.
