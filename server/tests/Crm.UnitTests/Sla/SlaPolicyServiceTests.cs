@@ -10,11 +10,33 @@ public class SlaPolicyServiceTests
     private static readonly DateTimeOffset Start = new(2026, 10, 1, 8, 0, 0, TimeSpan.Zero);
     private readonly FakeSlaPolicyRepository _repository = new(Start.UtcDateTime.AddDays(-1));
     private readonly TestClock _clock = new(Start);
+    private readonly Audit.FakeAuditLogger _audit = new();
     private readonly SlaPolicyService _service;
 
     public SlaPolicyServiceTests()
     {
-        _service = new SlaPolicyService(_repository, _clock, new UpdateSlaPolicyRequestValidator());
+        _service = new SlaPolicyService(_repository, _clock, new UpdateSlaPolicyRequestValidator(), _audit);
+    }
+
+    [Fact]
+    public async Task Update_LogsOldAndNewTimes_ToTheAuditLog()
+    {
+        await UpdateAsync("high", 60, 240);
+
+        var logged = Assert.Single(_audit.Events);
+        Assert.Equal("sla-policy.updated", logged.Action);
+        Assert.Equal("SlaPolicy", logged.EntityType);
+        Assert.Equal("high", logged.EntityId);
+        Assert.Equal("""{"responseMinutes":120,"resolutionMinutes":480}""", System.Text.Json.JsonSerializer.Serialize(logged.OldValues));
+        Assert.Equal("""{"responseMinutes":60,"resolutionMinutes":240}""", System.Text.Json.JsonSerializer.Serialize(logged.NewValues));
+    }
+
+    [Fact]
+    public async Task InvalidUpdate_IsNotLogged()
+    {
+        await Assert.ThrowsAsync<ValidationException>(() => UpdateAsync("high", 0, 240));
+
+        Assert.Empty(_audit.Events);
     }
 
     private Task<SlaPolicyResponse> UpdateAsync(string priority, int? response, int? resolution) =>

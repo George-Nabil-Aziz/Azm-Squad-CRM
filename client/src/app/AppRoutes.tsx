@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router'
 import { permissions } from '@/auth/permissions'
 import { AppLayout } from '@/components/layout/AppLayout'
+import { AuditLogsPage } from '@/pages/audit/AuditLogsPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { ComingSoonPage } from '@/pages/coming-soon/ComingSoonPage'
 import { CustomerDetailsPage } from '@/pages/customers/CustomerDetailsPage'
@@ -30,6 +31,9 @@ export function AppRoutes() {
           </Route>
           <Route element={<RequirePermission permission={permissions.slaManage} />}>
             <Route path="sla-policies" element={<SlaPoliciesPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.auditView} />}>
+            <Route path="audit-logs" element={<AuditLogsPage />} />
           </Route>
           {/* Areas built by later stories: each story replaces its line with the real page routes. */}
           <Route element={<RequirePermission permission={permissions.ticketsView} />}>

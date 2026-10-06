@@ -41,6 +41,9 @@ public static class Permissions
     /// <summary>Open the reports area (sidebar "Reports").</summary>
     public const string ReportsView = "reports.view";
 
+    /// <summary>Read the audit log (/api/audit-logs, CRM-34): SuperAdmin and Admin.</summary>
+    public const string AuditView = "audit.view";
+
     /// <summary>Every permission, in catalogue order (the order used in /api/auth/me).</summary>
     public static IReadOnlyList<string> All { get; } =
     [
@@ -48,6 +51,6 @@ public static class Permissions
         CustomersView, CustomersManage,
         TicketsView, TicketsManage, TicketsAssign,
         CategoriesManage, SlaManage, ChannelsManage,
-        ReportsView,
+        ReportsView, AuditView,
     ];
 }

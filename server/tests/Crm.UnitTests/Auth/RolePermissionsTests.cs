@@ -49,6 +49,15 @@ public class RolePermissionsTests
     }
 
     [Fact]
+    public void AuditView_IsForSuperAdminAndAdminOnly()
+    {
+        Assert.True(RolePermissions.HasPermission([Roles.SuperAdmin], Permissions.AuditView));
+        Assert.True(RolePermissions.HasPermission([Roles.Admin], Permissions.AuditView));
+        Assert.False(RolePermissions.HasPermission([Roles.Supervisor], Permissions.AuditView));
+        Assert.False(RolePermissions.HasPermission([Roles.Agent], Permissions.AuditView));
+    }
+
+    [Fact]
     public void Agent_WorksTicketsAndCustomersOnly()
     {
         Assert.Equal(
@@ -61,6 +70,7 @@ public class RolePermissionsTests
     [InlineData(Permissions.CategoriesManage)]
     [InlineData(Permissions.SlaManage)]
     [InlineData(Permissions.ChannelsManage)]
+    [InlineData(Permissions.AuditView)]
     public void Agent_HasNoAdminSettingsPermission(string permission)
     {
         Assert.False(RolePermissions.HasPermission([Roles.Agent], permission));

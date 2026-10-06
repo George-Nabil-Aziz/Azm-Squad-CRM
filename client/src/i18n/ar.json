@@ -13,7 +13,8 @@
     "reports": "التقارير",
     "users": "المستخدمون",
     "ticketCategories": "فئات التذاكر",
-    "slaPolicies": "سياسة SLA"
+    "slaPolicies": "سياسة SLA",
+    "auditLogs": "سجل التدقيق"
   },
   "shell": {
     "mainNavigation": "التنقل الرئيسي",
@@ -434,6 +435,43 @@
         "uploadedAt": "تاريخ الرفع",
         "actions": "الإجراءات"
       }
+    }
+  },
+  "auditLogs": {
+    "description": "سجل للقراءة فقط للإجراءات الحساسة: تسجيل الدخول وتغييرات المستخدمين والأدوار وتغييرات SLA وعمليات الحذف.",
+    "loading": "جارٍ تحميل سجل التدقيق…",
+    "empty": "لا توجد سجلات.",
+    "unknownUser": "غير معروف",
+    "pageInfo": "صفحة {{page}} من {{pages}}",
+    "previous": "السابق",
+    "next": "التالي",
+    "filters": {
+      "user": "المستخدم",
+      "action": "الإجراء",
+      "from": "من",
+      "to": "إلى",
+      "all": "الكل",
+      "clear": "مسح التصفية"
+    },
+    "columns": {
+      "time": "الوقت",
+      "user": "المستخدم",
+      "action": "الإجراء",
+      "entity": "الكيان",
+      "oldValues": "القيم السابقة",
+      "newValues": "القيم الجديدة",
+      "ip": "عنوان IP"
+    },
+    "actions": {
+      "loginSucceeded": "نجاح تسجيل الدخول",
+      "loginFailed": "فشل تسجيل الدخول",
+      "userCreated": "إنشاء مستخدم",
+      "userUpdated": "تعديل مستخدم",
+      "userDeactivated": "إيقاف مستخدم",
+      "userReactivated": "إعادة تفعيل مستخدم",
+      "slaPolicyUpdated": "تغيير سياسة SLA",
+      "customerDeleted": "حذف عميل",
+      "customerContactRemoved": "حذف وسيلة اتصال عميل"
     }
   }
 }

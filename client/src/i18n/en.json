@@ -13,7 +13,8 @@
     "reports": "Reports",
     "users": "Users",
     "ticketCategories": "Ticket categories",
-    "slaPolicies": "SLA policy"
+    "slaPolicies": "SLA policy",
+    "auditLogs": "Audit log"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -434,6 +435,43 @@
         "uploadedAt": "Uploaded",
         "actions": "Actions"
       }
+    }
+  },
+  "auditLogs": {
+    "description": "Read-only record of sensitive actions: logins, user and role changes, SLA changes and deletions.",
+    "loading": "Loading the audit log…",
+    "empty": "No log entries found.",
+    "unknownUser": "Unknown",
+    "pageInfo": "Page {{page}} of {{pages}}",
+    "previous": "Previous",
+    "next": "Next",
+    "filters": {
+      "user": "User",
+      "action": "Action",
+      "from": "From",
+      "to": "To",
+      "all": "All",
+      "clear": "Clear filters"
+    },
+    "columns": {
+      "time": "Time",
+      "user": "User",
+      "action": "Action",
+      "entity": "Entity",
+      "oldValues": "Old values",
+      "newValues": "New values",
+      "ip": "IP address"
+    },
+    "actions": {
+      "loginSucceeded": "Login succeeded",
+      "loginFailed": "Login failed",
+      "userCreated": "User created",
+      "userUpdated": "User changed",
+      "userDeactivated": "User deactivated",
+      "userReactivated": "User reactivated",
+      "slaPolicyUpdated": "SLA policy changed",
+      "customerDeleted": "Customer deleted",
+      "customerContactRemoved": "Customer contact removed"
     }
   }
 }

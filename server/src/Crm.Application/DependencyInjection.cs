@@ -1,3 +1,4 @@
+using Crm.Application.Audit;
 using Crm.Application.Channels;
 using Crm.Application.Channels.WhatsApp;
 using Crm.Application.Customers;
@@ -19,6 +20,8 @@ public static class DependencyInjection
     {
         services.AddValidatorsFromAssembly(typeof(AssemblyReference).Assembly, includeInternalTypes: true);
         services.AddScoped<ICustomerService, CustomerService>();
+        services.AddScoped<IAuditLogger, AuditLogger>();
+        services.AddScoped<IAuditLogService, AuditLogService>();
         services.AddScoped<IInteractionRecorder, InteractionRecorder>();
         services.AddScoped<ICustomerTimelineService, CustomerTimelineService>();
         services.AddScoped<ICustomerNoteService, CustomerNoteService>();

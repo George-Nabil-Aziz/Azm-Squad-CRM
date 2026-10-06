@@ -8,7 +8,7 @@
 
 ## Story Goal
 
-1. Every sensitive action is written to an append-only audit log with **user, action, entity, old/new values, IP, time** (AC 1): `login.succeeded`, `login.failed` (AC 2, also for unknown email / locked / inactive user — the reason goes in `newValues`, never in the HTTP answer), `user.created|updated|deactivated|reactivated` (role changes show in old/new roles), `sla-policy.updated`, `customer.deleted`, `customer-contact.removed`, `customer-attachment.deleted`.
+1. Every sensitive action is written to an append-only audit log with **user, action, entity, old/new values, IP, time** (AC 1): `login.succeeded`, `login.failed` (AC 2, also for unknown email / locked / inactive user — the reason goes in `newValues`, never in the HTTP answer), `user.created|updated|deactivated|reactivated` (role changes show in old/new roles), `sla-policy.updated`, `customer.deleted`, `customer-contact.removed`.
 2. `GET /api/audit-logs?userId=&action=&from=&to=&page=&pageSize=` returns a `PagedResult<AuditLogResponse>`, newest first (AC 3). `from > to`, an unknown `action`, or paging out of range → 400 with field errors.
 3. Read-only and restricted (AC 4): only `GET` exists (other verbs → 405/404); `RequireAuthorization(Permissions.AuditView)`; SuperAdmin + Admin have it, Supervisor/Agent get 403.
 4. Client: sidebar item + page "Audit log" (table, filters user / action / date range, paging), visible with `audit.view`.
@@ -26,7 +26,7 @@
 **T1 — Tests (Red)**
 - Unit `AuditLoggerTests`: stamps time from `TimeProvider`, user from `ICurrentUser`, IP from `IClientInfo`; explicit user wins (login).
 - Unit `AuditLogServiceTests` / `ListAuditLogsQueryValidatorTests`: `from > to`, unknown action, page size > 100 → `ValidationException`; filters passed to the repository.
-- Unit service tests: `SlaPolicyService.UpdateAsync`, `CustomerService.DeleteAsync/RemoveContactAsync`, `CustomerAttachmentService.DeleteAsync` write one event with old/new values (fake `IAuditLogger`).
+- Unit service tests: `SlaPolicyService.UpdateAsync`, `CustomerService.DeleteAsync/RemoveContactAsync`, (no attachment delete exists yet) write one event with old/new values (fake `IAuditLogger`).
 - Integration `AuditLogTests`: AC 1 (create user via API → entry with user, action, entity, new values, time; IP field present), AC 2 (wrong password → `login.failed`, email, no password in values), AC 3 (filter by user, action, from/to), AC 4 (Agent/Supervisor 403, 401 anonymous, Admin + SuperAdmin 200, `POST/PUT/DELETE /api/audit-logs` not allowed), role change → `user.updated` with old/new roles, SLA change, customer delete.
 - `RolePermissionsTests`: `audit.view` for SuperAdmin + Admin only; client `permissions.test.ts` stays in sync.
 - Client: `api/audit-logs.test.ts` (query string), `AuditLogsPage.test.tsx` (rows, filters call the API with params, paging), sidebar item hidden for Agent (`App.permissions.test.tsx` style).
@@ -48,3 +48,10 @@
 ## Out of scope
 
 Audit of denied attempts, ticket/customer edits, retention, export.
+
+## Deviations (as built)
+
+- Deviation: no `customer-attachment.deleted` action — the API has no attachment delete (CRM-11 only adds/downloads). Logged deletes: `customer.deleted`, `customer-contact.removed`.
+- Deviation: `from`/`to` bind as `DateTimeOffset` (a `Z`-suffixed `DateTime` would be converted to local time by the binder).
+- Test host: `RemoteIpStartupFilter` gives every TestServer request a loopback address (TestServer has no socket), so the IP column can be asserted.
+- Client i18n labels use camelCase keys (`auditLogs.actions.loginFailed`) because i18next treats `.` as a key separator; `auditActionKeys` maps server values to keys.

@@ -1,6 +1,8 @@
+using Crm.Application.Audit;
 using Crm.Application.Common.Exceptions;
 using Crm.Application.Common.Validation;
 using Crm.Application.Tickets;
+using Crm.Domain.Audit;
 using Crm.Domain.Sla;
 using FluentValidation;
 
@@ -10,7 +12,8 @@ namespace Crm.Application.Sla;
 public sealed class SlaPolicyService(
     ISlaPolicyRepository policies,
     TimeProvider timeProvider,
-    IValidator<UpdateSlaPolicyRequest> requestValidator) : ISlaPolicyService
+    IValidator<UpdateSlaPolicyRequest> requestValidator,
+    IAuditLogger audit) : ISlaPolicyService
 {
     public async Task<IReadOnlyList<SlaPolicyResponse>> ListAsync(CancellationToken cancellationToken)
     {
@@ -30,8 +33,13 @@ public sealed class SlaPolicyService(
         var policy = await policies.FindAsync(parsed, cancellationToken)
                      ?? throw new NotFoundException(SlaText.PolicyNotFound);
 
+        var oldValues = new { responseMinutes = policy.ResponseMinutes, resolutionMinutes = policy.ResolutionMinutes };
         policy.Update(request.ResponseMinutes!.Value, request.ResolutionMinutes!.Value, timeProvider.GetUtcNow().UtcDateTime);
         await policies.SaveChangesAsync(cancellationToken);
+        await audit.LogAsync(
+            new AuditEvent(AuditActions.SlaPolicyUpdated, "SlaPolicy", TicketValues.PriorityName(parsed), oldValues,
+                new { responseMinutes = policy.ResponseMinutes, resolutionMinutes = policy.ResolutionMinutes }),
+            cancellationToken);
         return ToResponse(policy);
     }
 

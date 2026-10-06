@@ -1,7 +1,9 @@
+using Crm.Application.Audit;
 using Crm.Application.Common.Exceptions;
 using Crm.Application.Common.Paging;
 using Crm.Application.Common.Validation;
 using Crm.Application.Customers.Timeline;
+using Crm.Domain.Audit;
 using Crm.Domain.Customers;
 using FluentValidation;
 
@@ -15,7 +17,8 @@ public sealed class CustomerService(
     IValidator<CustomerRequest> requestValidator,
     IValidator<CustomerContactRequest> contactValidator,
     IValidator<CustomerLookupQuery> lookupValidator,
-    IInteractionRecorder timeline) : ICustomerService
+    IInteractionRecorder timeline,
+    IAuditLogger audit) : ICustomerService
 {
     private static readonly ContactType[] NumberTypes = [ContactType.Phone, ContactType.WhatsApp];
 
@@ -68,6 +71,10 @@ public sealed class CustomerService(
 
         customer.Delete(UtcNow());
         await customers.SaveChangesAsync(cancellationToken);
+        await audit.LogAsync(
+            new AuditEvent(AuditActions.CustomerDeleted, "Customer", customer.Id.ToString(),
+                new { customer.Name, customer.Email, customer.Phone }),
+            cancellationToken);
     }
 
     public async Task<CustomerContactResponse> AddContactAsync(
@@ -102,8 +109,13 @@ public sealed class CustomerService(
     {
         var customer = await FindWithContactAsync(customerId, contactId, cancellationToken);
 
+        var removed = customer.Contacts.Single(c => c.Id == contactId);
+        var oldValues = new { customerId = customer.Id, type = ContactValues.TypeName(removed.Type), removed.Value };
         customer.RemoveContact(contactId, UtcNow());
         await customers.SaveChangesAsync(cancellationToken);
+        await audit.LogAsync(
+            new AuditEvent(AuditActions.CustomerContactRemoved, "CustomerContact", contactId.ToString(), oldValues),
+            cancellationToken);
     }
 
     public async Task<IReadOnlyList<CustomerResponse>> LookupAsync(CustomerLookupQuery query, CancellationToken cancellationToken)

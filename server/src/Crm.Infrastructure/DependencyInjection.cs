@@ -1,3 +1,4 @@
+using Crm.Application.Audit;
 using Crm.Application.Auth;
 using Crm.Application.Common.Files;
 using Crm.Application.Customers;
@@ -7,6 +8,7 @@ using Crm.Application.Customers.Timeline;
 using Crm.Application.Sla;
 using Crm.Application.Tickets;
 using Crm.Application.Users;
+using Crm.Infrastructure.Audit;
 using Crm.Infrastructure.Channels;
 using Crm.Infrastructure.Customers;
 using Crm.Infrastructure.Files;
@@ -54,6 +56,7 @@ public static class DependencyInjection
         services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
         services.AddScoped<ISlaPolicyRepository, SlaPolicyRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();
+        services.AddScoped<IAuditLogRepository, AuditLogRepository>();
         services.AddScoped<ITicketMessageRepository, TicketMessageRepository>();
         services.AddScoped<ITicketHistoryRepository, TicketHistoryRepository>();
         services.AddScoped<ITicketSlaRepository, TicketSlaRepository>();

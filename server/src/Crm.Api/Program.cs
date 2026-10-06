@@ -36,6 +36,7 @@ if (app.Environment.IsDevelopment())
 app.MapHealthEndpoints();
 app.MapAuthEndpoints();
 app.MapUsersEndpoints();
+app.MapAuditLogsEndpoints();
 app.MapCustomersEndpoints();
 app.MapChannelsEndpoints();
 app.MapWhatsAppWebhookEndpoints();
