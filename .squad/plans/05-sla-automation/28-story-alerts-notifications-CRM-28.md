@@ -94,3 +94,7 @@ Unit (Notification, dispatcher, SlaNotifier, service, assignment, job), integrat
 - [ ] AC 3: mark read, read all, unread count in API and UI.
 - [ ] AC 4: the same event never notifies a user twice.
 - [ ] build / tests / lint green.
+
+## Implementation notes (deviations)
+
+> **Deviation:** `INotificationDispatcher` is an optional last constructor parameter of `TicketAssignmentService`; `AutoAssignmentService` gets `NotifyAssignedAsync` (called after the ticket was saved, never for self-assignment). `Notification.RecipientUserId` stays nullable (legacy CRM-22 role rows are ignored). The hub pushes `{ notification, unreadCount }` to the `notification` method. `ISlaNotifier` is registered by the Application layer (`SlaNotifier`); `LoggingSlaNotifier` was deleted. The client mocks `api/notifications-hub` globally in `test/setup.ts`. `GET /api/notifications` uses `pageSize` 20 by default; the panel shows the first page. The test host (`WithWebHostBuilder`) replaces `ISmtpTransport` to assert emails.

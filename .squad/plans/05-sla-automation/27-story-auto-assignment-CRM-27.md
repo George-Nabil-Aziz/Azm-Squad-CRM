@@ -87,3 +87,7 @@ Unit (rules, service, ticket service), integration (`AutoAssignmentTests`, migra
 - [ ] AC 3: OFF leaves the ticket unassigned.
 - [ ] AC 4: history entry recorded.
 - [ ] build / tests / lint green.
+
+## Implementation notes (deviations)
+
+> **Deviation:** `IAutoAssignmentService` is an optional last constructor parameter (`= null`) of `TicketService` and `ChannelTicketService`, so existing constructions keep compiling. The agents list shows every active Agent (on duty or not); candidates are the on-duty ones. The sidebar item `assignment` sits after "Users".
