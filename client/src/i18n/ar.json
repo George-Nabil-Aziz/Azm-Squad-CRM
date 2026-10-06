@@ -441,7 +441,8 @@
     "sections": "أقسام قاعدة المعرفة",
     "tabs": {
       "articles": "المقالات",
-      "categories": "الفئات"
+      "categories": "الفئات",
+      "faqs": "الأسئلة الشائعة"
     },
     "delete": "حذف",
     "cancel": "إلغاء",
@@ -500,12 +501,34 @@
       "linked": "عدد مرات الإرفاق",
       "actions": "الإجراءات",
       "name": "الاسم",
-      "articles": "المقالات"
+      "articles": "المقالات",
+      "order": "الترتيب",
+      "question": "السؤال"
     },
     "previous": "السابق",
     "next": "التالي",
     "pageOf": "الصفحة {{page}} من {{total}}",
     "emptyArticles": "لا توجد مقالات بعد.",
-    "emptyCategories": "لا توجد فئات بعد."
+    "emptyCategories": "لا توجد فئات بعد.",
+    "questionRequired": "أدخل سؤالاً وإجابة بالإنجليزية أو بالعربية.",
+    "answerRequired": "أدخل الإجابة لهذه اللغة.",
+    "questionRequiredForAnswer": "أدخل السؤال لهذه اللغة.",
+    "displayOrderInvalid": "أدخل رقماً صحيحاً أو اتركه فارغاً.",
+    "questionEn": "السؤال (الإنجليزية)",
+    "answerEn": "الإجابة (الإنجليزية)",
+    "questionAr": "السؤال (العربية)",
+    "answerAr": "الإجابة (العربية)",
+    "displayOrder": "ترتيب العرض (الأصغر أولاً، فارغ = الأخير)",
+    "faqPublished": "منشور (يظهر في بوابة العملاء)",
+    "faqCreated": "أُضيف السؤال \"{{question}}\".",
+    "faqUpdated": "تم تحديث السؤال \"{{question}}\".",
+    "faqDeleted": "تم حذف السؤال \"{{question}}\".",
+    "createFaqTitle": "سؤال شائع جديد",
+    "editFaqTitle": "تعديل السؤال الشائع",
+    "faqDescription": "يحتاج السؤال الشائع إلى سؤال وإجابة بلغة واحدة على الأقل.",
+    "addFaq": "سؤال شائع جديد",
+    "deleteFaqTitle": "حذف \"{{question}}\"؟",
+    "deleteFaqDescription": "سيختفي السؤال الشائع عن الجميع.",
+    "emptyFaqs": "لا توجد أسئلة شائعة بعد."
   }
 }

@@ -441,7 +441,8 @@
     "sections": "Knowledge base sections",
     "tabs": {
       "articles": "Articles",
-      "categories": "Categories"
+      "categories": "Categories",
+      "faqs": "FAQs"
     },
     "delete": "Delete",
     "cancel": "Cancel",
@@ -500,12 +501,34 @@
       "linked": "Times linked",
       "actions": "Actions",
       "name": "Name",
-      "articles": "Articles"
+      "articles": "Articles",
+      "order": "Order",
+      "question": "Question"
     },
     "previous": "Previous",
     "next": "Next",
     "pageOf": "Page {{page}} of {{total}}",
     "emptyArticles": "No articles yet.",
-    "emptyCategories": "No categories yet."
+    "emptyCategories": "No categories yet.",
+    "questionRequired": "Enter a question and an answer in English or Arabic.",
+    "answerRequired": "Enter the answer for this language.",
+    "questionRequiredForAnswer": "Enter the question for this language.",
+    "displayOrderInvalid": "Enter a whole number, or leave it empty.",
+    "questionEn": "Question (English)",
+    "answerEn": "Answer (English)",
+    "questionAr": "Question (Arabic)",
+    "answerAr": "Answer (Arabic)",
+    "displayOrder": "Display order (lowest first, empty = last)",
+    "faqPublished": "Published (visible in the customer portal)",
+    "faqCreated": "FAQ \"{{question}}\" added.",
+    "faqUpdated": "FAQ \"{{question}}\" updated.",
+    "faqDeleted": "FAQ \"{{question}}\" deleted.",
+    "createFaqTitle": "New FAQ",
+    "editFaqTitle": "Edit FAQ",
+    "faqDescription": "A FAQ needs a question and an answer in at least one language.",
+    "addFaq": "New FAQ",
+    "deleteFaqTitle": "Delete \"{{question}}\"?",
+    "deleteFaqDescription": "The FAQ disappears for everyone.",
+    "emptyFaqs": "No FAQs yet."
   }
 }

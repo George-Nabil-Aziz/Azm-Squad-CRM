@@ -47,3 +47,39 @@ export function createKbCategoryFormSchema(t: TFunction) {
 export type KbCategoryFormValues = z.infer<ReturnType<typeof createKbCategoryFormSchema>>
 
 export const kbCategoryFormFields = ['nameEn', 'nameAr'] as const
+
+/** FAQ dialog checks (the server validates again). A language version is a question + an answer. */
+export function createFaqFormSchema(t: TFunction) {
+  return z
+    .object({
+      questionEn: z.string().trim().max(300),
+      answerEn: z.string().trim().max(10_000),
+      questionAr: z.string().trim().max(300),
+      answerAr: z.string().trim().max(10_000),
+      /** Text of the number field; empty = last (create) / unchanged (edit). */
+      displayOrder: z.string().trim().regex(/^\d*$/, t('knowledgeBase.displayOrderInvalid')),
+      isPublished: z.boolean(),
+    })
+    .superRefine((values, context) => {
+      if (!values.questionEn && !values.questionAr) {
+        context.addIssue({ code: 'custom', path: ['questionEn'], message: t('knowledgeBase.questionRequired') })
+      }
+      if (values.questionEn && !values.answerEn) {
+        context.addIssue({ code: 'custom', path: ['answerEn'], message: t('knowledgeBase.answerRequired') })
+      }
+      if (values.answerEn && !values.questionEn) {
+        context.addIssue({ code: 'custom', path: ['questionEn'], message: t('knowledgeBase.questionRequiredForAnswer') })
+      }
+      if (values.questionAr && !values.answerAr) {
+        context.addIssue({ code: 'custom', path: ['answerAr'], message: t('knowledgeBase.answerRequired') })
+      }
+      if (values.answerAr && !values.questionAr) {
+        context.addIssue({ code: 'custom', path: ['questionAr'], message: t('knowledgeBase.questionRequiredForAnswer') })
+      }
+    })
+}
+
+export type FaqFormValues = z.infer<ReturnType<typeof createFaqFormSchema>>
+
+/** Fields the API can report errors for; `question` is shown at the English question. */
+export const faqFormFields = ['questionEn', 'answerEn', 'questionAr', 'answerAr', 'displayOrder'] as const

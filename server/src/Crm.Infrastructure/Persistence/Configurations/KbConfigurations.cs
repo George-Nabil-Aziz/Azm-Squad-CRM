@@ -17,6 +17,22 @@ public sealed class KbCategoryConfiguration : IEntityTypeConfiguration<KbCategor
     }
 }
 
+public sealed class KbFaqConfiguration : IEntityTypeConfiguration<KbFaq>
+{
+    public void Configure(EntityTypeBuilder<KbFaq> faq)
+    {
+        faq.ToTable("KbFaqs");
+        faq.HasKey(f => f.Id);
+        faq.Property(f => f.Id).ValueGeneratedNever(); // set by KbFaq.Create
+        faq.Property(f => f.QuestionEn).HasMaxLength(KbFaq.QuestionMaxLength);
+        faq.Property(f => f.QuestionAr).HasMaxLength(KbFaq.QuestionMaxLength);
+        faq.Property(f => f.AnswerEn).HasMaxLength(KbFaq.AnswerMaxLength);
+        faq.Property(f => f.AnswerAr).HasMaxLength(KbFaq.AnswerMaxLength);
+        faq.HasIndex(f => new { f.IsPublished, f.DisplayOrder }); // the portal list
+        faq.HasQueryFilter(CrmDbContext.SoftDeleteFilter, f => !f.IsDeleted);
+    }
+}
+
 public sealed class KbArticleConfiguration : IEntityTypeConfiguration<KbArticle>
 {
     private const int EnumMaxLength = 16;

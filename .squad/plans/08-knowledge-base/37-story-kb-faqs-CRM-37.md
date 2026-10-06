@@ -40,3 +40,7 @@
 ## Verification / done
 
 `dotnet build`, `dotnet test`, `npm test`, `npm run build`, `npm run lint` all green. AC 1–4 each covered by a test.
+
+## As built
+
+- Migration `AddKbFaqs` (table `KbFaqs`, index on `(IsPublished, DisplayOrder)`). The anonymous `GET /api/portal/kb/faqs` lives in `PortalKbEndpoints.cs` (CRM-43 extends the file). No deviations.

@@ -3,14 +3,18 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { ArticlesPanel } from '@/features/knowledge-base/ArticlesPanel'
 import { CategoriesPanel } from '@/features/knowledge-base/CategoriesPanel'
+import { FaqsPanel } from '@/features/knowledge-base/FaqsPanel'
 
-const tabs = ['articles', 'categories'] as const
+const tabs = ['articles', 'faqs', 'categories'] as const
 type Tab = (typeof tabs)[number]
 
-/** Knowledge base area: Articles and Categories tabs (FAQs are added by CRM-37). */
+const panels = { articles: ArticlesPanel, faqs: FaqsPanel, categories: CategoriesPanel } as const
+
+/** Knowledge base area: Articles, FAQs and Categories tabs. */
 export function KnowledgeBasePage() {
   const { t } = useTranslation()
   const [tab, setTab] = useState<Tab>('articles')
+  const Panel = panels[tab]
 
   return (
     <div className="flex flex-col gap-6">
@@ -36,7 +40,7 @@ export function KnowledgeBasePage() {
       </div>
 
       <div role="tabpanel" id="kb-panel" aria-labelledby={`kb-tab-${tab}`}>
-        {tab === 'articles' ? <ArticlesPanel /> : <CategoriesPanel />}
+        <Panel />
       </div>
     </div>
   )

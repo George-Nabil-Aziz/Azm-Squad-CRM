@@ -47,6 +47,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<KbArticle> KbArticles => Set<KbArticle>();
 
+    public DbSet<KbFaq> KbFaqs => Set<KbFaq>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

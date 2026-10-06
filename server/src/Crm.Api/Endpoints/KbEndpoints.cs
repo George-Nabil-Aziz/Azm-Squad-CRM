@@ -70,6 +70,30 @@ public static class KbEndpoints
             .RequireAuthorization(Permissions.KbManage)
             .WithName("DeleteKbArticle");
 
+        var faqs = kb.MapGroup("/faqs");
+        faqs.MapGet("", async (IKbFaqService service, CancellationToken cancellationToken) =>
+                Results.Ok(await service.ListAsync(cancellationToken)))
+            .WithName("ListKbFaqs");
+        faqs.MapPost("", async (KbFaqRequest request, IKbFaqService service, CancellationToken cancellationToken) =>
+            {
+                var faq = await service.CreateAsync(request, cancellationToken);
+                return Results.Created($"/api/kb/faqs/{faq.Id}", faq);
+            })
+            .RequireAuthorization(Permissions.KbManage)
+            .WithName("CreateKbFaq");
+        faqs.MapPut("/{id:guid}", async (Guid id, KbFaqRequest request, IKbFaqService service,
+                    CancellationToken cancellationToken) =>
+                Results.Ok(await service.UpdateAsync(id, request, cancellationToken)))
+            .RequireAuthorization(Permissions.KbManage)
+            .WithName("UpdateKbFaq");
+        faqs.MapDelete("/{id:guid}", async (Guid id, IKbFaqService service, CancellationToken cancellationToken) =>
+            {
+                await service.DeleteAsync(id, cancellationToken);
+                return Results.NoContent();
+            })
+            .RequireAuthorization(Permissions.KbManage)
+            .WithName("DeleteKbFaq");
+
         return app;
     }
 }

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import {
   listKbArticles,
   listKbCategories,
+  listKbFaqs,
   type KbArticleListParams,
 } from '@/api/knowledge-base'
 
@@ -19,5 +20,12 @@ export function useKbArticles(params: KbArticleListParams) {
   return useQuery({
     queryKey: [...kbQueryKey, 'articles', params],
     queryFn: ({ signal }) => listKbArticles(params, signal),
+  })
+}
+
+export function useKbFaqs() {
+  return useQuery({
+    queryKey: [...kbQueryKey, 'faqs'],
+    queryFn: ({ signal }) => listKbFaqs(signal),
   })
 }

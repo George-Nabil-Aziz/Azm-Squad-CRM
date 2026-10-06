@@ -103,3 +103,49 @@ export function unpublishKbArticle(id: string): Promise<KbArticle> {
 export function deleteKbArticle(id: string): Promise<void> {
   return apiDelete(`/api/kb/articles/${encodeURIComponent(id)}`)
 }
+
+/** A FAQ for staff (server: KbFaqResponse): both language versions plus `question` / `answer` in the UI language. */
+export interface KbFaq {
+  id: string
+  questionEn: string | null
+  answerEn: string | null
+  questionAr: string | null
+  answerAr: string | null
+  question: string
+  answer: string
+  /** Lowest first. */
+  displayOrder: number
+  isPublished: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+/**
+ * Body of create / edit FAQ. A language version is a question + an answer (both or neither); at least one version.
+ * `displayOrder` null = last on create, unchanged on edit.
+ */
+export interface KbFaqRequest {
+  questionEn: string | null
+  answerEn: string | null
+  questionAr: string | null
+  answerAr: string | null
+  displayOrder: number | null
+  isPublished: boolean
+}
+
+/** Every FAQ ordered by display order (users without kb.manage only get the published ones). */
+export function listKbFaqs(signal?: AbortSignal): Promise<KbFaq[]> {
+  return apiGet<KbFaq[]>('/api/kb/faqs', signal)
+}
+
+export function createKbFaq(request: KbFaqRequest): Promise<KbFaq> {
+  return apiPost<KbFaq>('/api/kb/faqs', request)
+}
+
+export function updateKbFaq(id: string, request: KbFaqRequest): Promise<KbFaq> {
+  return apiPut<KbFaq>(`/api/kb/faqs/${encodeURIComponent(id)}`, request)
+}
+
+export function deleteKbFaq(id: string): Promise<void> {
+  return apiDelete(`/api/kb/faqs/${encodeURIComponent(id)}`)
+}

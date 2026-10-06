@@ -29,6 +29,26 @@ public sealed class KbCategoryRepository(CrmDbContext db) : IKbCategoryRepositor
     public Task SaveChangesAsync(CancellationToken cancellationToken) => db.SaveChangesAsync(cancellationToken);
 }
 
+/// <summary>EF Core storage of FAQs (deleted ones are hidden by the soft-delete filter).</summary>
+public sealed class KbFaqRepository(CrmDbContext db) : IKbFaqRepository
+{
+    public async Task<IReadOnlyList<KbFaq>> ListAsync(bool publishedOnly, CancellationToken cancellationToken) =>
+        await db.KbFaqs.AsNoTracking()
+            .Where(f => !publishedOnly || f.IsPublished)
+            .OrderBy(f => f.DisplayOrder).ThenBy(f => f.CreatedAt).ThenBy(f => f.Id)
+            .ToListAsync(cancellationToken);
+
+    public Task<KbFaq?> FindAsync(Guid id, CancellationToken cancellationToken) =>
+        db.KbFaqs.FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
+
+    public async Task<int> NextDisplayOrderAsync(CancellationToken cancellationToken) =>
+        (await db.KbFaqs.MaxAsync(f => (int?)f.DisplayOrder, cancellationToken) ?? 0) + 1;
+
+    public void Add(KbFaq faq) => db.KbFaqs.Add(faq);
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken) => db.SaveChangesAsync(cancellationToken);
+}
+
 /// <summary>EF Core storage of knowledge base articles. Views read the category name also of a deleted category.</summary>
 public sealed class KbArticleRepository(CrmDbContext db) : IKbArticleRepository
 {

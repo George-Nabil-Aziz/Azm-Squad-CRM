@@ -48,6 +48,26 @@ internal sealed class FakeKbCategoryRepository(FakeKbArticleRepository articles)
     private int Count(Guid categoryId) => articles.Articles.Count(a => a.CategoryId == categoryId && !a.IsDeleted);
 }
 
+/// <summary>In-memory FAQ storage with the contract of the EF Core repository (deleted FAQs hidden, ordered by display order).</summary>
+internal sealed class FakeKbFaqRepository : IKbFaqRepository
+{
+    public List<KbFaq> Faqs { get; } = [];
+
+    public Task<IReadOnlyList<KbFaq>> ListAsync(bool publishedOnly, CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<KbFaq>>(
+            [.. Faqs.Where(f => !f.IsDeleted && (!publishedOnly || f.IsPublished)).OrderBy(f => f.DisplayOrder).ThenBy(f => f.CreatedAt)]);
+
+    public Task<KbFaq?> FindAsync(Guid id, CancellationToken cancellationToken) =>
+        Task.FromResult(Faqs.FirstOrDefault(f => f.Id == id && !f.IsDeleted));
+
+    public Task<int> NextDisplayOrderAsync(CancellationToken cancellationToken) =>
+        Task.FromResult(Faqs.Where(f => !f.IsDeleted).Select(f => f.DisplayOrder + 1).DefaultIfEmpty(1).Max());
+
+    public void Add(KbFaq faq) => Faqs.Add(faq);
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+}
+
 /// <summary>In-memory article storage with the contract of the EF Core repository (deleted articles are hidden).</summary>
 internal sealed class FakeKbArticleRepository : IKbArticleRepository
 {
