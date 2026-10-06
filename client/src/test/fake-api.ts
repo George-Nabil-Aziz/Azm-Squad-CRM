@@ -26,7 +26,13 @@ export const agentMe: CurrentUser = {
   email: 'agent@crm.local',
   fullName: 'Sara Agent',
   roles: ['Agent'],
-  permissions: [permissions.customersView, permissions.customersManage, permissions.ticketsView, permissions.ticketsManage],
+  permissions: [
+    permissions.customersView,
+    permissions.customersManage,
+    permissions.ticketsView,
+    permissions.ticketsManage,
+    permissions.notificationsView,
+  ],
 }
 
 /** Same permissions as the server gives the Supervisor role. */
@@ -81,6 +87,12 @@ export function fakeApi({ healthStatus = 200, me = superAdminMe }: FakeApiOption
         updatedAt: '2026-10-01T08:00:00Z',
       }
       return json(200, { items: [customer], page: 1, pageSize: 20, totalCount: 1 })
+    }
+    if (path === '/api/notifications/unread-count') {
+      return json(200, { count: 0 })
+    }
+    if (path.startsWith('/api/notifications')) {
+      return json(200, { items: [], page: 1, pageSize: 20, totalCount: 0 })
     }
     if (path === '/api/tickets/assignees') {
       return json(200, [{ id: superAdminMe.id, fullName: superAdminMe.fullName }])

@@ -1,7 +1,10 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
-import { afterEach } from 'vitest'
+import { afterEach, vi } from 'vitest'
 import { i18n } from '../i18n/i18n'
+
+// No real SignalR connection in tests: the notification hub is replaced (tests that need pushes mock it themselves).
+vi.mock('@/api/notifications-hub', () => ({ connectNotificationsHub: () => () => {} }))
 
 // jsdom has no matchMedia. shadcn's sidebar (useIsMobile) and sonner's "system" theme call it.
 // matches: false → desktop layout, light theme.

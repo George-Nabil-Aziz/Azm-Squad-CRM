@@ -74,6 +74,7 @@ public class SlaEscalationTests(CrmApiFactory factory) : IClassFixture<CrmApiFac
     public async Task OnBreach_TheTicketEscalatesToTheSupervisor_OnlyOncePerLevel()
     {
         var (id, _) = await AssignedHighTicketAsync();
+        var supervisorId = await factory.CreateUserAsync($"lead-{Guid.NewGuid():N}@crm.local", CrmApiFactory.TestUserPassword, Roles.Supervisor);
 
         factory.Time.Advance(TimeSpan.FromMinutes(125));
         await RunJobAsync();
@@ -82,8 +83,10 @@ public class SlaEscalationTests(CrmApiFactory factory) : IClassFixture<CrmApiFac
         Assert.Equal(1, (await ReadAsync(id)).EscalationLevel);
         var escalation = Assert.Single(await EventsAsync(id), e => e.Type == SlaEventType.Escalated);
         Assert.Equal(1, escalation.Level);
-        var notification = Assert.Single(await NotificationsAsync(id), n => n.Type == NotificationType.SlaEscalation);
-        Assert.Equal(Notification.SupervisorRole, notification.RecipientRole);
+        // The supervisor role is expanded to one notification per active supervisor (CRM-28); each only once.
+        var escalations = (await NotificationsAsync(id)).Where(n => n.Type == NotificationType.SlaEscalation).ToList();
+        Assert.Single(escalations, n => n.RecipientUserId == supervisorId);
+        Assert.Equal(escalations.Count, escalations.Select(n => n.RecipientUserId).Distinct().Count());
     }
 
     [Fact]

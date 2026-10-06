@@ -1,6 +1,7 @@
 using Crm.Application.Auth;
 using Crm.Application.Common.Exceptions;
 using Crm.Application.Common.Security;
+using Crm.Application.Notifications;
 using Crm.Domain.Tickets;
 using ValidationException = Crm.Application.Common.Exceptions.ValidationException;
 
@@ -22,7 +23,8 @@ public sealed class TicketAssignmentService(
     ITicketRepository tickets,
     ITicketHistoryRecorder history,
     ICurrentUser currentUser,
-    TimeProvider timeProvider) : ITicketAssignmentService
+    TimeProvider timeProvider,
+    INotificationDispatcher? notifications = null) : ITicketAssignmentService
 {
     public async Task<TicketResponse> AssignAsync(Guid ticketId, AssignTicketRequest request, CancellationToken cancellationToken)
     {
@@ -46,6 +48,11 @@ public sealed class TicketAssignmentService(
         ticket.AssignTo(assignee?.Id, now);
         history.Record(ticket.Id, TicketHistoryField.Assignee, current.AssigneeName, assignee?.FullName, now);
         await tickets.SaveChangesAsync(cancellationToken);
+        if (notifications is not null && assignee is not null && assignee.Id != currentUser.UserId)
+        {
+            // CRM-28 AC 1: the assignee hears about it in real time (nobody is told about their own assignment).
+            await notifications.NotifyAsync(AssignmentNotifications.For(ticket.Id, assignee.Id, now), cancellationToken);
+        }
 
         return TicketService.ToResponse(await tickets.GetViewAsync(ticketId, cancellationToken)
                                         ?? throw new InvalidOperationException("The saved ticket was not found."));

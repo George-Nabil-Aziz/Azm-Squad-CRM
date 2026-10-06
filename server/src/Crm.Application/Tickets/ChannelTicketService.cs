@@ -58,10 +58,7 @@ public sealed class ChannelTicketService(
             ticket.ApplySla(policy); // CRM-20: due times from the policy of the priority now
         }
 
-        if (autoAssigner is not null)
-        {
-            await autoAssigner.TryAssignAsync(ticket, now, cancellationToken); // CRM-27
-        }
+        var autoAssignee = autoAssigner is null ? null : await autoAssigner.TryAssignAsync(ticket, now, cancellationToken); // CRM-27
 
         var first = TicketMessage.Inbound(ticket.Id, body, channel, message.ExternalId, message.ReceivedAt);
         await TicketNumbering.SaveNewAsync(tickets, ticket, () =>
@@ -71,6 +68,11 @@ public sealed class ChannelTicketService(
                 $"{ticket.DisplayNumber} {ticket.Subject}", ticket.Id, now);
             timeline.Record(customerId, InteractionType.Message, InteractionEvents.MessageReceived, Shorten(body), first.Id, now);
         }, cancellationToken);
+        if (autoAssigner is not null && autoAssignee is { } agent)
+        {
+            await autoAssigner.NotifyAssignedAsync(ticket.Id, agent, now, cancellationToken); // CRM-28
+        }
+
         return new ChannelTicketResult(ticket.Id, true);
     }
 

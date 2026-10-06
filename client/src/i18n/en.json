@@ -448,5 +448,22 @@
     },
     "onDutyFor": "On duty: {{name}}",
     "noAgents": "There are no agents yet."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Your latest notifications.",
+    "open": "Notifications",
+    "openWithCount": "Notifications ({{count}} unread)",
+    "loading": "Loading notifications…",
+    "empty": "You have no notifications.",
+    "markRead": "Mark as read",
+    "markAllRead": "Mark all as read",
+    "types": {
+      "assignment": "Ticket {{ticket}} was assigned to you.",
+      "slaWarning": "Ticket {{ticket}} is close to its response deadline.",
+      "slaEscalation": "Ticket {{ticket}} breached its SLA (escalation level {{level}}).",
+      "taskReminder": "Task due: {{text}}",
+      "mention": "You were mentioned on ticket {{ticket}}."
+    }
   }
 }

@@ -448,5 +448,22 @@
     },
     "onDutyFor": "على رأس العمل: {{name}}",
     "noAgents": "لا يوجد موظفون بعد."
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "description": "أحدث إشعاراتك.",
+    "open": "الإشعارات",
+    "openWithCount": "الإشعارات ({{count}} غير مقروءة)",
+    "loading": "جارٍ تحميل الإشعارات…",
+    "empty": "لا توجد لديك إشعارات.",
+    "markRead": "تعليم كمقروء",
+    "markAllRead": "تعليم الكل كمقروء",
+    "types": {
+      "assignment": "تم إسناد التذكرة {{ticket}} إليك.",
+      "slaWarning": "التذكرة {{ticket}} قريبة من موعد الرد المحدد.",
+      "slaEscalation": "تجاوزت التذكرة {{ticket}} اتفاقية مستوى الخدمة (مستوى التصعيد {{level}}).",
+      "taskReminder": "مهمة مستحقة: {{text}}",
+      "mention": "تمت الإشارة إليك في التذكرة {{ticket}}."
+    }
   }
 }

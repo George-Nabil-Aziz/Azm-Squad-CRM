@@ -29,8 +29,6 @@ public sealed class TicketSlaRepository(CrmDbContext db) : ITicketSlaRepository
             .Take(take)
             .ToListAsync(cancellationToken);
 
-    public void AddNotification(Notification notification) => db.Notifications.Add(notification);
-
     public void AddEvent(TicketSlaEvent slaEvent) => db.TicketSlaEvents.Add(slaEvent);
 
     public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken)

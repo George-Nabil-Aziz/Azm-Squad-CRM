@@ -3,7 +3,11 @@ using Crm.Api.Channels;
 using Crm.Api.Endpoints;
 using Crm.Api.ErrorHandling;
 using Crm.Api.Localization;
+using Crm.Api.Notifications;
 using Crm.Application;
+using Crm.Application.Auth;
+using Crm.Application.Notifications;
+using Microsoft.AspNetCore.SignalR;
 using Crm.Infrastructure;
 using Crm.Infrastructure.Jobs;
 using Crm.Infrastructure.Persistence;
@@ -19,6 +23,9 @@ builder.Services.AddInfrastructure();
 var jobsEnabled = !builder.Environment.IsEnvironment("Testing") && builder.Services.AddCrmJobs(builder.Configuration);
 builder.Services.AddCrmAuthentication(builder.Configuration);
 builder.Services.AddHostedService<ChannelWorker>();
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IUserIdProvider, NotificationUserIdProvider>();
+builder.Services.AddSingleton<INotificationPublisher, SignalRNotificationPublisher>(); // replaces the no-op default
 
 var app = builder.Build();
 
@@ -48,6 +55,8 @@ app.MapTicketAssignmentEndpoints();
 app.MapTicketStatusEndpoints();
 app.MapTicketHistoryEndpoints();
 app.MapSettingsEndpoints();
+app.MapNotificationsEndpoints();
+app.MapHub<NotificationsHub>(NotificationsHub.Path).RequireAuthorization(Permissions.NotificationsView);
 
 if (jobsEnabled)
 {

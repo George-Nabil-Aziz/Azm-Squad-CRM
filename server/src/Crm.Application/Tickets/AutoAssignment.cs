@@ -1,4 +1,5 @@
 using Crm.Application.Common.Exceptions;
+using Crm.Application.Notifications;
 using Crm.Domain.Tickets;
 
 namespace Crm.Application.Tickets;
@@ -98,10 +99,24 @@ public interface IAutoAssignmentService
     /// when auto-assign is off, nobody is available or the lookup failed (the ticket then stays unassigned).
     /// </summary>
     Task<Guid?> TryAssignAsync(Ticket ticket, DateTime utcNow, CancellationToken cancellationToken);
+
+    /// <summary>After the ticket was saved: tells the agent about the automatic assignment (CRM-28).</summary>
+    Task NotifyAssignedAsync(Guid ticketId, Guid agentId, DateTime utcNow, CancellationToken cancellationToken);
 }
 
-public sealed class AutoAssignmentService(IAssignmentRepository repository, ITicketHistoryRecorder history) : IAutoAssignmentService
+public sealed class AutoAssignmentService(
+    IAssignmentRepository repository,
+    ITicketHistoryRecorder history,
+    INotificationDispatcher? notifications = null) : IAutoAssignmentService
 {
+    public async Task NotifyAssignedAsync(Guid ticketId, Guid agentId, DateTime utcNow, CancellationToken cancellationToken)
+    {
+        if (notifications is not null)
+        {
+            await notifications.NotifyAsync(AssignmentNotifications.For(ticketId, agentId, utcNow), cancellationToken);
+        }
+    }
+
     public async Task<Guid?> TryAssignAsync(Ticket ticket, DateTime utcNow, CancellationToken cancellationToken)
     {
         try

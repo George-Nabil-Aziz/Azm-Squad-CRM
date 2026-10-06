@@ -29,6 +29,9 @@ public static class Permissions
     /// <summary>Assign a ticket to any agent (CRM-16). Without it a user may not assign tickets to someone else.</summary>
     public const string TicketsAssign = "tickets.assign";
 
+    /// <summary>Read and mark own in-app notifications and connect to the notification hub (CRM-28); every role has it.</summary>
+    public const string NotificationsView = "notifications.view";
+
     /// <summary>Create, edit and deactivate ticket categories (CRM-12 admin settings).</summary>
     public const string CategoriesManage = "categories.manage";
 
@@ -46,7 +49,7 @@ public static class Permissions
     [
         UsersManage, UsersManageSuperAdmins,
         CustomersView, CustomersManage,
-        TicketsView, TicketsManage, TicketsAssign,
+        TicketsView, TicketsManage, TicketsAssign, NotificationsView,
         CategoriesManage, SlaManage, ChannelsManage,
         ReportsView,
     ];

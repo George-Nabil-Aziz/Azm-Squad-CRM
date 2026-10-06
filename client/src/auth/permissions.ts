@@ -11,6 +11,7 @@ export const permissions = {
   ticketsView: 'tickets.view',
   ticketsManage: 'tickets.manage',
   ticketsAssign: 'tickets.assign',
+  notificationsView: 'notifications.view',
   categoriesManage: 'categories.manage',
   slaManage: 'sla.manage',
   channelsManage: 'channels.manage',
