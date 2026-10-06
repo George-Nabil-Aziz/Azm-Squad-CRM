@@ -11,7 +11,8 @@
     "customers": "العملاء",
     "knowledgeBase": "قاعدة المعرفة",
     "reports": "التقارير",
-    "users": "المستخدمون"
+    "users": "المستخدمون",
+    "ticketCategories": "فئات التذاكر"
   },
   "shell": {
     "mainNavigation": "التنقل الرئيسي",
@@ -101,6 +102,126 @@
       "Supervisor": "مشرف فريق",
       "Agent": "موظف دعم"
     }
+  },
+  "tickets": {
+    "priorities": {
+      "high": "عالية",
+      "mid": "متوسطة",
+      "low": "منخفضة"
+    },
+    "description": "طلبات العملاء التي تُتابَع حتى تُحل.",
+    "new": "تذكرة جديدة",
+    "createTitle": "تذكرة جديدة",
+    "createDescription": "العميل والموضوع إلزاميان. تبدأ التذكرة بحالة جديدة.",
+    "customer": "العميل",
+    "customerSearch": "البحث عن العملاء",
+    "customerFind": "بحث",
+    "customerPlaceholder": "اختر عميلاً",
+    "subject": "الموضوع",
+    "descriptionField": "الوصف",
+    "category": "الفئة",
+    "noCategory": "بدون فئة",
+    "priority": "الأولوية",
+    "create": "إنشاء التذكرة",
+    "creating": "جارٍ الإنشاء…",
+    "cancel": "إلغاء",
+    "customerRequired": "اختر عميلاً.",
+    "subjectRequired": "أدخل الموضوع.",
+    "created": "تم إنشاء التذكرة {{number}}.",
+    "statuses": {
+      "new": "جديدة",
+      "open": "مفتوحة",
+      "pending": "معلّقة",
+      "resolved": "محلولة",
+      "closed": "مغلقة"
+    },
+    "channels": {
+      "manual": "أنشأها موظف",
+      "email": "البريد الإلكتروني",
+      "whatsapp": "واتساب",
+      "portal": "البوابة"
+    },
+    "searchLabel": "البحث برقم التذكرة أو الموضوع",
+    "search": "بحث",
+    "filters": {
+      "status": "الحالة",
+      "priority": "الأولوية",
+      "category": "الفئة",
+      "assignee": "المسؤول",
+      "all": "الكل",
+      "unassigned": "غير مسندة",
+      "createdFrom": "تاريخ الإنشاء من",
+      "createdTo": "تاريخ الإنشاء إلى",
+      "clear": "مسح عوامل التصفية"
+    },
+    "columns": {
+      "number": "الرقم",
+      "subject": "الموضوع",
+      "customer": "العميل",
+      "status": "الحالة",
+      "priority": "الأولوية",
+      "category": "الفئة",
+      "assignee": "المسؤول",
+      "created": "تاريخ الإنشاء"
+    },
+    "empty": "لا توجد تذاكر.",
+    "loading": "جارٍ تحميل التذاكر…",
+    "pageInfo": "صفحة {{page}} من {{pages}}",
+    "previous": "السابق",
+    "next": "التالي",
+    "details": {
+      "back": "العودة إلى التذاكر",
+      "loading": "جارٍ تحميل التذكرة…",
+      "notFound": "التذكرة غير موجودة.",
+      "channel": "القناة",
+      "firstResponse": "أول رد",
+      "noResponseYet": "لا يوجد رد بعد",
+      "conversation": "المحادثة",
+      "loadingMessages": "جارٍ تحميل المحادثة…",
+      "noMessages": "لا توجد رسائل بعد.",
+      "system": "النظام",
+      "internalNote": "ملاحظة داخلية",
+      "delivery": {
+        "pending": "جارٍ الإرسال…",
+        "sent": "تم الإرسال",
+        "failed": "لم يتم التسليم"
+      },
+      "message": "الرسالة",
+      "messageRequired": "اكتب رسالة أولاً.",
+      "internalToggle": "ملاحظة داخلية (لا يراها العميل أبداً)",
+      "sendReply": "إرسال الرد",
+      "addNote": "إضافة ملاحظة",
+      "sending": "جارٍ الإرسال…",
+      "replySent": "تمت إضافة ردك.",
+      "noteAdded": "تمت إضافة الملاحظة.",
+      "closedNotice": "هذه التذكرة مغلقة. أعد فتحها للرد أو لإضافة ملاحظة."
+    }
+  },
+  "ticketCategories": {
+    "description": "الفئات التي يختارها الموظفون عند إنشاء تذكرة.",
+    "add": "إضافة فئة",
+    "columns": {
+      "name": "الاسم",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "active": "نشطة",
+    "inactive": "غير نشطة",
+    "edit": "تعديل",
+    "empty": "لا توجد فئات بعد.",
+    "loading": "جارٍ تحميل الفئات…",
+    "createTitle": "فئة جديدة",
+    "createDescription": "يجب أن يكون الاسم فريداً. الفئات الجديدة تكون نشطة.",
+    "editTitle": "تعديل الفئة",
+    "editDescription": "غيّر اسم الفئة أو أوقفها. تبقى الفئات غير النشطة على التذاكر الحالية.",
+    "name": "الاسم",
+    "isActive": "نشطة (يمكن اختيارها للتذاكر الجديدة)",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ…",
+    "cancel": "إلغاء",
+    "nameRequired": "أدخل اسم الفئة.",
+    "created": "تم إنشاء الفئة {{name}}.",
+    "updated": "تم حفظ الفئة {{name}}."
   },
   "customers": {
     "description": "ملفات العملاء التي ترتبط بها التذاكر.",
@@ -193,7 +314,8 @@
         "contactAdded": "تمت إضافة جهة اتصال",
         "noteAdded": "تمت إضافة ملاحظة",
         "attachmentAdded": "تم إرفاق ملف",
-        "other": "نشاط آخر"
+        "other": "نشاط آخر",
+        "ticketCreated": "تم إنشاء تذكرة"
       },
       "by": "بواسطة {{name}}",
       "system": "النظام",

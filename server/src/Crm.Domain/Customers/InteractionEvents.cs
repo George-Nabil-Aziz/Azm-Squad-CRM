@@ -15,4 +15,10 @@ public static class InteractionEvents
     public const string NoteAdded = "noteAdded";
 
     public const string AttachmentAdded = "attachmentAdded";
+
+    /// <summary>A ticket was created for the customer (CRM-13); details "TKT-000001 &lt;subject&gt;", source = the ticket.</summary>
+    public const string TicketCreated = "ticketCreated";
+
+    /// <summary>An agent replied to the customer on a ticket (CRM-15); details = start of the reply, source = the message.</summary>
+    public const string MessageSent = "messageSent";
 }

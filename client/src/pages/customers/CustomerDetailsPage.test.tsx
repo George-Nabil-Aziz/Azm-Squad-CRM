@@ -166,6 +166,18 @@ describe('CustomerDetailsPage', () => {
     expect(items.map((item) => within(item).getByRole('heading').textContent)).toEqual(['File attached', 'Note added'])
   })
 
+  it('labels ticket entries (CRM-13)', async () => {
+    vi.mocked(getCustomerTimeline).mockResolvedValue(
+      timelinePage([entry(1, 'ticketCreated', 'TKT-000001 Cannot log in', 'Sara Agent', 'ticket')]),
+    )
+    renderPage()
+
+    const [item] = await timelineEntries()
+
+    expect(within(item).getByRole('heading')).toHaveTextContent('Ticket created')
+    expect(item).toHaveTextContent('TKT-000001 Cannot log in')
+  })
+
   it('says when nothing happened yet', async () => {
     vi.mocked(getCustomerTimeline).mockResolvedValue(timelinePage([]))
     renderPage()

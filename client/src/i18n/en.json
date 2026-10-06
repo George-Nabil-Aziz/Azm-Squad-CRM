@@ -11,7 +11,8 @@
     "customers": "Customers",
     "knowledgeBase": "Knowledge base",
     "reports": "Reports",
-    "users": "Users"
+    "users": "Users",
+    "ticketCategories": "Ticket categories"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -101,6 +102,126 @@
       "Supervisor": "Team supervisor",
       "Agent": "Support agent"
     }
+  },
+  "tickets": {
+    "priorities": {
+      "high": "High",
+      "mid": "Mid",
+      "low": "Low"
+    },
+    "description": "Customer requests tracked until they are solved.",
+    "new": "New ticket",
+    "createTitle": "New ticket",
+    "createDescription": "Customer and subject are required. The ticket starts as New.",
+    "customer": "Customer",
+    "customerSearch": "Search customers",
+    "customerFind": "Find",
+    "customerPlaceholder": "Select a customer",
+    "subject": "Subject",
+    "descriptionField": "Description",
+    "category": "Category",
+    "noCategory": "No category",
+    "priority": "Priority",
+    "create": "Create ticket",
+    "creating": "Creating…",
+    "cancel": "Cancel",
+    "customerRequired": "Choose a customer.",
+    "subjectRequired": "Enter a subject.",
+    "created": "Ticket {{number}} was created.",
+    "statuses": {
+      "new": "New",
+      "open": "Open",
+      "pending": "Pending",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "channels": {
+      "manual": "Created by an agent",
+      "email": "Email",
+      "whatsapp": "WhatsApp",
+      "portal": "Portal"
+    },
+    "searchLabel": "Search by ticket number or subject",
+    "search": "Search",
+    "filters": {
+      "status": "Status",
+      "priority": "Priority",
+      "category": "Category",
+      "assignee": "Assignee",
+      "all": "All",
+      "unassigned": "Unassigned",
+      "createdFrom": "Created from",
+      "createdTo": "Created to",
+      "clear": "Clear filters"
+    },
+    "columns": {
+      "number": "Number",
+      "subject": "Subject",
+      "customer": "Customer",
+      "status": "Status",
+      "priority": "Priority",
+      "category": "Category",
+      "assignee": "Assignee",
+      "created": "Created"
+    },
+    "empty": "No tickets found.",
+    "loading": "Loading tickets…",
+    "pageInfo": "Page {{page}} of {{pages}}",
+    "previous": "Previous",
+    "next": "Next",
+    "details": {
+      "back": "Back to tickets",
+      "loading": "Loading ticket…",
+      "notFound": "The ticket was not found.",
+      "channel": "Channel",
+      "firstResponse": "First response",
+      "noResponseYet": "No response yet",
+      "conversation": "Conversation",
+      "loadingMessages": "Loading conversation…",
+      "noMessages": "No messages yet.",
+      "system": "System",
+      "internalNote": "Internal note",
+      "delivery": {
+        "pending": "Sending…",
+        "sent": "Sent",
+        "failed": "Not delivered"
+      },
+      "message": "Message",
+      "messageRequired": "Write a message first.",
+      "internalToggle": "Internal note (the customer never sees it)",
+      "sendReply": "Send reply",
+      "addNote": "Add note",
+      "sending": "Sending…",
+      "replySent": "Your reply was added.",
+      "noteAdded": "The note was added.",
+      "closedNotice": "This ticket is closed. Reopen it to reply or add a note."
+    }
+  },
+  "ticketCategories": {
+    "description": "Categories agents choose when they create a ticket.",
+    "add": "Add category",
+    "columns": {
+      "name": "Name",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "active": "Active",
+    "inactive": "Inactive",
+    "edit": "Edit",
+    "empty": "No categories yet.",
+    "loading": "Loading categories…",
+    "createTitle": "New category",
+    "createDescription": "The name must be unique. New categories are active.",
+    "editTitle": "Edit category",
+    "editDescription": "Rename the category or deactivate it. Inactive categories stay on existing tickets.",
+    "name": "Name",
+    "isActive": "Active (can be chosen for new tickets)",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "nameRequired": "Enter the category name.",
+    "created": "Category {{name}} was created.",
+    "updated": "Category {{name}} was saved."
   },
   "customers": {
     "description": "Customer profiles that tickets belong to.",
@@ -193,7 +314,8 @@
         "contactAdded": "Contact added",
         "noteAdded": "Note added",
         "attachmentAdded": "File attached",
-        "other": "Other activity"
+        "other": "Other activity",
+        "ticketCreated": "Ticket created"
       },
       "by": "by {{name}}",
       "system": "System",

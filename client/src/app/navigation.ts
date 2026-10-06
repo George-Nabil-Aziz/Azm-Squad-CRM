@@ -2,6 +2,7 @@ import {
   BookOpenIcon,
   ChartColumnIcon,
   LayoutDashboardIcon,
+  TagsIcon,
   TicketIcon,
   UserCogIcon,
   UsersIcon,
@@ -31,4 +32,5 @@ export const navigationItems: readonly NavigationItem[] = [
   { id: 'knowledgeBase', path: '/knowledge-base', icon: BookOpenIcon },
   { id: 'reports', path: '/reports', icon: ChartColumnIcon, permission: permissions.reportsView },
   { id: 'users', path: '/users', icon: UserCogIcon, permission: permissions.usersManage },
+  { id: 'ticketCategories', path: '/ticket-categories', icon: TagsIcon, permission: permissions.categoriesManage },
 ]

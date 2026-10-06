@@ -4,12 +4,14 @@ using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Tickets;
 using Crm.Application.Users;
 using Crm.Infrastructure.Channels;
 using Crm.Infrastructure.Customers;
 using Crm.Infrastructure.Files;
 using Crm.Infrastructure.Identity;
 using Crm.Infrastructure.Persistence;
+using Crm.Infrastructure.Tickets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,6 +49,9 @@ public static class DependencyInjection
         services.AddScoped<ICustomerTimelineRepository, CustomerTimelineRepository>();
         services.AddScoped<ICustomerNoteRepository, CustomerNoteRepository>();
         services.AddScoped<ICustomerAttachmentRepository, CustomerAttachmentRepository>();
+        services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
+        services.AddScoped<ITicketRepository, TicketRepository>();
+        services.AddScoped<ITicketMessageRepository, TicketMessageRepository>();
 
         // Uploaded files: a local folder (FileStorage:RootPath, default under the user's local app data). Read lazily
         // from the final configuration, so the test host can point it at a temp folder.
