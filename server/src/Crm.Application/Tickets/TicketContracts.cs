@@ -28,7 +28,17 @@ public sealed record TicketResponse(
     string? AssigneeName,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    DateTime? FirstResponseAt);
+    DateTime? ResponseDueAt = null,
+    DateTime? ResolutionDueAt = null,
+    DateTime? FirstResponseAt = null,
+    DateTime? ResolvedAt = null,
+    bool ResponseBreached = false,
+    bool ResolutionBreached = false,
+    int EscalationLevel = 0,
+    DateTime? ResponseWarnedAt = null);
+
+/// <summary>Body of PUT /api/tickets/{id}/priority: "high", "mid" or "low" (CRM-20: the SLA due times are recalculated).</summary>
+public sealed record ChangeTicketPriorityRequest(string? Priority);
 
 /// <summary>A ticket with the names it shows (read model filled by the repository).</summary>
 public sealed record TicketView(Ticket Ticket, string CustomerName, string? CategoryName, string? AssigneeName);

@@ -1,5 +1,6 @@
 using Crm.Application.Channels;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Sla;
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
 using Crm.Domain.Tickets;
@@ -24,6 +25,7 @@ public sealed class ChannelTicketService(
     ITicketRepository tickets,
     ITicketMessageRepository messages,
     IInteractionRecorder timeline,
+    ISlaPolicyRepository slaPolicies,
     TimeProvider timeProvider) : IChannelTicketService
 {
     private const int WhatsAppSubjectLength = 80;
@@ -50,6 +52,11 @@ public sealed class ChannelTicketService(
 
         var ticket = Ticket.Create(
             customerId, Subject(message), Cut(body, Ticket.DescriptionMaxLength), null, TicketPriority.Mid, channel, null, now);
+        if (await slaPolicies.FindAsync(ticket.Priority, cancellationToken) is { } policy)
+        {
+            ticket.ApplySla(policy); // CRM-20: due times from the policy of the priority now
+        }
+
         var first = TicketMessage.Inbound(ticket.Id, body, channel, message.ExternalId, message.ReceivedAt);
         await TicketNumbering.SaveNewAsync(tickets, ticket, () =>
         {

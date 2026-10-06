@@ -43,6 +43,13 @@ const invoiceTicket: Ticket = {
   createdAt: '2026-10-01T08:00:00Z',
   updatedAt: '2026-10-01T08:00:00Z',
   firstResponseAt: null,
+  responseDueAt: null,
+  resolutionDueAt: null,
+  resolvedAt: null,
+  responseBreached: false,
+  resolutionBreached: false,
+  escalationLevel: 0,
+  responseWarnedAt: null,
 }
 
 function message(overrides: Partial<TicketMessage>): TicketMessage {

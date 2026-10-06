@@ -19,4 +19,7 @@ public interface ITicketService
 
     /// <summary>Staff users tickets can be assigned to (active, with a role), ordered by name.</summary>
     Task<IReadOnlyList<TicketAssigneeResponse>> ListAssigneesAsync(CancellationToken cancellationToken);
+
+    /// <summary>Changes the priority and recalculates the SLA due times (CRM-20). 400 for an invalid priority, 404 unknown ticket.</summary>
+    Task<TicketResponse> ChangePriorityAsync(Guid id, ChangeTicketPriorityRequest request, CancellationToken cancellationToken);
 }

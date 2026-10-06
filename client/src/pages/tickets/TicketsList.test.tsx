@@ -41,7 +41,14 @@ function ticket(overrides: Partial<Ticket>): Ticket {
     assigneeName: null,
     createdAt: '2026-10-01T08:00:00Z',
     updatedAt: '2026-10-01T08:00:00Z',
+    responseDueAt: null,
+    resolutionDueAt: null,
     firstResponseAt: null,
+    resolvedAt: null,
+    responseBreached: false,
+    resolutionBreached: false,
+    escalationLevel: 0,
+    responseWarnedAt: null,
     ...overrides,
   }
 }
@@ -57,6 +64,8 @@ const newer = ticket({
   assigneeId: 'u1',
   assigneeName: 'Omar Lead',
   createdAt: '2026-10-02T08:00:00Z',
+  responseDueAt: '2000-01-01T09:00:00Z',
+  resolutionDueAt: '2999-01-01T09:00:00Z',
 })
 const older = ticket({})
 
@@ -117,6 +126,15 @@ describe('TicketsPage — list and filters', () => {
     expect(rows.map((r) => within(r).getAllByRole('cell')[0].textContent)).toEqual(['TKT-000002', 'TKT-000001'])
     expect(within(screen.getByRole('row', { name: /TKT-000001/ })).getByText('Unassigned')).toBeInTheDocument()
     expect(listTickets).toHaveBeenCalledWith({ page: 1, pageSize: 20 }, expect.anything())
+  })
+
+  it('shows the SLA timers of a ticket (CRM-20)', async () => {
+    renderPage()
+
+    const row = await screen.findByRole('row', { name: /TKT-000002/ })
+    expect(within(row).getByText(/Response: overdue by/)).toBeInTheDocument()
+    expect(within(row).getByText(/Resolution: .* left/)).toBeInTheDocument()
+    expect(within(screen.getByRole('row', { name: /TKT-000001/ })).getByText('No SLA')).toBeInTheDocument()
   })
 
   it('says "No tickets found." when nothing matches', async () => {

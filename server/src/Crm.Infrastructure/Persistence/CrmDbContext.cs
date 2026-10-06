@@ -1,5 +1,7 @@
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
+using Crm.Domain.Notifications;
+using Crm.Domain.Sla;
 using Crm.Domain.Tickets;
 using Crm.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -29,9 +31,15 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<ReceivedMessage> ReceivedMessages => Set<ReceivedMessage>();
     public DbSet<TicketCategory> TicketCategories => Set<TicketCategory>();
 
+    public DbSet<SlaPolicy> SlaPolicies => Set<SlaPolicy>();
+
     public DbSet<Ticket> Tickets => Set<Ticket>();
 
     public DbSet<TicketMessage> TicketMessages => Set<TicketMessage>();
+
+    public DbSet<TicketSlaEvent> TicketSlaEvents => Set<TicketSlaEvent>();
+
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
