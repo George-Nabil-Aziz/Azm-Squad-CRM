@@ -41,6 +41,12 @@ public static class Permissions
     /// <summary>Open the reports area (sidebar "Reports").</summary>
     public const string ReportsView = "reports.view";
 
+    /// <summary>Read published knowledge base articles and FAQs, search them, insert them into replies (CRM-36..39).</summary>
+    public const string KbView = "kb.view";
+
+    /// <summary>Write articles, FAQs and categories; see drafts (CRM-36, CRM-37).</summary>
+    public const string KbManage = "kb.manage";
+
     /// <summary>Every permission, in catalogue order (the order used in /api/auth/me).</summary>
     public static IReadOnlyList<string> All { get; } =
     [
@@ -49,5 +55,6 @@ public static class Permissions
         TicketsView, TicketsManage, TicketsAssign,
         CategoriesManage, SlaManage, ChannelsManage,
         ReportsView,
+        KbView, KbManage,
     ];
 }

@@ -44,7 +44,7 @@ public class RolePermissionsTests
     {
         Assert.Equal(
             [Permissions.CustomersView, Permissions.CustomersManage, Permissions.TicketsView, Permissions.TicketsManage,
-             Permissions.TicketsAssign, Permissions.ReportsView],
+             Permissions.TicketsAssign, Permissions.ReportsView, Permissions.KbView],
             RolePermissions.ForRole(Roles.Supervisor));
     }
 
@@ -52,8 +52,19 @@ public class RolePermissionsTests
     public void Agent_WorksTicketsAndCustomersOnly()
     {
         Assert.Equal(
-            [Permissions.CustomersView, Permissions.CustomersManage, Permissions.TicketsView, Permissions.TicketsManage],
+            [Permissions.CustomersView, Permissions.CustomersManage, Permissions.TicketsView, Permissions.TicketsManage,
+             Permissions.KbView],
             RolePermissions.ForRole(Roles.Agent));
+    }
+
+    [Fact]
+    public void KnowledgeBase_AgentsRead_OnlyAdminsWrite()
+    {
+        Assert.True(RolePermissions.HasPermission([Roles.Agent], Permissions.KbView));
+        Assert.False(RolePermissions.HasPermission([Roles.Agent], Permissions.KbManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Supervisor], Permissions.KbManage));
+        Assert.True(RolePermissions.HasPermission([Roles.Admin], Permissions.KbManage));
+        Assert.True(RolePermissions.HasPermission([Roles.SuperAdmin], Permissions.KbManage));
     }
 
     [Theory]

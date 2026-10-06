@@ -30,7 +30,7 @@ export const navigationItems: readonly NavigationItem[] = [
   { id: 'dashboard', path: '/', icon: LayoutDashboardIcon },
   { id: 'tickets', path: '/tickets', icon: TicketIcon, permission: permissions.ticketsView },
   { id: 'customers', path: '/customers', icon: UsersIcon, permission: permissions.customersView },
-  { id: 'knowledgeBase', path: '/knowledge-base', icon: BookOpenIcon },
+  { id: 'knowledgeBase', path: '/knowledge-base', icon: BookOpenIcon, permission: permissions.kbView },
   { id: 'reports', path: '/reports', icon: ChartColumnIcon, permission: permissions.reportsView },
   { id: 'users', path: '/users', icon: UserCogIcon, permission: permissions.usersManage },
   { id: 'ticketCategories', path: '/ticket-categories', icon: TagsIcon, permission: permissions.categoriesManage },

@@ -6,6 +6,7 @@ import { ComingSoonPage } from '@/pages/coming-soon/ComingSoonPage'
 import { CustomerDetailsPage } from '@/pages/customers/CustomerDetailsPage'
 import { CustomersPage } from '@/pages/customers/CustomersPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
+import { KnowledgeBasePage } from '@/pages/knowledge-base/KnowledgeBasePage'
 import { SlaPoliciesPage } from '@/pages/sla/SlaPoliciesPage'
 import { TicketCategoriesPage } from '@/pages/ticket-categories/TicketCategoriesPage'
 import { TicketDetailsPage } from '@/pages/tickets/TicketDetailsPage'
@@ -40,7 +41,9 @@ export function AppRoutes() {
             <Route path="customers" element={<CustomersPage />} />
             <Route path="customers/:id" element={<CustomerDetailsPage />} />
           </Route>
-          <Route path="knowledge-base" element={<ComingSoonPage area="knowledgeBase" />} />
+          <Route element={<RequirePermission permission={permissions.kbView} />}>
+            <Route path="knowledge-base" element={<KnowledgeBasePage />} />
+          </Route>
           <Route element={<RequirePermission permission={permissions.reportsView} />}>
             <Route path="reports" element={<ComingSoonPage area="reports" />} />
           </Route>

@@ -10,6 +10,7 @@ public static class RolePermissions
     [
         Permissions.CustomersView, Permissions.CustomersManage,
         Permissions.TicketsView, Permissions.TicketsManage,
+        Permissions.KbView,
     ];
 
     private static readonly Dictionary<string, IReadOnlyList<string>> ByRole = new(StringComparer.Ordinal)

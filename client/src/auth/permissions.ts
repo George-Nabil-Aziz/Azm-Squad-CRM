@@ -15,6 +15,8 @@ export const permissions = {
   slaManage: 'sla.manage',
   channelsManage: 'channels.manage',
   reportsView: 'reports.view',
+  kbView: 'kb.view',
+  kbManage: 'kb.manage',
 } as const
 
 export type Permission = (typeof permissions)[keyof typeof permissions]

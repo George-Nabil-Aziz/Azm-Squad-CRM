@@ -51,3 +51,9 @@ Server: `dotnet build`, `dotnet test`. Client: `npm test`, `npm run build`, `npm
 ## Done criteria
 
 - [ ] AC 1 Draft on create; [ ] AC 2 publish visibility; [ ] AC 3 two languages; [ ] AC 4 400 on missing title; [ ] all builds / tests green.
+
+## As built
+
+- Deviation: categories are soft-deleted (`ISoftDeletable`) instead of physically removed, so articles keep a valid reference; `IgnoreQueryFilters` switches the named filter off for the whole query, so the article read model excludes deleted articles by hand.
+- Deviation: the sidebar item and the `/knowledge-base` route need `kb.view` (the Agent role got `kb.view`; `App.layout.test` no longer lists the area as "coming soon"; `fake-api` `agentMe` includes `kb.view`).
+- Migration `AddKnowledgeBase` (tables `KbCategories`, `KbArticles`). New permissions `kb.view` (Agent, Supervisor, Admin, SuperAdmin), `kb.manage` (Admin, SuperAdmin). FAQs tab arrives with CRM-37.

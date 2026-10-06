@@ -11,6 +11,7 @@ using Crm.Infrastructure.Channels;
 using Crm.Infrastructure.Customers;
 using Crm.Infrastructure.Files;
 using Crm.Infrastructure.Identity;
+using Crm.Infrastructure.KnowledgeBase;
 using Crm.Infrastructure.Persistence;
 using Crm.Infrastructure.Sla;
 using Crm.Infrastructure.Tickets;
@@ -51,6 +52,7 @@ public static class DependencyInjection
         services.AddScoped<ICustomerTimelineRepository, CustomerTimelineRepository>();
         services.AddScoped<ICustomerNoteRepository, CustomerNoteRepository>();
         services.AddScoped<ICustomerAttachmentRepository, CustomerAttachmentRepository>();
+        services.AddKnowledgeBaseStorage();
         services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
         services.AddScoped<ISlaPolicyRepository, SlaPolicyRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();

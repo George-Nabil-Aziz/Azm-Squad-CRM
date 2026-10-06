@@ -26,7 +26,13 @@ export const agentMe: CurrentUser = {
   email: 'agent@crm.local',
   fullName: 'Sara Agent',
   roles: ['Agent'],
-  permissions: [permissions.customersView, permissions.customersManage, permissions.ticketsView, permissions.ticketsManage],
+  permissions: [
+    permissions.customersView,
+    permissions.customersManage,
+    permissions.ticketsView,
+    permissions.ticketsManage,
+    permissions.kbView,
+  ],
 }
 
 /** Same permissions as the server gives the Supervisor role. */

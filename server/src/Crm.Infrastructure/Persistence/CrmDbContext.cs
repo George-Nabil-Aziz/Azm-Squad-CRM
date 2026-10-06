@@ -1,5 +1,6 @@
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
+using Crm.Domain.KnowledgeBase;
 using Crm.Domain.Notifications;
 using Crm.Domain.Sla;
 using Crm.Domain.Tickets;
@@ -41,6 +42,10 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<TicketSlaEvent> TicketSlaEvents => Set<TicketSlaEvent>();
 
     public DbSet<Notification> Notifications => Set<Notification>();
+
+    public DbSet<KbCategory> KbCategories => Set<KbCategory>();
+
+    public DbSet<KbArticle> KbArticles => Set<KbArticle>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
