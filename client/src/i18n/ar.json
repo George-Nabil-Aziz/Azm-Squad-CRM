@@ -587,6 +587,23 @@
       "changeEmail": "استخدام بريد آخر",
       "resend": "إرسال رمز جديد",
       "codeResent": "تم إرسال رمز جديد إلى {{email}}."
+    },
+    "newTicket": {
+      "title": "طلب جديد",
+      "subject": "الموضوع",
+      "subjectRequired": "أدخل الموضوع.",
+      "description": "صف طلبك",
+      "category": "الفئة",
+      "noCategory": "بدون فئة",
+      "files": "المرفقات",
+      "filesHint": "حتى 5 ملفات، 10 ميجابايت لكل ملف (PDF، صور، Word، Excel، نص).",
+      "submit": "إرسال الطلب",
+      "submitting": "جارٍ الإرسال…",
+      "created": "تم إرسال طلبك.",
+      "number": "رقم طلبك هو",
+      "emailSent": "أرسلنا لك أيضاً رسالة تأكيد بالبريد الإلكتروني.",
+      "viewRequests": "طلباتي",
+      "another": "إرسال طلب آخر"
     }
   }
 }

@@ -26,7 +26,15 @@ public sealed class TicketService(
     ISlaPolicyRepository slaPolicies,
     ITicketHistoryRecorder history) : ITicketService
 {
-    public async Task<TicketResponse> CreateAsync(CreateTicketRequest request, CancellationToken cancellationToken)
+    public Task<TicketResponse> CreateAsync(CreateTicketRequest request, CancellationToken cancellationToken) =>
+        CreateCoreAsync(request, TicketChannel.Manual, currentUser.UserId, cancellationToken);
+
+    public Task<TicketResponse> CreateForCustomerAsync(
+        Guid customerId, CreateTicketRequest request, TicketChannel channel, CancellationToken cancellationToken) =>
+        CreateCoreAsync(request with { CustomerId = customerId }, channel, null, cancellationToken);
+
+    private async Task<TicketResponse> CreateCoreAsync(
+        CreateTicketRequest request, TicketChannel channel, Guid? createdById, CancellationToken cancellationToken)
     {
         await createValidator.ValidateOrThrowAsync(request, cancellationToken);
         var customerId = request.CustomerId!.Value;
@@ -44,7 +52,7 @@ public sealed class TicketService(
         var priority = TicketValues.TryParsePriority(request.Priority, out var parsed) ? parsed : TicketPriority.Mid;
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var ticket = Ticket.Create(customerId, request.Subject!, request.Description, request.CategoryId, priority,
-            TicketChannel.Manual, currentUser.UserId, now);
+            channel, createdById, now);
         // CRM-20: due times come from the policy of the priority now; later policy changes do not move them.
         if (await slaPolicies.FindAsync(priority, cancellationToken) is { } policy)
         {

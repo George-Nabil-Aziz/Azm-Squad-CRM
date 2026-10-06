@@ -1,3 +1,4 @@
+using Crm.Application.Tickets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -10,6 +11,8 @@ public static class PortalApplicationServiceCollectionExtensions
     {
         services.TryAddSingleton<IPortalCodeGenerator, RandomPortalCodeGenerator>();
         services.AddScoped<IPortalAuthService, PortalAuthService>();
+        services.AddScoped<IPortalTicketService, PortalTicketService>();
+        services.AddScoped<ITicketAttachmentService, TicketAttachmentService>();
         return services;
     }
 }

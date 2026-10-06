@@ -18,6 +18,18 @@ public static class PortalText
         $"Your sign-in code for the support portal is {code}.\nIt is valid for {minutes} minutes and works once.\nIf you did not ask for it, you can ignore this email.",
         $"رمز تسجيل الدخول إلى بوابة الدعم هو {code}.\nصالح لمدة {minutes} دقائق ويُستخدم مرة واحدة.\nإذا لم تطلبه يمكنك تجاهل هذه الرسالة.");
 
+    public static string TooManyFiles(int max) => LocalizedText.Get(
+        $"Attach at most {max} files.",
+        $"أرفق {max} ملفات كحد أقصى.");
+
+    public static string ConfirmationSubject => LocalizedText.Get(
+        "We received your request",
+        "استلمنا طلبك");
+
+    public static string ConfirmationBody(string number, string subject) => LocalizedText.Get(
+        $"Thank you for contacting us.\nYour request \"{subject}\" was received and has the number {number}.\nSign in to the support portal to follow it. You can also reply to this email.",
+        $"شكراً لتواصلك معنا.\nاستلمنا طلبك \"{subject}\" ورقمه {number}.\nسجّل الدخول إلى بوابة الدعم لمتابعته. يمكنك أيضاً الرد على هذه الرسالة.");
+
     public static string CustomerNotFound => LocalizedText.Get(
         "The customer was not found.",
         "العميل غير موجود.");

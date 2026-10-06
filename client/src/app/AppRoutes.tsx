@@ -4,6 +4,7 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { PortalLayout } from '@/components/portal/PortalLayout'
 import { PortalHomePage } from '@/pages/portal/PortalHomePage'
 import { PortalLoginPage } from '@/pages/portal/PortalLoginPage'
+import { PortalNewTicketPage } from '@/pages/portal/PortalNewTicketPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { ComingSoonPage } from '@/pages/coming-soon/ComingSoonPage'
 import { CustomerDetailsPage } from '@/pages/customers/CustomerDetailsPage'
@@ -17,6 +18,7 @@ import { TicketsPage } from '@/pages/tickets/TicketsPage'
 import { UsersPage } from '@/pages/users/UsersPage'
 import { RequireAuth } from './RequireAuth'
 import { RequirePermission } from './RequirePermission'
+import { RequirePortalAuth } from './RequirePortalAuth'
 
 export function AppRoutes() {
   return (
@@ -25,6 +27,9 @@ export function AppRoutes() {
       <Route path="/portal" element={<PortalLayout />}>
         <Route index element={<PortalHomePage />} />
         <Route path="login" element={<PortalLoginPage />} />
+        <Route element={<RequirePortalAuth />}>
+          <Route path="tickets/new" element={<PortalNewTicketPage />} />
+        </Route>
       </Route>
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>

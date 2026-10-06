@@ -587,6 +587,23 @@
       "changeEmail": "Use another email",
       "resend": "Send a new code",
       "codeResent": "A new code was sent to {{email}}."
+    },
+    "newTicket": {
+      "title": "New request",
+      "subject": "Subject",
+      "subjectRequired": "Enter a subject.",
+      "description": "Describe your request",
+      "category": "Category",
+      "noCategory": "No category",
+      "files": "Attachments",
+      "filesHint": "Up to 5 files, 10 MB each (PDF, images, Word, Excel, text).",
+      "submit": "Submit request",
+      "submitting": "Submitting…",
+      "created": "Your request was submitted.",
+      "number": "Your request number is",
+      "emailSent": "We also emailed you a confirmation.",
+      "viewRequests": "My requests",
+      "another": "Submit another request"
     }
   }
 }

@@ -51,6 +51,8 @@ app.MapKbEndpoints();
 app.MapTicketArticlesEndpoints();
 app.MapPortalKbEndpoints();
 app.MapPortalAuthEndpoints();
+app.MapPortalTicketsEndpoints();
+app.MapTicketAttachmentsEndpoints();
 
 if (jobsEnabled)
 {

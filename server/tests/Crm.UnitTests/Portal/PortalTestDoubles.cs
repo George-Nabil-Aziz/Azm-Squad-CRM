@@ -5,7 +5,9 @@ using Crm.Application.Customers;
 using Crm.Application.Portal;
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
+using Crm.Application.Tickets;
 using Crm.Domain.Portal;
+using Crm.Domain.Tickets;
 
 namespace Crm.UnitTests.Portal;
 
@@ -99,4 +101,20 @@ internal sealed class FakePortalAccounts : IPortalAccountRepository
         Saves++;
         return Task.CompletedTask;
     }
+}
+
+/// <summary>In-memory ticket attachment storage.</summary>
+internal sealed class FakeTicketAttachmentRepository : ITicketAttachmentRepository
+{
+    public List<TicketAttachment> Items { get; } = [];
+
+    public void Add(TicketAttachment attachment) => Items.Add(attachment);
+
+    public Task<IReadOnlyList<TicketAttachment>> ListAsync(Guid ticketId, CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<TicketAttachment>>([.. Items.Where(a => a.TicketId == ticketId).OrderBy(a => a.UploadedAt)]);
+
+    public Task<TicketAttachment?> FindAsync(Guid ticketId, Guid attachmentId, CancellationToken cancellationToken) =>
+        Task.FromResult(Items.FirstOrDefault(a => a.TicketId == ticketId && a.Id == attachmentId));
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }

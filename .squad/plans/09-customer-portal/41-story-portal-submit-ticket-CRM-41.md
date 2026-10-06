@@ -39,3 +39,7 @@
 ## Verification / done
 
 All build / test / lint commands green; AC 1–4 each have a test.
+
+## As built
+
+- Migration `AddTicketAttachments`. `HttpCurrentUser.UserId` is null for customer tokens. Files are stored after the ticket is created (a storage failure removes the files again but the ticket stays). `PortalApp` test helper (`Crm.Api.IntegrationTests/Portal`) swaps the email channel for a capturing provider. `PermissionPolicyTests` skip `/api/portal/` endpoints (they use the `Portal` policy).

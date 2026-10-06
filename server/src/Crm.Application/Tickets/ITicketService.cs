@@ -12,6 +12,13 @@ public interface ITicketService
     /// <summary>Creates a ticket in status New with the next ticket number, created by the signed-in user.</summary>
     Task<TicketResponse> CreateAsync(CreateTicketRequest request, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Creates a ticket for a customer who opened it themselves (portal): the given channel, no staff creator; numbering, SLA
+    /// timers and the customer timeline work as in <see cref="CreateAsync"/>.
+    /// </summary>
+    Task<TicketResponse> CreateForCustomerAsync(
+        Guid customerId, CreateTicketRequest request, Crm.Domain.Tickets.TicketChannel channel, CancellationToken cancellationToken);
+
     Task<TicketResponse> GetAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>One page of tickets matching every given filter, newest first.</summary>

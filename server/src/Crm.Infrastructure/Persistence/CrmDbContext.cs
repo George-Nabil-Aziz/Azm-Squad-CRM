@@ -52,6 +52,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<TicketArticleLink> TicketArticleLinks => Set<TicketArticleLink>();
 
+    public DbSet<TicketAttachment> TicketAttachments => Set<TicketAttachment>();
+
     public DbSet<PortalAccount> PortalAccounts => Set<PortalAccount>();
 
     public DbSet<PortalLoginCode> PortalLoginCodes => Set<PortalLoginCode>();

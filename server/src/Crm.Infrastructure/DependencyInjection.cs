@@ -59,6 +59,7 @@ public static class DependencyInjection
         services.AddScoped<ISlaPolicyRepository, SlaPolicyRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();
         services.AddScoped<ITicketMessageRepository, TicketMessageRepository>();
+        services.AddScoped<ITicketAttachmentRepository, TicketAttachmentRepository>();
         services.AddScoped<ITicketHistoryRepository, TicketHistoryRepository>();
         services.AddScoped<ITicketSlaRepository, TicketSlaRepository>();
         services.TryAddScoped<ISlaNotifier, LoggingSlaNotifier>();

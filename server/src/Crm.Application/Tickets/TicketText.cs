@@ -58,7 +58,11 @@ public static class TicketText
         $"A {from} ticket can only move to: {string.Join(", ", allowed)}.",
         $"التذكرة في حالة {from} يمكن نقلها فقط إلى: {string.Join("، ", allowed)}.");
 
-    public static string NotFound => LocalizedText.Get(
+    public static string AttachmentNotFound => LocalizedText.Get(
+        "The file was not found.",
+        "الملف غير موجود.");
+
+    public static string NotFound =>LocalizedText.Get(
         "The ticket was not found.",
         "التذكرة غير موجودة.");
 }
