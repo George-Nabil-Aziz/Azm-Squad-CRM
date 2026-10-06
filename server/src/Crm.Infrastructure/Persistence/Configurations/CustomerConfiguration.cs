@@ -16,6 +16,21 @@ public sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         customer.Property(c => c.Phone).HasMaxLength(Customer.PhoneMaxLength);
         customer.HasIndex(c => c.Name); // list order
 
+        // Contacts belong to the customer aggregate: owned entities in their own table, always loaded with the
+        // customer and hidden together with it by the soft-delete filter.
+        customer.OwnsMany(c => c.Contacts, contact =>
+        {
+            contact.ToTable("CustomerContacts");
+            contact.WithOwner().HasForeignKey(x => x.CustomerId);
+            contact.HasKey(x => x.Id);
+            contact.Property(x => x.Id).ValueGeneratedNever(); // set by Customer.AddContact
+            contact.Property(x => x.Type).HasConversion<string>().HasMaxLength(16); // "Phone", "Email", "WhatsApp"
+            contact.Property(x => x.Value).HasMaxLength(CustomerContact.ValueMaxLength).IsRequired();
+            contact.HasIndex(x => new { x.Type, x.Value }); // lookup by phone / email
+            contact.HasIndex(x => new { x.CustomerId, x.Type, x.Value }).IsUnique(); // no duplicate per customer
+        });
+        customer.Navigation(c => c.Contacts).UsePropertyAccessMode(PropertyAccessMode.Field);
+
         // Soft delete: deleted customers disappear from every query; their rows (and later their tickets) stay.
         customer.HasQueryFilter(CrmDbContext.SoftDeleteFilter, c => !c.IsDeleted);
     }

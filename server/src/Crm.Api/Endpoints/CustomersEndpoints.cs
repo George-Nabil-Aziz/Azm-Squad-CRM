@@ -16,6 +16,13 @@ public static class CustomersEndpoints
                 Results.Ok(await customers.ListAsync(query, cancellationToken)))
             .WithName("ListCustomers");
 
+        // Exact match on a phone (phone or WhatsApp contact) or email; the email / WhatsApp channels use the same
+        // ICustomerService.LookupAsync to find the customer of an incoming message.
+        group.MapGet("/lookup", async ([AsParameters] CustomerLookupQuery query, ICustomerService customers,
+                    CancellationToken cancellationToken) =>
+                Results.Ok(await customers.LookupAsync(query, cancellationToken)))
+            .WithName("LookupCustomers");
+
         group.MapGet("/{id:guid}", async (Guid id, ICustomerService customers, CancellationToken cancellationToken) =>
                 Results.Ok(await customers.GetAsync(id, cancellationToken)))
             .WithName("GetCustomer");
@@ -41,6 +48,33 @@ public static class CustomersEndpoints
             })
             .RequireAuthorization(Permissions.CustomersManage)
             .WithName("DeleteCustomer");
+
+        group.MapPost("/{id:guid}/contacts", async (Guid id, CustomerContactRequest request, ICustomerService customers,
+                    CancellationToken cancellationToken) =>
+            {
+                var contact = await customers.AddContactAsync(id, request, cancellationToken);
+                return Results.Created($"/api/customers/{id}/contacts/{contact.Id}", contact);
+            })
+            .RequireAuthorization(Permissions.CustomersManage)
+            .WithName("AddCustomerContact");
+
+        group.MapPost("/{id:guid}/contacts/{contactId:guid}/primary", async (Guid id, Guid contactId,
+                    ICustomerService customers, CancellationToken cancellationToken) =>
+            {
+                await customers.MakeContactPrimaryAsync(id, contactId, cancellationToken);
+                return Results.NoContent();
+            })
+            .RequireAuthorization(Permissions.CustomersManage)
+            .WithName("MakeCustomerContactPrimary");
+
+        group.MapDelete("/{id:guid}/contacts/{contactId:guid}", async (Guid id, Guid contactId,
+                    ICustomerService customers, CancellationToken cancellationToken) =>
+            {
+                await customers.RemoveContactAsync(id, contactId, cancellationToken);
+                return Results.NoContent();
+            })
+            .RequireAuthorization(Permissions.CustomersManage)
+            .WithName("RemoveCustomerContact");
 
         return app;
     }

@@ -38,7 +38,7 @@ public class CustomerManagementTests(CrmApiFactory factory) : IClassFixture<CrmA
         Assert.Equal($"/api/customers/{customer!.Id}", response.Headers.Location?.OriginalString);
         Assert.Equal("Nour Trading", customer.Name);
         Assert.Equal("info@nour.example", customer.Email);
-        Assert.Equal("+966 50 123 4567", customer.Phone);
+        Assert.Equal("+966501234567", customer.Phone); // stored in E.164 (CRM-9)
         Assert.Equal(factory.Time.GetUtcNow().UtcDateTime, customer.CreatedAt);
         Assert.Equal(customer.CreatedAt, customer.UpdatedAt);
     }

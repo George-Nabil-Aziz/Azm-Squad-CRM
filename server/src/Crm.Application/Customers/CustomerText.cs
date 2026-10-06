@@ -12,10 +12,34 @@ public static class CustomerText
     public static string PhoneField => LocalizedText.Get("Phone", "رقم الهاتف");
 
     public static string PhoneInvalid => LocalizedText.Get(
-        "Enter a phone number with at least 6 digits; it may start with + and contain spaces, dashes or brackets.",
-        "أدخل رقم هاتف من 6 أرقام على الأقل، يمكن أن يبدأ بـ + ويحتوي على مسافات أو شرطات أو أقواس.");
+        "Enter a valid phone number, e.g. +966501234567 or 0501234567.",
+        "أدخل رقم هاتف صحيحاً، مثل +966501234567 أو 0501234567.");
 
     public static string NotFound => LocalizedText.Get(
         "The customer was not found.",
         "العميل غير موجود.");
+
+    public static string ContactTypeField => LocalizedText.Get("Contact type", "نوع جهة الاتصال");
+
+    public static string ContactValueField => LocalizedText.Get("Value", "القيمة");
+
+    public static string ContactTypeInvalid => LocalizedText.Get(
+        "Choose phone, email or WhatsApp.",
+        "اختر الهاتف أو البريد الإلكتروني أو واتساب.");
+
+    public static string ContactExists => LocalizedText.Get(
+        "The customer already has this contact.",
+        "جهة الاتصال هذه مسجلة للعميل بالفعل.");
+
+    public static string ContactNotFound => LocalizedText.Get(
+        "The contact was not found.",
+        "جهة الاتصال غير موجودة.");
+
+    public static string LookupNeedsPhoneOrEmail => LocalizedText.Get(
+        "Enter a phone number or an email address.",
+        "أدخل رقم هاتف أو بريداً إلكترونياً.");
+
+    public static string LookupPhoneOrEmailOnly => LocalizedText.Get(
+        "Look up by phone or by email, not both.",
+        "ابحث برقم الهاتف أو بالبريد الإلكتروني، وليس بكليهما.");
 }

@@ -6,15 +6,20 @@ import { permissions } from '@/auth/permissions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Can } from '@/features/auth/Can'
+import { CustomerContactsDialog } from '@/features/customers/CustomerContactsDialog'
 import { CustomerFormDialog } from '@/features/customers/CustomerFormDialog'
 import { CustomersTable } from '@/features/customers/CustomersTable'
 import { useCustomers } from '@/features/customers/useCustomers'
 
 const PAGE_SIZE = 20
 
-type DialogState = { mode: 'create' } | { mode: 'edit'; customer: Customer } | null
+type DialogState =
+  | { mode: 'create' }
+  | { mode: 'edit'; customer: Customer }
+  | { mode: 'contacts'; customer: Customer }
+  | null
 
-/** Customers page: search (name, phone, email), paged table, create / edit dialog, delete with confirmation. */
+/** Customers page: search (name, phone, email), paged table, create / edit dialog, contacts dialog, delete with confirmation. */
 export function CustomersPage() {
   const { t } = useTranslation()
   const [searchText, setSearchText] = useState('')
@@ -66,6 +71,7 @@ export function CustomersPage() {
         <CustomersTable
           customers={customers.data.items}
           onEdit={(customer) => setDialog({ mode: 'edit', customer })}
+          onContacts={(customer) => setDialog({ mode: 'contacts', customer })}
         />
       ) : (
         <p className="text-muted-foreground">{t('customers.empty')}</p>
@@ -81,7 +87,9 @@ export function CustomersPage() {
         </Button>
       </div>
 
-      {dialog ? (
+      {dialog?.mode === 'contacts' ? (
+        <CustomerContactsDialog key={dialog.customer.id} customer={dialog.customer} onClose={() => setDialog(null)} />
+      ) : dialog ? (
         <CustomerFormDialog
           key={dialog.mode === 'edit' ? dialog.customer.id : 'new'}
           customer={dialog.mode === 'edit' ? dialog.customer : undefined}

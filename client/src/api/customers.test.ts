@@ -1,5 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createCustomer, deleteCustomer, listCustomers, updateCustomer } from './customers'
+import {
+  addCustomerContact,
+  createCustomer,
+  deleteCustomer,
+  getCustomer,
+  listCustomers,
+  makeCustomerContactPrimary,
+  removeCustomerContact,
+  updateCustomer,
+} from './customers'
 
 function fakeFetch(status = 200, body: unknown = {}) {
   const fetchMock = vi.fn().mockResolvedValue(
@@ -61,5 +70,38 @@ describe('customers API', () => {
     await deleteCustomer('c1')
 
     expect(sent(fetchMock)).toEqual({ path: '/api/customers/c1', method: 'DELETE', body: undefined })
+  })
+
+  it('reads one customer with its contacts with GET /api/customers/{id}', async () => {
+    const fetchMock = fakeFetch(200, { id: 'c1', contacts: [] })
+
+    await getCustomer('c1')
+
+    expect(sent(fetchMock)).toEqual({ path: '/api/customers/c1', method: 'GET', body: undefined })
+  })
+
+  it('adds a contact with POST /api/customers/{id}/contacts', async () => {
+    const fetchMock = fakeFetch(201, { id: 'k1' })
+    const request = { type: 'whatsapp' as const, value: '0501234567', isPrimary: true }
+
+    await addCustomerContact('c1', request)
+
+    expect(sent(fetchMock)).toEqual({ path: '/api/customers/c1/contacts', method: 'POST', body: request })
+  })
+
+  it('makes a contact primary with POST …/contacts/{contactId}/primary and no body', async () => {
+    const fetchMock = fakeFetch(204)
+
+    await makeCustomerContactPrimary('c1', 'k1')
+
+    expect(sent(fetchMock)).toEqual({ path: '/api/customers/c1/contacts/k1/primary', method: 'POST', body: undefined })
+  })
+
+  it('removes a contact with DELETE /api/customers/{id}/contacts/{contactId}', async () => {
+    const fetchMock = fakeFetch(204)
+
+    await removeCustomerContact('c1', 'k1')
+
+    expect(sent(fetchMock)).toEqual({ path: '/api/customers/c1/contacts/k1', method: 'DELETE', body: undefined })
   })
 })

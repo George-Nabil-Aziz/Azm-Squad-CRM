@@ -11,8 +11,12 @@ public sealed class CustomerService(
     ICustomerRepository customers,
     TimeProvider timeProvider,
     IValidator<ListCustomersQuery> listValidator,
-    IValidator<CustomerRequest> requestValidator) : ICustomerService
+    IValidator<CustomerRequest> requestValidator,
+    IValidator<CustomerContactRequest> contactValidator,
+    IValidator<CustomerLookupQuery> lookupValidator) : ICustomerService
 {
+    private static readonly ContactType[] NumberTypes = [ContactType.Phone, ContactType.WhatsApp];
+
     public async Task<PagedResult<CustomerResponse>> ListAsync(ListCustomersQuery query, CancellationToken cancellationToken)
     {
         await listValidator.ValidateOrThrowAsync(query, cancellationToken);
@@ -34,7 +38,7 @@ public sealed class CustomerService(
     {
         await requestValidator.ValidateOrThrowAsync(request, cancellationToken);
 
-        var customer = Customer.Create(request.Name!, request.Email, request.Phone, UtcNow());
+        var customer = Customer.Create(request.Name!, request.Email, PhoneOrNull(request.Phone), UtcNow());
         customers.Add(customer);
         await customers.SaveChangesAsync(cancellationToken);
 
@@ -46,7 +50,7 @@ public sealed class CustomerService(
         await requestValidator.ValidateOrThrowAsync(request, cancellationToken);
         var customer = await FindAsync(id, cancellationToken);
 
-        customer.Update(request.Name!, request.Email, request.Phone, UtcNow());
+        customer.Update(request.Name!, request.Email, PhoneOrNull(request.Phone), UtcNow());
         await customers.SaveChangesAsync(cancellationToken);
 
         return ToResponse(customer);
@@ -60,11 +64,77 @@ public sealed class CustomerService(
         await customers.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<CustomerContactResponse> AddContactAsync(
+        Guid customerId, CustomerContactRequest request, CancellationToken cancellationToken)
+    {
+        await contactValidator.ValidateOrThrowAsync(request, cancellationToken);
+        var customer = await FindAsync(customerId, cancellationToken);
+        ContactValues.TryParseType(request.Type, out var type);
+        var value = type == ContactType.Email ? request.Value! : PhoneOrNull(request.Value)!;
+        if (customer.HasContact(type, value))
+        {
+            throw new ConflictException(CustomerText.ContactExists);
+        }
+
+        var contact = customer.AddContact(type, value, request.IsPrimary == true, UtcNow());
+        await customers.SaveChangesAsync(cancellationToken);
+
+        return ToResponse(contact);
+    }
+
+    public async Task MakeContactPrimaryAsync(Guid customerId, Guid contactId, CancellationToken cancellationToken)
+    {
+        var customer = await FindWithContactAsync(customerId, contactId, cancellationToken);
+
+        customer.MakeContactPrimary(contactId, UtcNow());
+        await customers.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task RemoveContactAsync(Guid customerId, Guid contactId, CancellationToken cancellationToken)
+    {
+        var customer = await FindWithContactAsync(customerId, contactId, cancellationToken);
+
+        customer.RemoveContact(contactId, UtcNow());
+        await customers.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<CustomerResponse>> LookupAsync(CustomerLookupQuery query, CancellationToken cancellationToken)
+    {
+        await lookupValidator.ValidateOrThrowAsync(query, cancellationToken);
+
+        var found = string.IsNullOrWhiteSpace(query.Phone)
+            ? await customers.FindByContactAsync(
+                [ContactType.Email], CustomerContact.Normalize(ContactType.Email, query.Email!), cancellationToken)
+            : await customers.FindByContactAsync(NumberTypes, PhoneOrNull(query.Phone)!, cancellationToken);
+
+        return [.. found.Select(ToResponse)];
+    }
+
     private DateTime UtcNow() => timeProvider.GetUtcNow().UtcDateTime;
+
+    /// <summary>E.164 form of a phone number the validator accepted; null for an empty value.</summary>
+    private static string? PhoneOrNull(string? phone) =>
+        string.IsNullOrWhiteSpace(phone) ? null
+        : ContactValues.TryNormalizePhone(phone, out var e164) ? e164
+        : throw new InvalidOperationException("The phone number was not validated.");
 
     private async Task<Customer> FindAsync(Guid id, CancellationToken cancellationToken) =>
         await customers.FindAsync(id, cancellationToken) ?? throw new NotFoundException(CustomerText.NotFound);
 
+    private async Task<Customer> FindWithContactAsync(Guid customerId, Guid contactId, CancellationToken cancellationToken)
+    {
+        var customer = await FindAsync(customerId, cancellationToken);
+        return customer.Contacts.Any(c => c.Id == contactId)
+            ? customer
+            : throw new NotFoundException(CustomerText.ContactNotFound);
+    }
+
     private static CustomerResponse ToResponse(Customer customer) =>
-        new(customer.Id, customer.Name, customer.Email, customer.Phone, customer.CreatedAt, customer.UpdatedAt);
+        new(customer.Id, customer.Name, customer.Email, customer.Phone, customer.CreatedAt, customer.UpdatedAt,
+            [.. customer.Contacts
+                .OrderBy(c => c.Type).ThenByDescending(c => c.IsPrimary).ThenBy(c => c.CreatedAt).ThenBy(c => c.Value)
+                .Select(ToResponse)]);
+
+    private static CustomerContactResponse ToResponse(CustomerContact contact) =>
+        new(contact.Id, ContactValues.TypeName(contact.Type), contact.Value, contact.IsPrimary);
 }

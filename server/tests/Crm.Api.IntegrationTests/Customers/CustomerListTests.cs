@@ -11,13 +11,13 @@ public class CustomerListTests(CrmApiFactory factory) : IClassFixture<CrmApiFact
     private Task<HttpClient> AgentClientAsync() => factory.CreateClientWithRoleAsync(Roles.Agent);
 
     /// <summary>
-    /// Creates customers "&lt;tag&gt; n" with email "&lt;tag&gt;-n@example.test" and phone "+9665&lt;digits&gt;n"
+    /// Creates customers "&lt;tag&gt; n" with email "&lt;tag&gt;-n@example.test" and phone "+96650&lt;6 digits&gt;n"
     /// (unique per test: the database is shared by the tests of the class). Returns the tag and the phone prefix.
     /// </summary>
     private async Task<(string Tag, string PhonePrefix)> CreateCustomersAsync(HttpClient client, int count)
     {
         var tag = $"c{Guid.NewGuid():N}"[..12];
-        var phonePrefix = $"+9665{Random.Shared.Next(10_000_000, 99_999_999)}";
+        var phonePrefix = $"+96650{Random.Shared.Next(100_000, 999_999)}"; // + n = a valid Saudi mobile number
         for (var n = 1; n <= count; n++)
         {
             var response = await client.PostAsJsonAsync("/api/customers",

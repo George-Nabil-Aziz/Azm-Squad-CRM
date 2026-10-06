@@ -132,11 +132,43 @@
     "cancel": "Cancel",
     "nameRequired": "Enter the customer name.",
     "emailInvalid": "Enter a valid email address.",
-    "phoneInvalid": "Enter a phone number with at least 6 digits; it may start with + and contain spaces, dashes or brackets.",
+    "phoneInvalid": "Enter a valid phone number, e.g. +966501234567 or 0501234567.",
     "created": "Customer {{name}} was created.",
     "updated": "Customer {{name}} was saved.",
     "deleteTitle": "Delete {{name}}?",
     "deleteDescription": "The customer disappears from the list. Their tickets are kept.",
-    "deleted": "Customer {{name}} was deleted."
+    "deleted": "Customer {{name}} was deleted.",
+    "contactsButton": "Contacts",
+    "contacts": {
+      "title": "Contacts of {{name}}",
+      "description": "Phone numbers, email addresses and WhatsApp numbers. Incoming emails and WhatsApp messages are matched to the customer by them.",
+      "columns": {
+        "type": "Type",
+        "value": "Value",
+        "primary": "Primary",
+        "actions": "Actions"
+      },
+      "types": {
+        "phone": "Phone",
+        "email": "Email",
+        "whatsapp": "WhatsApp"
+      },
+      "primary": "Primary",
+      "makePrimary": "Make primary",
+      "remove": "Remove",
+      "empty": "No contacts yet.",
+      "loading": "Loading contacts…",
+      "addTitle": "Add a contact",
+      "type": "Type",
+      "value": "Phone number or email",
+      "isPrimary": "Make it the primary contact of its type",
+      "add": "Add contact",
+      "adding": "Adding…",
+      "close": "Close",
+      "valueRequired": "Enter a phone number or an email address.",
+      "added": "Contact added.",
+      "primaryChanged": "Primary contact changed.",
+      "removed": "Contact removed."
+    }
   }
 }

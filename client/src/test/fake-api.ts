@@ -76,6 +76,7 @@ export function fakeApi({ healthStatus = 200, me = superAdminMe }: FakeApiOption
         name: 'Nour Trading',
         email: 'info@nour.example',
         phone: '+966 50 123 4567',
+        contacts: [],
         createdAt: '2026-10-01T08:00:00Z',
         updatedAt: '2026-10-01T08:00:00Z',
       }

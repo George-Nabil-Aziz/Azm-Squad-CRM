@@ -35,6 +35,7 @@ const nour: Customer = {
   name: 'Nour Trading',
   email: 'info@nour.example',
   phone: '+966 50 123 4567',
+  contacts: [],
   createdAt: '2026-10-01T08:00:00Z',
   updatedAt: '2026-10-01T08:00:00Z',
 }
@@ -43,6 +44,7 @@ const omar: Customer = {
   name: 'Omar Walk-in',
   email: null,
   phone: null,
+  contacts: [],
   createdAt: '2026-10-02T08:00:00Z',
   updatedAt: '2026-10-02T08:00:00Z',
 }
@@ -160,9 +162,7 @@ describe('CustomersPage', () => {
 
     expect(await within(dialog).findByText('Enter the customer name.')).toBeInTheDocument()
     expect(within(dialog).getByText('Enter a valid email address.')).toBeInTheDocument()
-    expect(
-      within(dialog).getByText('Enter a phone number with at least 6 digits; it may start with + and contain spaces, dashes or brackets.'),
-    ).toBeInTheDocument()
+    expect(within(dialog).getByText('Enter a valid phone number, e.g. +966501234567 or 0501234567.')).toBeInTheDocument()
     expect(within(dialog).getByLabelText('Name')).toHaveAttribute('aria-invalid', 'true')
     expect(createCustomer).not.toHaveBeenCalled()
   })

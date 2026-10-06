@@ -13,6 +13,7 @@ public class CustomerRequestValidatorTests
     [InlineData("Nour Trading", "", "")]
     [InlineData("Nour Trading", "info@nour.example", "+966 50 123-4567")]
     [InlineData("نور للتجارة", "info@nour.example", "(050) 123 4567")]
+    [InlineData("نور للتجارة", null, "٠٥٠١٢٣٤٥٦٧")] // Arabic-Indic digits are normalized (CRM-9)
     public void ValidRequest_HasNoErrors(string name, string? email, string? phone)
     {
         Assert.True(_request.Validate(new CustomerRequest(name, email, phone)).IsValid);
@@ -50,9 +51,9 @@ public class CustomerRequestValidatorTests
     [Theory]
     [InlineData("call me")]
     [InlineData("050-12a-4567")]
-    [InlineData("12345")] // fewer than 6 digits
+    [InlineData("12345")] // too short
     [InlineData("++966501234567")]
-    [InlineData("٠٥٠١٢٣٤٥٦٧")] // Arabic-Indic digits: CRM-9 normalizes numbers
+    [InlineData("+9665012345678")] // one digit too many (CRM-9: a real number is required)
     public void Request_WithInvalidPhone_ReportsPhone(string phone)
     {
         var result = _request.Validate(new CustomerRequest("Nour", null, phone));
@@ -68,8 +69,7 @@ public class CustomerRequestValidatorTests
             .Errors.Select(e => e.ErrorMessage).ToList());
 
         Assert.Contains("'الاسم' لا يجب أن يكون فارغاً.", messages);
-        Assert.Contains(
-            "أدخل رقم هاتف من 6 أرقام على الأقل، يمكن أن يبدأ بـ + ويحتوي على مسافات أو شرطات أو أقواس.", messages);
+        Assert.Contains("أدخل رقم هاتف صحيحاً، مثل +966501234567 أو 0501234567.", messages);
     }
 
     [Theory]

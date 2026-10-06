@@ -10,12 +10,12 @@ public class CustomerTests
     [Fact]
     public void Create_TrimsTheProfile_AndSetsIdAndTimestamps()
     {
-        var customer = Customer.Create("  Nour Trading  ", " info@nour.example ", " +966 50 123 4567 ", Created);
+        var customer = Customer.Create("  Nour Trading  ", " info@nour.example ", " +966501234567 ", Created);
 
         Assert.NotEqual(Guid.Empty, customer.Id);
         Assert.Equal("Nour Trading", customer.Name);
         Assert.Equal("info@nour.example", customer.Email);
-        Assert.Equal("+966 50 123 4567", customer.Phone);
+        Assert.Equal("+966501234567", customer.Phone);
         Assert.Equal(Created, customer.CreatedAt);
         Assert.Equal(Created, customer.UpdatedAt);
         Assert.False(customer.IsDeleted);
@@ -53,7 +53,7 @@ public class CustomerTests
     [Fact]
     public void Update_ChangesTheProfileAndUpdatedAt_KeepsCreatedAt()
     {
-        var customer = Customer.Create("Nour", "old@nour.example", "0501234567", Created);
+        var customer = Customer.Create("Nour", "old@nour.example", "+966551234567", Created);
 
         customer.Update(" Nour Trading Co. ", null, "+966501234567", Later);
 

@@ -9,9 +9,10 @@ import { DeleteCustomerAction } from './DeleteCustomerAction'
 interface CustomersTableProps {
   customers: Customer[]
   onEdit: (customer: Customer) => void
+  onContacts: (customer: Customer) => void
 }
 
-export function CustomersTable({ customers, onEdit }: CustomersTableProps) {
+export function CustomersTable({ customers, onEdit, onContacts }: CustomersTableProps) {
   const { t } = useTranslation()
 
   return (
@@ -21,9 +22,7 @@ export function CustomersTable({ customers, onEdit }: CustomersTableProps) {
           <TableHead>{t('customers.columns.name')}</TableHead>
           <TableHead>{t('customers.columns.phone')}</TableHead>
           <TableHead>{t('customers.columns.email')}</TableHead>
-          <Can permission={permissions.customersManage}>
-            <TableHead className="text-end">{t('customers.columns.actions')}</TableHead>
-          </Can>
+          <TableHead className="text-end">{t('customers.columns.actions')}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -37,16 +36,20 @@ export function CustomersTable({ customers, onEdit }: CustomersTableProps) {
             <TableCell dir="ltr" className="text-start">
               {customer.email}
             </TableCell>
-            <Can permission={permissions.customersManage}>
-              <TableCell>
-                <div className="flex justify-end gap-2">
+            <TableCell>
+              <div className="flex justify-end gap-2">
+                {/* Everyone who sees customers sees their contacts; changing them needs customers.manage. */}
+                <Button variant="outline" size="sm" onClick={() => onContacts(customer)}>
+                  {t('customers.contactsButton')}
+                </Button>
+                <Can permission={permissions.customersManage}>
                   <Button variant="outline" size="sm" onClick={() => onEdit(customer)}>
                     {t('customers.edit')}
                   </Button>
                   <DeleteCustomerAction customer={customer} />
-                </div>
-              </TableCell>
-            </Can>
+                </Can>
+              </div>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -18,6 +18,10 @@ public class CustomersAuthorizationTests(CrmApiFactory factory) : IClassFixture<
         { "POST", "/api/customers" },
         { "PUT", $"/api/customers/{Guid.Empty}" },
         { "DELETE", $"/api/customers/{Guid.Empty}" },
+        { "GET", "/api/customers/lookup?phone=%2B966501234567" },
+        { "POST", $"/api/customers/{Guid.Empty}/contacts" },
+        { "POST", $"/api/customers/{Guid.Empty}/contacts/{Guid.Empty}/primary" },
+        { "DELETE", $"/api/customers/{Guid.Empty}/contacts/{Guid.Empty}" },
     };
 
     private static HttpRequestMessage Request(string method, string path) => new(new HttpMethod(method), path)
@@ -83,6 +87,10 @@ public class CustomersAuthorizationTests(CrmApiFactory factory) : IClassFixture<
         Assert.Equal(write, policies["POST /api/customers/"]);
         Assert.Equal(write, policies["PUT /api/customers/{id:guid}"]);
         Assert.Equal(write, policies["DELETE /api/customers/{id:guid}"]);
-        Assert.Equal(5, policies.Count);
+        Assert.Equal(read, policies["GET /api/customers/lookup"]);
+        Assert.Equal(write, policies["POST /api/customers/{id:guid}/contacts"]);
+        Assert.Equal(write, policies["POST /api/customers/{id:guid}/contacts/{contactId:guid}/primary"]);
+        Assert.Equal(write, policies["DELETE /api/customers/{id:guid}/contacts/{contactId:guid}"]);
+        Assert.Equal(9, policies.Count);
     }
 }
