@@ -153,3 +153,29 @@ export function getTicket(id: string, signal?: AbortSignal): Promise<Ticket> {
 export function changeTicketPriority(id: string, priority: TicketPriority): Promise<Ticket> {
   return apiPut<Ticket>(`/api/tickets/${encodeURIComponent(id)}/priority`, { priority })
 }
+
+/**
+ * One entry of a ticket history (server: TicketHistoryItemResponse), oldest first. `field` "escalation" is an SLA
+ * escalation: `newValue` is the level and nobody changed it. Status / priority values are API codes, assignee / category
+ * values names; null = none.
+ */
+export interface TicketHistoryItem {
+  id: string
+  field: 'status' | 'assignee' | 'priority' | 'category' | 'escalation'
+  oldValue: string | null
+  newValue: string | null
+  changedById: string | null
+  /** Null for system changes. */
+  changedByName: string | null
+  changedAt: string
+}
+
+/** The audit trail of a ticket, oldest first. Read-only: the API has no way to change or delete entries. */
+export function getTicketHistory(ticketId: string, signal?: AbortSignal): Promise<TicketHistoryItem[]> {
+  return apiGet<TicketHistoryItem[]>(`/api/tickets/${encodeURIComponent(ticketId)}/history`, signal)
+}
+
+/** Changes the category (null = none; 400 on `categoryId` for an inactive category). */
+export function changeTicketCategory(ticketId: string, categoryId: string | null): Promise<Ticket> {
+  return apiPut<Ticket>(`/api/tickets/${encodeURIComponent(ticketId)}/category`, { categoryId })
+}

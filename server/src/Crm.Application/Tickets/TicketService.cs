@@ -23,7 +23,8 @@ public sealed class TicketService(
     TimeProvider timeProvider,
     IValidator<CreateTicketRequest> createValidator,
     IValidator<ListTicketsQuery> listValidator,
-    ISlaPolicyRepository slaPolicies) : ITicketService
+    ISlaPolicyRepository slaPolicies,
+    ITicketHistoryRecorder history) : ITicketService
 {
     /// <summary>
     /// One ticket at a time takes "highest number + 1" and saves, so tickets created through this API instance never
@@ -118,9 +119,15 @@ public sealed class TicketService(
         }
 
         var ticket = await tickets.FindAsync(id, cancellationToken) ?? throw new NotFoundException(TicketText.NotFound);
-        // CRM-20 AC 2: the due times are recalculated from CreatedAt with the new priority's current policy.
-        ticket.ChangePriority(priority, await slaPolicies.FindAsync(priority, cancellationToken),
-            timeProvider.GetUtcNow().UtcDateTime);
+        var now = timeProvider.GetUtcNow().UtcDateTime;
+        var old = ticket.Priority;
+        // CRM-20 AC 2: the due times are recalculated from CreatedAt with the new priority current policy.
+        ticket.ChangePriority(priority, await slaPolicies.FindAsync(priority, cancellationToken), now);
+        if (old != priority)
+        {
+            history.Record(ticket.Id, TicketHistoryField.Priority, TicketValues.PriorityName(old), TicketValues.PriorityName(priority), now);
+        }
+
         await tickets.SaveChangesAsync(cancellationToken);
         return await GetAsync(id, cancellationToken);
     }

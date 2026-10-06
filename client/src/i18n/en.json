@@ -211,6 +211,24 @@
         "resolved": "Resolve",
         "closed": "Close",
         "reopen": "Reopen"
+      },
+      "updated": "The ticket was updated.",
+      "tabs": "Ticket sections",
+      "conversationTab": "Conversation",
+      "historyTab": "History"
+    },
+    "history": {
+      "title": "History",
+      "loading": "Loading history…",
+      "empty": "No changes recorded yet.",
+      "none": "None",
+      "system": "System",
+      "escalated": "Escalated to level {{level}}",
+      "fields": {
+        "status": "Status",
+        "assignee": "Assignee",
+        "priority": "Priority",
+        "category": "Category"
       }
     }
   },

@@ -72,7 +72,7 @@ A supervisor sees who changed what and when.
 
 ## Done Criteria
 
-- [ ] AC 1–3 covered by unit + integration (+ client) tests; escalations shown; strings in en + ar.
+- [x] AC 1–3 covered by unit + integration (+ client) tests; escalations shown; strings in en + ar.
 
 ## How later stories build on this
 
@@ -80,4 +80,4 @@ A supervisor sees who changed what and when.
 
 ## Deviations (as built)
 
-(none yet)
+- History ids are strings ("h12" entries, "s<guid>" SLA escalations); `TicketService` ctor takes `ITicketHistoryRecorder` last. Priority and category controls added to the details page so the recorded changes can be made from the UI. No migration.

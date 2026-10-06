@@ -141,6 +141,24 @@ public sealed partial class Ticket
         UpdatedAt = utcNow;
     }
 
+    /// <summary>Sets the category (null = none). Returns false, changing nothing, when it already is that one.</summary>
+    public bool ChangeCategory(Guid? categoryId, DateTime utcNow)
+    {
+        if (utcNow.Kind != DateTimeKind.Utc)
+        {
+            throw new ArgumentException("The time must be UTC (DateTimeKind.Utc).", nameof(utcNow));
+        }
+
+        if (CategoryId == categoryId)
+        {
+            return false;
+        }
+
+        CategoryId = categoryId;
+        UpdatedAt = utcNow;
+        return true;
+    }
+
     /// <summary>Gives the ticket to a staff user (null = unassigned). Returns false, changing nothing, when it already is theirs.</summary>
     public bool AssignTo(Guid? assigneeId, DateTime utcNow)
     {

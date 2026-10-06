@@ -1,4 +1,5 @@
 import { ArrowLeftIcon } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
 import { isApiError } from '@/api/errors'
@@ -7,6 +8,8 @@ import { permissions } from '@/auth/permissions'
 import { Badge } from '@/components/ui/badge'
 import { Can } from '@/features/auth/Can'
 import { TicketAssignControl } from '@/features/tickets/TicketAssignControl'
+import { TicketClassifyControl } from '@/features/tickets/TicketClassifyControl'
+import { TicketHistory } from '@/features/tickets/TicketHistory'
 import { TicketReplyForm } from '@/features/tickets/TicketReplyForm'
 import { TicketStatusActions } from '@/features/tickets/TicketStatusActions'
 import { TicketThread } from '@/features/tickets/TicketThread'
@@ -44,6 +47,7 @@ export function TicketDetailsPage() {
 function TicketDetails({ ticket }: { ticket: Ticket }) {
   const { t, i18n } = useTranslation()
   const formatTime = new Intl.DateTimeFormat(i18n.language, { dateStyle: 'medium', timeStyle: 'short' })
+  const [tab, setTab] = useState<'conversation' | 'history'>('conversation')
 
   return (
     <>
@@ -88,6 +92,7 @@ function TicketDetails({ ticket }: { ticket: Ticket }) {
 
       <TicketStatusActions ticket={ticket} />
       <TicketAssignControl ticket={ticket} />
+      <TicketClassifyControl ticket={ticket} />
 
       {ticket.description ? (
         <p dir="auto" className="whitespace-pre-line wrap-break-word rounded-lg border p-3">
@@ -95,15 +100,40 @@ function TicketDetails({ ticket }: { ticket: Ticket }) {
         </p>
       ) : null}
 
-      <TicketThread ticketId={ticket.id} customerName={ticket.customerName} />
+      <div role="tablist" aria-label={t('tickets.details.tabs')} className="flex gap-2 border-b">
+        {(['conversation', 'history'] as const).map((name) => (
+          <button
+            key={name}
+            type="button"
+            role="tab"
+            id={`ticket-tab-${name}`}
+            aria-selected={tab === name}
+            aria-controls="ticket-tabpanel"
+            onClick={() => setTab(name)}
+            className={`border-b-2 px-3 py-2 text-sm font-medium ${tab === name ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground'}`}
+          >
+            {t(name === 'conversation' ? 'tickets.details.conversationTab' : 'tickets.details.historyTab')}
+          </button>
+        ))}
+      </div>
 
-      <Can permission={permissions.ticketsManage}>
-        {ticket.status === 'closed' ? (
-          <p className="rounded-lg border p-3 text-muted-foreground">{t('tickets.details.closedNotice')}</p>
+      <div role="tabpanel" id="ticket-tabpanel" aria-labelledby={`ticket-tab-${tab}`}className="flex flex-col gap-6">
+        {tab === 'history' ? (
+          <TicketHistory ticketId={ticket.id} />
         ) : (
-          <TicketReplyForm ticketId={ticket.id} />
+          <>
+          <TicketThread ticketId={ticket.id} customerName={ticket.customerName} />
+
+          <Can permission={permissions.ticketsManage}>
+            {ticket.status === 'closed' ? (
+              <p className="rounded-lg border p-3 text-muted-foreground">{t('tickets.details.closedNotice')}</p>
+            ) : (
+              <TicketReplyForm ticketId={ticket.id} />
+            )}
+          </Can>
+          </>
         )}
-      </Can>
+      </div>
     </>
   )
 }

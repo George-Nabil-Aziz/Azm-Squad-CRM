@@ -4,14 +4,19 @@ import { MemoryRouter, Route, Routes } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getCurrentUser, type CurrentUser } from '@/api/auth'
 import { ApiError } from '@/api/errors'
+import { listTicketCategories } from '@/api/ticket-categories'
 import {
   addTicketMessage,
   assignTicket,
+  changeTicketCategory,
+  changeTicketPriority,
   changeTicketStatus,
+  getTicketHistory,
   getTicket,
   listTicketAssignees,
   listTicketMessages,
   type Ticket,
+  type TicketHistoryItem,
   type TicketMessage,
 } from '@/api/tickets'
 import { createQueryClient } from '@/app/query-client'
@@ -19,12 +24,16 @@ import { permissions } from '@/auth/permissions'
 import { TicketDetailsPage } from './TicketDetailsPage'
 
 vi.mock('@/api/auth', () => ({ getCurrentUser: vi.fn() }))
+vi.mock('@/api/ticket-categories', () => ({ listTicketCategories: vi.fn() }))
 vi.mock('@/api/tickets', () => ({
   getTicket: vi.fn(),
   listTicketMessages: vi.fn(),
   addTicketMessage: vi.fn(),
   assignTicket: vi.fn(),
   changeTicketStatus: vi.fn(),
+  changeTicketCategory: vi.fn(),
+  changeTicketPriority: vi.fn(),
+  getTicketHistory: vi.fn(),
   listTicketAssignees: vi.fn(),
 }))
 
@@ -112,6 +121,13 @@ describe('TicketDetailsPage', () => {
     ])
     vi.mocked(assignTicket).mockReset().mockResolvedValue({ ...invoiceTicket, assigneeId: '4', assigneeName: 'Omar Agent' })
     vi.mocked(changeTicketStatus).mockReset().mockResolvedValue({ ...invoiceTicket, status: 'pending' })
+    vi.mocked(getTicketHistory).mockReset().mockResolvedValue([])
+    vi.mocked(changeTicketCategory).mockReset().mockResolvedValue(invoiceTicket)
+    vi.mocked(changeTicketPriority).mockReset().mockResolvedValue(invoiceTicket)
+    vi.mocked(listTicketCategories).mockReset().mockResolvedValue([
+      { id: 'k1', name: 'Billing', isActive: true, createdAt: '2026-10-01T08:00:00Z', updatedAt: '2026-10-01T08:00:00Z' },
+      { id: 'k2', name: 'Support', isActive: true, createdAt: '2026-10-01T08:00:00Z', updatedAt: '2026-10-01T08:00:00Z' },
+    ])
   })
 
   it('shows the ticket with its customer, status and description', async () => {
@@ -354,6 +370,89 @@ describe('TicketDetailsPage', () => {
 
       await screen.findByRole('heading', { name: 'Invoice is wrong' })
       expect(screen.queryByRole('button', { name: 'Resolve' })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('history', () => {
+    const entries: TicketHistoryItem[] = [
+      { id: 'h1', field: 'status', oldValue: 'new', newValue: 'open', changedById: '3', changedByName: 'Team Lead', changedAt: '2026-10-01T09:00:00Z' },
+      { id: 'h2', field: 'assignee', oldValue: null, newValue: 'Sara Agent', changedById: '3', changedByName: 'Team Lead', changedAt: '2026-10-01T10:00:00Z' },
+      { id: 'h3', field: 'priority', oldValue: 'low', newValue: 'high', changedById: '3', changedByName: 'Team Lead', changedAt: '2026-10-01T11:00:00Z' },
+      { id: 'h4', field: 'category', oldValue: 'Billing', newValue: null, changedById: '3', changedByName: 'Team Lead', changedAt: '2026-10-01T12:00:00Z' },
+      { id: 's1', field: 'escalation', oldValue: null, newValue: '1', changedById: null, changedByName: null, changedAt: '2026-10-01T13:00:00Z' },
+    ]
+
+    async function openHistory() {
+      renderPage()
+      fireEvent.click(await screen.findByRole('tab', { name: 'History' }))
+      return within(await screen.findByRole('list', { name: 'History' })).getAllByRole('listitem')
+    }
+
+    it('lists the entries in the order returned, with old and new value, user and time', async () => {
+      vi.mocked(getTicketHistory).mockResolvedValue(entries)
+
+      const items = await openHistory()
+
+      expect(items).toHaveLength(5)
+      expect(items[0]).toHaveTextContent('Status')
+      expect(items[0]).toHaveTextContent('New → Open')
+      expect(items[0]).toHaveTextContent('Team Lead')
+      expect(within(items[0]).getByText(/2026/)).toBeInTheDocument()
+      expect(items[1]).toHaveTextContent('None → Sara Agent')
+      expect(items[2]).toHaveTextContent('Low → High')
+      expect(items[3]).toHaveTextContent('Billing → None')
+      expect(getTicketHistory).toHaveBeenCalledWith('t1', expect.anything())
+    })
+
+    it('shows an SLA escalation as a system entry with its level', async () => {
+      vi.mocked(getTicketHistory).mockResolvedValue(entries)
+
+      const items = await openHistory()
+
+      expect(items[4]).toHaveTextContent('Escalated to level 1')
+      expect(items[4]).toHaveTextContent('System')
+    })
+
+    it('says when nothing changed yet', async () => {
+      renderPage()
+      fireEvent.click(await screen.findByRole('tab', { name: 'History' }))
+
+      expect(await screen.findByText('No changes recorded yet.')).toBeInTheDocument()
+    })
+
+    it('has no way to edit or delete an entry', async () => {
+      vi.mocked(getTicketHistory).mockResolvedValue(entries)
+
+      const items = await openHistory()
+
+      expect(within(items[0]).queryByRole('button')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('priority and category', () => {
+    it('sends a new priority', async () => {
+      renderPage()
+
+      fireEvent.change(await screen.findByLabelText('Priority'), { target: { value: 'low' } })
+
+      await waitFor(() => expect(changeTicketPriority).toHaveBeenCalledWith('t1', 'low'))
+    })
+
+    it('sends a new category, or none', async () => {
+      renderPage()
+
+      fireEvent.change(await screen.findByLabelText('Category'), { target: { value: 'k2' } })
+      await waitFor(() => expect(changeTicketCategory).toHaveBeenCalledWith('t1', 'k2'))
+      fireEvent.change(screen.getByLabelText('Category'), { target: { value: '' } })
+      await waitFor(() => expect(changeTicketCategory).toHaveBeenLastCalledWith('t1', null))
+    })
+
+    it('is hidden without the manage permission', async () => {
+      vi.mocked(getCurrentUser).mockResolvedValue(viewer)
+      renderPage()
+
+      await screen.findByRole('heading', { name: 'Invoice is wrong' })
+      expect(screen.queryByLabelText('Priority')).not.toBeInTheDocument()
     })
   })
 })

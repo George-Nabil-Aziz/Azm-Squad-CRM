@@ -121,6 +121,19 @@ internal sealed class FakeTicketHistoryRecorder : ITicketHistoryRecorder
         Entries.Add((ticketId, field, oldValue, newValue, utcNow));
 }
 
+/// <summary>History storage with the contract of the EF Core repository: reads come back oldest first.</summary>
+internal sealed class FakeTicketHistoryRepository : ITicketHistoryRepository
+{
+    public List<TicketHistoryItemResponse> Items { get; } = [];
+
+    public void Add(TicketHistoryEntry entry)
+    {
+    }
+
+    public Task<IReadOnlyList<TicketHistoryItemResponse>> ListAsync(Guid ticketId, CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<TicketHistoryItemResponse>>([.. Items.OrderBy(i => i.ChangedAt)]);
+}
+
 /// <summary>Test-only access to ticket state the Domain changes in later stories (status workflow, CRM-17).</summary>
 internal static class TicketTestSupport
 {

@@ -20,6 +20,9 @@ public interface ITicketHistoryRepository
 {
     /// <summary>Adds the entry to the current unit of work; it is saved by the caller's next SaveChangesAsync.</summary>
     void Add(TicketHistoryEntry entry);
+
+    /// <summary>A ticket history, oldest first (time, then insertion): its entries plus its SLA escalations (field "escalation").</summary>
+    Task<IReadOnlyList<TicketHistoryItemResponse>> ListAsync(Guid ticketId, CancellationToken cancellationToken);
 }
 
 public sealed class TicketHistoryRecorder(ITicketHistoryRepository history, ICurrentUser currentUser) : ITicketHistoryRecorder

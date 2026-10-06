@@ -211,6 +211,24 @@
         "resolved": "حل",
         "closed": "إغلاق",
         "reopen": "إعادة فتح"
+      },
+      "updated": "تم تحديث التذكرة.",
+      "tabs": "أقسام التذكرة",
+      "conversationTab": "المحادثة",
+      "historyTab": "السجل"
+    },
+    "history": {
+      "title": "السجل",
+      "loading": "جارٍ تحميل السجل…",
+      "empty": "لا توجد تغييرات مسجلة بعد.",
+      "none": "بدون",
+      "system": "النظام",
+      "escalated": "تم التصعيد إلى المستوى {{level}}",
+      "fields": {
+        "status": "الحالة",
+        "assignee": "الموظف المسؤول",
+        "priority": "الأولوية",
+        "category": "الفئة"
       }
     }
   },

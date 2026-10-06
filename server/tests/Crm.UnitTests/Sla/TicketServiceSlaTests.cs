@@ -14,6 +14,7 @@ public class TicketServiceSlaTests
     private readonly FakeTicketRepository _tickets;
     private readonly FakeSlaPolicyRepository _policies = new(Start.UtcDateTime.AddDays(-1));
     private readonly TestClock _clock = new(Start);
+    private readonly FakeTicketHistoryRecorder _history = new();
     private readonly TicketService _service;
     private readonly Guid _customerId;
 
@@ -21,7 +22,7 @@ public class TicketServiceSlaTests
     {
         _tickets = new FakeTicketRepository(_categories);
         _service = new TicketService(_tickets, _categories, new FakeInteractionRecorder(), new FakeCurrentUser(Guid.NewGuid()),
-            _clock, new CreateTicketRequestValidator(), new ListTicketsQueryValidator(), _policies);
+            _clock, new CreateTicketRequestValidator(), new ListTicketsQueryValidator(), _policies, _history);
         _customerId = _tickets.AddCustomer("Nour Trading");
     }
 
@@ -72,6 +73,20 @@ public class TicketServiceSlaTests
         Assert.Equal(Start.UtcDateTime.AddHours(1), changed.ResponseDueAt);
         Assert.Equal(Start.UtcDateTime.AddHours(4), changed.ResolutionDueAt);
         Assert.Equal(Start.UtcDateTime.AddMinutes(30), changed.UpdatedAt);
+    }
+
+    [Fact]
+    public async Task ChangePriority_RecordsOneHistoryEntry_AndNothingForTheSamePriority()
+    {
+        var created = await CreateAsync("low");
+        _clock.UtcNow = Start.AddMinutes(30);
+
+        await _service.ChangePriorityAsync(created.Id, new ChangeTicketPriorityRequest("high"), CancellationToken.None);
+        await _service.ChangePriorityAsync(created.Id, new ChangeTicketPriorityRequest("high"), CancellationToken.None);
+
+        var entry = Assert.Single(_history.Entries);
+        Assert.Equal((created.Id, TicketHistoryField.Priority, "low", "high", Start.UtcDateTime.AddMinutes(30)),
+            (entry.TicketId, entry.Field, entry.OldValue, entry.NewValue, entry.UtcNow));
     }
 
     [Theory]
