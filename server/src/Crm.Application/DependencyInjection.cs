@@ -5,6 +5,7 @@ using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Reports;
 using Crm.Application.Settings;
 using Crm.Application.Sla;
 using Crm.Application.Tickets;
@@ -23,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IAuditLogger, AuditLogger>();
         services.AddScoped<IAuditLogService, AuditLogService>();
+        services.AddScoped<ITicketReportService, TicketReportService>();
         services.AddScoped<ISystemSettingsService, SystemSettingsService>();
         services.AddScoped<ISystemSettingsProvider, SystemSettingsProvider>();
         services.AddScoped<IInteractionRecorder, InteractionRecorder>();

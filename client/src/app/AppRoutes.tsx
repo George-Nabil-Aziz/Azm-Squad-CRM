@@ -1,12 +1,14 @@
 import { Navigate, Route, Routes } from 'react-router'
 import { permissions } from '@/auth/permissions'
 import { AppLayout } from '@/components/layout/AppLayout'
+import { ReportsLayout } from '@/features/reports/ReportsLayout'
 import { AuditLogsPage } from '@/pages/audit/AuditLogsPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { ComingSoonPage } from '@/pages/coming-soon/ComingSoonPage'
 import { CustomerDetailsPage } from '@/pages/customers/CustomerDetailsPage'
 import { CustomersPage } from '@/pages/customers/CustomersPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
+import { TicketReportPage } from '@/pages/reports/TicketReportPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { SlaPoliciesPage } from '@/pages/sla/SlaPoliciesPage'
 import { TicketCategoriesPage } from '@/pages/ticket-categories/TicketCategoriesPage'
@@ -50,7 +52,10 @@ export function AppRoutes() {
           </Route>
           <Route path="knowledge-base" element={<ComingSoonPage area="knowledgeBase" />} />
           <Route element={<RequirePermission permission={permissions.reportsView} />}>
-            <Route path="reports" element={<ComingSoonPage area="reports" />} />
+            <Route path="reports" element={<ReportsLayout />}>
+              <Route index element={<Navigate to="tickets" replace />} />
+              <Route path="tickets" element={<TicketReportPage />} />
+            </Route>
           </Route>
         </Route>
       </Route>

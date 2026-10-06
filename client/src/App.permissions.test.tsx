@@ -70,4 +70,21 @@ describe('Menu and pages follow the user permissions', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Dashboard' })).toBeInTheDocument()
     expect(window.location.pathname).toBe('/')
   })
+  it('opens the reports area for a supervisor, on the ticket report', async () => {
+    vi.stubGlobal('fetch', fakeApi({ me: supervisorMe }))
+    renderSignedInAt('/reports')
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Reports' })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/reports/tickets')
+    expect(await screen.findByRole('link', { name: 'Tickets', current: 'page' })).toBeInTheDocument()
+  })
+
+  it('sends an agent from /reports to the dashboard without calling the reports API', async () => {
+    const fetchMock = fakeApi({ me: agentMe })
+    vi.stubGlobal('fetch', fetchMock)
+    renderSignedInAt('/reports/tickets')
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Dashboard' })).toBeInTheDocument()
+    expect(fetchMock.mock.calls.some(([path]) => String(path).startsWith('/api/reports'))).toBe(false)
+  })
 })

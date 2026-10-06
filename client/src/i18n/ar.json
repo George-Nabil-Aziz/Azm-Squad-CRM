@@ -550,5 +550,37 @@
       "starttls": "STARTTLS (ترقية الاتصال)",
       "sslonconnect": "SSL/TLS (اتصال مشفّر)"
     }
+  },
+  "reports": {
+    "description": "تقارير إدارية عن فترة زمنية. التواريخ أيام كاملة بتوقيت UTC، وافتراضياً آخر 30 يوماً.",
+    "navigation": "التقارير",
+    "nav": {
+      "tickets": "التذاكر"
+    },
+    "loading": "جارٍ تحميل التقرير…",
+    "count": "العدد",
+    "exportCsv": "تصدير CSV",
+    "exportExcel": "تصدير Excel",
+    "filters": {
+      "from": "من",
+      "to": "إلى",
+      "status": "الحالة",
+      "category": "الفئة",
+      "channel": "القناة",
+      "priority": "الأولوية",
+      "all": "الكل",
+      "clear": "مسح التصفية"
+    },
+    "tickets": {
+      "total": "التذاكر في الفترة",
+      "range": "التذاكر المنشأة من {{from}} إلى {{to}}",
+      "byStatus": "حسب الحالة",
+      "byCategory": "حسب الفئة",
+      "byChannel": "حسب القناة",
+      "byPriority": "حسب الأولوية",
+      "byDay": "حسب اليوم",
+      "day": "اليوم",
+      "uncategorized": "بدون فئة"
+    }
   }
 }

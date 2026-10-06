@@ -550,5 +550,37 @@
       "starttls": "STARTTLS",
       "sslonconnect": "SSL/TLS"
     }
+  },
+  "reports": {
+    "description": "Management reports over a date range. Dates are whole UTC days; by default the last 30 days.",
+    "navigation": "Reports",
+    "nav": {
+      "tickets": "Tickets"
+    },
+    "loading": "Loading the report…",
+    "count": "Count",
+    "exportCsv": "Export CSV",
+    "exportExcel": "Export Excel",
+    "filters": {
+      "from": "From",
+      "to": "To",
+      "status": "Status",
+      "category": "Category",
+      "channel": "Channel",
+      "priority": "Priority",
+      "all": "All",
+      "clear": "Clear filters"
+    },
+    "tickets": {
+      "total": "Tickets in the period",
+      "range": "Tickets created from {{from}} to {{to}}",
+      "byStatus": "By status",
+      "byCategory": "By category",
+      "byChannel": "By channel",
+      "byPriority": "By priority",
+      "byDay": "By day",
+      "day": "Day",
+      "uncategorized": "Uncategorized"
+    }
   }
 }

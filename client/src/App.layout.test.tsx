@@ -6,7 +6,7 @@ import { ADMIN_PASSWORD, callsTo, fakeApi, inOneHour, submitSignIn } from './tes
 
 const NAVIGATION_LABELS = ['Dashboard', 'Tickets', 'Customers', 'Knowledge base', 'Reports', 'Users', 'Ticket categories', 'SLA policy', 'Audit log', 'Settings']
 /** Areas whose story is not built yet (each later story removes its label from this list). */
-const COMING_SOON_LABELS = ['Knowledge base', 'Reports']
+const COMING_SOON_LABELS = ['Knowledge base']
 
 function renderAt(path: string) {
   window.history.replaceState(null, '', path)
