@@ -9,5 +9,6 @@ public sealed class AddTicketMessageRequestValidator : AbstractValidator<AddTick
     public AddTicketMessageRequestValidator()
     {
         RuleFor(x => x.Body).NotEmpty().MaximumLength(TicketMessage.BodyMaxLength).WithName(_ => TicketMessageText.BodyField);
+        RuleFor(x => x.TemplateName).MaximumLength(100);
     }
 }

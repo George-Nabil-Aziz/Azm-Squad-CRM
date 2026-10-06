@@ -9,8 +9,9 @@ public class InboundMessageProcessorTests
 
     private readonly FakeReceivedMessageRepository _received = new();
     private readonly FakeCustomerService _customers = new();
+    private readonly FakeChannelTicketService _tickets = new();
 
-    private InboundMessageProcessor CreateProcessor() => new(_received, _customers, new ChannelClock(Now));
+    private InboundMessageProcessor CreateProcessor() => new(_received, _customers, _tickets, new ChannelClock(Now));
 
     private static InboundChannelMessage Email(string from, string? subject = "Printer broken", string id = "<m1@mail.example>", string? name = "Nour") =>
         new(ChannelKind.Email, id, from, name, subject, "It does not print.", Now.UtcDateTime.AddMinutes(-2));

@@ -2,9 +2,10 @@ namespace Crm.Application.Tickets;
 
 /// <summary>
 /// Body of POST /api/tickets/{id}/messages. <c>Body</c> is required (at most 10 000 characters); <c>Internal</c>
-/// (default false) makes it an internal note instead of a reply to the customer.
+/// (default false) makes it an internal note instead of a reply to the customer. <c>TemplateName</c> (optional, at most
+/// 100 characters) sends an approved WhatsApp template instead of free text (needed outside the 24-hour window).
 /// </summary>
-public sealed record AddTicketMessageRequest(string? Body, bool? Internal);
+public sealed record AddTicketMessageRequest(string? Body, bool? Internal, string? TemplateName = null);
 
 /// <summary>
 /// One message of a ticket thread. <c>Direction</c> is "inbound" (from the customer), "outbound" (an agent reply) or

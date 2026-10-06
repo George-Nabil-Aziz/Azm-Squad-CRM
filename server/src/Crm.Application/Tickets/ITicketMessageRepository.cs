@@ -7,6 +7,9 @@ public interface ITicketMessageRepository
 {
     void Add(TicketMessage message);
 
+    /// <summary>The tracked message (change it, then save through <see cref="ITicketRepository.SaveChangesAsync"/>), or null.</summary>
+    Task<TicketMessage?> FindAsync(Guid id, CancellationToken cancellationToken);
+
     /// <summary>One message with the author name, or null.</summary>
     Task<TicketMessageResponse?> GetAsync(Guid id, CancellationToken cancellationToken);
 

@@ -8,17 +8,19 @@ public sealed class ChannelSender(
     IEnumerable<IChannelProvider> providers,
     IOutboundMessageRepository messages,
     IReceivedMessageRepository received,
-    TimeProvider timeProvider) : IChannelSender
+    TimeProvider timeProvider,
+    IEnumerable<IChannelDeliveryObserver>? observers = null) : IChannelSender
 {
     /// <summary>How many due messages one retry run sends at most.</summary>
     public const int RetryBatchSize = 20;
 
     private readonly IReadOnlyList<IChannelProvider> _providers = [.. providers];
+    private readonly IReadOnlyList<IChannelDeliveryObserver> _observers = [.. observers ?? []];
 
     public async Task<OutboundMessageResponse> SendAsync(ChannelReply reply, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reply);
-        await EnsureWhatsAppWindowAsync(reply, cancellationToken);
+        await EnsureCanSendAsync(reply, cancellationToken);
 
         var message = OutboundMessage.Create(
             reply.Channel, reply.Recipient, reply.Subject, reply.Body, reply.TemplateName, reply.SourceId, UtcNow());
@@ -39,6 +41,7 @@ public sealed class ChannelSender(
         }
 
         message.ApplyDeliveryStatus(status, error, UtcNow());
+        await NotifyAsync(message, cancellationToken);
         await messages.SaveChangesAsync(cancellationToken);
         return true;
     }
@@ -63,7 +66,7 @@ public sealed class ChannelSender(
         new(new ChannelState(IsConfigured(ChannelKind.Email)), new ChannelState(IsConfigured(ChannelKind.WhatsApp)));
 
     /// <summary>WhatsApp free text is allowed only within 24 hours of the customer's last message; otherwise a template is needed.</summary>
-    private async Task EnsureWhatsAppWindowAsync(ChannelReply reply, CancellationToken cancellationToken)
+    public async Task EnsureCanSendAsync(ChannelReply reply, CancellationToken cancellationToken)
     {
         if (reply.Channel != ChannelKind.WhatsApp || !string.IsNullOrWhiteSpace(reply.TemplateName))
         {
@@ -83,6 +86,20 @@ public sealed class ChannelSender(
 
     /// <summary>One send attempt; every outcome ends as Sent or Failed on the message (nothing is thrown, except cancellation).</summary>
     private async Task AttemptAsync(OutboundMessage message, CancellationToken cancellationToken)
+    {
+        await TrySendAsync(message, cancellationToken);
+        await NotifyAsync(message, cancellationToken);
+    }
+
+    private async Task NotifyAsync(OutboundMessage message, CancellationToken cancellationToken)
+    {
+        foreach (var observer in _observers)
+        {
+            await observer.OnDeliveryChangedAsync(message, cancellationToken);
+        }
+    }
+
+    private async Task TrySendAsync(OutboundMessage message, CancellationToken cancellationToken)
     {
         var provider = Provider(message.Channel);
         if (provider is null)

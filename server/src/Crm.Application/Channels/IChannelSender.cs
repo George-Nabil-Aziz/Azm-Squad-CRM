@@ -20,6 +20,9 @@ public interface IChannelSender
     Task<bool> ApplyDeliveryStatusAsync(
         string providerMessageId, Crm.Domain.Channels.DeliveryStatus status, string? error, CancellationToken cancellationToken);
 
+    /// <summary>Throws what <see cref="SendAsync"/> would throw before sending (WhatsApp free text outside the 24-hour window), without sending or storing anything.</summary>
+    Task EnsureCanSendAsync(ChannelReply reply, CancellationToken cancellationToken);
+
     /// <summary>Sends failed messages whose next attempt is due again (recurring job). Returns how many were tried.</summary>
     Task<int> RetryDueAsync(CancellationToken cancellationToken);
 

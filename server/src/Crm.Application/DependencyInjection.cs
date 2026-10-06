@@ -23,6 +23,9 @@ public static class DependencyInjection
         services.AddScoped<ICustomerNoteService, CustomerNoteService>();
         services.AddScoped<ICustomerAttachmentService, CustomerAttachmentService>();
         services.AddScoped<IChannelSender, ChannelSender>();
+        services.AddScoped<IChannelDeliveryObserver, TicketDeliveryObserver>();
+        services.AddScoped<IChannelTicketService, ChannelTicketService>();
+        services.AddScoped<ITicketReplyDispatcher, ChannelTicketReplyDispatcher>();
         services.AddScoped<IInboundMessageProcessor, InboundMessageProcessor>();
         services.AddScoped<IWhatsAppWebhookService, WhatsAppWebhookService>();
         services.AddScoped<ITicketCategoryService, TicketCategoryService>();

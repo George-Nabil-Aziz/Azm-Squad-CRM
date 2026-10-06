@@ -42,6 +42,16 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
     public Task<Ticket?> FindAsync(Guid id, CancellationToken cancellationToken) =>
         db.Tickets.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
 
+    public Task<Ticket?> FindByNumberAsync(int number, CancellationToken cancellationToken) =>
+        db.Tickets.FirstOrDefaultAsync(t => t.Number == number, cancellationToken);
+
+    public Task<Ticket?> FindLatestOpenAsync(Guid customerId, TicketChannel channel, CancellationToken cancellationToken) =>
+        db.Tickets
+            .Where(t => t.CustomerId == customerId && t.Channel == channel
+                        && t.Status != TicketStatus.Resolved && t.Status != TicketStatus.Closed)
+            .OrderByDescending(t => t.CreatedAt).ThenByDescending(t => t.Number)
+            .FirstOrDefaultAsync(cancellationToken);
+
     public async Task<TicketView?> GetViewAsync(Guid id, CancellationToken cancellationToken) =>
         (await Rows().FirstOrDefaultAsync(r => r.Ticket.Id == id, cancellationToken))?.ToView();
 

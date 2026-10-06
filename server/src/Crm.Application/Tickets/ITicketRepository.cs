@@ -24,6 +24,12 @@ public interface ITicketRepository
     /// <summary>The tracked ticket (change it, then <see cref="SaveChangesAsync"/>), or null.</summary>
     Task<Ticket?> FindAsync(Guid id, CancellationToken cancellationToken);
 
+    /// <summary>The tracked ticket with this number (channel stories: the tag in an email subject), or null.</summary>
+    Task<Ticket?> FindByNumberAsync(int number, CancellationToken cancellationToken);
+
+    /// <summary>The customer's newest tracked ticket on this channel that is not Resolved or Closed, or null.</summary>
+    Task<Ticket?> FindLatestOpenAsync(Guid customerId, TicketChannel channel, CancellationToken cancellationToken);
+
     Task<TicketView?> GetViewAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>

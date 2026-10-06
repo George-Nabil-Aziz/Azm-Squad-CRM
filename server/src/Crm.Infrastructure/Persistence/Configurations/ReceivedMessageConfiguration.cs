@@ -1,5 +1,6 @@
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
+using Crm.Domain.Tickets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -25,5 +26,6 @@ public sealed class ReceivedMessageConfiguration : IEntityTypeConfiguration<Rece
 
         // No navigation; Restrict keeps the message if a customer row were ever removed by hand.
         message.HasOne<Customer>().WithMany().HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.Restrict);
+        message.HasOne<Ticket>().WithMany().HasForeignKey(x => x.TicketId).OnDelete(DeleteBehavior.Restrict);
     }
 }

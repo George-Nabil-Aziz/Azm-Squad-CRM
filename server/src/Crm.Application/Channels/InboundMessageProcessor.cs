@@ -1,5 +1,6 @@
 using Crm.Application.Common.Exceptions;
 using Crm.Application.Customers;
+using Crm.Application.Tickets;
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
 
@@ -9,6 +10,7 @@ namespace Crm.Application.Channels;
 public sealed class InboundMessageProcessor(
     IReceivedMessageRepository receivedMessages,
     ICustomerService customers,
+    IChannelTicketService tickets,
     TimeProvider timeProvider) : IInboundMessageProcessor
 {
     public async Task<InboundResult> ProcessAsync(InboundChannelMessage message, CancellationToken cancellationToken)
@@ -31,7 +33,15 @@ public sealed class InboundMessageProcessor(
             return InboundResult.Ignored; // stored by a concurrent run in the meantime
         }
 
-        return new InboundResult(false, received.Id, customerId, isNew, ticketNumber);
+        if (customerId is not { } customer)
+        {
+            return new InboundResult(false, received.Id, null, isNew, ticketNumber); // no customer, no ticket
+        }
+
+        var ticket = await tickets.AddInboundAsync(customer, message, ticketNumber, cancellationToken);
+        received.LinkToTicket(ticket.TicketId);
+        await receivedMessages.SaveChangesAsync(cancellationToken);
+        return new InboundResult(false, received.Id, customerId, isNew, ticketNumber, ticket.TicketId, ticket.Created);
     }
 
     /// <summary>The existing customer of the sender (first by name when several match) or a new one; null when unusable.</summary>

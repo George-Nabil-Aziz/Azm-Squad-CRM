@@ -40,6 +40,9 @@ public sealed class ReceivedMessage
     /// <summary>The customer the sender was matched to (null when the sender could not be used).</summary>
     public Guid? CustomerId { get; private set; }
 
+    /// <summary>The ticket created from or extended by this message (CRM-24 / CRM-26); null until linked.</summary>
+    public Guid? TicketId { get; private set; }
+
     /// <summary>When the channel received the message (UTC).</summary>
     public DateTime ReceivedAt { get; private set; }
 
@@ -69,6 +72,17 @@ public sealed class ReceivedMessage
             ReceivedAt = receivedAt,
             CreatedAt = utcNow,
         };
+    }
+
+    /// <summary>Links the message to the ticket it created or was added to.</summary>
+    public void LinkToTicket(Guid ticketId)
+    {
+        if (ticketId == Guid.Empty)
+        {
+            throw new ArgumentException("A ticket id is required.", nameof(ticketId));
+        }
+
+        TicketId = ticketId;
     }
 
     private static void EnsureUtc(DateTime value, string name)

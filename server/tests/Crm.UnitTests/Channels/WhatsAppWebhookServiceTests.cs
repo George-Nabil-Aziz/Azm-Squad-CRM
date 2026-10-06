@@ -25,6 +25,8 @@ public class WhatsAppWebhookServiceTests
             return Task.FromResult(true);
         }
 
+        public Task EnsureCanSendAsync(ChannelReply reply, CancellationToken cancellationToken) => throw new NotSupportedException();
+
         public Task<OutboundMessageResponse> SendAsync(ChannelReply reply, CancellationToken cancellationToken) =>
             throw new NotSupportedException();
 

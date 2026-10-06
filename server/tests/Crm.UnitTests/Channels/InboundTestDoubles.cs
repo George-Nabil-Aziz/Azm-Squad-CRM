@@ -118,3 +118,20 @@ internal sealed class FakeCustomerService : ICustomerService
     public Task RemoveContactAsync(Guid customerId, Guid contactId, CancellationToken cancellationToken) =>
         throw new NotSupportedException();
 }
+
+/// <summary>Records the inbound messages handed to the ticket step and answers with a fixed ticket.</summary>
+internal sealed class FakeChannelTicketService : Crm.Application.Tickets.IChannelTicketService
+{
+    public List<(Guid CustomerId, InboundChannelMessage Message, int? TicketNumber)> Calls { get; } = [];
+
+    public Guid TicketId { get; } = Guid.NewGuid();
+
+    public bool Created { get; set; } = true;
+
+    public Task<Crm.Application.Tickets.ChannelTicketResult> AddInboundAsync(
+        Guid customerId, InboundChannelMessage message, int? ticketNumber, CancellationToken cancellationToken)
+    {
+        Calls.Add((customerId, message, ticketNumber));
+        return Task.FromResult(new Crm.Application.Tickets.ChannelTicketResult(TicketId, Created));
+    }
+}

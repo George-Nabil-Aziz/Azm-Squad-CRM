@@ -21,4 +21,7 @@ public static class InteractionEvents
 
     /// <summary>An agent replied to the customer on a ticket (CRM-15); details = start of the reply, source = the message.</summary>
     public const string MessageSent = "messageSent";
+
+    /// <summary>A customer message arrived on a ticket through a channel (CRM-24 / CRM-26); details = start of the text, source = the ticket message.</summary>
+    public const string MessageReceived = "messageReceived";
 }

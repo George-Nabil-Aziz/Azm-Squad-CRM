@@ -99,6 +99,14 @@ internal sealed class FakeTicketRepository(FakeTicketCategoryRepository categori
     public Task<Ticket?> FindAsync(Guid id, CancellationToken cancellationToken) =>
         Task.FromResult(Tickets.FirstOrDefault(t => t.Id == id));
 
+    public Task<Ticket?> FindByNumberAsync(int number, CancellationToken cancellationToken) =>
+        Task.FromResult(Tickets.FirstOrDefault(t => t.Number == number));
+
+    public Task<Ticket?> FindLatestOpenAsync(Guid customerId, TicketChannel channel, CancellationToken cancellationToken) =>
+        Task.FromResult(Tickets
+            .Where(t => t.CustomerId == customerId && t.Channel == channel && t.Status is not (TicketStatus.Resolved or TicketStatus.Closed))
+            .OrderByDescending(t => t.CreatedAt).ThenByDescending(t => t.Number).FirstOrDefault());
+
     public Task<TicketView?> GetViewAsync(Guid id, CancellationToken cancellationToken) =>
         Task.FromResult(Tickets.FirstOrDefault(t => t.Id == id) is { } ticket ? View(ticket) : null);
 
@@ -121,9 +129,22 @@ internal sealed class FakeTicketReplyDispatcher : ITicketReplyDispatcher
 {
     public List<TicketMessage> Dispatched { get; } = [];
 
-    public Task DispatchAsync(TicketMessage message, CancellationToken cancellationToken)
+    public List<string?> Templates { get; } = [];
+
+    public Exception? ValidationError { get; set; }
+
+    public int Validated { get; private set; }
+
+    public Task ValidateAsync(Ticket ticket, string? templateName, CancellationToken cancellationToken)
+    {
+        Validated++;
+        return ValidationError is null ? Task.CompletedTask : Task.FromException(ValidationError);
+    }
+
+    public Task DispatchAsync(TicketMessage message, string? templateName, CancellationToken cancellationToken)
     {
         Dispatched.Add(message);
+        Templates.Add(templateName);
         return Task.CompletedTask;
     }
 }
@@ -136,6 +157,9 @@ internal sealed class FakeTicketMessageRepository : ITicketMessageRepository
     public Dictionary<Guid, string> Authors { get; } = [];
 
     public void Add(TicketMessage message) => Messages.Add(message);
+
+    public Task<TicketMessage?> FindAsync(Guid id, CancellationToken cancellationToken) =>
+        Task.FromResult(Messages.FirstOrDefault(m => m.Id == id));
 
     public Task<TicketMessageResponse?> GetAsync(Guid id, CancellationToken cancellationToken) =>
         Task.FromResult(Messages.FirstOrDefault(m => m.Id == id) is { } message ? ToResponse(message) : null);

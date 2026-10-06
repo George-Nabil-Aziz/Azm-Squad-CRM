@@ -21,6 +21,20 @@ public static class ChannelText
         "The last customer message is older than 24 hours. Send an approved template instead.",
         "مرّ أكثر من 24 ساعة على آخر رسالة من العميل. أرسل قالباً معتمداً بدلاً من ذلك.");
 
+    public static string CustomerHasNoEmail => LocalizedText.Get(
+        "The customer has no email address.",
+        "لا يوجد بريد إلكتروني للعميل.");
+
+    public static string CustomerHasNoWhatsApp => LocalizedText.Get(
+        "The customer has no WhatsApp or phone number.",
+        "لا يوجد رقم واتساب أو هاتف للعميل.");
+
+    public static string NoSubject => LocalizedText.Get("(no subject)", "(بدون عنوان)");
+
+    public static string NoText => LocalizedText.Get("(no text)", "(بدون نص)");
+
+    public static string WhatsAppSubject => LocalizedText.Get("WhatsApp message", "رسالة واتساب");
+
     public static string WebhookVerifyTokenInvalid => LocalizedText.Get(
         "The webhook verify token is not valid.",
         "رمز التحقق من الـ Webhook غير صحيح.");
