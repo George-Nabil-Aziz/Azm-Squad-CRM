@@ -2,6 +2,7 @@ using Crm.Domain.Channels;
 using Crm.Domain.Customers;
 using Crm.Domain.Notifications;
 using Crm.Domain.Settings;
+using Crm.Domain.QuickReplies;
 using Crm.Domain.Sla;
 using Crm.Domain.Tasks;
 using Crm.Domain.Tickets;
@@ -47,6 +48,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<AppSetting> AppSettings => Set<AppSetting>();
 
     public DbSet<WorkTask> Tasks => Set<WorkTask>();
+
+    public DbSet<QuickReply> QuickReplies => Set<QuickReply>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

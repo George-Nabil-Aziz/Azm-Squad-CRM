@@ -35,6 +35,9 @@ public static class Permissions
     /// <summary>Create, list and complete the user's own tasks and reminders (CRM-31); every role has it.</summary>
     public const string TasksManage = "tasks.manage";
 
+    /// <summary>Create, change and delete shared quick replies (CRM-32); supervisors and admins.</summary>
+    public const string QuickRepliesManageShared = "quick-replies.manage-shared";
+
     /// <summary>Create, edit and deactivate ticket categories (CRM-12 admin settings).</summary>
     public const string CategoriesManage = "categories.manage";
 
@@ -52,7 +55,7 @@ public static class Permissions
     [
         UsersManage, UsersManageSuperAdmins,
         CustomersView, CustomersManage,
-        TicketsView, TicketsManage, TicketsAssign, NotificationsView, TasksManage,
+        TicketsView, TicketsManage, TicketsAssign, NotificationsView, TasksManage, QuickRepliesManageShared,
         CategoriesManage, SlaManage, ChannelsManage,
         ReportsView,
     ];

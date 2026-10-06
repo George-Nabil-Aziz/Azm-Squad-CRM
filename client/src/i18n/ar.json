@@ -15,7 +15,8 @@
     "ticketCategories": "فئات التذاكر",
     "slaPolicies": "سياسة SLA",
     "assignment": "الإسناد",
-    "tasks": "المهام"
+    "tasks": "المهام",
+    "quickReplies": "الردود السريعة"
   },
   "shell": {
     "mainNavigation": "التنقل الرئيسي",
@@ -500,5 +501,27 @@
     "empty": "ليس لديك مهام مفتوحة.",
     "markDone": "تعليم كمنجزة",
     "markDoneFor": "تعليم كمنجزة: {{title}}"
+  },
+  "quickReplies": {
+    "description": "ردود محفوظة يمكنك إدراجها في رد التذكرة. استخدم {{customer.name}} و{{ticket.number}} و{{ticket.subject}} و{{agent.name}} لإدراج بيانات التذكرة.",
+    "picker": "الردود السريعة",
+    "search": "ابحث في الردود السريعة",
+    "empty": "لم يتم العثور على ردود سريعة.",
+    "loading": "جارٍ تحميل الردود السريعة…",
+    "title": "العنوان",
+    "shortcut": "الاختصار",
+    "body": "نص الرد",
+    "placeholders": "العناصر النائبة: {{customer.name}} و{{ticket.number}} و{{ticket.subject}} و{{agent.name}}.",
+    "share": "مشاركة مع الجميع",
+    "save": "حفظ الرد السريع",
+    "cancel": "إلغاء",
+    "titleRequired": "أدخل عنواناً.",
+    "bodyRequired": "أدخل نص الرد.",
+    "visibility": "الظهور",
+    "shared": "مشترك",
+    "personal": "شخصي",
+    "actions": "الإجراءات",
+    "edit": "تعديل",
+    "delete": "حذف"
   }
 }

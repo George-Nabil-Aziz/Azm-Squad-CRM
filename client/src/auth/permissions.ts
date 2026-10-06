@@ -13,6 +13,7 @@ export const permissions = {
   ticketsAssign: 'tickets.assign',
   notificationsView: 'notifications.view',
   tasksManage: 'tasks.manage',
+  quickRepliesManageShared: 'quick-replies.manage-shared',
   categoriesManage: 'categories.manage',
   slaManage: 'sla.manage',
   channelsManage: 'channels.manage',

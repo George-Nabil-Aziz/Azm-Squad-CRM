@@ -42,7 +42,7 @@ export const supervisorMe: CurrentUser = {
   email: 'lead@crm.local',
   fullName: 'Team Lead',
   roles: ['Supervisor'],
-  permissions: [...agentMe.permissions, permissions.ticketsAssign, permissions.reportsView],
+  permissions: [...agentMe.permissions, permissions.ticketsAssign, permissions.reportsView, permissions.quickRepliesManageShared],
 }
 
 interface FakeApiOptions {

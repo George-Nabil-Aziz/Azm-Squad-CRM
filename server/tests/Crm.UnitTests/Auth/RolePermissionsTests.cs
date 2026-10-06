@@ -44,7 +44,7 @@ public class RolePermissionsTests
     {
         Assert.Equal(
             [Permissions.CustomersView, Permissions.CustomersManage, Permissions.TicketsView, Permissions.TicketsManage,
-             Permissions.TicketsAssign, Permissions.NotificationsView, Permissions.TasksManage, Permissions.ReportsView],
+             Permissions.TicketsAssign, Permissions.NotificationsView, Permissions.TasksManage, Permissions.QuickRepliesManageShared, Permissions.ReportsView],
             RolePermissions.ForRole(Roles.Supervisor));
     }
 

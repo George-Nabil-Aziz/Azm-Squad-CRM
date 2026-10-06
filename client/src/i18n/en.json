@@ -15,7 +15,8 @@
     "ticketCategories": "Ticket categories",
     "slaPolicies": "SLA policy",
     "assignment": "Assignment",
-    "tasks": "Tasks"
+    "tasks": "Tasks",
+    "quickReplies": "Quick replies"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -500,5 +501,27 @@
     "empty": "You have no open tasks.",
     "markDone": "Mark as done",
     "markDoneFor": "Mark as done: {{title}}"
+  },
+  "quickReplies": {
+    "description": "Saved replies you can insert into a ticket reply. Use {{customer.name}}, {{ticket.number}}, {{ticket.subject}} or {{agent.name}} to fill in the ticket data.",
+    "picker": "Quick replies",
+    "search": "Search quick replies",
+    "empty": "No quick replies found.",
+    "loading": "Loading quick replies…",
+    "title": "Title",
+    "shortcut": "Shortcut",
+    "body": "Reply text",
+    "placeholders": "Placeholders: {{customer.name}}, {{ticket.number}}, {{ticket.subject}}, {{agent.name}}.",
+    "share": "Share with everybody",
+    "save": "Save quick reply",
+    "cancel": "Cancel",
+    "titleRequired": "Enter a title.",
+    "bodyRequired": "Enter the reply text.",
+    "visibility": "Visibility",
+    "shared": "Shared",
+    "personal": "Personal",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete"
   }
 }

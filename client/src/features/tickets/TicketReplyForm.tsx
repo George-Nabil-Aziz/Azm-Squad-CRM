@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { QuickReplyPicker } from './QuickReplyPicker'
 import { ticketsQueryKey } from './useTickets'
 
 /** Reply box of a ticket: a reply to the customer, or (toggle) an internal note the customer never sees. */
@@ -66,6 +67,7 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
           />
           {error ? <FieldError errors={[{ message: error }]} /> : null}
         </Field>
+        <QuickReplyPicker ticketId={ticketId} onInsert={(inserted) => setText((current) => (current.trim() ? `${current}\n${inserted}` : inserted))} />
         {templateOffered ? (
           <Field>
             <FieldLabel htmlFor="ticket-message-template">{t('tickets.details.templateName')}</FieldLabel>

@@ -16,7 +16,7 @@ public static class RolePermissions
     {
         [Roles.SuperAdmin] = Permissions.All,
         [Roles.Admin] = [.. Permissions.All.Except([Permissions.UsersManageSuperAdmins, Permissions.SlaManage])],
-        [Roles.Supervisor] = InCatalogueOrder([.. AgentPermissions, Permissions.TicketsAssign, Permissions.ReportsView]),
+        [Roles.Supervisor] = InCatalogueOrder([.. AgentPermissions, Permissions.TicketsAssign, Permissions.ReportsView, Permissions.QuickRepliesManageShared]),
         [Roles.Agent] = AgentPermissions,
     };
 

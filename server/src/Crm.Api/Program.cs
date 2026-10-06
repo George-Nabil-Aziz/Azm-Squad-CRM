@@ -57,6 +57,7 @@ app.MapTicketHistoryEndpoints();
 app.MapSettingsEndpoints();
 app.MapNotificationsEndpoints();
 app.MapTasksEndpoints();
+app.MapQuickRepliesEndpoints();
 app.MapHub<NotificationsHub>(NotificationsHub.Path).RequireAuthorization(Permissions.NotificationsView);
 
 if (jobsEnabled)
