@@ -9,4 +9,7 @@ public class ApplicationUser : IdentityUser<Guid>
 
     /// <summary>False after an admin deactivated the user: login is refused and existing tokens stop working.</summary>
     public bool IsActive { get; set; } = true;
+
+    /// <summary>False while an agent is off duty: automatic assignment (CRM-27) skips them. Does not affect login.</summary>
+    public bool IsOnDuty { get; set; } = true;
 }

@@ -13,7 +13,8 @@
     "reports": "Reports",
     "users": "Users",
     "ticketCategories": "Ticket categories",
-    "slaPolicies": "SLA policy"
+    "slaPolicies": "SLA policy",
+    "assignment": "Assignment"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -435,5 +436,17 @@
         "actions": "Actions"
       }
     }
+  },
+  "assignment": {
+    "description": "New tickets go to the available agent with the fewest open tickets. Agents who are inactive or off duty are skipped.",
+    "loading": "Loading the assignment settings…",
+    "autoAssign": "Assign new tickets automatically",
+    "columns": {
+      "agent": "Name",
+      "openTickets": "Open tickets",
+      "onDuty": "On duty"
+    },
+    "onDutyFor": "On duty: {{name}}",
+    "noAgents": "There are no agents yet."
   }
 }

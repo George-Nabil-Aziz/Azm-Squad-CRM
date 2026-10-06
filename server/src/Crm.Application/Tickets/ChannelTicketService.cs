@@ -26,7 +26,8 @@ public sealed class ChannelTicketService(
     ITicketMessageRepository messages,
     IInteractionRecorder timeline,
     ISlaPolicyRepository slaPolicies,
-    TimeProvider timeProvider) : IChannelTicketService
+    TimeProvider timeProvider,
+    IAutoAssignmentService? autoAssigner = null) : IChannelTicketService
 {
     private const int WhatsAppSubjectLength = 80;
     private const int TimelineDetailsLength = 200;
@@ -55,6 +56,11 @@ public sealed class ChannelTicketService(
         if (await slaPolicies.FindAsync(ticket.Priority, cancellationToken) is { } policy)
         {
             ticket.ApplySla(policy); // CRM-20: due times from the policy of the priority now
+        }
+
+        if (autoAssigner is not null)
+        {
+            await autoAssigner.TryAssignAsync(ticket, now, cancellationToken); // CRM-27
         }
 
         var first = TicketMessage.Inbound(ticket.Id, body, channel, message.ExternalId, message.ReceivedAt);

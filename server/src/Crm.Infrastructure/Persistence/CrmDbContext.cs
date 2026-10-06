@@ -1,6 +1,7 @@
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
 using Crm.Domain.Notifications;
+using Crm.Domain.Settings;
 using Crm.Domain.Sla;
 using Crm.Domain.Tickets;
 using Crm.Infrastructure.Identity;
@@ -42,6 +43,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<Notification> Notifications => Set<Notification>();
 
+    public DbSet<AppSetting> AppSettings => Set<AppSetting>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -51,6 +54,7 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
             user.Property(u => u.FullName).HasMaxLength(200).IsRequired();
             // Rows that exist when the column is added (e.g. the seeded SuperAdmin) become active.
             user.Property(u => u.IsActive).HasDefaultValue(true).ValueGeneratedNever();
+            user.Property(u => u.IsOnDuty).HasDefaultValue(true).ValueGeneratedNever();
         });
 
         // Domain entities: one IEntityTypeConfiguration<T> per entity in Persistence/Configurations.

@@ -49,6 +49,14 @@ public static class TicketText
         "Choose an active staff user.",
         "اختر موظفاً نشطاً.");
 
+    public static string AgentNotFound => LocalizedText.Get(
+        "The agent was not found.",
+        "الموظف غير موجود.");
+
+    public static string SettingRequired => LocalizedText.Get(
+        "This value is required.",
+        "هذه القيمة مطلوبة.");
+
     public static string AssignForbidden => LocalizedText.Get(
         "You may only assign a ticket to yourself.",
         "يمكنك إسناد التذكرة إلى نفسك فقط.");

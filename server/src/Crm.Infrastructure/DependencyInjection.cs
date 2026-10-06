@@ -57,6 +57,7 @@ public static class DependencyInjection
         services.AddScoped<ITicketMessageRepository, TicketMessageRepository>();
         services.AddScoped<ITicketHistoryRepository, TicketHistoryRepository>();
         services.AddScoped<ITicketSlaRepository, TicketSlaRepository>();
+        services.AddScoped<IAssignmentRepository, AssignmentRepository>();
         services.TryAddScoped<ISlaNotifier, LoggingSlaNotifier>();
 
         // Uploaded files: a local folder (FileStorage:RootPath, default under the user's local app data). Read lazily

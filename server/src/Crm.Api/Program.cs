@@ -47,6 +47,7 @@ app.MapTicketMessagesEndpoints();
 app.MapTicketAssignmentEndpoints();
 app.MapTicketStatusEndpoints();
 app.MapTicketHistoryEndpoints();
+app.MapSettingsEndpoints();
 
 if (jobsEnabled)
 {

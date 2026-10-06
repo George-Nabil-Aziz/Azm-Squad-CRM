@@ -24,7 +24,8 @@ public sealed class TicketService(
     IValidator<CreateTicketRequest> createValidator,
     IValidator<ListTicketsQuery> listValidator,
     ISlaPolicyRepository slaPolicies,
-    ITicketHistoryRecorder history) : ITicketService
+    ITicketHistoryRecorder history,
+    IAutoAssignmentService? autoAssigner = null) : ITicketService
 {
     public async Task<TicketResponse> CreateAsync(CreateTicketRequest request, CancellationToken cancellationToken)
     {
@@ -49,6 +50,11 @@ public sealed class TicketService(
         if (await slaPolicies.FindAsync(priority, cancellationToken) is { } policy)
         {
             ticket.ApplySla(policy);
+        }
+
+        if (autoAssigner is not null)
+        {
+            await autoAssigner.TryAssignAsync(ticket, now, cancellationToken); // CRM-27: before the save, so the history joins it
         }
 
         // CRM-10 AC 2: the ticket shows in the customer's timeline; the entry is saved together with the ticket.

@@ -36,6 +36,8 @@ public static class DependencyInjection
         services.AddScoped<ITicketMessageService, TicketMessageService>();
         services.AddScoped<ITicketHistoryRecorder, TicketHistoryRecorder>();
         services.AddScoped<ITicketAssignmentService, TicketAssignmentService>();
+        services.AddScoped<IAutoAssignmentService, AutoAssignmentService>();
+        services.AddScoped<IAssignmentSettingsService, AssignmentSettingsService>();
         services.AddScoped<ITicketStatusService, TicketStatusService>();
         services.AddScoped<ITicketHistoryService, TicketHistoryService>();
         services.AddScoped<ITicketCategoryChangeService, TicketCategoryChangeService>();
