@@ -1,0 +1,15 @@
+# sla-automation — plan overview
+
+Entry point for the **sla-automation** feature (SLA policy per priority, SLA timers on tickets, breach detection, escalation). Stories execute in order by their `NN` prefix; `NN` continues the global sequence after [ticket-management](../04-ticket-management/00-overview.md) (12–18).
+
+## Stories
+
+| NN | File | Title | Tracker id | Depends on |
+|----|------|-------|------------|------------|
+| 19 | [19-story-sla-policy-CRM-19.md](19-story-sla-policy-CRM-19.md) | SLA policy configuration (SuperAdmin) | CRM-19 | 01–05, 06, 07, 12 |
+
+## Dependency notes
+
+- **Every story here builds on the foundation** ([../01-foundation/00-overview.md](../01-foundation/00-overview.md)) and **security-admin** ([../02-security-admin/00-overview.md](../02-security-admin/00-overview.md)): ProblemDetails + Application exceptions, `CrmDbContext` / migrations / `TimeProvider` / `CrmApiFactory` (with `FakeTimeProvider` in `Time`), the permission catalogue (`sla.manage` = SuperAdmin only, `tickets.view`), `RequireAuthorization(Permissions.X)`, `PermissionPolicyTests`, client `<Can>` / `RequirePermission`.
+- **Ticket-management** ([../04-ticket-management/00-overview.md](../04-ticket-management/00-overview.md)): `TicketPriority` (High / Mid / Low, API names via `TicketValues`, CRM-12) is the key of the SLA policy. CRM-20..22 need the `Ticket` entity (CRM-13 create, CRM-14 list) — built in parallel on `feature/group-b-tickets` and merged into this branch before CRM-20.
+- **Story 19 (CRM-19)** adds `Crm.Domain.Sla.SlaPolicy` (one row per priority, minutes as integers, `ResponseDueAt` / `ResolutionDueAt` helpers, seeded defaults High 2 h / 8 h, Mid 4 h / 24 h, Low 8 h / 72 h), `/api/sla-policies` (`sla.manage`), migration `AddSlaPolicies`, the "SLA policy" settings page.

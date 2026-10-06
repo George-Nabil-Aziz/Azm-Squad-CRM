@@ -8,3 +8,4 @@ One row per feature folder under `.squad/plans/`. `NN` continues as a global exe
 | 02-security-admin | [02-security-admin/00-overview.md](02-security-admin/00-overview.md) | 06–07 |
 | 03-customer-management | [03-customer-management/00-overview.md](03-customer-management/00-overview.md) | 08–09 |
 | 04-ticket-management | [04-ticket-management/00-overview.md](04-ticket-management/00-overview.md) | 12–14 |
+| 05-sla-automation | [05-sla-automation/00-overview.md](05-sla-automation/00-overview.md) | 19–22 |
