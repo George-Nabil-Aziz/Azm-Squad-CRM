@@ -11,6 +11,7 @@ Entry point for the **channels** feature (email and WhatsApp: sending agent repl
 | 25 | [25-story-whatsapp-send-replies-CRM-25.md](25-story-whatsapp-send-replies-CRM-25.md) | WhatsApp: send replies | CRM-25 | 01–11, 23, 26 (webhook); Phase 2: 13, 15 |
 | 26 | [26-story-whatsapp-incoming-CRM-26.md](26-story-whatsapp-incoming-CRM-26.md) | WhatsApp: incoming message creates ticket | CRM-26 | 01–11, 24; Phase 2: 13, 15 |
 | 55 | [55-story-web-forms-CRM-55.md](55-story-web-forms-CRM-55.md) | Web forms | CRM-55 | 01–13, 23; 41 (pattern) |
+| 56 | [56-story-live-chat-CRM-56.md](56-story-live-chat-CRM-56.md) | Live chat (SignalR) | CRM-56 | 01–13, 28 (SignalR pattern), 55 |
 
 ## Dependency notes
 
