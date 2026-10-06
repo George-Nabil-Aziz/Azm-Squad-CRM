@@ -109,3 +109,24 @@ public sealed class KbArticleRepository(CrmDbContext db) : IKbArticleRepository
         public KbArticleView ToView() => new(Article, CategoryNameEn, CategoryNameAr);
     }
 }
+
+/// <summary>EF Core search over the stored normalized <c>SearchText</c> of published, non-deleted articles and FAQs.</summary>
+public sealed class KbSearchRepository(CrmDbContext db) : IKbSearchRepository
+{
+    public async Task<KbSearchCandidates> FindCandidatesAsync(
+        IReadOnlyList<string> terms, int max, CancellationToken cancellationToken)
+    {
+        var articles = db.KbArticles.AsNoTracking().Where(a => a.Status == KbArticleStatus.Published);
+        var faqs = db.KbFaqs.AsNoTracking().Where(f => f.IsPublished);
+        foreach (var term in terms)
+        {
+            var pattern = LikePattern.Contains(term);
+            articles = articles.Where(a => EF.Functions.Like(a.SearchText, pattern, LikePattern.EscapeCharacter));
+            faqs = faqs.Where(f => EF.Functions.Like(f.SearchText, pattern, LikePattern.EscapeCharacter));
+        }
+
+        return new KbSearchCandidates(
+            await articles.OrderByDescending(a => a.CreatedAt).Take(max).ToListAsync(cancellationToken),
+            await faqs.OrderBy(f => f.DisplayOrder).Take(max).ToListAsync(cancellationToken));
+    }
+}

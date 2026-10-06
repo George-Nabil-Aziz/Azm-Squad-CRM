@@ -149,3 +149,19 @@ export function updateKbFaq(id: string, request: KbFaqRequest): Promise<KbFaq> {
 export function deleteKbFaq(id: string): Promise<void> {
   return apiDelete(`/api/kb/faqs/${encodeURIComponent(id)}`)
 }
+
+/** One hit of the knowledge base search (server: KbSearchResultResponse), most relevant first. */
+export interface KbSearchResult {
+  type: 'article' | 'faq'
+  id: string
+  /** Title / question in the UI language (the other language when a version is missing). */
+  title: string
+  /** Start of the body / answer. */
+  snippet: string
+  score: number
+}
+
+/** Published articles and FAQs matching every word of `query` (Arabic letter variants are ignored); empty query = no hits. */
+export function searchKb(query: string, signal?: AbortSignal): Promise<KbSearchResult[]> {
+  return apiGet<KbSearchResult[]>(`/api/kb/search?q=${encodeURIComponent(query)}`, signal)
+}

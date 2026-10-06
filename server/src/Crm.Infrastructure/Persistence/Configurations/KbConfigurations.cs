@@ -28,6 +28,7 @@ public sealed class KbFaqConfiguration : IEntityTypeConfiguration<KbFaq>
         faq.Property(f => f.QuestionAr).HasMaxLength(KbFaq.QuestionMaxLength);
         faq.Property(f => f.AnswerEn).HasMaxLength(KbFaq.AnswerMaxLength);
         faq.Property(f => f.AnswerAr).HasMaxLength(KbFaq.AnswerMaxLength);
+        faq.Property(f => f.SearchText).IsRequired(); // normalized text of both versions (CRM-38)
         faq.HasIndex(f => new { f.IsPublished, f.DisplayOrder }); // the portal list
         faq.HasQueryFilter(CrmDbContext.SoftDeleteFilter, f => !f.IsDeleted);
     }
@@ -47,6 +48,7 @@ public sealed class KbArticleConfiguration : IEntityTypeConfiguration<KbArticle>
         article.Property(a => a.TitleAr).HasMaxLength(KbArticle.TitleMaxLength);
         article.Property(a => a.BodyEn).HasMaxLength(KbArticle.BodyMaxLength);
         article.Property(a => a.BodyAr).HasMaxLength(KbArticle.BodyMaxLength);
+        article.Property(a => a.SearchText).IsRequired(); // normalized text of both versions (CRM-38)
         article.Property(a => a.Status).HasConversion<string>().HasMaxLength(EnumMaxLength);
         article.HasIndex(a => new { a.Status, a.CreatedAt });
         article.HasIndex(a => a.CategoryId);

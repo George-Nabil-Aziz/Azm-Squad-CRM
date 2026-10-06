@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { ArticlesPanel } from '@/features/knowledge-base/ArticlesPanel'
 import { CategoriesPanel } from '@/features/knowledge-base/CategoriesPanel'
 import { FaqsPanel } from '@/features/knowledge-base/FaqsPanel'
+import { KbSearchPanel } from '@/features/knowledge-base/KbSearchPanel'
 
 const tabs = ['articles', 'faqs', 'categories'] as const
 type Tab = (typeof tabs)[number]
@@ -22,6 +23,8 @@ export function KnowledgeBasePage() {
         <h1 className="text-2xl font-semibold">{t('nav.knowledgeBase')}</h1>
         <p className="text-muted-foreground">{t('knowledgeBase.description')}</p>
       </div>
+
+      <KbSearchPanel />
 
       <div role="tablist" aria-label={t('knowledgeBase.sections')} className="flex gap-2">
         {tabs.map((id) => (

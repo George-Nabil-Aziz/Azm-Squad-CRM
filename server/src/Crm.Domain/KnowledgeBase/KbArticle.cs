@@ -36,6 +36,9 @@ public sealed class KbArticle : ISoftDeletable
 
     public string? BodyAr { get; private set; }
 
+    /// <summary>Normalized text of both language versions (<see cref="KbSearchText"/>), matched by the search (CRM-38).</summary>
+    public string SearchText { get; private set; } = string.Empty;
+
     public KbArticleStatus Status { get; private set; }
 
     /// <summary>When it was (last) published (UTC); null while it is a Draft that was never published.</summary>
@@ -137,6 +140,7 @@ public sealed class KbArticle : ISoftDeletable
         BodyEn = bEn;
         TitleAr = tAr;
         BodyAr = bAr;
+        SearchText = KbSearchText.Build(tEn, bEn, tAr, bAr);
         UpdatedAt = utcNow;
     }
 

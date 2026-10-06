@@ -16,6 +16,10 @@ public static class PortalKbEndpoints
                 Results.Ok(await faqs.ListPublishedAsync(cancellationToken)))
             .WithName("ListPortalFaqs");
 
+        group.MapGet("/search", async (string? q, IKbSearchService search, CancellationToken cancellationToken) =>
+                Results.Ok(await search.SearchAsync(q, cancellationToken)))
+            .WithName("SearchPortalKb");
+
         return app;
     }
 }

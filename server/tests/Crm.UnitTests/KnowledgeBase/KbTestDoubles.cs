@@ -104,3 +104,21 @@ internal sealed class FakeKbArticleRepository : IKbArticleRepository
         return new KbArticleView(article, category?.NameEn, category?.NameAr);
     }
 }
+
+/// <summary>In-memory search storage: returns the items whose normalized text contains every term (like the repository, minus the published filter that the service repeats).</summary>
+internal sealed class FakeKbSearchRepository : IKbSearchRepository
+{
+    public List<KbArticle> Articles { get; } = [];
+
+    public List<KbFaq> Faqs { get; } = [];
+
+    public int Calls { get; set; }
+
+    public Task<KbSearchCandidates> FindCandidatesAsync(IReadOnlyList<string> terms, int max, CancellationToken cancellationToken)
+    {
+        Calls++;
+        return Task.FromResult(new KbSearchCandidates(
+            [.. Articles.Where(a => terms.All(a.SearchText.Contains)).Take(max)],
+            [.. Faqs.Where(f => terms.All(f.SearchText.Contains)).Take(max)]));
+    }
+}

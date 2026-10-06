@@ -70,6 +70,10 @@ public static class KbEndpoints
             .RequireAuthorization(Permissions.KbManage)
             .WithName("DeleteKbArticle");
 
+        kb.MapGet("/search", async (string? q, IKbSearchService search, CancellationToken cancellationToken) =>
+                Results.Ok(await search.SearchAsync(q, cancellationToken)))
+            .WithName("SearchKb");
+
         var faqs = kb.MapGroup("/faqs");
         faqs.MapGet("", async (IKbFaqService service, CancellationToken cancellationToken) =>
                 Results.Ok(await service.ListAsync(cancellationToken)))

@@ -529,6 +529,17 @@
     "addFaq": "New FAQ",
     "deleteFaqTitle": "Delete \"{{question}}\"?",
     "deleteFaqDescription": "The FAQ disappears for everyone.",
-    "emptyFaqs": "No FAQs yet."
+    "emptyFaqs": "No FAQs yet.",
+    "search": {
+      "title": "Search the knowledge base",
+      "label": "Search articles and FAQs",
+      "placeholder": "Search articles and FAQs…",
+      "button": "Search",
+      "none": "Nothing found.",
+      "types": {
+        "article": "Article",
+        "faq": "FAQ"
+      }
+    }
   }
 }

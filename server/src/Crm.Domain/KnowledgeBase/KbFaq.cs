@@ -27,6 +27,9 @@ public sealed class KbFaq : ISoftDeletable
 
     public string? AnswerAr { get; private set; }
 
+    /// <summary>Normalized text of both language versions (<see cref="KbSearchText"/>), matched by the search (CRM-38).</summary>
+    public string SearchText { get; private set; } = string.Empty;
+
     public int DisplayOrder { get; private set; }
 
     public bool IsPublished { get; private set; }
@@ -88,6 +91,7 @@ public sealed class KbFaq : ISoftDeletable
         AnswerEn = aEn;
         QuestionAr = qAr;
         AnswerAr = aAr;
+        SearchText = KbSearchText.Build(qEn, aEn, qAr, aAr);
         DisplayOrder = displayOrder;
         IsPublished = isPublished;
         UpdatedAt = utcNow;

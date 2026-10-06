@@ -32,8 +32,12 @@
 
 ## Edge cases
 
-- `%`, `_` and `\` in the query are matched literally. Terms with only punctuation after normalization are dropped. An article with only an Arabic version is found by an Arabic query; a mixed query "refund استرداد" needs both terms in the same item.
+- `%`, `_` and `\` in the query are matched literally. An article with only an Arabic version is found by an Arabic query; a mixed query "refund استرداد" needs both terms in the same item.
 
 ## Verification / done
 
 All build / test / lint commands green; AC 1–4 each have a test.
+
+## As built
+
+- Migration `AddKbSearchText` (`SearchText` on `KbArticles` / `KbFaqs`; rows created before this story would need a re-save to be searchable: none exist yet). The service also filters published / non-deleted itself, in case a repository hands drafts over. Punctuation-only terms are not dropped (they simply match nothing). Search box sits above the tabs of the knowledge base page.
