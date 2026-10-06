@@ -347,6 +347,53 @@ namespace Crm.Infrastructure.Persistence.Migrations
                     b.ToTable("CustomerNotes", (string)null);
                 });
 
+            modelBuilder.Entity("Crm.Domain.Departments.Department", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique();
+
+                    b.ToTable("Departments", (string)null);
+                });
+
+            modelBuilder.Entity("Crm.Domain.Departments.UserDepartment", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DepartmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId", "DepartmentId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("UserDepartments", (string)null);
+                });
+
             modelBuilder.Entity("Crm.Domain.KnowledgeBase.KbArticle", b =>
                 {
                     b.Property<Guid>("Id")
@@ -751,6 +798,29 @@ namespace Crm.Infrastructure.Persistence.Migrations
                     b.ToTable("SystemSettings", (string)null);
                 });
 
+            modelBuilder.Entity("Crm.Domain.Sla.DepartmentSlaPolicy", b =>
+                {
+                    b.Property<Guid>("DepartmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Priority")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("ResolutionMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ResponseMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("DepartmentId", "Priority");
+
+                    b.ToTable("DepartmentSlaPolicies", (string)null);
+                });
+
             modelBuilder.Entity("Crm.Domain.Sla.SlaPolicy", b =>
                 {
                     b.Property<string>("Priority")
@@ -892,6 +962,9 @@ namespace Crm.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("DepartmentId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Description")
                         .HasMaxLength(10000)
                         .HasColumnType("nvarchar(max)");
@@ -965,6 +1038,8 @@ namespace Crm.Infrastructure.Persistence.Migrations
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("Number")
                         .IsUnique();
@@ -1425,6 +1500,21 @@ namespace Crm.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Crm.Domain.Departments.UserDepartment", b =>
+                {
+                    b.HasOne("Crm.Domain.Departments.Department", null)
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Crm.Infrastructure.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Crm.Domain.KnowledgeBase.KbArticle", b =>
                 {
                     b.HasOne("Crm.Domain.KnowledgeBase.KbCategory", null)
@@ -1494,6 +1584,15 @@ namespace Crm.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Crm.Domain.Sla.DepartmentSlaPolicy", b =>
+                {
+                    b.HasOne("Crm.Domain.Departments.Department", null)
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Crm.Domain.Sla.TicketSlaEvent", b =>
                 {
                     b.HasOne("Crm.Domain.Tickets.Ticket", null)
@@ -1539,6 +1638,11 @@ namespace Crm.Infrastructure.Persistence.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Crm.Domain.Departments.Department", null)
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Crm.Domain.Tickets.TicketAttachment", b =>

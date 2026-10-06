@@ -62,6 +62,9 @@ public static class Permissions
     /// <summary>Change the system settings: business hours, time zone, ticket prefix, channel credentials (CRM-35): SuperAdmin only.</summary>
     public const string SettingsManage = "settings.manage";
 
+    /// <summary>Create, edit and deactivate departments and put users in them (CRM-61): SuperAdmin and Admin.</summary>
+    public const string DepartmentsManage = "departments.manage";
+
     /// <summary>Every permission, in catalogue order (the order used in /api/auth/me).</summary>
     public static IReadOnlyList<string> All { get; } =
     [
@@ -70,6 +73,6 @@ public static class Permissions
         TicketsView, TicketsManage, TicketsAssign, NotificationsView, TasksManage, QuickRepliesManageShared,
         CategoriesManage, SlaManage, ChannelsManage,
         ReportsView, AuditView, SettingsManage,
-        KbView, KbManage,
+        KbView, KbManage, DepartmentsManage,
     ];
 }

@@ -58,6 +58,15 @@ public class RolePermissionsTests
     }
 
     [Fact]
+    public void DepartmentsManage_IsForSuperAdminAndAdminOnly()
+    {
+        Assert.True(RolePermissions.HasPermission([Roles.SuperAdmin], Permissions.DepartmentsManage));
+        Assert.True(RolePermissions.HasPermission([Roles.Admin], Permissions.DepartmentsManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Supervisor], Permissions.DepartmentsManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Agent], Permissions.DepartmentsManage));
+    }
+
+    [Fact]
     public void AuditView_IsForSuperAdminAndAdminOnly()
     {
         Assert.True(RolePermissions.HasPermission([Roles.SuperAdmin], Permissions.AuditView));

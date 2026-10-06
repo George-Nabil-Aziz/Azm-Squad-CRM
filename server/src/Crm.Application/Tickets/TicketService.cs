@@ -3,6 +3,7 @@ using Crm.Application.Common.Paging;
 using Crm.Application.Common.Security;
 using Crm.Application.Common.Validation;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Departments;
 using Crm.Application.Settings;
 using Crm.Application.Sla;
 using Crm.Domain.Customers;
@@ -27,7 +28,9 @@ public sealed class TicketService(
     ISlaPolicyRepository slaPolicies,
     ITicketHistoryRecorder history,
     ISystemSettingsProvider settings,
-    IAutoAssignmentService? autoAssigner = null) : ITicketService
+    IAutoAssignmentService? autoAssigner = null,
+    IDepartmentRepository? departments = null,
+    IDataScope? dataScope = null) : ITicketService
 {
     public Task<TicketResponse> CreateAsync(CreateTicketRequest request, CancellationToken cancellationToken) =>
         CreateCoreAsync(request, TicketChannel.Manual, currentUser.UserId, cancellationToken);
@@ -52,13 +55,16 @@ public sealed class TicketService(
             throw FieldError("categoryId", TicketText.CategoryUnavailable);
         }
 
+        var departmentId = await ResolveDepartmentAsync(request.DepartmentId, cancellationToken);
         var priority = TicketValues.TryParsePriority(request.Priority, out var parsed) ? parsed : TicketPriority.Mid;
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var runtime = await settings.GetAsync(cancellationToken); // CRM-35: business hours + ticket prefix
         var ticket = Ticket.Create(customerId, request.Subject!, request.Description, request.CategoryId, priority,
             channel, createdById, now);
+        ticket.ChangeDepartment(departmentId, now); // CRM-61
         // CRM-20: due times come from the policy of the priority now; later policy changes do not move them.
-        if (await slaPolicies.FindAsync(priority, cancellationToken) is { } policy)
+        // CRM-61: a department override of the priority wins over the global policy.
+        if (await slaPolicies.FindEffectiveAsync(priority, departmentId, cancellationToken) is { } policy)
         {
             ticket.ApplySla(policy, runtime.Calendar);
         }
@@ -101,7 +107,8 @@ public sealed class TicketService(
             StartOfUtcDay(query.CreatedFrom),
             StartOfUtcDay(query.CreatedTo?.AddDays(1)),
             search,
-            Ticket.TryParseNumber(search, out var number) ? number : null);
+            Ticket.TryParseNumber(search, out var number) ? number : null,
+            DepartmentId: query.DepartmentId);
 
         var page = await tickets.ListAsync(
             filter,
@@ -128,7 +135,7 @@ public sealed class TicketService(
         var old = ticket.Priority;
         // CRM-20 AC 2: the due times are recalculated from CreatedAt with the new priority current policy.
         var calendar = (await settings.GetAsync(cancellationToken)).Calendar;
-        ticket.ChangePriority(priority, await slaPolicies.FindAsync(priority, cancellationToken), now, calendar);
+        ticket.ChangePriority(priority, await slaPolicies.FindEffectiveAsync(priority, ticket.DepartmentId, cancellationToken), now, calendar);
         if (old != priority)
         {
             history.Record(ticket.Id, TicketHistoryField.Priority, TicketValues.PriorityName(old), TicketValues.PriorityName(priority), now);
@@ -166,7 +173,35 @@ public sealed class TicketService(
             ticket.ResolutionBreached,
             ticket.EscalationLevel,
             ticket.ResponseWarnedAt,
-            [.. TicketStatusRules.AllowedTargets(ticket.Status).Select(TicketValues.StatusName)]);
+            [.. TicketStatusRules.AllowedTargets(ticket.Status).Select(TicketValues.StatusName)],
+            ticket.DepartmentId,
+            view.DepartmentName);
+    }
+
+    /// <summary>
+    /// CRM-61: the department of a new ticket. Given: it must exist, be active and (for a department-restricted agent) be one
+    /// of theirs. Not given: a restricted agent with exactly one department gets it, everyone else leaves it empty.
+    /// </summary>
+    private async Task<Guid?> ResolveDepartmentAsync(Guid? requested, CancellationToken cancellationToken)
+    {
+        var restricted = dataScope is { RestrictDepartments: true };
+        if (requested is not { } id)
+        {
+            return restricted && dataScope!.DepartmentIds.Count == 1 ? dataScope.DepartmentIds[0] : null;
+        }
+
+        var department = departments is null ? null : await departments.FindAsync(id, cancellationToken);
+        if (department is not { IsActive: true })
+        {
+            throw FieldError("departmentId", DepartmentText.Unavailable);
+        }
+
+        if (restricted && !dataScope!.DepartmentIds.Contains(id))
+        {
+            throw FieldError("departmentId", DepartmentText.NotYours);
+        }
+
+        return id;
     }
 
     private static DateTime? StartOfUtcDay(DateOnly? day) =>

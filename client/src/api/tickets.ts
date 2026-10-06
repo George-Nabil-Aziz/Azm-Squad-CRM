@@ -12,6 +12,8 @@ export interface TicketListParams {
   priority?: TicketPriority
   categoryId?: string
   assigneeId?: string
+  /** Tickets of one department (CRM-61). */
+  departmentId?: string
   unassigned?: boolean
   createdFrom?: string
   createdTo?: string
@@ -32,6 +34,7 @@ const listParamOrder = [
   'priority',
   'categoryId',
   'assigneeId',
+  'departmentId',
   'unassigned',
   'createdFrom',
   'createdTo',
@@ -74,6 +77,9 @@ export interface Ticket {
   categoryName: string | null
   assigneeId: string | null
   assigneeName: string | null
+  /** The owning department (CRM-61); null = general. */
+  departmentId?: string | null
+  departmentName?: string | null
   createdAt: string
   updatedAt: string
   responseDueAt: string | null
@@ -143,6 +149,8 @@ export interface CreateTicketRequest {
   description: string | null
   categoryId: string | null
   priority: TicketPriority
+  /** Optional department (CRM-61); a department-restricted agent may only choose their own. */
+  departmentId?: string
 }
 
 /** Creates a ticket in status "new"; the server gives it the next ticket number. */

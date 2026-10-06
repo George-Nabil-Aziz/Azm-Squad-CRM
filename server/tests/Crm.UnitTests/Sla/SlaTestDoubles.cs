@@ -25,6 +25,14 @@ internal sealed class FakeSlaPolicyRepository : ISlaPolicyRepository
     public Task<SlaPolicy?> FindAsync(TicketPriority priority, CancellationToken cancellationToken) =>
         Task.FromResult(Policies.FirstOrDefault(p => p.Priority == priority));
 
+    /// <summary>Department overrides (department, priority) → policy; the effective lookup falls back to the global policy.</summary>
+    public Dictionary<(Guid DepartmentId, TicketPriority Priority), SlaPolicy> DepartmentOverrides { get; } = [];
+
+    public Task<SlaPolicy?> FindEffectiveAsync(TicketPriority priority, Guid? departmentId, CancellationToken cancellationToken) =>
+        Task.FromResult(departmentId is { } id && DepartmentOverrides.TryGetValue((id, priority), out var overridePolicy)
+            ? overridePolicy
+            : Policies.FirstOrDefault(p => p.Priority == priority));
+
     public Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         SaveCount++;

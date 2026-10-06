@@ -14,6 +14,8 @@ export interface User {
   fullName: string
   roles: RoleName[]
   isActive: boolean
+  /** Departments the user belongs to (CRM-61). */
+  departmentIds?: string[]
 }
 
 export interface ListUsersParams {
@@ -27,12 +29,15 @@ export interface CreateUserRequest {
   fullName: string
   password: string
   roles: RoleName[]
+  departmentIds?: string[]
 }
 
 export interface UpdateUserRequest {
   email: string
   fullName: string
   roles: RoleName[]
+  /** Omit to keep the user's departments; an empty list removes them all. */
+  departmentIds?: string[]
 }
 
 export function listUsers({ search, page, pageSize }: ListUsersParams, signal?: AbortSignal): Promise<PagedResult<User>> {

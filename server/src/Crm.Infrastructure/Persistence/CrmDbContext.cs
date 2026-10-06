@@ -1,6 +1,8 @@
+using Crm.Application.Common.Security;
 using Crm.Domain.Audit;
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
+using Crm.Domain.Departments;
 using Crm.Domain.KnowledgeBase;
 using Crm.Domain.Notifications;
 using Crm.Domain.Portal;
@@ -15,7 +17,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Infrastructure.Persistence;
 
-public class CrmDbContext(DbContextOptions<CrmDbContext> options)
+public class CrmDbContext(DbContextOptions<CrmDbContext> options, IDataScope? dataScope = null)
     : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>(options)
 {
     /// <summary>
@@ -23,6 +25,21 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     /// Read deleted rows on purpose with <c>IgnoreQueryFilters([CrmDbContext.SoftDeleteFilter])</c>.
     /// </summary>
     public const string SoftDeleteFilter = "SoftDelete";
+
+    /// <summary>Name of the global query filter that hides tickets of other departments from a department-restricted agent (CRM-61).</summary>
+    public const string DepartmentFilter = "Department";
+
+    // The data scope of the current request (null / unrestricted for jobs, channels and the portal). Read by the query filters
+    // below on every query, so EF Core takes the values of this context instance.
+    internal bool ScopeRestrictsDepartments => dataScope is { RestrictDepartments: true };
+
+    internal Guid[] ScopeDepartmentIds => dataScope is null ? [] : [.. dataScope.DepartmentIds];
+
+    public DbSet<Department> Departments => Set<Department>();
+
+    public DbSet<UserDepartment> UserDepartments => Set<UserDepartment>();
+
+    public DbSet<DepartmentSlaPolicy> DepartmentSlaPolicies => Set<DepartmentSlaPolicy>();
 
     public DbSet<Customer> Customers => Set<Customer>();
 
@@ -86,6 +103,10 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
         // Domain entities: one IEntityTypeConfiguration<T> per entity in Persistence/Configurations.
         builder.ApplyConfigurationsFromAssembly(typeof(CrmDbContext).Assembly);
+
+        // CRM-61: a department-restricted agent sees tickets of their departments and tickets without a department.
+        builder.Entity<Ticket>().HasQueryFilter(DepartmentFilter,
+            t => !ScopeRestrictsDepartments || t.DepartmentId == null || ScopeDepartmentIds.Contains(t.DepartmentId.Value));
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

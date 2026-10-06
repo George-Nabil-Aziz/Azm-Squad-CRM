@@ -5,6 +5,7 @@ using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Departments;
 using Crm.Application.KnowledgeBase;
 using Crm.Application.Portal;
 using Crm.Application.Reports;
@@ -51,6 +52,8 @@ public static class DependencyInjection
         services.AddPortal();
         services.AddScoped<ISlaPolicyService, SlaPolicyService>();
         services.AddScoped<ITicketService, TicketService>();
+        services.AddScoped<IDepartmentService, DepartmentService>();
+        services.AddScoped<ITicketDepartmentService, TicketDepartmentService>();
         services.AddScoped<SlaMonitorJob>();
         services.AddScoped<ISlaNotifier, SlaNotifier>();
         services.AddScoped<INotificationDispatcher, NotificationDispatcher>();

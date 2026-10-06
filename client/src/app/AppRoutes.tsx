@@ -27,6 +27,7 @@ import { SlaPoliciesPage } from '@/pages/sla/SlaPoliciesPage'
 import { QuickRepliesPage } from '@/pages/quick-replies/QuickRepliesPage'
 import { TasksPage } from '@/pages/tasks/TasksPage'
 import { TicketCategoriesPage } from '@/pages/ticket-categories/TicketCategoriesPage'
+import { DepartmentsPage } from '@/pages/departments/DepartmentsPage'
 import { TicketDetailsPage } from '@/pages/tickets/TicketDetailsPage'
 import { TicketsPage } from '@/pages/tickets/TicketsPage'
 import { UsersPage } from '@/pages/users/UsersPage'
@@ -61,6 +62,9 @@ export function AppRoutes() {
           </Route>
           <Route element={<RequirePermission permission={permissions.categoriesManage} />}>
             <Route path="ticket-categories" element={<TicketCategoriesPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.departmentsManage} />}>
+            <Route path="departments" element={<DepartmentsPage />} />
           </Route>
           <Route element={<RequirePermission permission={permissions.slaManage} />}>
             <Route path="sla-policies" element={<SlaPoliciesPage />} />

@@ -20,6 +20,7 @@ import {
 import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { usePermissions } from '@/features/auth/usePermissions'
+import { useDepartments } from '@/features/departments/useDepartments'
 import { createUserFormSchema, userFormFields, type UserFormValues } from './user-form-schema'
 import { usersQueryKey } from './useUsers'
 
@@ -37,6 +38,7 @@ export function UserFormDialog({ user, onClose }: UserFormDialogProps) {
   // Only a SuperAdmin may give the SuperAdmin role (the API refuses it with 403 for everyone else).
   const assignableRoles = roleNames.filter((role) => role !== 'SuperAdmin' || can(permissions.usersManageSuperAdmins))
   const mode = user ? 'edit' : 'create'
+  const departments = useDepartments({ activeOnly: true })
   const schema = useMemo(() => createUserFormSchema(t, mode), [t, mode])
   const form = useForm<UserFormValues>({
     resolver: zodResolver(schema),
@@ -45,12 +47,16 @@ export function UserFormDialog({ user, onClose }: UserFormDialogProps) {
       email: user?.email ?? '',
       password: '',
       roles: user?.roles ?? [],
+      departmentIds: user?.departmentIds ?? [],
     },
   })
 
   const save = useMutation({
-    mutationFn: ({ password, ...values }: UserFormValues) =>
-      user ? updateUser(user.id, values) : createUser({ ...values, password }),
+    mutationFn: ({ password, departmentIds, ...values }: UserFormValues) => {
+      // Departments are sent only when there are some to choose from (an omitted list leaves the user's departments alone).
+      const withDepartments = departments.data && departments.data.length > 0 ? { ...values, departmentIds } : values
+      return user ? updateUser(user.id, withDepartments) : createUser({ ...withDepartments, password })
+    },
     onSuccess: async (saved) => {
       await queryClient.invalidateQueries({ queryKey: usersQueryKey })
       toast.success(t(user ? 'users.updated' : 'users.created', { name: saved.fullName }))
@@ -147,6 +153,34 @@ export function UserFormDialog({ user, onClose }: UserFormDialogProps) {
                 </FieldSet>
               )}
             />
+            {departments.data && departments.data.length > 0 ? (
+              <Controller
+                name="departmentIds"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <FieldSet data-invalid={fieldState.invalid}>
+                    <FieldLegend variant="label">{t('users.departments')}</FieldLegend>
+                    {departments.data?.map((department) => (
+                      <Field key={department.id} orientation="horizontal">
+                        <Checkbox
+                          id={`user-department-${department.id}`}
+                          checked={field.value.includes(department.id)}
+                          onCheckedChange={(checked) =>
+                            field.onChange(
+                              checked === true
+                                ? [...field.value, department.id]
+                                : field.value.filter((value) => value !== department.id),
+                            )
+                          }
+                        />
+                        <FieldLabel htmlFor={`user-department-${department.id}`}>{department.name}</FieldLabel>
+                      </Field>
+                    ))}
+                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                  </FieldSet>
+                )}
+              />
+            ) : null}
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose}>
                 {t('users.cancel')}

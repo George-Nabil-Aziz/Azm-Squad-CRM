@@ -84,6 +84,11 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
             rows = rows.Where(r => r.Ticket.AssigneeId == assigneeId);
         }
 
+        if (filter.DepartmentId is { } departmentId)
+        {
+            rows = rows.Where(r => r.Ticket.DepartmentId == departmentId);
+        }
+
         if (filter.Unassigned)
         {
             rows = rows.Where(r => r.Ticket.AssigneeId == null);
@@ -143,12 +148,15 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
         from category in categories.DefaultIfEmpty()
         join assignee in db.Users on ticket.AssigneeId equals assignee.Id into assignees
         from assignee in assignees.DefaultIfEmpty()
+        join department in db.Departments on ticket.DepartmentId equals department.Id into departments
+        from department in departments.DefaultIfEmpty()
         select new TicketRow
         {
             Ticket = ticket,
             CustomerName = customer.Name,
             CategoryName = category != null ? category.Name : null,
             AssigneeName = assignee != null ? assignee.FullName : null,
+            DepartmentName = department != null ? department.Name : null,
         };
 
     private async Task<bool> NumberTakenAsync(CancellationToken cancellationToken)
@@ -175,6 +183,8 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
 
         public string? AssigneeName { get; init; }
 
-        public TicketView ToView() => new(Ticket, CustomerName, CategoryName, AssigneeName);
+        public string? DepartmentName { get; init; }
+
+        public TicketView ToView() => new(Ticket, CustomerName, CategoryName, AssigneeName, DepartmentName);
     }
 }

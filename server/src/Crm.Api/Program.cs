@@ -41,6 +41,7 @@ var app = builder.Build();
 app.UseCrmLocalization();
 app.UseCrmErrorHandling();
 app.UseAuthentication();
+app.UseMiddleware<DataScopeMiddleware>(); // CRM-61: what the signed-in user may see
 app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
@@ -59,6 +60,7 @@ app.MapChannelsEndpoints();
 app.MapWhatsAppWebhookEndpoints();
 app.MapTicketCategoriesEndpoints();
 app.MapSlaPoliciesEndpoints();
+app.MapDepartmentsEndpoints();
 app.MapTicketsEndpoints();
 app.MapTicketSlaEndpoints();
 app.MapTicketMessagesEndpoints();
