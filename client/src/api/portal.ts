@@ -63,3 +63,69 @@ export function submitPortalTicket(input: SubmitPortalTicketInput): Promise<Port
   for (const file of input.files) form.append('files', file)
   return apiPostForm<PortalTicket>('/api/portal/tickets', form)
 }
+
+/** A ticket as the customer sees it (server: PortalTicketSummary): no assignee, priority or SLA data. */
+export interface PortalTicketSummary {
+  id: string
+  number: string
+  subject: string
+  description: string | null
+  status: 'new' | 'open' | 'pending' | 'resolved' | 'closed'
+  categoryName: string | null
+  createdAt: string
+  updatedAt: string
+  /** New / Open / Pending. */
+  canReply: boolean
+  /** Resolved and still inside the allowed days. */
+  canReopen: boolean
+}
+
+/** One public message (internal notes never reach the portal). */
+export interface PortalMessage {
+  id: string
+  fromCustomer: boolean
+  authorName: string | null
+  body: string
+  createdAt: string
+}
+
+/** "created" or "status" (`status` = the new status code). */
+export interface PortalHistoryItem {
+  type: 'created' | 'status'
+  status: string | null
+  at: string
+}
+
+export interface PortalTicketPage {
+  items: PortalTicketSummary[]
+  page: number
+  pageSize: number
+  totalCount: number
+}
+
+export function listPortalTickets(page: number, signal?: AbortSignal): Promise<PortalTicketPage> {
+  return apiGet<PortalTicketPage>(`/api/portal/tickets?page=${page}&pageSize=20`, signal)
+}
+
+/** 404 for a ticket that is not the customer's own. */
+export function getPortalTicket(id: string, signal?: AbortSignal): Promise<PortalTicketSummary> {
+  return apiGet<PortalTicketSummary>(`/api/portal/tickets/${encodeURIComponent(id)}`, signal)
+}
+
+export function listPortalMessages(id: string, signal?: AbortSignal): Promise<PortalMessage[]> {
+  return apiGet<PortalMessage[]>(`/api/portal/tickets/${encodeURIComponent(id)}/messages`, signal)
+}
+
+export function listPortalHistory(id: string, signal?: AbortSignal): Promise<PortalHistoryItem[]> {
+  return apiGet<PortalHistoryItem[]>(`/api/portal/tickets/${encodeURIComponent(id)}/history`, signal)
+}
+
+/** 400 on `body` (empty) or `status` (resolved / closed ticket). */
+export function replyToPortalTicket(id: string, body: string): Promise<PortalMessage> {
+  return apiPost<PortalMessage>(`/api/portal/tickets/${encodeURIComponent(id)}/messages`, { body })
+}
+
+/** 400 on `status` when the ticket is not resolved or the allowed days have passed. */
+export function reopenPortalTicket(id: string): Promise<PortalTicketSummary> {
+  return apiPost<PortalTicketSummary>(`/api/portal/tickets/${encodeURIComponent(id)}/reopen`, {})
+}

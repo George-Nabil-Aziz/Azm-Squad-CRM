@@ -89,7 +89,8 @@ internal sealed class FakeTicketRepository(FakeTicketCategoryRepository categori
     {
         LastFilter = filter;
         LastPaging = (page, pageSize);
-        var all = Tickets.OrderByDescending(t => t.CreatedAt).ThenByDescending(t => t.Number).Select(View).ToList();
+        var all = Tickets.Where(t => filter.CustomerId is null || t.CustomerId == filter.CustomerId)
+            .OrderByDescending(t => t.CreatedAt).ThenByDescending(t => t.Number).Select(View).ToList();
         return Task.FromResult(new PagedResult<TicketView>([.. all.Skip((page - 1) * pageSize).Take(pageSize)], page, pageSize, all.Count));
     }
 

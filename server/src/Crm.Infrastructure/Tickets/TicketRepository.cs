@@ -64,6 +64,11 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
             rows = rows.Where(r => r.Ticket.Status == status);
         }
 
+        if (filter.CustomerId is { } customerId)
+        {
+            rows = rows.Where(r => r.Ticket.CustomerId == customerId); // the portal: a customer's own tickets
+        }
+
         if (filter.Priority is { } priority)
         {
             rows = rows.Where(r => r.Ticket.Priority == priority);

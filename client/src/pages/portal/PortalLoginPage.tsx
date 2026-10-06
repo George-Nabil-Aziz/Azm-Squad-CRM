@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Navigate, useLocation, useNavigate } from 'react-router'
-import { getPortalReturnPath } from '@/app/RequirePortalAuth'
+import { getPortalReturnPath } from '@/app/portal-paths'
 import { useIsPortalAuthenticated } from '@/auth/usePortalSession'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { PortalLoginForm } from '@/features/portal/PortalLoginForm'

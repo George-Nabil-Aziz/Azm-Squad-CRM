@@ -38,3 +38,7 @@
 ## Verification / done
 
 All build / test / lint commands green; AC 1–4 each have a test.
+
+## As built
+
+- No migration. `TicketListFilter` got an optional `CustomerId`; `Ticket.AcceptsCustomerReply` / `CanBeReopenedByCustomer` in the Domain. The portal returns summaries without staff fields. Portal paths helpers live in `client/src/app/portal-paths.ts`.

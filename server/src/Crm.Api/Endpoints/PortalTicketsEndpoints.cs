@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Crm.Api.Auth;
+using Crm.Application.Common.Paging;
 using Crm.Application.Customers.Attachments;
 using Crm.Application.Portal;
 
@@ -51,6 +52,39 @@ public static class PortalTicketsEndpoints
             })
             .DisableAntiforgery()
             .WithName("PortalSubmitTicket");
+
+        // The customer's own tickets: anything else (another customer's ticket, unknown id) is 404.
+        group.MapGet("/tickets", async (int? page, int? pageSize, ClaimsPrincipal user, IPortalTicketTracker tracker,
+                    CancellationToken cancellationToken) =>
+                Results.Ok(await tracker.ListAsync(
+                    PortalUser.CustomerId(user), page ?? PagingDefaults.DefaultPage, pageSize ?? PagingDefaults.DefaultPageSize, cancellationToken)))
+            .WithName("PortalListTickets");
+
+        group.MapGet("/tickets/{id:guid}", async (Guid id, ClaimsPrincipal user, IPortalTicketTracker tracker,
+                    CancellationToken cancellationToken) =>
+                Results.Ok(await tracker.GetAsync(PortalUser.CustomerId(user), id, cancellationToken)))
+            .WithName("PortalGetTicket");
+
+        group.MapGet("/tickets/{id:guid}/messages", async (Guid id, ClaimsPrincipal user, IPortalTicketTracker tracker,
+                    CancellationToken cancellationToken) =>
+                Results.Ok(await tracker.ListMessagesAsync(PortalUser.CustomerId(user), id, cancellationToken)))
+            .WithName("PortalListTicketMessages");
+
+        group.MapPost("/tickets/{id:guid}/messages", async (Guid id, PortalReplyRequest request, ClaimsPrincipal user,
+                    IPortalTicketTracker tracker, CancellationToken cancellationToken) =>
+                Results.Created($"/api/portal/tickets/{id}/messages",
+                    await tracker.ReplyAsync(PortalUser.CustomerId(user), id, request, cancellationToken)))
+            .WithName("PortalReplyToTicket");
+
+        group.MapGet("/tickets/{id:guid}/history", async (Guid id, ClaimsPrincipal user, IPortalTicketTracker tracker,
+                    CancellationToken cancellationToken) =>
+                Results.Ok(await tracker.ListHistoryAsync(PortalUser.CustomerId(user), id, cancellationToken)))
+            .WithName("PortalTicketHistory");
+
+        group.MapPost("/tickets/{id:guid}/reopen", async (Guid id, ClaimsPrincipal user, IPortalTicketTracker tracker,
+                    CancellationToken cancellationToken) =>
+                Results.Ok(await tracker.ReopenAsync(PortalUser.CustomerId(user), id, cancellationToken)))
+            .WithName("PortalReopenTicket");
 
         return app;
     }

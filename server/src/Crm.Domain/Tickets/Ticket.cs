@@ -54,6 +54,16 @@ public sealed partial class Ticket
     /// <summary>"TKT-000001".</summary>
     public string DisplayNumber => FormatNumber(Number);
 
+    /// <summary>The customer may reply in the portal while the ticket is New, Open or Pending.</summary>
+    public bool AcceptsCustomerReply => Status is TicketStatus.New or TicketStatus.Open or TicketStatus.Pending;
+
+    /// <summary>
+    /// The customer may reopen a Resolved ticket for <paramref name="window"/> after it was resolved (inclusive). Closed tickets
+    /// stay closed; only agents reopen those.
+    /// </summary>
+    public bool CanBeReopenedByCustomer(DateTime utcNow, TimeSpan window) =>
+        Status == TicketStatus.Resolved && ResolvedAt is { } resolvedAt && utcNow - resolvedAt <= window;
+
     /// <summary>A new ticket in status New. Subject is required and trimmed; a blank description becomes null.</summary>
     public static Ticket Create(
         Guid customerId,

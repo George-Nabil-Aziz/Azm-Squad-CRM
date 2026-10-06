@@ -604,6 +604,40 @@
       "emailSent": "أرسلنا لك أيضاً رسالة تأكيد بالبريد الإلكتروني.",
       "viewRequests": "طلباتي",
       "another": "إرسال طلب آخر"
+    },
+    "loading": "جارٍ التحميل…",
+    "previous": "السابق",
+    "next": "التالي",
+    "pageOf": "الصفحة {{page}} من {{total}}",
+    "statuses": {
+      "new": "جديد",
+      "open": "مفتوح",
+      "pending": "بانتظار ردك",
+      "resolved": "تم الحل",
+      "closed": "مغلق"
+    },
+    "tickets": {
+      "title": "طلباتي",
+      "empty": "ليس لديك طلبات بعد."
+    },
+    "details": {
+      "back": "العودة إلى طلباتي",
+      "notFound": "لم يتم العثور على هذا الطلب.",
+      "conversation": "المحادثة",
+      "noMessages": "لا توجد رسائل بعد.",
+      "you": "أنت",
+      "support": "فريق الدعم",
+      "reply": "ردك",
+      "replyForm": "الرد على الطلب",
+      "send": "إرسال الرد",
+      "replySent": "تم إرسال ردك.",
+      "messageRequired": "اكتب رسالة.",
+      "resolvedNotice": "تم حل هذا الطلب. إذا لم تُحل المشكلة يمكنك إعادة فتحه.",
+      "reopen": "إعادة فتح الطلب",
+      "reopened": "تمت إعادة فتح الطلب.",
+      "history": "السجل",
+      "historyCreated": "تم إنشاء الطلب",
+      "historyStatus": "تغيّرت الحالة إلى {{status}}"
     }
   }
 }

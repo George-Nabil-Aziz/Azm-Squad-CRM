@@ -12,6 +12,7 @@ public static class PortalApplicationServiceCollectionExtensions
         services.TryAddSingleton<IPortalCodeGenerator, RandomPortalCodeGenerator>();
         services.AddScoped<IPortalAuthService, PortalAuthService>();
         services.AddScoped<IPortalTicketService, PortalTicketService>();
+        services.AddScoped<IPortalTicketTracker, PortalTicketTracker>();
         services.AddScoped<ITicketAttachmentService, TicketAttachmentService>();
         return services;
     }

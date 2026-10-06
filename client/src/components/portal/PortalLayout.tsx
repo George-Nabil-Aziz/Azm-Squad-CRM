@@ -1,7 +1,7 @@
 import { LogInIcon, LogOutIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink, Outlet } from 'react-router'
-import { PORTAL_LOGIN_PATH } from '@/app/RequirePortalAuth'
+import { PORTAL_LOGIN_PATH } from '@/app/portal-paths'
 import { clearPortalSession } from '@/auth/portal-session'
 import { useIsPortalAuthenticated, usePortalCustomer } from '@/auth/usePortalSession'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'

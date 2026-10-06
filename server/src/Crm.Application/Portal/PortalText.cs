@@ -22,7 +22,23 @@ public static class PortalText
         $"Attach at most {max} files.",
         $"أرفق {max} ملفات كحد أقصى.");
 
-    public static string ConfirmationSubject => LocalizedText.Get(
+    public static string ReplyInvalid(int max) => LocalizedText.Get(
+        $"Write your message (at most {max} characters).",
+        $"اكتب رسالتك (بحد أقصى {max} حرفاً).");
+
+    public static string TicketNotOpen => LocalizedText.Get(
+        "This request is resolved or closed. Reopen it first, or submit a new request.",
+        "هذا الطلب محلول أو مغلق. أعد فتحه أولاً أو أرسل طلباً جديداً.");
+
+    public static string ReopenWindowPassed(int days) => LocalizedText.Get(
+        $"A resolved request can only be reopened within {days} days. Please submit a new request.",
+        $"يمكن إعادة فتح الطلب المحلول خلال {days} أيام فقط. يرجى إرسال طلب جديد.");
+
+    public static string OnlyResolvedCanBeReopened => LocalizedText.Get(
+        "Only a resolved request can be reopened.",
+        "يمكن إعادة فتح الطلب المحلول فقط.");
+
+    public static string ConfirmationSubject =>LocalizedText.Get(
         "We received your request",
         "استلمنا طلبك");
 

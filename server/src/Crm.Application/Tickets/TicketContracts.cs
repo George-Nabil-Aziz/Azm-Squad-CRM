@@ -74,7 +74,8 @@ public sealed record TicketListFilter(
     DateTime? CreatedFromUtc,
     DateTime? CreatedBeforeUtc,
     string? Search,
-    int? SearchNumber);
+    int? SearchNumber,
+    Guid? CustomerId = null);
 
 /// <summary>A staff user tickets can be assigned to (assignee filter, assign picker).</summary>
 public sealed record TicketAssigneeResponse(Guid Id, string FullName);

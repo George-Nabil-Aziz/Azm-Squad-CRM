@@ -604,6 +604,40 @@
       "emailSent": "We also emailed you a confirmation.",
       "viewRequests": "My requests",
       "another": "Submit another request"
+    },
+    "loading": "Loading…",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{total}}",
+    "statuses": {
+      "new": "New",
+      "open": "Open",
+      "pending": "Waiting for your reply",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "tickets": {
+      "title": "My requests",
+      "empty": "You have no requests yet."
+    },
+    "details": {
+      "back": "Back to my requests",
+      "notFound": "This request was not found.",
+      "conversation": "Conversation",
+      "noMessages": "No messages yet.",
+      "you": "You",
+      "support": "Support team",
+      "reply": "Your reply",
+      "replyForm": "Reply to the request",
+      "send": "Send reply",
+      "replySent": "Your reply was sent.",
+      "messageRequired": "Write a message.",
+      "resolvedNotice": "This request was resolved. If the problem is not solved you can reopen it.",
+      "reopen": "Reopen request",
+      "reopened": "The request was reopened.",
+      "history": "History",
+      "historyCreated": "Request created",
+      "historyStatus": "Status changed to {{status}}"
     }
   }
 }
