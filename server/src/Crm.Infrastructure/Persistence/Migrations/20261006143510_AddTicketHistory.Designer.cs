@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Crm.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(CrmDbContext))]
-    [Migration("20261006143207_AddTicketHistory")]
+    [Migration("20261006143510_AddTicketHistory")]
     partial class AddTicketHistory
     {
         /// <inheritdoc />

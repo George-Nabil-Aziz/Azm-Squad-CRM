@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Crm.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTicketMessages : Migration
+    public partial class AddTicketHistory : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
