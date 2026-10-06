@@ -45,3 +45,12 @@ SuperAdmin edits, from a **Settings** page, the business hours (days, start, end
 ## Out of scope
 
 Holidays, per-department hours, key rotation, connection tests, live propagation across instances.
+
+## Deviations (as built)
+
+- Deviation: new NuGet package `Microsoft.AspNetCore.DataProtection` 10.0.11 in `Crm.Infrastructure` (the class library has no ASP.NET shared-framework reference, so the abstractions are not implicit). The plan said "no new package".
+- Deviation: `Ticket.FormatNumber` got an overload `(number, prefix)` instead of an optional parameter (existing tests pass the method group to `Select`).
+- Request shape: secrets travel in a separate `secrets` object and `GET` returns `secretsSet` booleans (instead of `hasXxx` flags next to each field).
+- Security modes are sent lower-case by the client (`none|auto|starttls|sslonconnect`); the server reads them case-insensitively (existing `MailKitSecurity.Parse`).
+- Audit: `settings.updated` added to `AuditActions` and to the audit page labels.
+- Test host: `Asia/Riyadh` resolves on Windows and Linux (ICU / tzdata); an unresolvable stored zone makes business hours behave as off (24/7).

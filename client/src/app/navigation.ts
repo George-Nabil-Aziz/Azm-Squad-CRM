@@ -3,6 +3,7 @@ import {
   ChartColumnIcon,
   LayoutDashboardIcon,
   ScrollTextIcon,
+  SettingsIcon,
   TagsIcon,
   TicketIcon,
   TimerIcon,
@@ -37,4 +38,5 @@ export const navigationItems: readonly NavigationItem[] = [
   { id: 'ticketCategories', path: '/ticket-categories', icon: TagsIcon, permission: permissions.categoriesManage },
   { id: 'slaPolicies', path: '/sla-policies', icon: TimerIcon, permission: permissions.slaManage },
   { id: 'auditLogs', path: '/audit-logs', icon: ScrollTextIcon, permission: permissions.auditView },
+  { id: 'settings', path: '/settings', icon: SettingsIcon, permission: permissions.settingsManage },
 ]

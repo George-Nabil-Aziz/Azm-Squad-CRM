@@ -65,11 +65,13 @@ public sealed class SlaPolicy
         UpdatedAt = utcNow;
     }
 
-    /// <summary>When the first response is due for a ticket started at <paramref name="startUtc"/>.</summary>
-    public DateTime ResponseDueAt(DateTime startUtc) => startUtc.AddMinutes(ResponseMinutes);
+    /// <summary>When the first response is due for a ticket started at <paramref name="startUtc"/> (business minutes when a calendar is given, else 24/7).</summary>
+    public DateTime ResponseDueAt(DateTime startUtc, BusinessCalendar? calendar = null) =>
+        calendar is null ? startUtc.AddMinutes(ResponseMinutes) : calendar.AddBusinessMinutes(startUtc, ResponseMinutes);
 
     /// <summary>When the resolution is due for a ticket started at <paramref name="startUtc"/>.</summary>
-    public DateTime ResolutionDueAt(DateTime startUtc) => startUtc.AddMinutes(ResolutionMinutes);
+    public DateTime ResolutionDueAt(DateTime startUtc, BusinessCalendar? calendar = null) =>
+        calendar is null ? startUtc.AddMinutes(ResolutionMinutes) : calendar.AddBusinessMinutes(startUtc, ResolutionMinutes);
 
     private static void EnsureUtc(DateTime utcNow)
     {

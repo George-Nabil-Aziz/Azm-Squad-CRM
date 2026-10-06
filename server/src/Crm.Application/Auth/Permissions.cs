@@ -44,6 +44,9 @@ public static class Permissions
     /// <summary>Read the audit log (/api/audit-logs, CRM-34): SuperAdmin and Admin.</summary>
     public const string AuditView = "audit.view";
 
+    /// <summary>Change the system settings: business hours, time zone, ticket prefix, channel credentials (CRM-35): SuperAdmin only.</summary>
+    public const string SettingsManage = "settings.manage";
+
     /// <summary>Every permission, in catalogue order (the order used in /api/auth/me).</summary>
     public static IReadOnlyList<string> All { get; } =
     [
@@ -51,6 +54,6 @@ public static class Permissions
         CustomersView, CustomersManage,
         TicketsView, TicketsManage, TicketsAssign,
         CategoriesManage, SlaManage, ChannelsManage,
-        ReportsView, AuditView,
+        ReportsView, AuditView, SettingsManage,
     ];
 }

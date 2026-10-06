@@ -22,7 +22,8 @@ public class TicketServiceSlaTests
     {
         _tickets = new FakeTicketRepository(_categories);
         _service = new TicketService(_tickets, _categories, new FakeInteractionRecorder(), new FakeCurrentUser(Guid.NewGuid()),
-            _clock, new CreateTicketRequestValidator(), new ListTicketsQueryValidator(), _policies, _history);
+            _clock, new CreateTicketRequestValidator(), new ListTicketsQueryValidator(), _policies, _history,
+            new Crm.UnitTests.Settings.FakeSystemSettingsProvider());
         _customerId = _tickets.AddCustomer("Nour Trading");
     }
 

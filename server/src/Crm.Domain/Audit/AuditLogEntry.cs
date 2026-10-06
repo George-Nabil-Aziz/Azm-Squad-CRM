@@ -100,6 +100,7 @@ public static class AuditActions
     public const string SlaPolicyUpdated = "sla-policy.updated";
     public const string CustomerDeleted = "customer.deleted";
     public const string CustomerContactRemoved = "customer-contact.removed";
+    public const string SettingsUpdated = "settings.updated";
 
     public static IReadOnlyList<string> All { get; } =
     [
@@ -107,5 +108,6 @@ public static class AuditActions
         UserCreated, UserUpdated, UserDeactivated, UserReactivated,
         SlaPolicyUpdated,
         CustomerDeleted, CustomerContactRemoved,
+        SettingsUpdated,
     ];
 }

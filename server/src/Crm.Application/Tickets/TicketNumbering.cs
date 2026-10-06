@@ -12,12 +12,13 @@ internal static class TicketNumbering
     private static readonly SemaphoreSlim NumberLock = new(1, 1);
 
     /// <summary>Numbers and adds the ticket, lets <paramref name="alsoSave"/> add what must be saved with it, then saves.</summary>
-    public static async Task SaveNewAsync(ITicketRepository tickets, Ticket ticket, Action alsoSave, CancellationToken cancellationToken)
+    public static async Task SaveNewAsync(
+        ITicketRepository tickets, Ticket ticket, string prefix, Action alsoSave, CancellationToken cancellationToken)
     {
         await NumberLock.WaitAsync(cancellationToken);
         try
         {
-            ticket.AssignNumber(await tickets.NextNumberAsync(cancellationToken));
+            ticket.AssignNumber(await tickets.NextNumberAsync(cancellationToken), prefix);
             tickets.Add(ticket);
             alsoSave();
             await tickets.SaveChangesAsync(cancellationToken);

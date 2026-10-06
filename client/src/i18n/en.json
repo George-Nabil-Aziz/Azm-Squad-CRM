@@ -14,7 +14,8 @@
     "users": "Users",
     "ticketCategories": "Ticket categories",
     "slaPolicies": "SLA policy",
-    "auditLogs": "Audit log"
+    "auditLogs": "Audit log",
+    "settings": "Settings"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -471,7 +472,83 @@
       "userReactivated": "User reactivated",
       "slaPolicyUpdated": "SLA policy changed",
       "customerDeleted": "Customer deleted",
-      "customerContactRemoved": "Customer contact removed"
+      "customerContactRemoved": "Customer contact removed",
+      "settingsUpdated": "Settings changed"
+    }
+  },
+  "settings": {
+    "description": "Business hours, time zone, ticket number prefix and the email and WhatsApp credentials.",
+    "loading": "Loading settings…",
+    "save": "Save settings",
+    "saving": "Saving…",
+    "saved": "Settings were saved.",
+    "timeInvalid": "Enter a time as HH:mm.",
+    "timeZoneRequired": "Enter the time zone.",
+    "prefixInvalid": "Use 1 to 10 letters or digits, optionally ending with a dash.",
+    "emailInvalid": "Enter a valid email address.",
+    "portInvalid": "Enter a port from 1 to 65535.",
+    "daysRequired": "Select at least one working day.",
+    "endBeforeStart": "The closing time must be after the opening time.",
+    "weekDays": {
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday"
+    },
+    "businessHours": {
+      "title": "Business hours",
+      "description": "When on, SLA times of new tickets count only the minutes inside these hours.",
+      "enabled": "Count SLA time only during business hours",
+      "days": "Working days",
+      "start": "Opening time",
+      "end": "Closing time"
+    },
+    "general": {
+      "title": "General",
+      "timeZone": "Time zone",
+      "timeZoneHint": "For example Asia/Riyadh. Business hours are in this time zone.",
+      "ticketPrefix": "Ticket number prefix",
+      "ticketPrefixHint": "Applies to new tickets, for example SUP- gives SUP-000123."
+    },
+    "email": {
+      "title": "Email",
+      "description": "Sending replies (SMTP) and reading the support mailbox (IMAP).",
+      "fromAddress": "Sender address",
+      "fromName": "Sender name",
+      "smtpHost": "SMTP server",
+      "smtpPort": "SMTP port",
+      "smtpSecurity": "SMTP security",
+      "smtpUserName": "SMTP user name",
+      "imapHost": "IMAP server",
+      "imapPort": "IMAP port",
+      "imapSecurity": "IMAP security",
+      "imapUserName": "IMAP user name",
+      "imapFolder": "IMAP folder"
+    },
+    "whatsApp": {
+      "title": "WhatsApp",
+      "description": "WhatsApp Cloud API credentials.",
+      "phoneNumberId": "Phone number ID"
+    },
+    "secrets": {
+      "smtpPassword": "SMTP password",
+      "imapPassword": "IMAP password",
+      "whatsAppAccessToken": "WhatsApp access token",
+      "whatsAppAppSecret": "WhatsApp app secret",
+      "whatsAppVerifyToken": "WhatsApp verify token",
+      "isSet": "A value is saved. It is never shown.",
+      "notSet": "No value is saved.",
+      "keepPlaceholder": "Leave empty to keep the saved value",
+      "remove": "Remove the saved {{name}}"
+    },
+    "securityModes": {
+      "none": "None",
+      "auto": "Automatic",
+      "starttls": "STARTTLS",
+      "sslonconnect": "SSL/TLS"
     }
   }
 }

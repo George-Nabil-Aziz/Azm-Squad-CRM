@@ -17,7 +17,8 @@ public class TicketListServiceTests
         _tickets = new FakeTicketRepository(_categories);
         _service = new TicketService(_tickets, _categories, new FakeInteractionRecorder(), new FakeCurrentUser(Guid.NewGuid()),
             _clock, new CreateTicketRequestValidator(), new ListTicketsQueryValidator(),
-            new Crm.UnitTests.Sla.FakeSlaPolicyRepository(_clock.UtcNow.UtcDateTime), new FakeTicketHistoryRecorder());
+            new Crm.UnitTests.Sla.FakeSlaPolicyRepository(_clock.UtcNow.UtcDateTime), new FakeTicketHistoryRecorder(),
+            new Crm.UnitTests.Settings.FakeSystemSettingsProvider());
     }
 
     private static ListTicketsQuery Query(

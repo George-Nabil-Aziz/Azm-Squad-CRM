@@ -51,8 +51,11 @@ public sealed partial class Ticket
     /// <summary>A closed ticket takes no replies or notes (until it is reopened).</summary>
     public bool AcceptsMessages => Status != TicketStatus.Closed;
 
-    /// <summary>"TKT-000001".</summary>
-    public string DisplayNumber => FormatNumber(Number);
+    /// <summary>The prefix of this ticket's number, the one configured when it was created (CRM-35); "TKT-" by default.</summary>
+    public string Prefix { get; private set; } = NumberPrefix;
+
+    /// <summary>"TKT-000001" (with the ticket's own prefix).</summary>
+    public string DisplayNumber => FormatNumber(Number, Prefix);
 
     /// <summary>A new ticket in status New. Subject is required and trimmed; a blank description becomes null.</summary>
     public static Ticket Create(
@@ -94,10 +97,14 @@ public sealed partial class Ticket
     }
 
     /// <summary>Sets the sequential number (the repository calls it while saving a new ticket, again after a collision).</summary>
-    public void AssignNumber(int number)
+    public void AssignNumber(int number, string? prefix = null)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(number);
         Number = number;
+        if (prefix is not null)
+        {
+            Prefix = prefix;
+        }
     }
 
     /// <summary>An agent sent a public reply: the first one sets <see cref="FirstResponseAt"/>; every one bumps <see cref="UpdatedAt"/>.</summary>
@@ -192,17 +199,47 @@ public sealed partial class Ticket
     }
 
     /// <summary>1 → "TKT-000001" (at least six digits).</summary>
-    public static string FormatNumber(int number) =>
-        NumberPrefix + number.ToString("D6", CultureInfo.InvariantCulture);
+    public static string FormatNumber(int number) => FormatNumber(number, NumberPrefix);
 
-    /// <summary>"TKT-000012", "tkt-12", "000012" or "12" → 12. Anything else (or 0) → false.</summary>
+    /// <summary>1 → "SUP-000001" with the given prefix.</summary>
+    public static string FormatNumber(int number, string prefix) =>
+        prefix + number.ToString("D6", CultureInfo.InvariantCulture);
+
+    public const int PrefixMaxLength = 10;
+
+    /// <summary>1–10 letters or digits (A-Z, 0-9) with an optional single trailing dash: "SUP", "SUP-", "A1-".</summary>
+    public static bool IsValidPrefix(string? prefix)
+    {
+        var letters = prefix?.EndsWith('-') == true ? prefix[..^1] : prefix;
+        return !string.IsNullOrEmpty(letters)
+               && letters.Length <= PrefixMaxLength
+               && letters.All(char.IsAsciiLetterOrDigit);
+    }
+
+    /// <summary>"sup" or " SUP- " → "SUP-" (upper case, always ending with a dash). The prefix must be valid.</summary>
+    public static string NormalizePrefix(string prefix)
+    {
+        var trimmed = prefix.Trim().ToUpperInvariant();
+        return trimmed.EndsWith('-') ? trimmed : trimmed + "-";
+    }
+
+    /// <summary>
+    /// "TKT-000012", "SUP-12" (any prefix of 1–10 letters/digits), "tkt-12", "000012" or "12" → 12.
+    /// Anything else (or 0) → false.
+    /// </summary>
     public static bool TryParseNumber(string? text, out int number)
     {
         number = 0;
         var value = text?.Trim() ?? string.Empty;
-        if (value.StartsWith(NumberPrefix, StringComparison.OrdinalIgnoreCase))
+        var dash = value.LastIndexOf('-');
+        if (dash >= 0)
         {
-            value = value[NumberPrefix.Length..];
+            if (dash == 0 || !IsValidPrefix(value[..dash]) || value[dash - 1] == '-')
+            {
+                return false;
+            }
+
+            value = value[(dash + 1)..];
         }
 
         return value.Length > 0

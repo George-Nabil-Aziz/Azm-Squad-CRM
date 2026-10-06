@@ -108,7 +108,7 @@ public sealed partial class Ticket
     }
 
     /// <summary>Copies the due times of the policy of this ticket's priority, counted from <see cref="CreatedAt"/>.</summary>
-    public void ApplySla(SlaPolicy policy)
+    public void ApplySla(SlaPolicy policy, BusinessCalendar? calendar = null)
     {
         ArgumentNullException.ThrowIfNull(policy);
         if (policy.Priority != Priority)
@@ -116,16 +116,19 @@ public sealed partial class Ticket
             throw new ArgumentException("The SLA policy must be the one of the ticket's priority.", nameof(policy));
         }
 
-        ResponseDueAt = policy.ResponseDueAt(CreatedAt);
-        ResolutionDueAt = policy.ResolutionDueAt(CreatedAt);
-        ResponseWarningAt = CreatedAt + (ResponseDueAt.Value - CreatedAt) * WarningFraction;
+        ResponseDueAt = policy.ResponseDueAt(CreatedAt, calendar);
+        ResolutionDueAt = policy.ResolutionDueAt(CreatedAt, calendar);
+        // 80 % of the response window: of the real time (24/7) or of the business minutes (business hours, CRM-35).
+        ResponseWarningAt = calendar is null
+            ? CreatedAt + (ResponseDueAt.Value - CreatedAt) * WarningFraction
+            : calendar.AddBusinessMinutes(CreatedAt, policy.ResponseMinutes * WarningFraction);
     }
 
     /// <summary>
     /// Changes the priority and recalculates the due times from <see cref="CreatedAt"/> with the new priority's current
     /// policy (null = no policy: the due times stay). The same priority changes nothing.
     /// </summary>
-    public void ChangePriority(TicketPriority priority, SlaPolicy? policy, DateTime utcNow)
+    public void ChangePriority(TicketPriority priority, SlaPolicy? policy, DateTime utcNow, BusinessCalendar? calendar = null)
     {
         EnsureUtcTime(utcNow);
         if (priority == Priority)
@@ -136,7 +139,7 @@ public sealed partial class Ticket
         Priority = priority;
         if (policy is not null)
         {
-            ApplySla(policy);
+            ApplySla(policy, calendar);
         }
 
         UpdatedAt = utcNow;

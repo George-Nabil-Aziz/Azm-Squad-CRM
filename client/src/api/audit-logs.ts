@@ -12,6 +12,7 @@ export const auditActionKeys = {
   'sla-policy.updated': 'slaPolicyUpdated',
   'customer.deleted': 'customerDeleted',
   'customer-contact.removed': 'customerContactRemoved',
+  'settings.updated': 'settingsUpdated',
 } as const
 export type AuditAction = keyof typeof auditActionKeys
 export const auditActions = Object.keys(auditActionKeys) as AuditAction[]

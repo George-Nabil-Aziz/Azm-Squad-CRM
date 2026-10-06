@@ -2,6 +2,7 @@ using Crm.Domain.Audit;
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
 using Crm.Domain.Notifications;
+using Crm.Domain.Settings;
 using Crm.Domain.Sla;
 using Crm.Domain.Tickets;
 using Crm.Infrastructure.Identity;
@@ -44,6 +45,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<Notification> Notifications => Set<Notification>();
 
     public DbSet<AuditLogEntry> AuditLog => Set<AuditLogEntry>();
+
+    public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

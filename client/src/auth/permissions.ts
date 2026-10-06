@@ -16,6 +16,7 @@ export const permissions = {
   channelsManage: 'channels.manage',
   reportsView: 'reports.view',
   auditView: 'audit.view',
+  settingsManage: 'settings.manage',
 } as const
 
 export type Permission = (typeof permissions)[keyof typeof permissions]
