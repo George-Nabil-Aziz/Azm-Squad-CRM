@@ -35,8 +35,8 @@ public class TicketReportServiceTests
         Assert.Equal(4, report.Total);
         Assert.Equal(["new", "open", "pending", "resolved", "closed"], report.ByStatus.Select(c => c.Key));
         Assert.Equal([0, 3, 0, 0, 1], report.ByStatus.Select(c => c.Count));
-        Assert.Equal(["manual", "email", "whatsapp", "portal", "webform", "chat"], report.ByChannel.Select(c => c.Key));
-        Assert.Equal([0, 4, 0, 0, 0, 0], report.ByChannel.Select(c => c.Count));
+        Assert.Equal(["manual", "email", "whatsapp", "portal", "webform", "chat", "sms"], report.ByChannel.Select(c => c.Key));
+        Assert.Equal([0, 4, 0, 0, 0, 0, 0], report.ByChannel.Select(c => c.Count));
         Assert.Equal(["high", "mid", "low"], report.ByPriority.Select(c => c.Key));
         Assert.Equal([2, 0, 2], report.ByPriority.Select(c => c.Count));
         Assert.Equal(["2026-10-01", "2026-10-02", "2026-10-03"], report.ByDay.Select(d => d.Date.ToString("yyyy-MM-dd")));

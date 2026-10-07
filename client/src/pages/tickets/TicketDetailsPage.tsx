@@ -132,7 +132,7 @@ function TicketDetails({ ticket }: { ticket: Ticket }) {
             {ticket.status === 'closed' ? (
               <p className="rounded-lg border p-3 text-muted-foreground">{t('tickets.details.closedNotice')}</p>
             ) : (
-              <TicketReplyForm ticketId={ticket.id} />
+              <TicketReplyForm ticketId={ticket.id} channel={ticket.channel} />
             )}
           </Can>
           </>

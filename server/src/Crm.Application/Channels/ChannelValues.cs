@@ -9,6 +9,7 @@ public static class ChannelValues
     {
         ChannelKind.Email => "email",
         ChannelKind.WhatsApp => "whatsapp",
+        ChannelKind.Sms => "sms",
         _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null),
     };
 

@@ -140,6 +140,14 @@ public sealed class ChatHubAccessMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context, IChatService chat)
     {
+        // Later requests of an open connection (long-poll / send) carry the unguessable connection id the server issued after this
+        // check passed at negotiate; only the first request of a connection is checked.
+        if (!string.IsNullOrEmpty(context.Request.Query["id"]))
+        {
+            await next(context);
+            return;
+        }
+
         if (context.User.Identity?.IsAuthenticated == true)
         {
             var roles = context.User.FindAll(AuthClaimTypes.Role).Select(claim => claim.Value);

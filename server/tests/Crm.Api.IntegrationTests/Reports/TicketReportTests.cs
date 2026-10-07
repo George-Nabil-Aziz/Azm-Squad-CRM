@@ -136,7 +136,7 @@ public class TicketReportTests(CrmApiFactory factory) : IClassFixture<CrmApiFact
         Assert.Equal(1, report.ByDay.Single(d => d.Date == new DateOnly(2025, 3, 5)).Count); // 23:59:59 counts
         Assert.Equal(0, report.ByDay.Single(d => d.Date == new DateOnly(2025, 3, 3)).Count); // zero-filled
         Assert.Equal(5, report.ByStatus.Count);
-        Assert.Equal(6, report.ByChannel.Count);
+        Assert.Equal(7, report.ByChannel.Count);
         Assert.Equal(3, report.ByPriority.Count);
     }
 

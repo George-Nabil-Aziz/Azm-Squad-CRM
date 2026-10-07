@@ -27,14 +27,14 @@ describe('Menu and pages follow the user permissions', () => {
     vi.stubGlobal('fetch', fakeApi({ me: agentMe }))
     renderSignedInAt('/')
 
-    expect(await navigationLinks()).toEqual(['Dashboard', 'Tickets', 'Customers', 'Tasks', 'Quick replies', 'Knowledge base'])
+    expect(await navigationLinks()).toEqual(['Dashboard', 'Tickets', 'Customers', 'Tasks', 'Live chat', 'Quick replies', 'Knowledge base'])
   })
 
   it('shows Reports but not Users to a supervisor', async () => {
     vi.stubGlobal('fetch', fakeApi({ me: supervisorMe }))
     renderSignedInAt('/')
 
-    expect(await navigationLinks()).toEqual(['Dashboard', 'Tickets', 'Customers', 'Tasks', 'Quick replies', 'Knowledge base', 'Reports', 'Assignment'])
+    expect(await navigationLinks()).toEqual(['Dashboard', 'Tickets', 'Customers', 'Tasks', 'Live chat', 'Quick replies', 'Knowledge base', 'Reports', 'Assignment'])
   })
 
   it('sends a user without permission from /users to the dashboard without calling the users API', async () => {

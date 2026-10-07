@@ -13,6 +13,16 @@ public static class ChannelText
         "WhatsApp is not configured.",
         "واتساب غير مُعدّ.");
 
+    public static string SmsNotConfigured => LocalizedText.Get(
+        "SMS is not configured.",
+        "الرسائل النصية غير مُعدّة.");
+
+    public static string CustomerHasNoPhone => LocalizedText.Get(
+        "The customer has no phone number.",
+        "لا يوجد رقم هاتف للعميل.");
+
+    public static string SmsSubject => LocalizedText.Get("SMS message", "رسالة نصية");
+
     public static string ProviderMissing => LocalizedText.Get(
         "This channel cannot send messages.",
         "لا يمكن إرسال الرسائل عبر هذه القناة.");

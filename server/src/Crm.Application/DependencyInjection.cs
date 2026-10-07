@@ -48,6 +48,7 @@ public static class DependencyInjection
         services.AddScoped<ITicketReplyDispatcher, ChannelTicketReplyDispatcher>();
         services.AddScoped<IInboundMessageProcessor, InboundMessageProcessor>();
         services.AddScoped<IWhatsAppWebhookService, WhatsAppWebhookService>();
+        services.AddScoped<Crm.Application.Channels.Sms.ISmsWebhookService, Crm.Application.Channels.Sms.SmsWebhookService>();
         services.AddScoped<ITicketCategoryService, TicketCategoryService>();
         services.AddKnowledgeBase();
         services.AddPortal();

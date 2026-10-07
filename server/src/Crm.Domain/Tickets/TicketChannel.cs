@@ -9,4 +9,5 @@ public enum TicketChannel
     Portal = 4,
     WebForm = 5,
     Chat = 6,
+    Sms = 7,
 }

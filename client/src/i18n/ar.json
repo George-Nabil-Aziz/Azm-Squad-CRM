@@ -157,7 +157,10 @@
       "manual": "أنشأها موظف",
       "email": "البريد الإلكتروني",
       "whatsapp": "واتساب",
-      "portal": "البوابة"
+      "portal": "البوابة",
+      "webform": "نموذج الويب",
+      "chat": "محادثة مباشرة",
+      "sms": "رسالة نصية"
     },
     "searchLabel": "البحث برقم التذكرة أو الموضوع",
     "search": "بحث",
@@ -235,7 +238,8 @@
       "conversationTab": "المحادثة",
       "historyTab": "السجل",
       "mention": "الإشارة إلى زميل",
-      "mentionPlaceholder": "اختر زميلاً"
+      "mentionPlaceholder": "اختر زميلاً",
+      "smsSegments": "ستُرسل هذه الرسالة على {{segments}} أجزاء نصية ({{units}} حرفاً، {{limit}} لكل جزء). اختصرها لترسل رسالة نصية واحدة."
     },
     "history": {
       "title": "السجل",

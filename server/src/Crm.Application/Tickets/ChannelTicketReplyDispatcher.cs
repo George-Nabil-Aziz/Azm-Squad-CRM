@@ -42,7 +42,7 @@ public sealed class ChannelTicketReplyDispatcher(
     private async Task<ChannelReply?> BuildReplyAsync(
         Ticket ticket, string body, string? templateName, Guid? sourceId, CancellationToken cancellationToken)
     {
-        if (ticket.Channel is not (TicketChannel.Email or TicketChannel.WebForm or TicketChannel.Chat or TicketChannel.WhatsApp))
+        if (ticket.Channel is not (TicketChannel.Email or TicketChannel.WebForm or TicketChannel.Chat or TicketChannel.WhatsApp or TicketChannel.Sms))
         {
             return null;
         }
@@ -54,6 +54,14 @@ public sealed class ChannelTicketReplyDispatcher(
             return address is null
                 ? throw Missing(ChannelText.CustomerHasNoEmail)
                 : new ChannelReply(ChannelKind.Email, address, TicketNumberTag.AppendTo("Re: " + ticket.Subject, ticket.Number), body, null, sourceId);
+        }
+
+        if (ticket.Channel == TicketChannel.Sms)
+        {
+            var phone = Primary(customer, "phone") ?? customer.Phone;
+            return phone is null
+                ? throw Missing(ChannelText.CustomerHasNoPhone)
+                : new ChannelReply(ChannelKind.Sms, phone, null, body, null, sourceId);
         }
 
         var number = Primary(customer, "whatsapp") ?? Primary(customer, "phone") ?? customer.Phone;

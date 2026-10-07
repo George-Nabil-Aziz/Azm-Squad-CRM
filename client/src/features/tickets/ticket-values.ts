@@ -9,6 +9,6 @@ export const ticketStatuses = ['new', 'open', 'pending', 'resolved', 'closed'] a
 export type TicketStatus = (typeof ticketStatuses)[number]
 
 /** How a ticket came in (server: TicketChannel). Labels: `tickets.channels.<name>`. */
-export const ticketChannels = ['manual', 'email', 'whatsapp', 'portal'] as const
+export const ticketChannels = ['manual', 'email', 'whatsapp', 'portal', 'webform', 'chat', 'sms'] as const
 
 export type TicketChannel = (typeof ticketChannels)[number]

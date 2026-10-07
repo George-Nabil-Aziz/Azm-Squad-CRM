@@ -48,6 +48,10 @@ public class ChatHubTests(CrmApiFactory factory) : IClassFixture<CrmApiFactory>
         });
         await visitor.StartAsync();
 
+        // Warm-up in both directions (first calls pay for JIT and connection set-up), then measure.
+        await visitor.InvokeAsync<JsonElement>("Send", chat.Id, "warm-up");
+        await WaitForMessageAsync(agent, "warm-up");
+
         var toAgent = Stopwatch.StartNew();
         await visitor.InvokeAsync<JsonElement>("Send", chat.Id, "My printer is broken");
         await WaitForMessageAsync(agent, "My printer is broken");

@@ -38,7 +38,12 @@ public sealed class ChannelTicketService(
         Guid customerId, InboundChannelMessage message, int? ticketNumber, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(message);
-        var channel = message.Channel == ChannelKind.Email ? TicketChannel.Email : TicketChannel.WhatsApp;
+        var channel = message.Channel switch
+        {
+            ChannelKind.Email => TicketChannel.Email,
+            ChannelKind.Sms => TicketChannel.Sms,
+            _ => TicketChannel.WhatsApp,
+        };
         var existing = await FindTicketAsync(customerId, channel, ticketNumber, cancellationToken);
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var body = Body(message.Body);
@@ -82,7 +87,7 @@ public sealed class ChannelTicketService(
     private async Task<Ticket?> FindTicketAsync(
         Guid customerId, TicketChannel channel, int? ticketNumber, CancellationToken cancellationToken)
     {
-        if (channel == TicketChannel.WhatsApp)
+        if (channel is TicketChannel.WhatsApp or TicketChannel.Sms)
         {
             return await tickets.FindLatestOpenAsync(customerId, channel, cancellationToken);
         }
@@ -97,10 +102,10 @@ public sealed class ChannelTicketService(
 
     private static string Subject(InboundChannelMessage message)
     {
-        if (message.Channel == ChannelKind.WhatsApp)
+        if (message.Channel is ChannelKind.WhatsApp or ChannelKind.Sms)
         {
             var text = message.Body.Trim();
-            return text.Length == 0 ? ChannelText.WhatsAppSubject : Cut(text.ReplaceLineEndings(" "), WhatsAppSubjectLength);
+            return text.Length == 0 ? (message.Channel == ChannelKind.Sms ? ChannelText.SmsSubject : ChannelText.WhatsAppSubject) : Cut(text.ReplaceLineEndings(" "), WhatsAppSubjectLength);
         }
 
         var subject = TicketNumberTagPattern.Remove(message.Subject).Trim();

@@ -30,6 +30,8 @@ public class CrmApiFactory : WebApplicationFactory<Program>
     public const string JwtSigningKey = "test-signing-key-for-integration-tests-only-0123456789";
     public const string TestUserPassword = "Test#User123";
     public const string WhatsAppVerifyToken = "test-verify-token";
+    public const string SmsAuthToken = "test-sms-auth-token";
+    public const string SmsWebhookBaseUrl = "https://crm.test";
     public const string WhatsAppAppSecret = "test-app-secret-for-integration-tests";
 
     private readonly SqliteConnection _connection = new("DataSource=:memory:");
@@ -60,6 +62,8 @@ public class CrmApiFactory : WebApplicationFactory<Program>
             ["Channels:WhatsApp:VerifyToken"] = WhatsAppVerifyToken,
             ["Channels:WhatsApp:AppSecret"] = WhatsAppAppSecret,
             // Public endpoints share the loopback address in tests: a high limit, tests of the limit set their own.
+            ["Channels:Sms:AuthToken"] = SmsAuthToken,
+            ["Channels:Sms:WebhookBaseUrl"] = SmsWebhookBaseUrl,
             ["WebForms:RateLimitRequests"] = "1000",
         }));
         builder.ConfigureLogging(logging => logging.AddProvider(Logs));

@@ -46,4 +46,10 @@ Tests first: `lib/sms-segments.test.ts` (same vectors), `features/tickets/Ticket
 
 ## Verification / Done
 
-`dotnet build` (0 warnings), filtered tests, then full suites once at the end. - [ ] AC 1 - [ ] AC 2 - [ ] AC 3 - [ ] AC 4
+`dotnet build` (0 warnings), filtered tests, then full suites once at the end. - [x] AC 1 - [x] AC 2 - [x] AC 3 - [x] AC 4
+
+## As built
+
+- Deviation: webhook URL for the signature = `Channels:Sms:WebhookBaseUrl` + path (else the request URL); status callback URL is sent with every message.
+- Client: segment calculation is mirrored in `lib/sms-segments.ts` (same test vectors as the server); `POST /api/channels/sms/segments` serves API consumers.
+- Also fixed: `ticketChannels` / i18n now include `webform`, `chat`, `sms`; report / nav tests list the new channels.

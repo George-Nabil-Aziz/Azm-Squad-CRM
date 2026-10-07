@@ -157,7 +157,10 @@
       "manual": "Created by an agent",
       "email": "Email",
       "whatsapp": "WhatsApp",
-      "portal": "Portal"
+      "portal": "Portal",
+      "webform": "Web form",
+      "chat": "Live chat",
+      "sms": "SMS"
     },
     "searchLabel": "Search by ticket number or subject",
     "search": "Search",
@@ -235,7 +238,8 @@
       "conversationTab": "Conversation",
       "historyTab": "History",
       "mention": "Mention a colleague",
-      "mentionPlaceholder": "Choose a colleague"
+      "mentionPlaceholder": "Choose a colleague",
+      "smsSegments": "This message will be sent as {{segments}} SMS segments ({{units}} characters, {{limit}} per segment). Shorten it to send a single SMS."
     },
     "history": {
       "title": "History",

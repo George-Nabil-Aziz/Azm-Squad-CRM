@@ -43,7 +43,7 @@ public class TicketValuesTests
     [Fact]
     public void Channels_HaveLowerCaseNames()
     {
-        Assert.Equal(["manual", "email", "whatsapp", "portal", "webform", "chat"], Enum.GetValues<TicketChannel>().Select(TicketValues.ChannelName));
+        Assert.Equal(["manual", "email", "whatsapp", "portal", "webform", "chat", "sms"], Enum.GetValues<TicketChannel>().Select(TicketValues.ChannelName));
     }
 
     [Theory]
