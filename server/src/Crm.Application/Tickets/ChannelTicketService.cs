@@ -32,6 +32,7 @@ public sealed class ChannelTicketService(
     TimeProvider timeProvider,
     ISystemSettingsProvider settings,
     IAutoAssignmentService? autoAssigner = null,
+    Crm.Application.Ai.IAiClassificationService? aiClassification = null,
     IWebhookEventPublisher? webhooks = null) : IChannelTicketService
 {
     private const int WhatsAppSubjectLength = 80;
@@ -41,7 +42,12 @@ public sealed class ChannelTicketService(
         Guid customerId, InboundChannelMessage message, int? ticketNumber, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(message);
-        var channel = message.Channel == ChannelKind.Email ? TicketChannel.Email : TicketChannel.WhatsApp;
+        var channel = message.Channel switch
+        {
+            ChannelKind.Email => TicketChannel.Email,
+            ChannelKind.Sms => TicketChannel.Sms,
+            _ => TicketChannel.WhatsApp,
+        };
         var existing = await FindTicketAsync(customerId, channel, ticketNumber, cancellationToken);
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var body = Body(message.Body);
@@ -56,12 +62,24 @@ public sealed class ChannelTicketService(
             return new ChannelTicketResult(existing.Id, false);
         }
 
+        var subject = Subject(message);
+        var description = Cut(body, Ticket.DescriptionMaxLength);
+        // CRM-52: like every new ticket, the AI suggestion (above the threshold) sets category and priority before the SLA timers.
+        var aiOutcome = aiClassification is null ? null : await aiClassification.ClassifyAsync(subject, description, cancellationToken);
+        var categoryApplied = aiOutcome is { MeetsThreshold: true, CategoryId: not null };
+        var priorityApplied = aiOutcome is { MeetsThreshold: true };
         var ticket = Ticket.Create(
-            customerId, Subject(message), Cut(body, Ticket.DescriptionMaxLength), null, TicketPriority.Mid, channel, null, now);
+            customerId, subject, description, categoryApplied ? aiOutcome!.CategoryId : null,
+            priorityApplied ? aiOutcome!.Priority : TicketPriority.Mid, channel, null, now);
         var runtime = await settings.GetAsync(cancellationToken); // CRM-35: business hours + ticket prefix
         if (await slaPolicies.FindAsync(ticket.Priority, cancellationToken) is { } policy)
         {
             ticket.ApplySla(policy, runtime.Calendar); // CRM-20: due times from the policy of the priority now
+        }
+
+        if (aiOutcome is not null)
+        {
+            aiClassification!.Save(ticket.Id, aiOutcome, categoryApplied, priorityApplied, now);
         }
 
         var autoAssignee = autoAssigner is null ? null : await autoAssigner.TryAssignAsync(ticket, now, cancellationToken); // CRM-27
@@ -90,7 +108,7 @@ public sealed class ChannelTicketService(
     private async Task<Ticket?> FindTicketAsync(
         Guid customerId, TicketChannel channel, int? ticketNumber, CancellationToken cancellationToken)
     {
-        if (channel == TicketChannel.WhatsApp)
+        if (channel is TicketChannel.WhatsApp or TicketChannel.Sms)
         {
             return await tickets.FindLatestOpenAsync(customerId, channel, cancellationToken);
         }
@@ -105,10 +123,10 @@ public sealed class ChannelTicketService(
 
     private static string Subject(InboundChannelMessage message)
     {
-        if (message.Channel == ChannelKind.WhatsApp)
+        if (message.Channel is ChannelKind.WhatsApp or ChannelKind.Sms)
         {
             var text = message.Body.Trim();
-            return text.Length == 0 ? ChannelText.WhatsAppSubject : Cut(text.ReplaceLineEndings(" "), WhatsAppSubjectLength);
+            return text.Length == 0 ? (message.Channel == ChannelKind.Sms ? ChannelText.SmsSubject : ChannelText.WhatsAppSubject) : Cut(text.ReplaceLineEndings(" "), WhatsAppSubjectLength);
         }
 
         var subject = TicketNumberTagPattern.Remove(message.Subject).Trim();

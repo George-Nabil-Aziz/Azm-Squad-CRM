@@ -66,6 +66,17 @@ public class ChannelTicketReplyDispatcherTests
     }
 
     [Fact]
+    public async Task WebFormTicket_RepliesByEmail()
+    {
+        var (_, reply) = Arrange(TicketChannel.WebForm, email: "visitor@example.com");
+
+        await Dispatcher().DispatchAsync(reply, null, CancellationToken.None);
+
+        var sent = Assert.Single(_sender.Sent);
+        Assert.Equal((ChannelKind.Email, "visitor@example.com", "Re: Printer broken [TKT-000012]"), (sent.Channel, sent.Recipient, sent.Subject));
+    }
+
+    [Fact]
     public async Task WhatsAppTicket_PrefersTheWhatsAppContact_ElseThePhone_AndPassesTheTemplate()
     {
         var (_, withBoth) = Arrange(TicketChannel.WhatsApp, phone: "+966501111111", whatsApp: "+966502222222");

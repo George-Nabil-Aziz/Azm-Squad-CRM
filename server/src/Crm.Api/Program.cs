@@ -1,11 +1,13 @@
 using Crm.Api.Auth;
 using Crm.Api.Channels;
+using Crm.Api.Chat;
 using Crm.Api.Endpoints;
 using Crm.Api.ErrorHandling;
 using Crm.Api.Localization;
 using Crm.Api.Notifications;
 using Crm.Application;
 using Crm.Application.Auth;
+using Crm.Application.Chat;
 using Crm.Application.Notifications;
 using Microsoft.AspNetCore.SignalR;
 using Crm.Application.Settings;
@@ -33,6 +35,7 @@ if (builder.Configuration["DataProtection:KeysPath"] is { Length: > 0 } keysPath
 
 builder.Services.AddHostedService<ChannelWorker>();
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<IChatNotifier, SignalRChatNotifier>(); // CRM-56
 builder.Services.AddSingleton<IUserIdProvider, NotificationUserIdProvider>();
 builder.Services.AddSingleton<INotificationPublisher, SignalRNotificationPublisher>(); // replaces the no-op default
 
@@ -45,6 +48,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
 app.UseMiddleware<ApiKeyMiddleware>();
+app.UseWhen(context => context.Request.Path.StartsWithSegments(ChatHub.Path), chat => chat.UseMiddleware<ChatHubAccessMiddleware>());
+// CRM-56: the chat hub is open to visitors with a chat token and to agents with chat.handle; everyone else is refused here.
 
 // The public API document and Swagger UI are served everywhere; the internal API document only in Development.
 app.MapOpenApi("/openapi/{documentName:regex(^public-v1$)}.json");
@@ -63,6 +68,9 @@ app.MapReportsEndpoints();
 app.MapCustomersEndpoints();
 app.MapChannelsEndpoints();
 app.MapWhatsAppWebhookEndpoints();
+app.MapWebFormsEndpoints();
+app.MapSmsEndpoints();
+app.MapChatEndpoints();
 app.MapTicketCategoriesEndpoints();
 app.MapSlaPoliciesEndpoints();
 app.MapTicketsEndpoints();
@@ -88,6 +96,7 @@ app.MapWebhooksEndpoints();
 app.MapErpEndpoints();
 app.MapPublicApiEndpoints();
 app.MapHub<NotificationsHub>(NotificationsHub.Path).RequireAuthorization(Permissions.NotificationsView);
+app.MapHub<ChatHub>(ChatHub.Path); // access is checked by ChatHubAccessMiddleware
 
 if (jobsEnabled)
 {

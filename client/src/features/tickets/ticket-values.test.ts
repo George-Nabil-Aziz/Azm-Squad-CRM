@@ -19,7 +19,7 @@ describe('ticket priorities', () => {
 describe('ticket statuses and channels', () => {
   it('match the server names (TicketValues)', () => {
     expect(ticketStatuses).toEqual(['new', 'open', 'pending', 'resolved', 'closed'])
-    expect(ticketChannels).toEqual(['manual', 'email', 'whatsapp', 'portal'])
+    expect(ticketChannels).toEqual(['manual', 'email', 'whatsapp', 'portal', 'webform', 'chat', 'sms'])
   })
 
   it('have an English and an Arabic label', () => {

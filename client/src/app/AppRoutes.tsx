@@ -2,6 +2,10 @@ import { Navigate, Route, Routes } from 'react-router'
 import { permissions } from '@/auth/permissions'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { PortalLayout } from '@/components/portal/PortalLayout'
+import { ChatConsolePage } from '@/pages/chat/ChatConsolePage'
+import { ChatWidgetPage } from '@/pages/public/ChatWidgetPage'
+import { ContactFormPage } from '@/pages/public/ContactFormPage'
+import { WebFormsPage } from '@/pages/settings/WebFormsPage'
 import { PortalArticlePage } from '@/pages/portal/PortalArticlePage'
 import { PortalChatPage } from '@/pages/portal/PortalChatPage'
 import { PortalHomePage } from '@/pages/portal/PortalHomePage'
@@ -43,6 +47,8 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/embed/contact" element={<ContactFormPage />} />
+      <Route path="/embed/chat" element={<ChatWidgetPage />} />
       <Route path="/portal" element={<PortalLayout />}>
         <Route index element={<PortalHomePage />} />
         <Route path="login" element={<PortalLoginPage />} />
@@ -84,6 +90,12 @@ export function AppRoutes() {
               <Route path="webhooks" element={<WebhooksPage />} />
               <Route path="erp-logs" element={<ErpLogsPage />} />
             </Route>
+          </Route>
+          <Route element={<RequirePermission permission={permissions.chatHandle} />}>
+            <Route path="chat" element={<ChatConsolePage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.channelsManage} />}>
+            <Route path="web-forms" element={<WebFormsPage />} />
           </Route>
           {/* Areas built by later stories: each story replaces its line with the real page routes. */}
           <Route element={<RequirePermission permission={permissions.ticketsView} />}>

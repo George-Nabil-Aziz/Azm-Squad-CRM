@@ -65,6 +65,9 @@ public static class Permissions
     /// <summary>Manage API keys, webhooks and the ERP sync log (/api/api-keys, /api/webhooks, /api/integrations; CRM-58..60): SuperAdmin and Admin.</summary>
     public const string IntegrationsManage = "integrations.manage";
 
+    /// <summary>Take and answer live chats from the website (CRM-56): connect to the chat hub as an agent.</summary>
+    public const string ChatHandle = "chat.handle";
+
     /// <summary>Every permission, in catalogue order (the order used in /api/auth/me).</summary>
     public static IReadOnlyList<string> All { get; } =
     [
@@ -75,5 +78,6 @@ public static class Permissions
         ReportsView, AuditView, SettingsManage,
         KbView, KbManage,
         IntegrationsManage,
+        ChatHandle,
     ];
 }

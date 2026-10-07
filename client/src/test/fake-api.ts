@@ -32,6 +32,7 @@ export const agentMe: CurrentUser = {
     permissions.ticketsView,
     permissions.ticketsManage,
     permissions.kbView,
+    permissions.chatHandle,
     permissions.notificationsView,
     permissions.tasksManage,
   ],

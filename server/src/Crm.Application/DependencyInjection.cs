@@ -1,6 +1,7 @@
 using Crm.Application.Ai;
 using Crm.Application.Audit;
 using Crm.Application.Channels;
+using Crm.Application.Chat;
 using Crm.Application.Channels.WhatsApp;
 using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
@@ -16,6 +17,7 @@ using Crm.Application.QuickReplies;
 using Crm.Application.Sla;
 using Crm.Application.Tasks;
 using Crm.Application.Tickets;
+using Crm.Application.WebForms;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -48,9 +50,12 @@ public static class DependencyInjection
         services.AddScoped<ITicketReplyDispatcher, ChannelTicketReplyDispatcher>();
         services.AddScoped<IInboundMessageProcessor, InboundMessageProcessor>();
         services.AddScoped<IWhatsAppWebhookService, WhatsAppWebhookService>();
+        services.AddScoped<Crm.Application.Channels.Sms.ISmsWebhookService, Crm.Application.Channels.Sms.SmsWebhookService>();
         services.AddScoped<ITicketCategoryService, TicketCategoryService>();
         services.AddKnowledgeBase();
         services.AddPortal();
+        services.AddWebForms();
+        services.AddChat();
         services.AddAi();
         services.AddScoped<ISlaPolicyService, SlaPolicyService>();
         services.AddScoped<ITicketService, TicketService>();

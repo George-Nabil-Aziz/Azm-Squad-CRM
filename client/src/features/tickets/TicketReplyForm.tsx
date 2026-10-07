@@ -12,12 +12,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { SuggestedSolutions } from '@/features/ai/SuggestedSolutions'
 import { SuggestReplyButton } from '@/features/ai/SuggestReplyButton'
 import { InsertArticleControl } from '@/features/knowledge-base/InsertArticleControl'
+import { analyzeSms } from '@/lib/sms-segments'
 import { QuickReplyPicker } from './QuickReplyPicker'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { ticketsQueryKey, useTicketAssignees } from './useTickets'
 
 /** Reply box of a ticket: a reply to the customer, or (toggle) an internal note the customer never sees. */
-export function TicketReplyForm({ ticketId }: { ticketId: string }) {
+export function TicketReplyForm({ ticketId, channel }: { ticketId: string; channel?: string }) {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const [text, setText] = useState('')
@@ -27,6 +28,8 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
   const [templateOffered, setTemplateOffered] = useState(false)
   const [mentions, setMentions] = useState<{ id: string; name: string }[]>([])
   const assignees = useTicketAssignees()
+  // SMS tickets: warn when a reply needs more than one SMS segment (each part is billed and delivered separately).
+  const sms = channel === 'sms' && !internal ? analyzeSms(text) : null
 
   const send = useMutation({
     mutationFn: (body: string) => {
@@ -81,6 +84,11 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
             onChange={(event) => setText(event.target.value)}
           />
           {error ? <FieldError errors={[{ message: error }]} /> : null}
+          {sms && sms.segments > 1 ? (
+            <p role="alert" className="text-sm text-amber-600">
+              {t('tickets.details.smsSegments', { segments: sms.segments, units: sms.units, limit: sms.multiLimit })}
+            </p>
+          ) : null}
         </Field>
         <SuggestedSolutions
           ticketId={ticketId}

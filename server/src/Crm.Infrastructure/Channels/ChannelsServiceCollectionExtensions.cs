@@ -1,5 +1,7 @@
 using Crm.Application.Channels;
+using Crm.Application.Channels.Sms;
 using Crm.Infrastructure.Channels.Email;
+using Crm.Infrastructure.Channels.Sms;
 using Crm.Infrastructure.Channels.WhatsApp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +24,12 @@ public static class ChannelsServiceCollectionExtensions
         services.AddSingleton(provider =>
             provider.GetRequiredService<IConfiguration>().GetSection(WhatsAppChannelOptions.SectionName).Get<WhatsAppChannelOptions>()
             ?? new WhatsAppChannelOptions());
+
+        services.AddSingleton(provider =>
+            provider.GetRequiredService<IConfiguration>().GetSection(SmsChannelOptions.SectionName).Get<SmsChannelOptions>()
+            ?? new SmsChannelOptions());
+        services.AddHttpClient<TwilioSmsClient>();
+        services.AddScoped<IChannelProvider, SmsChannelProvider>();
 
         services.AddSingleton<ISmtpTransport, MailKitSmtpTransport>();
         services.AddScoped<IChannelProvider, SmtpEmailProvider>();

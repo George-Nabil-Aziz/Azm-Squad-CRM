@@ -63,7 +63,7 @@ public sealed class ChannelSender(
     }
 
     public ChannelStatusResponse GetStatus() =>
-        new(new ChannelState(IsConfigured(ChannelKind.Email)), new ChannelState(IsConfigured(ChannelKind.WhatsApp)));
+        new(new ChannelState(IsConfigured(ChannelKind.Email)), new ChannelState(IsConfigured(ChannelKind.WhatsApp)), new ChannelState(IsConfigured(ChannelKind.Sms)));
 
     /// <summary>WhatsApp free text is allowed only within 24 hours of the customer's last message; otherwise a template is needed.</summary>
     public async Task EnsureCanSendAsync(ChannelReply reply, CancellationToken cancellationToken)
@@ -111,7 +111,12 @@ public sealed class ChannelSender(
         if (!provider.IsConfigured)
         {
             message.MarkFailed(
-                message.Channel == ChannelKind.Email ? ChannelText.EmailNotConfigured : ChannelText.WhatsAppNotConfigured,
+                message.Channel switch
+                {
+                    ChannelKind.Email => ChannelText.EmailNotConfigured,
+                    ChannelKind.Sms => ChannelText.SmsNotConfigured,
+                    _ => ChannelText.WhatsAppNotConfigured,
+                },
                 UtcNow());
             return;
         }

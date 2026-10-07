@@ -62,7 +62,9 @@ public sealed class InboundMessageProcessor(
             var name = Name(message);
             var created = message.Channel == ChannelKind.Email
                 ? await customers.CreateAsync(new CustomerRequest(name, message.From, null), cancellationToken)
-                : await CreateWhatsAppCustomerAsync(name, message.From, cancellationToken);
+                : message.Channel == ChannelKind.Sms
+                    ? await customers.CreateAsync(new CustomerRequest(name, null, message.From), cancellationToken)
+                    : await CreateWhatsAppCustomerAsync(name, message.From, cancellationToken);
             return (created.Id, true);
         }
         catch (ValidationException)

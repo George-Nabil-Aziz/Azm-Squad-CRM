@@ -1,6 +1,7 @@
 using Crm.Domain.Ai;
 using Crm.Domain.Audit;
 using Crm.Domain.Channels;
+using Crm.Domain.Chat;
 using Crm.Domain.Customers;
 using Crm.Domain.Integrations;
 using Crm.Domain.KnowledgeBase;
@@ -87,6 +88,7 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<Webhook> Webhooks => Set<Webhook>();
 
     public DbSet<WebhookDelivery> WebhookDeliveries => Set<WebhookDelivery>();
+    public DbSet<ChatSession> ChatSessions => Set<ChatSession>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

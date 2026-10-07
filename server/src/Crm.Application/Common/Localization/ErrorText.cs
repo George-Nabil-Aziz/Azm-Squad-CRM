@@ -27,6 +27,10 @@ public static class ErrorText
         "The requested resource was not found.",
         "العنصر المطلوب غير موجود.");
 
+    public static string TooManyRequests => LocalizedText.Get(
+        "Too many requests. Try again later.",
+        "طلبات كثيرة جداً. حاول مرة أخرى لاحقاً.");
+
     public static string Conflict => LocalizedText.Get(
         "The request conflicts with the current state.",
         "يتعارض الطلب مع البيانات الحالية.");

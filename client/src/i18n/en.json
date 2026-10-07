@@ -19,6 +19,8 @@
     "quickReplies": "Quick replies",
     "auditLogs": "Audit log",
     "settings": "Settings",
+    "webForms": "Web forms",
+    "chat": "Live chat",
     "integrations": "Integrations"
   },
   "shell": {
@@ -156,7 +158,10 @@
       "manual": "Created by an agent",
       "email": "Email",
       "whatsapp": "WhatsApp",
-      "portal": "Portal"
+      "portal": "Portal",
+      "webform": "Web form",
+      "chat": "Live chat",
+      "sms": "SMS"
     },
     "searchLabel": "Search by ticket number or subject",
     "search": "Search",
@@ -234,7 +239,8 @@
       "conversationTab": "Conversation",
       "historyTab": "History",
       "mention": "Mention a colleague",
-      "mentionPlaceholder": "Choose a colleague"
+      "mentionPlaceholder": "Choose a colleague",
+      "smsSegments": "This message will be sent as {{segments}} SMS segments ({{units}} characters, {{limit}} per segment). Shorten it to send a single SMS."
     },
     "history": {
       "title": "History",
@@ -1017,6 +1023,60 @@
       "insert": "Insert",
       "useful": "Useful",
       "notUseful": "Not useful"
+    }
+  },
+  "webForms": {
+    "form": {
+      "title": "Contact us",
+      "name": "Your name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "nameRequired": "Enter your name.",
+      "emailInvalid": "Enter a valid email address.",
+      "subjectRequired": "Enter a subject.",
+      "messageRequired": "Write your message.",
+      "captchaRequired": "Complete the captcha check first.",
+      "tooManyRequests": "Too many requests. Please wait a minute and try again.",
+      "send": "Send",
+      "sending": "Sending...",
+      "thanks": "Thank you, we received your request.",
+      "number": "Your ticket number:",
+      "emailSent": "We also emailed you a confirmation.",
+      "honeypot": "Leave this field empty"
+    },
+    "admin": {
+      "description": "Embed the contact form on your website. Every submission becomes a ticket and the sender gets a confirmation email.",
+      "embedCode": "Embed code",
+      "copy": "Copy code",
+      "copied": "Copied",
+      "open": "Open the form",
+      "captchaHint": "Set WebForms__CaptchaSecret and WebForms__CaptchaSiteKey on the server to turn on the captcha (Cloudflare Turnstile)."
+    }
+  },
+  "chat": {
+    "messages": "Chat messages",
+    "messageLabel": "Your message",
+    "send": "Send",
+    "end": "End chat",
+    "endedNotice": "This chat has ended. The transcript was saved as a ticket.",
+    "queue": "Waiting chats",
+    "queueEmpty": "No one is waiting.",
+    "mine": "My chats",
+    "accept": "Accept",
+    "selectChat": "Accept or select a chat to start.",
+    "connectionFailed": "Could not connect to live chat. Reload the page to try again.",
+    "widget": {
+      "title": "Chat with us",
+      "checking": "Checking availability...",
+      "offline": "No agent is online right now. Leave a message and we will reply by email.",
+      "offlineSent": "Thank you, we received your message and will reply by email.",
+      "name": "Your name",
+      "email": "Email",
+      "firstMessage": "How can we help?",
+      "start": "Start chat",
+      "required": "Enter your name and email.",
+      "failed": "Could not start the chat. Try again."
     }
   },
   "integrations": {

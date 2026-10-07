@@ -1,6 +1,8 @@
 import {
   BookOpenIcon,
   ChartColumnIcon,
+  FileInputIcon,
+  MessagesSquareIcon,
   LayoutDashboardIcon,
   PlugIcon,
   ScrollTextIcon,
@@ -37,6 +39,7 @@ export const navigationItems: readonly NavigationItem[] = [
   { id: 'tickets', path: '/tickets', icon: TicketIcon, permission: permissions.ticketsView },
   { id: 'customers', path: '/customers', icon: UsersIcon, permission: permissions.customersView },
   { id: 'tasks', path: '/tasks', icon: ListChecksIcon, permission: permissions.tasksManage },
+  { id: 'chat', path: '/chat', icon: MessagesSquareIcon, permission: permissions.chatHandle },
   { id: 'quickReplies', path: '/quick-replies', icon: MessageSquareTextIcon, permission: permissions.ticketsManage },
   { id: 'knowledgeBase', path: '/knowledge-base', icon: BookOpenIcon, permission: permissions.kbView },
   { id: 'reports', path: '/reports', icon: ChartColumnIcon, permission: permissions.reportsView },
@@ -45,6 +48,7 @@ export const navigationItems: readonly NavigationItem[] = [
   { id: 'ticketCategories', path: '/ticket-categories', icon: TagsIcon, permission: permissions.categoriesManage },
   { id: 'slaPolicies', path: '/sla-policies', icon: TimerIcon, permission: permissions.slaManage },
   { id: 'auditLogs', path: '/audit-logs', icon: ScrollTextIcon, permission: permissions.auditView },
+  { id: 'webForms', path: '/web-forms', icon: FileInputIcon, permission: permissions.channelsManage },
   { id: 'integrations', path: '/integrations', icon: PlugIcon, permission: permissions.integrationsManage },
   { id: 'settings', path: '/settings', icon: SettingsIcon, permission: permissions.settingsManage },
 ]

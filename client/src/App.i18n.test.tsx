@@ -4,7 +4,7 @@ import App from './App'
 import { saveSession } from './auth/session'
 import { ADMIN_PASSWORD, fakeApi, inOneHour } from './test/fake-api'
 
-const ARABIC_NAVIGATION_LABELS = ['لوحة التحكم', 'التذاكر', 'العملاء', 'المهام', 'الردود السريعة', 'قاعدة المعرفة', 'التقارير', 'المستخدمون', 'الإسناد', 'فئات التذاكر', 'سياسة SLA', 'سجل التدقيق', 'التكاملات', 'الإعدادات']
+const ARABIC_NAVIGATION_LABELS = ['لوحة التحكم', 'التذاكر', 'العملاء', 'المهام', 'المحادثات المباشرة', 'الردود السريعة', 'قاعدة المعرفة', 'التقارير', 'المستخدمون', 'الإسناد', 'فئات التذاكر', 'سياسة SLA', 'سجل التدقيق', 'نماذج الويب', 'التكاملات', 'الإعدادات']
 
 function html() {
   return document.documentElement

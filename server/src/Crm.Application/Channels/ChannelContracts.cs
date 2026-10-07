@@ -38,6 +38,6 @@ public sealed record OutboundMessageResponse(
     DateTime UpdatedAt);
 
 /// <summary>GET /api/channels/status: which channels have their settings.</summary>
-public sealed record ChannelStatusResponse(ChannelState Email, ChannelState WhatsApp);
+public sealed record ChannelStatusResponse(ChannelState Email, ChannelState WhatsApp, ChannelState? Sms = null);
 
 public sealed record ChannelState(bool Configured);
