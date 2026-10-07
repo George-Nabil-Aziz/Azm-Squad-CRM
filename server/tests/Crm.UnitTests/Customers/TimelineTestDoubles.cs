@@ -68,6 +68,8 @@ internal sealed class OneCustomerRepository(Customer customer) : ICustomerReposi
 
     public void Add(Customer customer) => throw new NotSupportedException();
 
+    public Task MoveTicketsToBranchAsync(Guid customerId, Guid? branchId, CancellationToken cancellationToken) => Task.CompletedTask;
+
     public Task SaveChangesAsync(CancellationToken cancellationToken) => throw new NotSupportedException();
 }
 

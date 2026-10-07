@@ -18,8 +18,8 @@ export function onApiError(listener: ApiErrorListener): () => void {
   }
 }
 
-function fail(error: ApiError): never {
-  errorListeners.forEach((listener) => listener(error))
+function fail(error: ApiError, quiet = false): never {
+  if (!quiet) errorListeners.forEach((listener) => listener(error))
   throw error
 }
 
@@ -39,12 +39,14 @@ interface RequestOptions {
   signal?: AbortSignal
   /** 'blob' reads a file download instead of JSON. */
   responseType?: 'json' | 'blob'
+  /** Do not tell the error listeners (no toast): for background reads whose failure the user need not see. */
+  quiet?: boolean
 }
 
 async function request<T>(
   method: string,
   path: string,
-  { body, signal, responseType = 'json' }: RequestOptions = {},
+  { body, signal, responseType = 'json', quiet = false }: RequestOptions = {},
 ): Promise<T> {
   const isForm = body instanceof FormData
   // Accept-Language: the API answers validation messages and ProblemDetails in the UI language (ar / en).
@@ -66,7 +68,7 @@ async function request<T>(
   } catch (error) {
     // Cancelled on purpose (component unmounted): not a failure the user must see.
     if (signal?.aborted) throw error
-    return fail(new ApiError(`${method} ${path} failed: network error`, 0))
+    return fail(new ApiError(`${method} ${path} failed: network error`, 0), quiet)
   }
 
   if (!response.ok) {
@@ -83,6 +85,7 @@ async function request<T>(
         problem,
         response.headers.get('X-Correlation-Id') ?? undefined,
       ),
+      quiet,
     )
   }
 
@@ -103,6 +106,16 @@ export function apiGetBlob(path: string, signal?: AbortSignal): Promise<Blob> {
 
 export function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
   return request<T>('GET', path, { signal })
+}
+
+/** GET whose failure is not reported to the user (no toast). */
+export function apiGetQuiet<T>(path: string, signal?: AbortSignal): Promise<T> {
+  return request<T>('GET', path, { signal, quiet: true })
+}
+
+/** PUT of a multipart form (file uploads). */
+export function apiPutForm<T>(path: string, form: FormData, signal?: AbortSignal): Promise<T> {
+  return request<T>('PUT', path, { body: form, signal })
 }
 
 export function apiPost<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {

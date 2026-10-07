@@ -9,6 +9,9 @@ public interface ITicketRepository
     /// <summary>True when the customer exists and is not deleted (only such customers get new tickets).</summary>
     Task<bool> CustomerExistsAsync(Guid customerId, CancellationToken cancellationToken);
 
+    /// <summary>The branch of the customer (CRM-62), or null (also for an unknown customer): a new ticket takes it.</summary>
+    Task<Guid?> GetCustomerBranchAsync(Guid customerId, CancellationToken cancellationToken);
+
     /// <summary>The number the next ticket gets: the highest saved number + 1 (1 for the first ticket).</summary>
     Task<int> NextNumberAsync(CancellationToken cancellationToken);
 

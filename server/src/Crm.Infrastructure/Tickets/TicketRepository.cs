@@ -16,8 +16,11 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
     public Task<bool> CustomerExistsAsync(Guid customerId, CancellationToken cancellationToken) =>
         db.Customers.AnyAsync(c => c.Id == customerId, cancellationToken);
 
+    public Task<Guid?> GetCustomerBranchAsync(Guid customerId, CancellationToken cancellationToken) =>
+        db.Customers.AsNoTracking().Where(c => c.Id == customerId).Select(c => c.BranchId).FirstOrDefaultAsync(cancellationToken);
+
     public async Task<int> NextNumberAsync(CancellationToken cancellationToken) =>
-        (await db.Tickets.MaxAsync(t => (int?)t.Number, cancellationToken) ?? 0) + 1;
+        (await db.Tickets.IgnoreQueryFilters().MaxAsync(t => (int?)t.Number, cancellationToken) ?? 0) + 1; // every ticket, whatever the data scope
 
     public void Add(Ticket ticket) => db.Tickets.Add(ticket);
 
@@ -84,6 +87,11 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
             rows = rows.Where(r => r.Ticket.AssigneeId == assigneeId);
         }
 
+        if (filter.DepartmentId is { } departmentId)
+        {
+            rows = rows.Where(r => r.Ticket.DepartmentId == departmentId);
+        }
+
         if (filter.Unassigned)
         {
             rows = rows.Where(r => r.Ticket.AssigneeId == null);
@@ -143,12 +151,15 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
         from category in categories.DefaultIfEmpty()
         join assignee in db.Users on ticket.AssigneeId equals assignee.Id into assignees
         from assignee in assignees.DefaultIfEmpty()
+        join department in db.Departments on ticket.DepartmentId equals department.Id into departments
+        from department in departments.DefaultIfEmpty()
         select new TicketRow
         {
             Ticket = ticket,
             CustomerName = customer.Name,
             CategoryName = category != null ? category.Name : null,
             AssigneeName = assignee != null ? assignee.FullName : null,
+            DepartmentName = department != null ? department.Name : null,
         };
 
     private async Task<bool> NumberTakenAsync(CancellationToken cancellationToken)
@@ -156,7 +167,7 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
         var added = db.ChangeTracker.Entries<Ticket>().Where(e => e.State == EntityState.Added).Select(e => e.Entity).ToList();
         foreach (var ticket in added)
         {
-            if (await db.Tickets.AsNoTracking().AnyAsync(t => t.Number == ticket.Number && t.Id != ticket.Id, cancellationToken))
+            if (await db.Tickets.IgnoreQueryFilters().AsNoTracking().AnyAsync(t => t.Number == ticket.Number && t.Id != ticket.Id, cancellationToken))
             {
                 return true;
             }
@@ -175,6 +186,8 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
 
         public string? AssigneeName { get; init; }
 
-        public TicketView ToView() => new(Ticket, CustomerName, CategoryName, AssigneeName);
+        public string? DepartmentName { get; init; }
+
+        public TicketView ToView() => new(Ticket, CustomerName, CategoryName, AssigneeName, DepartmentName);
     }
 }

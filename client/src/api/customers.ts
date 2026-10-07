@@ -26,6 +26,8 @@ export interface Customer {
   contacts: CustomerContact[]
   /** The customer's id in the ERP (CRM-60), null = not linked. */
   erpCustomerId?: string | null
+  /** The branch that manages the customer (CRM-62). */
+  branchId?: string | null
 }
 
 /** Body of create and edit. Only the name is required; send null for an empty email or phone. */
@@ -33,6 +35,8 @@ export interface CustomerRequest {
   name: string
   email: string | null
   phone: string | null
+  /** Omit to leave the branch unchanged (a branch user always works in their own). */
+  branchId?: string
 }
 
 /** Body of "add contact". Phone numbers may be typed in any common format; the server stores E.164. */

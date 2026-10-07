@@ -16,7 +16,7 @@ public static class RolePermissions
     private static readonly Dictionary<string, IReadOnlyList<string>> ByRole = new(StringComparer.Ordinal)
     {
         [Roles.SuperAdmin] = Permissions.All,
-        [Roles.Admin] = [.. Permissions.All.Except([Permissions.UsersManageSuperAdmins, Permissions.SlaManage, Permissions.SettingsManage])],
+        [Roles.Admin] = [.. Permissions.All.Except([Permissions.UsersManageSuperAdmins, Permissions.SlaManage, Permissions.SettingsManage, Permissions.BranchesManage])],
         [Roles.Supervisor] = InCatalogueOrder([.. AgentPermissions, Permissions.TicketsAssign, Permissions.ReportsView, Permissions.QuickRepliesManageShared]),
         [Roles.Agent] = AgentPermissions,
     };

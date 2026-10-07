@@ -21,6 +21,7 @@ import { Input } from '@/components/ui/input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Textarea } from '@/components/ui/textarea'
 import { customersQueryKey, useCustomers } from '@/features/customers/useCustomers'
+import { useDepartments } from '@/features/departments/useDepartments'
 import { useTicketCategories } from '@/features/ticket-categories/useTicketCategories'
 import { createTicketFormSchema, ticketFormFields, type TicketFormValues } from './ticket-form-schema'
 import { ticketPriorities } from './ticket-values'
@@ -37,9 +38,10 @@ export function NewTicketDialog({ onClose }: { onClose: () => void }) {
   const [search, setSearch] = useState('')
   const customers = useCustomers({ search: search || undefined, page: 1, pageSize: CUSTOMER_PAGE_SIZE })
   const categories = useTicketCategories({ activeOnly: true })
+  const departments = useDepartments({ activeOnly: true })
   const form = useForm<TicketFormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { customerId: '', subject: '', description: '', categoryId: '', priority: 'mid' },
+    defaultValues: { customerId: '', subject: '', description: '', categoryId: '', departmentId: '', priority: 'mid' },
   })
 
   const create = useMutation({
@@ -50,6 +52,7 @@ export function NewTicketDialog({ onClose }: { onClose: () => void }) {
         description: values.description || null,
         categoryId: values.categoryId || null,
         priority: values.priority,
+        ...(values.departmentId ? { departmentId: values.departmentId } : {}),
       }),
     onSuccess: async (ticket) => {
       // The customer's timeline now shows the ticket too.
@@ -149,6 +152,26 @@ export function NewTicketDialog({ onClose }: { onClose: () => void }) {
                 </Field>
               )}
             />
+            {departments.data && departments.data.length > 0 ? (
+              <Controller
+                name="departmentId"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="ticket-new-department">{t('tickets.department.label')}</FieldLabel>
+                    <NativeSelect {...field} id="ticket-new-department" className="w-full" aria-invalid={fieldState.invalid}>
+                      <NativeSelectOption value="">{t('tickets.department.none')}</NativeSelectOption>
+                      {departments.data?.map((department) => (
+                        <NativeSelectOption key={department.id} value={department.id}>
+                          {department.name}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                  </Field>
+                )}
+              />
+            ) : null}
             <div className="grid gap-4 sm:grid-cols-2">
               <Controller
                 name="categoryId"

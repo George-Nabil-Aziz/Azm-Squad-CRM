@@ -35,7 +35,7 @@ public class RolePermissionsTests
     public void Admin_HasEverythingExceptTheSuperAdminOnlyPermissions()
     {
         Assert.Equal(
-            Permissions.All.Except([Permissions.UsersManageSuperAdmins, Permissions.SlaManage, Permissions.SettingsManage]),
+            Permissions.All.Except([Permissions.UsersManageSuperAdmins, Permissions.SlaManage, Permissions.SettingsManage, Permissions.BranchesManage]),
             RolePermissions.ForRole(Roles.Admin));
     }
 
@@ -55,6 +55,24 @@ public class RolePermissionsTests
         Assert.False(RolePermissions.HasPermission([Roles.Admin], Permissions.SettingsManage));
         Assert.False(RolePermissions.HasPermission([Roles.Supervisor], Permissions.SettingsManage));
         Assert.False(RolePermissions.HasPermission([Roles.Agent], Permissions.SettingsManage));
+    }
+
+    [Fact]
+    public void BranchesManage_IsForSuperAdminOnly()
+    {
+        Assert.True(RolePermissions.HasPermission([Roles.SuperAdmin], Permissions.BranchesManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Admin], Permissions.BranchesManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Supervisor], Permissions.BranchesManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Agent], Permissions.BranchesManage));
+    }
+
+    [Fact]
+    public void DepartmentsManage_IsForSuperAdminAndAdminOnly()
+    {
+        Assert.True(RolePermissions.HasPermission([Roles.SuperAdmin], Permissions.DepartmentsManage));
+        Assert.True(RolePermissions.HasPermission([Roles.Admin], Permissions.DepartmentsManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Supervisor], Permissions.DepartmentsManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Agent], Permissions.DepartmentsManage));
     }
 
     [Fact]

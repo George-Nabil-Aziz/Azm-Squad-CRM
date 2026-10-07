@@ -20,7 +20,12 @@ function stubApi(verify: () => Response) {
     if (path === CHAT_STATUS) return json(200, { enabled: false })
     return json(404, { status: 404 }, 'application/problem+json')
   })
-  vi.stubGlobal('fetch', fetchMock)
+  // The public branding request of the app shell is answered apart, so the mock only records the calls of the page.
+  vi.stubGlobal('fetch', (path: string, init?: RequestInit) =>
+    path === '/api/branding'
+      ? Promise.resolve(json(200, { primaryColor: null, secondaryColor: null, logoUrl: null }))
+      : fetchMock(path, init),
+  )
   return fetchMock
 }
 

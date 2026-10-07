@@ -8,6 +8,7 @@ import { clearPortalSession } from '@/auth/portal-session'
 import { useIsPortalAuthenticated, usePortalCustomer } from '@/auth/usePortalSession'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { Button } from '@/components/ui/button'
+import { BrandLogo } from '@/features/branding/BrandLogo'
 
 /** Own simple layout of the customer portal (not the staff sidebar): header with navigation, language switch and sign in / out. */
 export function PortalLayout() {
@@ -24,7 +25,8 @@ export function PortalLayout() {
     <div className="flex min-h-svh flex-col bg-background">
       <header className="border-b">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
-          <Link to="/portal" className="text-lg font-semibold">
+          <Link to="/portal" className="flex items-center gap-2 text-lg font-semibold">
+            <BrandLogo alt="" />
             {t('portal.title')}
           </Link>
           <nav aria-label={t('portal.navigation')} className="flex flex-wrap gap-1">

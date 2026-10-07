@@ -1,4 +1,6 @@
 using Crm.Api.Auth;
+using Crm.Application.Auth;
+using Crm.Application.Branches;
 using Crm.Application.Users;
 
 namespace Crm.Api.Endpoints;
@@ -28,6 +30,12 @@ public static class UsersEndpoints
         group.MapPut("/{id:guid}", async (Guid id, UpdateUserRequest request, IUserService users, CancellationToken cancellationToken) =>
                 Results.Ok(await users.UpdateAsync(id, request, cancellationToken)))
             .WithName("UpdateUser");
+
+        // CRM-62: the branch of a user (branches.manage, SuperAdmin): a branch user must not be able to lift their own restriction.
+        group.MapPut("/{id:guid}/branch", async (Guid id, SetUserBranchRequest request, IUserService users, CancellationToken cancellationToken) =>
+                Results.Ok(await users.SetBranchAsync(id, request, cancellationToken)))
+            .RequireAuthorization(Permissions.BranchesManage)
+            .WithName("SetUserBranch");
 
         group.MapPost("/{id:guid}/deactivate", async (Guid id, IUserService users, CancellationToken cancellationToken) =>
             {

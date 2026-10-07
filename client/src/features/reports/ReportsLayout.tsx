@@ -1,6 +1,11 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink, Outlet } from 'react-router'
+import { Field, FieldLabel } from '@/components/ui/field'
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
+import { useBranches } from '@/features/branches/useBranches'
 import { cn } from '@/lib/utils'
+import { ReportBranchContext } from './report-branch'
 
 /** Sub navigation of the reports area; every report is a child route. */
 const reportLinks = [
@@ -13,8 +18,11 @@ const reportLinks = [
 
 export function ReportsLayout() {
   const { t } = useTranslation()
+  const [branchId, setBranchId] = useState('')
+  const branches = useBranches({})
 
   return (
+    <ReportBranchContext.Provider value={branchId || undefined}>
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold">{t('nav.reports')}</h1>
@@ -36,7 +44,21 @@ export function ReportsLayout() {
           </NavLink>
         ))}
       </nav>
+      {branches.data && branches.data.length > 0 ? (
+        <Field className="max-w-xs">
+          <FieldLabel htmlFor="report-branch">{t('reports.filters.branch')}</FieldLabel>
+          <NativeSelect id="report-branch" className="w-full" value={branchId} onChange={(event) => setBranchId(event.target.value)}>
+            <NativeSelectOption value="">{t('reports.filters.allBranches')}</NativeSelectOption>
+            {branches.data.map((branch) => (
+              <NativeSelectOption key={branch.id} value={branch.id}>
+                {branch.name}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+        </Field>
+      ) : null}
       <Outlet />
     </div>
+    </ReportBranchContext.Provider>
   )
 }

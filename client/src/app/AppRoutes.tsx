@@ -36,6 +36,9 @@ import { SlaPoliciesPage } from '@/pages/sla/SlaPoliciesPage'
 import { QuickRepliesPage } from '@/pages/quick-replies/QuickRepliesPage'
 import { TasksPage } from '@/pages/tasks/TasksPage'
 import { TicketCategoriesPage } from '@/pages/ticket-categories/TicketCategoriesPage'
+import { DepartmentsPage } from '@/pages/departments/DepartmentsPage'
+import { BranchesPage } from '@/pages/branches/BranchesPage'
+import { BrandingPage } from '@/pages/branding/BrandingPage'
 import { TicketDetailsPage } from '@/pages/tickets/TicketDetailsPage'
 import { TicketsPage } from '@/pages/tickets/TicketsPage'
 import { UsersPage } from '@/pages/users/UsersPage'
@@ -74,6 +77,12 @@ export function AppRoutes() {
           <Route element={<RequirePermission permission={permissions.categoriesManage} />}>
             <Route path="ticket-categories" element={<TicketCategoriesPage />} />
           </Route>
+          <Route element={<RequirePermission permission={permissions.departmentsManage} />}>
+            <Route path="departments" element={<DepartmentsPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.branchesManage} />}>
+            <Route path="branches" element={<BranchesPage />} />
+          </Route>
           <Route element={<RequirePermission permission={permissions.slaManage} />}>
             <Route path="sla-policies" element={<SlaPoliciesPage />} />
           </Route>
@@ -82,6 +91,7 @@ export function AppRoutes() {
           </Route>
           <Route element={<RequirePermission permission={permissions.settingsManage} />}>
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="branding" element={<BrandingPage />} />
           </Route>
           <Route element={<RequirePermission permission={permissions.integrationsManage} />}>
             <Route path="integrations" element={<IntegrationsLayout />}>

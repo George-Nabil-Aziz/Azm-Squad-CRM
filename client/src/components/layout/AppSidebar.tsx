@@ -13,6 +13,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { usePermissions } from '@/features/auth/usePermissions'
+import { BrandLogo } from '@/features/branding/BrandLogo'
 
 function AppSidebarLink({ item }: { item: NavigationItem }) {
   const { t } = useTranslation()
@@ -44,7 +45,10 @@ export function AppSidebar() {
   return (
     <Sidebar side={dir === 'rtl' ? 'right' : 'left'} dir={dir}>
       <SidebarHeader>
-        <span className="px-2 py-1 text-base font-semibold">{t('app.name')}</span>
+        <div className="flex items-center gap-2 px-2 py-1">
+          <BrandLogo alt={t('app.name')} />
+          <span className="text-base font-semibold">{t('app.name')}</span>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

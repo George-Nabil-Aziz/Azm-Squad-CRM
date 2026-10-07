@@ -19,5 +19,17 @@ public sealed class SlaPolicyRepository(CrmDbContext db) : ISlaPolicyRepository
     public Task<SlaPolicy?> FindAsync(TicketPriority priority, CancellationToken cancellationToken) =>
         db.SlaPolicies.FirstOrDefaultAsync(p => p.Priority == priority, cancellationToken);
 
+    public async Task<SlaPolicy?> FindEffectiveAsync(TicketPriority priority, Guid? departmentId, CancellationToken cancellationToken)
+    {
+        if (departmentId is { } id
+            && await db.DepartmentSlaPolicies.AsNoTracking()
+                .FirstOrDefaultAsync(p => p.DepartmentId == id && p.Priority == priority, cancellationToken) is { } overridePolicy)
+        {
+            return overridePolicy.ToPolicy();
+        }
+
+        return await db.SlaPolicies.AsNoTracking().FirstOrDefaultAsync(p => p.Priority == priority, cancellationToken);
+    }
+
     public Task SaveChangesAsync(CancellationToken cancellationToken) => db.SaveChangesAsync(cancellationToken);
 }

@@ -9,6 +9,7 @@ export function createTicketFormSchema(t: TFunction) {
     subject: z.string().trim().min(1, t('tickets.subjectRequired')).max(200),
     description: z.string().trim().max(10_000),
     categoryId: z.string(),
+    departmentId: z.string(),
     priority: z.enum(ticketPriorities),
   })
 }
@@ -16,4 +17,4 @@ export function createTicketFormSchema(t: TFunction) {
 export type TicketFormValues = z.infer<ReturnType<typeof createTicketFormSchema>>
 
 /** Fields the API can report errors for (ProblemDetails `errors` keys). */
-export const ticketFormFields = ['customerId', 'subject', 'description', 'categoryId', 'priority'] as const
+export const ticketFormFields = ['customerId', 'subject', 'description', 'categoryId', 'departmentId', 'priority'] as const

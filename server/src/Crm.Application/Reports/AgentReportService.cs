@@ -1,7 +1,7 @@
 namespace Crm.Application.Reports;
 
 /// <summary>GET /api/reports/agents: tickets created in the range (<c>yyyy-MM-dd</c>, UTC days, inclusive).</summary>
-public sealed record AgentQuery(DateOnly? From, DateOnly? To);
+public sealed record AgentQuery(DateOnly? From, DateOnly? To, Guid? BranchId = null);
 
 /// <summary>What the database counted for one agent (the assignee of the tickets).</summary>
 public sealed record AgentAggregate(Guid AgentId, string Name, int Tickets, SlaTargetAggregate Response, SlaTargetAggregate Resolution);
@@ -50,8 +50,8 @@ public sealed class AgentReportService(IReportsRepository repository, ICsatReadM
     {
         var range = ReportRangeResolver.Resolve(query.From, query.To, timeProvider);
         var aggregates = await repository.AgentAggregatesAsync(
-            new SlaFilter(range.FromUtc, range.ToUtcExclusive, timeProvider.GetUtcNow().UtcDateTime), cancellationToken);
-        var ratings = (await csat.GetAsync(new CsatFilter(range.FromUtc, range.ToUtcExclusive), cancellationToken)).Ratings
+            new SlaFilter(range.FromUtc, range.ToUtcExclusive, timeProvider.GetUtcNow().UtcDateTime, query.BranchId), cancellationToken);
+        var ratings = (await csat.GetAsync(new CsatFilter(range.FromUtc, range.ToUtcExclusive, query.BranchId), cancellationToken)).Ratings
             .Where(r => r.AgentId is not null)
             .GroupBy(r => r.AgentId!.Value)
             .ToDictionary(g => g.Key, g => (Average: Math.Round(g.Average(r => r.Rating), 2), Count: g.Count()));

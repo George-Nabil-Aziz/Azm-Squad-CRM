@@ -86,6 +86,7 @@ public class TicketsAuthorizationTests(CrmApiFactory factory) : IClassFixture<Cr
         Assert.Equal(link, policies["POST /api/tickets/{id:guid}/articles/"]);
         Assert.Equal(read, policies["GET /api/tickets/{id:guid}/attachments/"]); // CRM-41
         Assert.Equal(read, policies["GET /api/tickets/{id:guid}/attachments/{attachmentId:guid}"]);
+        Assert.Equal(write, policies["PUT /api/tickets/{id:guid}/department"]); // CRM-61
         Assert.Equal(read, policies["GET /api/tickets/{id:guid}/ai-summary"]); // CRM-50
         Assert.Equal(write, policies["POST /api/tickets/{id:guid}/ai-summary"]);
         Assert.Equal(write, policies["POST /api/tickets/{id:guid}/ai-reply-draft"]); // CRM-51
@@ -93,6 +94,6 @@ public class TicketsAuthorizationTests(CrmApiFactory factory) : IClassFixture<Cr
         string[] suggest = [Permissions.KbView, Permissions.TicketsView];
         Assert.Equal(suggest, policies["GET /api/tickets/{id:guid}/ai-suggestions"]); // CRM-53
         Assert.Equal(link, policies["PUT /api/tickets/{id:guid}/ai-suggestions/{articleId:guid}/feedback"]);
-        Assert.Equal(23, policies.Count);
+        Assert.Equal(24, policies.Count);
     }
 }

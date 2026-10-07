@@ -1,11 +1,14 @@
 using Crm.Application.Audit;
 using Crm.Application.Auth;
+using Crm.Application.Branches;
 using Crm.Application.Common.Exceptions;
 using Crm.Application.Common.Paging;
 using Crm.Application.Common.Security;
 using Crm.Application.Common.Validation;
+using Crm.Application.Departments;
 using Crm.Application.Users;
 using Crm.Domain.Audit;
+using Crm.Domain.Departments;
 using Crm.Infrastructure.Persistence;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
@@ -48,9 +51,12 @@ public sealed class UserService(
             .Skip((page - 1) * pageSize).Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        var roles = await RolesByUserAsync(pageUsers.Select(u => u.Id).ToList(), cancellationToken);
+        var pageIds = pageUsers.Select(u => u.Id).ToList();
+        var roles = await RolesByUserAsync(pageIds, cancellationToken);
+        var departments = await DepartmentsByUserAsync(pageIds, cancellationToken);
         var items = pageUsers
-            .Select(u => ToResponse(u, roles.TryGetValue(u.Id, out var userRoles) ? userRoles : []))
+            .Select(u => ToResponse(u, roles.TryGetValue(u.Id, out var userRoles) ? userRoles : [],
+                departments.TryGetValue(u.Id, out var userDepartments) ? userDepartments : []))
             .ToList();
         return new PagedResult<UserResponse>(items, page, pageSize, totalCount);
     }
@@ -58,7 +64,7 @@ public sealed class UserService(
     public async Task<UserResponse> GetAsync(Guid id, CancellationToken cancellationToken)
     {
         var user = await FindAsync(id);
-        return ToResponse(user, [.. await userManager.GetRolesAsync(user)]);
+        return ToResponse(user, [.. await userManager.GetRolesAsync(user)], await DepartmentIdsAsync(user.Id, cancellationToken));
     }
 
     public async Task<UserResponse> CreateAsync(CreateUserRequest request, CancellationToken cancellationToken)
@@ -66,6 +72,11 @@ public sealed class UserService(
         await createValidator.ValidateOrThrowAsync(request, cancellationToken);
         var roles = request.Roles!.Distinct(StringComparer.Ordinal).ToList();
         EnsureMayManage(roles);
+        var departmentIds = await ValidDepartmentIdsAsync(request.DepartmentIds, cancellationToken);
+        if (request.BranchId is not null)
+        {
+            await EnsureMayAssignBranchAsync(request.BranchId, cancellationToken);
+        }
 
         var email = request.Email!.Trim();
         if (await userManager.FindByEmailAsync(email) is not null)
@@ -79,18 +90,20 @@ public sealed class UserService(
             Email = email,
             EmailConfirmed = true,
             FullName = request.FullName!.Trim(),
+            BranchId = request.BranchId,
         };
 
         // One transaction: a user is never left without roles.
         await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
         ThrowIfFailed(await userManager.CreateAsync(user, request.Password!));
         ThrowIfFailed(await userManager.AddToRolesAsync(user, roles));
+        await SetDepartmentsAsync(user.Id, departmentIds, cancellationToken);
         await transaction.CommitAsync(cancellationToken);
         await audit.LogAsync(
             new AuditEvent(AuditActions.UserCreated, "User", user.Id.ToString(), NewValues: Snapshot(user, roles)),
             cancellationToken);
 
-        return ToResponse(user, roles);
+        return ToResponse(user, roles, departmentIds ?? []);
     }
 
     public async Task<UserResponse> UpdateAsync(Guid id, UpdateUserRequest request, CancellationToken cancellationToken)
@@ -101,6 +114,7 @@ public sealed class UserService(
         var roles = request.Roles!.Distinct(StringComparer.Ordinal).ToList();
         EnsureMayManage(currentRoles);
         EnsureMayManage(roles);
+        var departmentIds = await ValidDepartmentIdsAsync(request.DepartmentIds, cancellationToken);
 
         var email = request.Email!.Trim();
         var owner = await userManager.FindByEmailAsync(email);
@@ -119,12 +133,55 @@ public sealed class UserService(
         ThrowIfFailed(await userManager.UpdateAsync(user));
         ThrowIfFailed(await userManager.RemoveFromRolesAsync(user, currentRoles.Except(roles)));
         ThrowIfFailed(await userManager.AddToRolesAsync(user, roles.Except(currentRoles)));
+        if (departmentIds is not null)
+        {
+            await SetDepartmentsAsync(user.Id, departmentIds, cancellationToken);
+        }
+
         await transaction.CommitAsync(cancellationToken);
         await audit.LogAsync(
             new AuditEvent(AuditActions.UserUpdated, "User", user.Id.ToString(), oldValues, Snapshot(user, roles)),
             cancellationToken);
 
-        return ToResponse(user, roles);
+        return ToResponse(user, roles, await DepartmentIdsAsync(user.Id, cancellationToken));
+    }
+
+    public async Task<UserResponse> SetBranchAsync(Guid id, SetUserBranchRequest request, CancellationToken cancellationToken)
+    {
+        EnsureMayAssignBranch();
+        var user = await FindAsync(id);
+        await EnsureBranchExistsAsync(request.BranchId, cancellationToken);
+
+        var old = user.BranchId;
+        user.BranchId = request.BranchId;
+        ThrowIfFailed(await userManager.UpdateAsync(user));
+        await audit.LogAsync(
+            new AuditEvent(AuditActions.UserUpdated, "User", user.Id.ToString(), new { branchId = old }, new { branchId = user.BranchId }),
+            cancellationToken);
+        return ToResponse(user, [.. await userManager.GetRolesAsync(user)], await DepartmentIdsAsync(user.Id, cancellationToken));
+    }
+
+    /// <summary>CRM-62: only a user with branches.manage may put users in a branch (a branch user must not lift their own restriction).</summary>
+    private void EnsureMayAssignBranch()
+    {
+        if (!currentUser.HasPermission(Permissions.BranchesManage))
+        {
+            throw new ForbiddenException(UserText.SuperAdminOnly);
+        }
+    }
+
+    private async Task EnsureMayAssignBranchAsync(Guid? branchId, CancellationToken cancellationToken)
+    {
+        EnsureMayAssignBranch();
+        await EnsureBranchExistsAsync(branchId, cancellationToken);
+    }
+
+    private async Task EnsureBranchExistsAsync(Guid? branchId, CancellationToken cancellationToken)
+    {
+        if (branchId is { } id && !await db.Branches.AnyAsync(b => b.Id == id && b.IsActive, cancellationToken))
+        {
+            throw new ValidationException(new Dictionary<string, string[]> { ["branchId"] = [BranchText.Unavailable] });
+        }
     }
 
     public async Task DeactivateAsync(Guid id, CancellationToken cancellationToken)
@@ -211,11 +268,50 @@ public sealed class UserService(
         throw new ValidationException(errors);
     }
 
+    private async Task<List<Guid>> DepartmentIdsAsync(Guid userId, CancellationToken cancellationToken) =>
+        await db.UserDepartments.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.DepartmentId).ToListAsync(cancellationToken);
+
+    private async Task<Dictionary<Guid, List<Guid>>> DepartmentsByUserAsync(List<Guid> userIds, CancellationToken cancellationToken) =>
+        (await db.UserDepartments.AsNoTracking().Where(m => userIds.Contains(m.UserId)).ToListAsync(cancellationToken))
+        .GroupBy(m => m.UserId)
+        .ToDictionary(group => group.Key, group => group.Select(m => m.DepartmentId).ToList());
+
+    /// <summary>CRM-61: null stays null (unchanged); otherwise the distinct ids, every one must be an existing department (400 on departmentIds).</summary>
+    private async Task<List<Guid>?> ValidDepartmentIdsAsync(IReadOnlyList<Guid>? ids, CancellationToken cancellationToken)
+    {
+        if (ids is null)
+        {
+            return null;
+        }
+
+        var distinct = ids.Distinct().ToList();
+        var known = await db.Departments.CountAsync(d => distinct.Contains(d.Id), cancellationToken);
+        if (known != distinct.Count)
+        {
+            throw new ValidationException(new Dictionary<string, string[]> { ["departmentIds"] = [DepartmentText.UnknownDepartments] });
+        }
+
+        return distinct;
+    }
+
+    private async Task SetDepartmentsAsync(Guid userId, List<Guid>? departmentIds, CancellationToken cancellationToken)
+    {
+        if (departmentIds is null)
+        {
+            return;
+        }
+
+        var current = await db.UserDepartments.Where(m => m.UserId == userId).ToListAsync(cancellationToken);
+        db.UserDepartments.RemoveRange(current.Where(m => !departmentIds.Contains(m.DepartmentId)));
+        db.UserDepartments.AddRange(departmentIds.Except(current.Select(m => m.DepartmentId)).Select(id => new UserDepartment(userId, id)));
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
     private static string EscapeLike(string value) =>
         value.Replace(LikeEscape, LikeEscape + LikeEscape)
             .Replace("%", LikeEscape + "%")
             .Replace("_", LikeEscape + "_");
 
-    private static UserResponse ToResponse(ApplicationUser user, IReadOnlyList<string> roles) =>
-        new(user.Id, user.Email!, user.FullName, [.. roles.Order(StringComparer.Ordinal)], user.IsActive);
+    private static UserResponse ToResponse(ApplicationUser user, IReadOnlyList<string> roles, IReadOnlyList<Guid> departmentIds) =>
+        new(user.Id, user.Email!, user.FullName, [.. roles.Order(StringComparer.Ordinal)], user.IsActive, [.. departmentIds.Order()], user.BranchId);
 }

@@ -32,6 +32,7 @@ public sealed class CsatReadModel(CrmDbContext db) : ICsatReadModel
             from survey in db.TicketSurveys.AsNoTracking()
             where survey.Rating != null && survey.RatedAt >= filter.FromUtc && survey.RatedAt < filter.ToUtcExclusive
             join ticket in db.Tickets.AsNoTracking() on survey.TicketId equals ticket.Id
+            where filter.BranchId == null || ticket.BranchId == filter.BranchId
             join agent in db.Users on ticket.AssigneeId equals agent.Id into agents
             from agent in agents.DefaultIfEmpty()
             join category in db.TicketCategories on ticket.CategoryId equals category.Id into categories
@@ -52,6 +53,7 @@ public sealed class CsatReadModel(CrmDbContext db) : ICsatReadModel
             }).ToListAsync(cancellationToken);
 
         var sent = await db.TicketSurveys.AsNoTracking()
+            .Where(s => filter.BranchId == null || db.Tickets.Any(t => t.Id == s.TicketId && t.BranchId == filter.BranchId))
             .CountAsync(s => s.IssuedAt >= filter.FromUtc && s.IssuedAt < filter.ToUtcExclusive, cancellationToken);
 
         return new CsatSnapshot(

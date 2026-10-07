@@ -27,5 +27,8 @@ public interface ICustomerRepository
 
     void Add(Customer customer);
 
+    /// <summary>Gives every ticket of the customer the branch (CRM-62: tickets follow their customer).</summary>
+    Task MoveTicketsToBranchAsync(Guid customerId, Guid? branchId, CancellationToken cancellationToken);
+
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }

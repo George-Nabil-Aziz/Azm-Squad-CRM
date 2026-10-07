@@ -17,6 +17,9 @@ public interface IUserService
 
     Task<UserResponse> UpdateAsync(Guid id, UpdateUserRequest request, CancellationToken cancellationToken);
 
+    /// <summary>Assigns the user to a branch or removes the branch (CRM-62). The API allows it only with <c>branches.manage</c>.</summary>
+    Task<UserResponse> SetBranchAsync(Guid id, Crm.Application.Branches.SetUserBranchRequest request, CancellationToken cancellationToken);
+
     Task DeactivateAsync(Guid id, CancellationToken cancellationToken);
 
     Task ReactivateAsync(Guid id, CancellationToken cancellationToken);

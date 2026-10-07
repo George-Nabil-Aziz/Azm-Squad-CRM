@@ -60,7 +60,7 @@ public sealed class TicketReportService(IReportsRepository repository, TimeProvi
 
         var range = ReportRangeResolver.Resolve(query.From, query.To, timeProvider);
         var counts = await repository.TicketCountsAsync(
-            new TicketReportFilter(range.FromUtc, range.ToUtcExclusive, status, query.CategoryId, channel, priority), cancellationToken);
+            new TicketReportFilter(range.FromUtc, range.ToUtcExclusive, status, query.CategoryId, channel, priority, query.BranchId), cancellationToken);
 
         var byStatus = Enum.GetValues<TicketStatus>().Select(s => new ReportCount(TicketValues.StatusName(s), counts.ByStatus.GetValueOrDefault(s))).ToList();
         var byChannel = Enum.GetValues<TicketChannel>().Select(c => new ReportCount(TicketValues.ChannelName(c), counts.ByChannel.GetValueOrDefault(c))).ToList();

@@ -24,6 +24,8 @@ export const permissions = {
   settingsManage: 'settings.manage',
   integrationsManage: 'integrations.manage',
   chatHandle: 'chat.handle',
+  departmentsManage: 'departments.manage',
+  branchesManage: 'branches.manage',
 } as const
 
 export type Permission = (typeof permissions)[keyof typeof permissions]

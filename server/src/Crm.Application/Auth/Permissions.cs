@@ -68,6 +68,12 @@ public static class Permissions
     /// <summary>Take and answer live chats from the website (CRM-56): connect to the chat hub as an agent.</summary>
     public const string ChatHandle = "chat.handle";
 
+    /// <summary>Create, edit and deactivate departments and put users in them (CRM-61): SuperAdmin and Admin.</summary>
+    public const string DepartmentsManage = "departments.manage";
+
+    /// <summary>Create and edit branches and assign users to them (CRM-62): SuperAdmin only.</summary>
+    public const string BranchesManage = "branches.manage";
+
     /// <summary>Every permission, in catalogue order (the order used in /api/auth/me).</summary>
     public static IReadOnlyList<string> All { get; } =
     [
@@ -79,5 +85,6 @@ public static class Permissions
         KbView, KbManage,
         IntegrationsManage,
         ChatHandle,
+        DepartmentsManage, BranchesManage,
     ];
 }

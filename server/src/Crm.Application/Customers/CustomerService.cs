@@ -1,4 +1,6 @@
 using Crm.Application.Audit;
+using Crm.Application.Branches;
+using Crm.Application.Common.Security;
 using Crm.Application.Common.Exceptions;
 using Crm.Application.Common.Paging;
 using Crm.Application.Common.Validation;
@@ -6,6 +8,7 @@ using Crm.Application.Customers.Timeline;
 using Crm.Domain.Audit;
 using Crm.Domain.Customers;
 using FluentValidation;
+using ValidationException = Crm.Application.Common.Exceptions.ValidationException;
 
 namespace Crm.Application.Customers;
 
@@ -18,7 +21,9 @@ public sealed class CustomerService(
     IValidator<CustomerContactRequest> contactValidator,
     IValidator<CustomerLookupQuery> lookupValidator,
     IInteractionRecorder timeline,
-    IAuditLogger audit) : ICustomerService
+    IAuditLogger audit,
+    IBranchRepository? branches = null,
+    IDataScope? dataScope = null) : ICustomerService
 {
     private static readonly ContactType[] NumberTypes = [ContactType.Phone, ContactType.WhatsApp];
 
@@ -43,8 +48,10 @@ public sealed class CustomerService(
     {
         await requestValidator.ValidateOrThrowAsync(request, cancellationToken);
 
+        var branchId = await ResolveBranchAsync(request.BranchId, null, cancellationToken);
         var now = UtcNow();
         var customer = Customer.Create(request.Name!, request.Email, PhoneOrNull(request.Phone), now);
+        customer.ChangeBranch(branchId, now);
         customers.Add(customer);
         timeline.Record(customer.Id, InteractionType.Customer, InteractionEvents.CustomerCreated, customer.Name, null, now);
         await customers.SaveChangesAsync(cancellationToken);
@@ -56,11 +63,17 @@ public sealed class CustomerService(
     {
         await requestValidator.ValidateOrThrowAsync(request, cancellationToken);
         var customer = await FindAsync(id, cancellationToken);
+        var branchId = await ResolveBranchAsync(request.BranchId, customer.BranchId, cancellationToken);
 
         var now = UtcNow();
         customer.Update(request.Name!, request.Email, PhoneOrNull(request.Phone), now);
+        var branchChanged = customer.ChangeBranch(branchId, now);
         timeline.Record(customer.Id, InteractionType.Customer, InteractionEvents.CustomerUpdated, customer.Name, null, now);
         await customers.SaveChangesAsync(cancellationToken);
+        if (branchChanged)
+        {
+            await customers.MoveTicketsToBranchAsync(customer.Id, branchId, cancellationToken); // CRM-62
+        }
 
         return ToResponse(customer);
     }
@@ -132,6 +145,40 @@ public sealed class CustomerService(
 
     private DateTime UtcNow() => timeProvider.GetUtcNow().UtcDateTime;
 
+    /// <summary>
+    /// CRM-62: the branch a customer is saved with. A branch-restricted user always works inside their own branch (naming another one
+    /// is 400); anyone else may name an active branch. Not named: the current branch stays (create: none, or the user's own).
+    /// </summary>
+    private async Task<Guid?> ResolveBranchAsync(Guid? requested, Guid? current, CancellationToken cancellationToken)
+    {
+        if (dataScope is { RestrictBranch: true, BranchId: { } own })
+        {
+            if (requested is { } other && other != own)
+            {
+                throw new ValidationException(new Dictionary<string, string[]> { ["branchId"] = [BranchText.NotYours] });
+            }
+
+            return current ?? own;
+        }
+
+        if (requested is not { } id)
+        {
+            return current;
+        }
+
+        if (id == current)
+        {
+            return current;
+        }
+
+        if (branches is null || await branches.FindAsync(id, cancellationToken) is not { IsActive: true })
+        {
+            throw new ValidationException(new Dictionary<string, string[]> { ["branchId"] = [BranchText.Unavailable] });
+        }
+
+        return id;
+    }
+
     /// <summary>E.164 form of a phone number the validator accepted; null for an empty value.</summary>
     private static string? PhoneOrNull(string? phone) =>
         string.IsNullOrWhiteSpace(phone) ? null
@@ -155,7 +202,8 @@ public sealed class CustomerService(
             [.. customer.Contacts
                 .OrderBy(c => c.Type).ThenByDescending(c => c.IsPrimary).ThenBy(c => c.CreatedAt).ThenBy(c => c.Value)
                 .Select(ToResponse)],
-            customer.ErpCustomerId);
+            customer.ErpCustomerId,
+            customer.BranchId);
 
     private static CustomerContactResponse ToResponse(CustomerContact contact) =>
         new(contact.Id, ContactValues.TypeName(contact.Type), contact.Value, contact.IsPrimary);

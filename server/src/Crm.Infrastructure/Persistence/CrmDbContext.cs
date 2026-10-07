@@ -1,9 +1,12 @@
+using Crm.Application.Common.Security;
 using Crm.Domain.Ai;
 using Crm.Domain.Audit;
+using Crm.Domain.Branches;
 using Crm.Domain.Channels;
 using Crm.Domain.Chat;
 using Crm.Domain.Customers;
 using Crm.Domain.Integrations;
+using Crm.Domain.Departments;
 using Crm.Domain.KnowledgeBase;
 using Crm.Domain.Notifications;
 using Crm.Domain.Portal;
@@ -18,7 +21,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Infrastructure.Persistence;
 
-public class CrmDbContext(DbContextOptions<CrmDbContext> options)
+public class CrmDbContext(DbContextOptions<CrmDbContext> options, IDataScope? dataScope = null)
     : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>(options)
 {
     /// <summary>
@@ -26,6 +29,30 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     /// Read deleted rows on purpose with <c>IgnoreQueryFilters([CrmDbContext.SoftDeleteFilter])</c>.
     /// </summary>
     public const string SoftDeleteFilter = "SoftDelete";
+
+    /// <summary>Name of the global query filter that hides tickets of other departments from a department-restricted agent (CRM-61).</summary>
+    public const string DepartmentFilter = "Department";
+
+    /// <summary>Name of the query filter that hides customers and tickets of other branches from a branch user (CRM-62).</summary>
+    public const string BranchFilter = "Branch";
+
+    // The data scope of the current request (null / unrestricted for jobs, channels and the portal). Read by the query filters
+    // below on every query, so EF Core takes the values of this context instance.
+    internal bool ScopeRestrictsDepartments => dataScope is { RestrictDepartments: true };
+
+    internal bool ScopeRestrictsBranch => dataScope is { RestrictBranch: true };
+
+    internal Guid? ScopeBranchId => dataScope?.BranchId;
+
+    internal Guid[] ScopeDepartmentIds => dataScope is null ? [] : [.. dataScope.DepartmentIds];
+
+    public DbSet<Branch> Branches => Set<Branch>();
+
+    public DbSet<Department> Departments => Set<Department>();
+
+    public DbSet<UserDepartment> UserDepartments => Set<UserDepartment>();
+
+    public DbSet<DepartmentSlaPolicy> DepartmentSlaPolicies => Set<DepartmentSlaPolicy>();
 
     public DbSet<Customer> Customers => Set<Customer>();
 
@@ -100,10 +127,19 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
             // Rows that exist when the column is added (e.g. the seeded SuperAdmin) become active.
             user.Property(u => u.IsActive).HasDefaultValue(true).ValueGeneratedNever();
             user.Property(u => u.IsOnDuty).HasDefaultValue(true).ValueGeneratedNever();
+            user.HasOne<Branch>().WithMany().HasForeignKey(u => u.BranchId).OnDelete(DeleteBehavior.Restrict); // CRM-62
         });
 
         // Domain entities: one IEntityTypeConfiguration<T> per entity in Persistence/Configurations.
         builder.ApplyConfigurationsFromAssembly(typeof(CrmDbContext).Assembly);
+
+        // CRM-62: a branch user sees the customers and tickets of their branch only (rows without a branch are hidden too).
+        builder.Entity<Ticket>().HasQueryFilter(BranchFilter, t => !ScopeRestrictsBranch || t.BranchId == ScopeBranchId);
+        builder.Entity<Customer>().HasQueryFilter(BranchFilter, c => !ScopeRestrictsBranch || c.BranchId == ScopeBranchId);
+
+        // CRM-61: a department-restricted agent sees tickets of their departments and tickets without a department.
+        builder.Entity<Ticket>().HasQueryFilter(DepartmentFilter,
+            t => !ScopeRestrictsDepartments || t.DepartmentId == null || ScopeDepartmentIds.Contains(t.DepartmentId.Value));
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

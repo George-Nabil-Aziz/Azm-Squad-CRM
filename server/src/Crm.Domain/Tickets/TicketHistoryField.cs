@@ -7,4 +7,5 @@ public enum TicketHistoryField
     Assignee = 2,
     Priority = 3,
     Category = 4,
+    Department = 5,
 }

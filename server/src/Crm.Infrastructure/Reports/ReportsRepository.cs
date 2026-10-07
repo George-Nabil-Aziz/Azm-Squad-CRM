@@ -12,7 +12,8 @@ public sealed class ReportsRepository(CrmDbContext db) : IReportsRepository
     public async Task<TicketCounts> TicketCountsAsync(TicketReportFilter filter, CancellationToken cancellationToken)
     {
         var tickets = db.Tickets.AsNoTracking()
-            .Where(t => t.CreatedAt >= filter.FromUtc && t.CreatedAt < filter.ToUtcExclusive);
+            .Where(t => t.CreatedAt >= filter.FromUtc && t.CreatedAt < filter.ToUtcExclusive)
+            .Where(t => filter.BranchId == null || t.BranchId == filter.BranchId);
         if (filter.Status is { } status)
         {
             tickets = tickets.Where(t => t.Status == status);
@@ -60,7 +61,9 @@ public sealed class ReportsRepository(CrmDbContext db) : IReportsRepository
     public async Task<IReadOnlyList<SlaAggregate>> SlaAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken)
     {
         var now = filter.NowUtc;
-        var inRange = db.Tickets.AsNoTracking().Where(t => t.CreatedAt >= filter.FromUtc && t.CreatedAt < filter.ToUtcExclusive);
+        var inRange = db.Tickets.AsNoTracking()
+            .Where(t => t.CreatedAt >= filter.FromUtc && t.CreatedAt < filter.ToUtcExclusive)
+            .Where(t => filter.BranchId == null || t.BranchId == filter.BranchId);
         var rows = await inRange
             .GroupBy(t => t.Priority)
             .Select(g => new
@@ -95,11 +98,14 @@ public sealed class ReportsRepository(CrmDbContext db) : IReportsRepository
         ];
     }
 
-    public Task<int> OpenTicketsAsync(CancellationToken cancellationToken) =>
-        db.Tickets.AsNoTracking().CountAsync(t => t.Status != TicketStatus.Resolved && t.Status != TicketStatus.Closed, cancellationToken);
+    public Task<int> OpenTicketsAsync(Guid? branchId, CancellationToken cancellationToken) =>
+        db.Tickets.AsNoTracking().CountAsync(
+            t => t.Status != TicketStatus.Resolved && t.Status != TicketStatus.Closed && (branchId == null || t.BranchId == branchId),
+            cancellationToken);
 
-    public Task<int> BreachedTodayAsync(DateTime dayStartUtc, DateTime dayEndUtc, DateTime nowUtc, CancellationToken cancellationToken) =>
-        db.Tickets.AsNoTracking().CountAsync(t =>
+    public Task<int> BreachedTodayAsync(
+        DateTime dayStartUtc, DateTime dayEndUtc, DateTime nowUtc, Guid? branchId, CancellationToken cancellationToken) =>
+        db.Tickets.AsNoTracking().Where(t => branchId == null || t.BranchId == branchId).CountAsync(t =>
             (t.ResponseDueAt != null && t.ResponseDueAt >= dayStartUtc && t.ResponseDueAt < dayEndUtc
              && ((t.FirstResponseAt != null && t.FirstResponseAt > t.ResponseDueAt) || (t.FirstResponseAt == null && t.ResponseDueAt <= nowUtc)))
             || (t.ResolutionDueAt != null && t.ResolutionDueAt >= dayStartUtc && t.ResolutionDueAt < dayEndUtc
@@ -110,7 +116,8 @@ public sealed class ReportsRepository(CrmDbContext db) : IReportsRepository
     {
         var now = filter.NowUtc;
         var assigned = db.Tickets.AsNoTracking()
-            .Where(t => t.CreatedAt >= filter.FromUtc && t.CreatedAt < filter.ToUtcExclusive && t.AssigneeId != null);
+            .Where(t => t.CreatedAt >= filter.FromUtc && t.CreatedAt < filter.ToUtcExclusive && t.AssigneeId != null)
+            .Where(t => filter.BranchId == null || t.BranchId == filter.BranchId);
         var rows = await assigned
             .GroupBy(t => t.AssigneeId!.Value)
             .Select(g => new
@@ -175,6 +182,7 @@ public sealed class ReportsRepository(CrmDbContext db) : IReportsRepository
         var now = filter.NowUtc;
         var breached = db.Tickets.AsNoTracking()
             .Where(t => t.CreatedAt >= filter.FromUtc && t.CreatedAt < filter.ToUtcExclusive)
+            .Where(t => filter.BranchId == null || t.BranchId == filter.BranchId)
             .Where(t =>
                 (t.ResponseDueAt != null
                  && ((t.FirstResponseAt != null && t.FirstResponseAt > t.ResponseDueAt) || (t.FirstResponseAt == null && t.ResponseDueAt <= now)))

@@ -40,6 +40,9 @@ public sealed class Customer : ISoftDeletable
 
     public DateTime UpdatedAt { get; private set; }
 
+    /// <summary>The branch that manages the customer (CRM-62); null = no branch.</summary>
+    public Guid? BranchId { get; private set; }
+
     public bool IsDeleted { get; private set; }
 
     public DateTime? DeletedAt { get; private set; }
@@ -86,6 +89,20 @@ public sealed class Customer : ISoftDeletable
     }
 
     /// <summary>Soft delete: the row and its data stay (tickets keep pointing at it). Deleting twice changes nothing.</summary>
+    /// <summary>Moves the customer to a branch (null = none). Returns false, changing nothing, when it already is there.</summary>
+    public bool ChangeBranch(Guid? branchId, DateTime utcNow)
+    {
+        EnsureUtc(utcNow);
+        if (BranchId == branchId)
+        {
+            return false;
+        }
+
+        BranchId = branchId;
+        UpdatedAt = utcNow;
+        return true;
+    }
+
     public void Delete(DateTime utcNow)
     {
         EnsureUtc(utcNow);

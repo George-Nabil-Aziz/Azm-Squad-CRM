@@ -13,6 +13,7 @@ export const auditActionKeys = {
   'customer.deleted': 'customerDeleted',
   'customer-contact.removed': 'customerContactRemoved',
   'settings.updated': 'settingsUpdated',
+  'branding.updated': 'brandingUpdated',
 } as const
 export type AuditAction = keyof typeof auditActionKeys
 export const auditActions = Object.keys(auditActionKeys) as AuditAction[]

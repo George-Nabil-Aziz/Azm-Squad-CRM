@@ -69,6 +69,8 @@ internal sealed class FakeCustomers : ICustomerRepository
 
     public void Add(Customer customer) => Customers.Add(customer);
 
+    public Task MoveTicketsToBranchAsync(Guid customerId, Guid? branchId, CancellationToken cancellationToken) => Task.CompletedTask;
+
     public Task SaveChangesAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
 

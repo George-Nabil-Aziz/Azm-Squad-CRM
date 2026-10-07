@@ -51,5 +51,9 @@ public sealed class CustomerRepository(CrmDbContext db) : ICustomerRepository
 
     public void Add(Customer customer) => db.Customers.Add(customer);
 
+    public Task MoveTicketsToBranchAsync(Guid customerId, Guid? branchId, CancellationToken cancellationToken) =>
+        db.Tickets.Where(t => t.CustomerId == customerId)
+            .ExecuteUpdateAsync(set => set.SetProperty(t => t.BranchId, branchId), cancellationToken);
+
     public Task SaveChangesAsync(CancellationToken cancellationToken) => db.SaveChangesAsync(cancellationToken);
 }

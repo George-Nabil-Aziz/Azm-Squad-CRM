@@ -13,6 +13,7 @@ import { LinkedArticles } from '@/features/knowledge-base/LinkedArticles'
 import { CustomerPanel } from '@/features/tickets/CustomerPanel'
 import { TicketAssignControl } from '@/features/tickets/TicketAssignControl'
 import { TicketClassifyControl } from '@/features/tickets/TicketClassifyControl'
+import { TicketDepartmentControl } from '@/features/tickets/TicketDepartmentControl'
 import { TicketHistory } from '@/features/tickets/TicketHistory'
 import { TicketReplyForm } from '@/features/tickets/TicketReplyForm'
 import { TicketStatusActions } from '@/features/tickets/TicketStatusActions'
@@ -76,6 +77,7 @@ function TicketDetails({ ticket }: { ticket: Ticket }) {
           </Link>
         </Detail>
         <Detail label={t('tickets.columns.category')}>{ticket.categoryName ?? t('tickets.noCategory')}</Detail>
+        <Detail label={t('tickets.department.label')}>{ticket.departmentName ?? t('tickets.department.none')}</Detail>
         <Detail label={t('tickets.columns.assignee')}>{ticket.assigneeName ?? t('tickets.filters.unassigned')}</Detail>
         <Detail label={t('tickets.details.channel')}>{t(`tickets.channels.${ticket.channel}`)}</Detail>
         <Detail label={t('tickets.columns.created')}>
@@ -98,6 +100,7 @@ function TicketDetails({ ticket }: { ticket: Ticket }) {
       <TicketStatusActions ticket={ticket} />
       <TicketAssignControl ticket={ticket} />
       <TicketClassifyControl ticket={ticket} />
+      <TicketDepartmentControl ticket={ticket} />
       <TicketAiClassification ticketId={ticket.id} />
       <TicketSummary ticketId={ticket.id} />
 

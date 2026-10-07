@@ -1,5 +1,7 @@
 using Crm.Application.Ai;
 using Crm.Application.Audit;
+using Crm.Application.Branches;
+using Crm.Application.Branding;
 using Crm.Application.Channels;
 using Crm.Application.Chat;
 using Crm.Application.Channels.WhatsApp;
@@ -8,6 +10,7 @@ using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
 using Crm.Application.Customers.Timeline;
 using Crm.Application.Integrations;
+using Crm.Application.Departments;
 using Crm.Application.KnowledgeBase;
 using Crm.Application.Portal;
 using Crm.Application.Reports;
@@ -59,6 +62,10 @@ public static class DependencyInjection
         services.AddAi();
         services.AddScoped<ISlaPolicyService, SlaPolicyService>();
         services.AddScoped<ITicketService, TicketService>();
+        services.AddScoped<IDepartmentService, DepartmentService>();
+        services.AddScoped<IBranchService, BranchService>();
+        services.AddScoped<IBrandingService, BrandingService>();
+        services.AddScoped<ITicketDepartmentService, TicketDepartmentService>();
         services.AddScoped<SlaMonitorJob>();
         services.AddScoped<ISlaNotifier, SlaNotifier>();
         services.AddScoped<INotificationDispatcher, NotificationDispatcher>();
