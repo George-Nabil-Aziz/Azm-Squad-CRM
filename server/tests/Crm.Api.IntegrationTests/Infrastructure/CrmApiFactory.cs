@@ -19,7 +19,8 @@ namespace Crm.Api.IntegrationTests.Infrastructure;
 
 /// <summary>
 /// The one shared test host (CLAUDE.md "Integration tests"). Environment <c>Testing</c>.
-/// SQLite in-memory database (one open connection for the factory lifetime, created with EnsureCreated
+/// SQLite shared-cache in-memory database (kept alive by one open connection for the factory lifetime; each
+/// DbContext opens its own connection), created with EnsureCreated
 /// and seeded by the real startup code), test JWT key + seed password, a controllable clock in <see cref="Time"/>,
 /// captured logs in <see cref="Logs"/> and test-only endpoints under <c>/_test</c>.
 /// </summary>
@@ -34,7 +35,13 @@ public class CrmApiFactory : WebApplicationFactory<Program>
     public const string SmsWebhookBaseUrl = "https://crm.test";
     public const string WhatsAppAppSecret = "test-app-secret-for-integration-tests";
 
-    private readonly SqliteConnection _connection = new("DataSource=:memory:");
+    // A named shared-cache in-memory database: each DbContext opens its own connection to it, so concurrent requests
+    // (SignalR long-polls next to REST calls) never share one SqliteConnection across threads ("database is locked").
+    // _connection stays open for the factory lifetime only to keep the in-memory database alive.
+    private readonly string _connectionString = $"DataSource=crm-tests-{Guid.NewGuid():N};Mode=Memory;Cache=Shared";
+    private readonly SqliteConnection _connection;
+
+    public CrmApiFactory() => _connection = new SqliteConnection(_connectionString);
 
     /// <summary>Root of the uploaded files of this factory (a temp folder, deleted on dispose; never inside the repository).</summary>
     public string FilesRoot { get; } = Path.Combine(Path.GetTempPath(), "crm-tests", Guid.NewGuid().ToString("N"));
@@ -71,7 +78,7 @@ public class CrmApiFactory : WebApplicationFactory<Program>
         {
             services.RemoveAll<DbContextOptions<CrmDbContext>>();
             services.RemoveAll<IDbContextOptionsConfiguration<CrmDbContext>>();
-            services.AddDbContext<CrmDbContext>(options => options.UseSqlite(_connection));
+            services.AddDbContext<CrmDbContext>(options => options.UseSqlite(_connectionString));
 
             services.RemoveAll<TimeProvider>();
             services.AddSingleton<TimeProvider>(Time);
