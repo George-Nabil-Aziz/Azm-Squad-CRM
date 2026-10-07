@@ -23,10 +23,11 @@ export function createCustomerFormSchema(t: TFunction) {
       .trim()
       .max(32)
       .refine((phone) => phone === '' || isPhoneNumber(phone), t('customers.phoneInvalid')),
+    branchId: z.string(),
   })
 }
 
 export type CustomerFormValues = z.infer<ReturnType<typeof createCustomerFormSchema>>
 
 /** Fields the API can report errors for (ProblemDetails `errors` keys). */
-export const customerFormFields = ['name', 'email', 'phone'] as const
+export const customerFormFields = ['name', 'email', 'phone', 'branchId'] as const

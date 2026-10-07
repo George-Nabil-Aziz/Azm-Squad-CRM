@@ -11,6 +11,16 @@ public sealed class DataScope : IDataScope
 
     public IReadOnlyList<Guid> DepartmentIds { get; private set; } = [];
 
+    public bool RestrictBranch { get; private set; }
+
+    public Guid? BranchId { get; private set; }
+
+    public void RestrictToBranch(Guid branchId)
+    {
+        RestrictBranch = true;
+        BranchId = branchId;
+    }
+
     public void RestrictToDepartments(IEnumerable<Guid> departmentIds)
     {
         RestrictDepartments = true;
@@ -31,6 +41,13 @@ public sealed class DataScopeLoader(CrmDbContext db, ICurrentUser currentUser, D
         if (currentUser.UserId is not { } userId)
         {
             return; // anonymous requests, the portal and jobs are not restricted
+        }
+
+        // CRM-62: a user (other than SuperAdmin) with a branch works inside it.
+        if (!currentUser.IsInRole(Roles.SuperAdmin)
+            && await db.Users.AsNoTracking().Where(u => u.Id == userId).Select(u => u.BranchId).FirstOrDefaultAsync(cancellationToken) is { } branchId)
+        {
+            scope.RestrictToBranch(branchId);
         }
 
         // A user who is only an Agent works inside their departments; Supervisor, Admin and SuperAdmin see every department.

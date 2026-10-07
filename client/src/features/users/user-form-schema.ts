@@ -24,10 +24,11 @@ export function createUserFormSchema(t: TFunction, mode: 'create' | 'edit') {
     password: mode === 'create' ? z.string().refine(isStrongPassword, t('users.passwordWeak')) : z.string(),
     roles: z.array(z.enum(roleNames)).min(1, t('users.rolesRequired')),
     departmentIds: z.array(z.string()),
+    branchId: z.string(),
   })
 }
 
 export type UserFormValues = z.infer<ReturnType<typeof createUserFormSchema>>
 
 /** Fields the API can report errors for (ProblemDetails `errors` keys). */
-export const userFormFields = ['fullName', 'email', 'password', 'roles', 'departmentIds'] as const
+export const userFormFields = ['fullName', 'email', 'password', 'roles', 'departmentIds', 'branchId'] as const

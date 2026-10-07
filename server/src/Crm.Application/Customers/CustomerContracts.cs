@@ -7,7 +7,8 @@ public sealed record ListCustomersQuery(string? Search, int? Page, int? PageSize
 /// Body of POST /api/customers and PUT /api/customers/{id}. Only the name is required. Email and phone are the
 /// customer's primary email / phone contact (phone in any common format; stored as E.164).
 /// </summary>
-public sealed record CustomerRequest(string? Name, string? Email, string? Phone);
+/// <c>BranchId</c> (CRM-62): the customer's branch; null = unchanged on update (none on create for users without a branch).
+public sealed record CustomerRequest(string? Name, string? Email, string? Phone, Guid? BranchId = null);
 
 /// <summary>
 /// A customer as the API returns it. <c>Email</c> / <c>Phone</c> are the primary email / phone; <c>Contacts</c> lists
@@ -20,7 +21,8 @@ public sealed record CustomerResponse(
     string? Phone,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    IReadOnlyList<CustomerContactResponse> Contacts);
+    IReadOnlyList<CustomerContactResponse> Contacts,
+    Guid? BranchId = null);
 
 /// <summary>One contact: <c>Type</c> is "phone", "email" or "whatsapp"; numbers are E.164, emails lower case.</summary>
 public sealed record CustomerContactResponse(Guid Id, string Type, string Value, bool IsPrimary);

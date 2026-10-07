@@ -1,3 +1,4 @@
+using Crm.Domain.Branches;
 using Crm.Domain.Customers;
 using Crm.Domain.Departments;
 using Crm.Domain.Tickets;
@@ -39,6 +40,8 @@ public sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         ticket.HasOne<ApplicationUser>().WithMany().HasForeignKey(t => t.AssigneeId).OnDelete(DeleteBehavior.Restrict);
         ticket.HasOne<Department>().WithMany().HasForeignKey(t => t.DepartmentId).OnDelete(DeleteBehavior.Restrict); // CRM-61
         ticket.HasIndex(t => t.DepartmentId);
+        ticket.HasOne<Branch>().WithMany().HasForeignKey(t => t.BranchId).OnDelete(DeleteBehavior.Restrict); // CRM-62
+        ticket.HasIndex(t => t.BranchId);
         ticket.HasOne<ApplicationUser>().WithMany().HasForeignKey(t => t.CreatedById).OnDelete(DeleteBehavior.Restrict);
     }
 }

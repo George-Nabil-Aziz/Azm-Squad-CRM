@@ -38,7 +38,8 @@ public sealed record TicketResponse(
     DateTime? ResponseWarnedAt = null,
     IReadOnlyList<string>? AllowedStatuses = null,
     Guid? DepartmentId = null,
-    string? DepartmentName = null);
+    string? DepartmentName = null,
+    Guid? BranchId = null);
 
 /// <summary>Body of PUT /api/tickets/{id}/priority: "high", "mid" or "low" (CRM-20: the SLA due times are recalculated).</summary>
 public sealed record ChangeTicketPriorityRequest(string? Priority);

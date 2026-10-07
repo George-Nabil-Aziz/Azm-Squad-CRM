@@ -47,6 +47,9 @@ public sealed partial class Ticket
     /// <summary>The department that owns the ticket (CRM-61); null = general (visible to every agent).</summary>
     public Guid? DepartmentId { get; private set; }
 
+    /// <summary>The branch of the ticket (CRM-62): the branch of its customer when it was created; null = none.</summary>
+    public Guid? BranchId { get; private set; }
+
     public DateTime CreatedAt { get; private set; }
 
     public DateTime UpdatedAt { get; private set; }
@@ -178,6 +181,9 @@ public sealed partial class Ticket
         UpdatedAt = utcNow;
         return true;
     }
+
+    /// <summary>Sets the branch (CRM-62): done when the ticket is created and when its customer moves to another branch.</summary>
+    public void AssignBranch(Guid? branchId) => BranchId = branchId;
 
     /// <summary>Moves the ticket to a department (null = general). Returns false, changing nothing, when it already is there.</summary>
     public bool ChangeDepartment(Guid? departmentId, DateTime utcNow)

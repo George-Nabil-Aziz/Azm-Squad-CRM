@@ -19,7 +19,8 @@
     "quickReplies": "Quick replies",
     "auditLogs": "Audit log",
     "settings": "Settings",
-    "departments": "Departments"
+    "departments": "Departments",
+    "branches": "Branches"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -119,7 +120,9 @@
       "Supervisor": "Team supervisor",
       "Agent": "Support agent"
     },
-    "departments": "Departments"
+    "departments": "Departments",
+    "branch": "Branch",
+    "noBranch": "No branch (sees every branch)"
   },
   "tickets": {
     "priorities": {
@@ -468,7 +471,9 @@
         "uploadedAt": "Uploaded",
         "actions": "Actions"
       }
-    }
+    },
+    "branch": "Branch",
+    "noBranch": "No branch (or my branch)"
   },
   "assignment": {
     "description": "New tickets go to the available agent with the fewest open tickets. Agents who are inactive or off duty are skipped.",
@@ -670,7 +675,9 @@
       "channel": "Channel",
       "priority": "Priority",
       "all": "All",
-      "clear": "Clear filters"
+      "clear": "Clear filters",
+      "branch": "Branch",
+      "allBranches": "All branches"
     },
     "tickets": {
       "total": "Tickets in the period",
@@ -1016,5 +1023,31 @@
     "slaRemove": "Use the global policy",
     "slaSaved": "The department SLA was saved.",
     "slaRemoved": "The department SLA was removed."
+  },
+  "branches": {
+    "description": "Company branches. Staff assigned to a branch see only the customers and tickets of that branch; a SuperAdmin sees all branches.",
+    "add": "Add branch",
+    "columns": {
+      "name": "Name",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "active": "Active",
+    "inactive": "Inactive",
+    "edit": "Edit",
+    "empty": "No branches yet.",
+    "loading": "Loading branches…",
+    "createTitle": "New branch",
+    "createDescription": "The name must be unique. New branches are active.",
+    "editTitle": "Edit branch",
+    "editDescription": "Rename the branch or deactivate it. Inactive branches stay on existing users, customers and tickets.",
+    "name": "Name",
+    "isActive": "Active (can be chosen for users and customers)",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "nameRequired": "Enter the branch name.",
+    "created": "Branch {{name}} was created.",
+    "updated": "Branch {{name}} was saved."
   }
 }

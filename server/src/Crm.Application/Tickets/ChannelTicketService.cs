@@ -55,6 +55,7 @@ public sealed class ChannelTicketService(
 
         var ticket = Ticket.Create(
             customerId, Subject(message), Cut(body, Ticket.DescriptionMaxLength), null, TicketPriority.Mid, channel, null, now);
+        ticket.AssignBranch(await tickets.GetCustomerBranchAsync(customerId, cancellationToken)); // CRM-62
         var runtime = await settings.GetAsync(cancellationToken); // CRM-35: business hours + ticket prefix
         if (await slaPolicies.FindAsync(ticket.Priority, cancellationToken) is { } policy)
         {

@@ -62,6 +62,7 @@ public sealed class TicketService(
         var ticket = Ticket.Create(customerId, request.Subject!, request.Description, request.CategoryId, priority,
             channel, createdById, now);
         ticket.ChangeDepartment(departmentId, now); // CRM-61
+        ticket.AssignBranch(await tickets.GetCustomerBranchAsync(customerId, cancellationToken)); // CRM-62: tickets follow their customer
         // CRM-20: due times come from the policy of the priority now; later policy changes do not move them.
         // CRM-61: a department override of the priority wins over the global policy.
         if (await slaPolicies.FindEffectiveAsync(priority, departmentId, cancellationToken) is { } policy)
@@ -175,7 +176,8 @@ public sealed class TicketService(
             ticket.ResponseWarnedAt,
             [.. TicketStatusRules.AllowedTargets(ticket.Status).Select(TicketValues.StatusName)],
             ticket.DepartmentId,
-            view.DepartmentName);
+            view.DepartmentName,
+            ticket.BranchId);
     }
 
     /// <summary>

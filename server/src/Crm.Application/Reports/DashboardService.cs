@@ -16,7 +16,8 @@ public sealed record DashboardResponse(
 
 public interface IDashboardService
 {
-    Task<DashboardResponse> GetAsync(CancellationToken cancellationToken);
+    /// <summary>The KPIs; with <paramref name="branchId"/> only the tickets of that branch (CRM-62).</summary>
+    Task<DashboardResponse> GetAsync(Guid? branchId, CancellationToken cancellationToken);
 }
 
 public sealed class DashboardService(IReportsRepository repository, ICsatReadModel csat, TimeProvider timeProvider) : IDashboardService
@@ -27,7 +28,7 @@ public sealed class DashboardService(IReportsRepository repository, ICsatReadMod
     /// <summary>Days behind the average response time and the average CSAT, today included.</summary>
     public const int AverageDays = 30;
 
-    public async Task<DashboardResponse> GetAsync(CancellationToken cancellationToken)
+    public async Task<DashboardResponse> GetAsync(Guid? branchId, CancellationToken cancellationToken)
     {
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var today = DateOnly.FromDateTime(now);
@@ -35,14 +36,14 @@ public sealed class DashboardService(IReportsRepository repository, ICsatReadMod
         var chartFrom = today.AddDays(1 - ChartDays);
         var averageFromUtc = today.AddDays(1 - AverageDays).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
 
-        var openTickets = await repository.OpenTicketsAsync(cancellationToken);
+        var openTickets = await repository.OpenTicketsAsync(branchId, cancellationToken);
         var breachedToday = await repository.BreachedTodayAsync(
-            today.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), tomorrowUtc, now, cancellationToken);
+            today.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), tomorrowUtc, now, branchId, cancellationToken);
         var counts = await repository.TicketCountsAsync(
-            new TicketReportFilter(chartFrom.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), tomorrowUtc, null, null, null, null),
+            new TicketReportFilter(chartFrom.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), tomorrowUtc, null, null, null, null, branchId),
             cancellationToken);
-        var sla = await repository.SlaAggregatesAsync(new SlaFilter(averageFromUtc, tomorrowUtc, now), cancellationToken);
-        var ratings = (await csat.GetAsync(new CsatFilter(averageFromUtc, tomorrowUtc), cancellationToken)).Ratings;
+        var sla = await repository.SlaAggregatesAsync(new SlaFilter(averageFromUtc, tomorrowUtc, now, branchId), cancellationToken);
+        var ratings = (await csat.GetAsync(new CsatFilter(averageFromUtc, tomorrowUtc, branchId), cancellationToken)).Ratings;
 
         var minutes = sla.Sum(a => a.Response.MinutesSum);
         var measured = sla.Sum(a => a.Response.Measured);

@@ -16,6 +16,8 @@ export interface User {
   isActive: boolean
   /** Departments the user belongs to (CRM-61). */
   departmentIds?: string[]
+  /** The user's branch (CRM-62); null/absent = none. */
+  branchId?: string | null
 }
 
 export interface ListUsersParams {
@@ -30,6 +32,8 @@ export interface CreateUserRequest {
   password: string
   roles: RoleName[]
   departmentIds?: string[]
+  /** Needs branches.manage. */
+  branchId?: string
 }
 
 export interface UpdateUserRequest {

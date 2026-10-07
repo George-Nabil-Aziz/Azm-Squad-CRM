@@ -5,7 +5,7 @@ namespace Crm.Application.Reports;
 
 /// <summary>GET /api/reports/tickets query string. Dates are <c>yyyy-MM-dd</c> (UTC days, inclusive); names as in the ticket API.</summary>
 public sealed record TicketReportQuery(
-    DateOnly? From, DateOnly? To, string? Status, Guid? CategoryId, string? Channel, string? Priority);
+    DateOnly? From, DateOnly? To, string? Status, Guid? CategoryId, string? Channel, string? Priority, Guid? BranchId = null);
 
 /// <summary>A bucket of a breakdown: the API name ("open", "email", "high") and the number of tickets.</summary>
 public sealed record ReportCount(string Key, int Count);
@@ -26,7 +26,8 @@ public sealed record TicketReportResponse(
 
 /// <summary>The filter handed to the repository: UTC range (end exclusive) plus the optional ticket filters.</summary>
 public sealed record TicketReportFilter(
-    DateTime FromUtc, DateTime ToUtcExclusive, TicketStatus? Status, Guid? CategoryId, TicketChannel? Channel, TicketPriority? Priority);
+    DateTime FromUtc, DateTime ToUtcExclusive, TicketStatus? Status, Guid? CategoryId, TicketChannel? Channel, TicketPriority? Priority,
+    Guid? BranchId = null);
 
 public sealed record CategoryCountRow(Guid? CategoryId, string? Name, int Count);
 
@@ -48,10 +49,11 @@ public interface IReportsRepository
     Task<IReadOnlyList<AgentAggregate>> AgentAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken);
 
     /// <summary>Tickets that are not resolved or closed, now.</summary>
-    Task<int> OpenTicketsAsync(CancellationToken cancellationToken);
+    Task<int> OpenTicketsAsync(Guid? branchId, CancellationToken cancellationToken);
 
     /// <summary>Tickets with a response or resolution due time inside the day (UTC) that is breached at <c>nowUtc</c>.</summary>
-    Task<int> BreachedTodayAsync(DateTime dayStartUtc, DateTime dayEndUtc, DateTime nowUtc, CancellationToken cancellationToken);
+    Task<int> BreachedTodayAsync(
+        DateTime dayStartUtc, DateTime dayEndUtc, DateTime nowUtc, Guid? branchId, CancellationToken cancellationToken);
 
     Task<IReadOnlyList<SlaAggregate>> SlaAggregatesAsync(SlaFilter filter, CancellationToken cancellationToken);
 

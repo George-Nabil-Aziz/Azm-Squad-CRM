@@ -5,7 +5,10 @@ import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { isApiError } from '@/api/errors'
+import { setUserBranch } from '@/api/branches'
 import { createUser, roleNames, updateUser, type User } from '@/api/users'
+import { useBranches } from '@/features/branches/useBranches'
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { permissions } from '@/auth/permissions'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -39,6 +42,9 @@ export function UserFormDialog({ user, onClose }: UserFormDialogProps) {
   const assignableRoles = roleNames.filter((role) => role !== 'SuperAdmin' || can(permissions.usersManageSuperAdmins))
   const mode = user ? 'edit' : 'create'
   const departments = useDepartments({ activeOnly: true })
+  // CRM-62: only a user with branches.manage (SuperAdmin) may put users in a branch.
+  const canAssignBranch = can(permissions.branchesManage)
+  const branches = useBranches({ activeOnly: true }, canAssignBranch)
   const schema = useMemo(() => createUserFormSchema(t, mode), [t, mode])
   const form = useForm<UserFormValues>({
     resolver: zodResolver(schema),
@@ -48,14 +54,18 @@ export function UserFormDialog({ user, onClose }: UserFormDialogProps) {
       password: '',
       roles: user?.roles ?? [],
       departmentIds: user?.departmentIds ?? [],
+      branchId: user?.branchId ?? '',
     },
   })
 
   const save = useMutation({
-    mutationFn: ({ password, departmentIds, ...values }: UserFormValues) => {
+    mutationFn: async ({ password, departmentIds, branchId, ...values }: UserFormValues) => {
       // Departments are sent only when there are some to choose from (an omitted list leaves the user's departments alone).
       const withDepartments = departments.data && departments.data.length > 0 ? { ...values, departmentIds } : values
-      return user ? updateUser(user.id, withDepartments) : createUser({ ...withDepartments, password })
+      if (!user) return createUser({ ...withDepartments, password, ...(canAssignBranch && branchId ? { branchId } : {}) })
+      const updated = await updateUser(user.id, withDepartments)
+      if (canAssignBranch && branchId !== (user.branchId ?? '')) await setUserBranch(user.id, branchId || null)
+      return updated
     },
     onSuccess: async (saved) => {
       await queryClient.invalidateQueries({ queryKey: usersQueryKey })
@@ -178,6 +188,26 @@ export function UserFormDialog({ user, onClose }: UserFormDialogProps) {
                     ))}
                     {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
                   </FieldSet>
+                )}
+              />
+            ) : null}
+            {canAssignBranch && branches.data && branches.data.length > 0 ? (
+              <Controller
+                name="branchId"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="user-branch">{t('users.branch')}</FieldLabel>
+                    <NativeSelect {...field} id="user-branch" className="w-full" aria-invalid={fieldState.invalid}>
+                      <NativeSelectOption value="">{t('users.noBranch')}</NativeSelectOption>
+                      {branches.data?.map((branch) => (
+                        <NativeSelectOption key={branch.id} value={branch.id}>
+                          {branch.name}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                  </Field>
                 )}
               />
             ) : null}

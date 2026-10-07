@@ -35,9 +35,16 @@ internal sealed class FakeReportsRepository : IReportsRepository
 
     public (DateTime Start, DateTime End, DateTime Now)? LastToday { get; private set; }
 
-    public Task<int> OpenTicketsAsync(CancellationToken cancellationToken) => Task.FromResult(OpenTickets);
+    public Guid? LastBranchId { get; private set; }
 
-    public Task<int> BreachedTodayAsync(DateTime dayStartUtc, DateTime dayEndUtc, DateTime nowUtc, CancellationToken cancellationToken)
+    public Task<int> OpenTicketsAsync(Guid? branchId, CancellationToken cancellationToken)
+    {
+        LastBranchId = branchId;
+        return Task.FromResult(OpenTickets);
+    }
+
+    public Task<int> BreachedTodayAsync(
+        DateTime dayStartUtc, DateTime dayEndUtc, DateTime nowUtc, Guid? branchId, CancellationToken cancellationToken)
     {
         LastToday = (dayStartUtc, dayEndUtc, nowUtc);
         return Task.FromResult(BreachedToday);

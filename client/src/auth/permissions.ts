@@ -23,6 +23,7 @@ export const permissions = {
   auditView: 'audit.view',
   settingsManage: 'settings.manage',
   departmentsManage: 'departments.manage',
+  branchesManage: 'branches.manage',
 } as const
 
 export type Permission = (typeof permissions)[keyof typeof permissions]

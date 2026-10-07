@@ -1,3 +1,4 @@
+using Crm.Domain.Branches;
 using Crm.Domain.Customers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -15,6 +16,8 @@ public sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         customer.Property(c => c.Email).HasMaxLength(Customer.EmailMaxLength);
         customer.Property(c => c.Phone).HasMaxLength(Customer.PhoneMaxLength);
         customer.HasIndex(c => c.Name); // list order
+        customer.HasOne<Branch>().WithMany().HasForeignKey(c => c.BranchId).OnDelete(DeleteBehavior.Restrict); // CRM-62
+        customer.HasIndex(c => c.BranchId);
 
         // Contacts belong to the customer aggregate: owned entities in their own table, always loaded with the
         // customer and hidden together with it by the soft-delete filter.

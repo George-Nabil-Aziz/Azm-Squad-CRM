@@ -1,9 +1,9 @@
 namespace Crm.Application.Reports;
 
 /// <summary>GET /api/reports/csat: ratings given in the range (<c>yyyy-MM-dd</c>, UTC days, inclusive).</summary>
-public sealed record CsatQuery(DateOnly? From, DateOnly? To);
+public sealed record CsatQuery(DateOnly? From, DateOnly? To, Guid? BranchId = null);
 
-public sealed record CsatFilter(DateTime FromUtc, DateTime ToUtcExclusive);
+public sealed record CsatFilter(DateTime FromUtc, DateTime ToUtcExclusive, Guid? BranchId = null);
 
 /// <summary>One customer rating (1..5) of a resolved ticket, with the agent and category the ticket had.</summary>
 public sealed record CsatRating(
@@ -72,7 +72,7 @@ public sealed class CsatReportService(ICsatReadModel readModel, TimeProvider tim
     public async Task<CsatReportResponse> GetAsync(CsatQuery query, CancellationToken cancellationToken)
     {
         var range = ReportRangeResolver.Resolve(query.From, query.To, timeProvider);
-        var snapshot = await readModel.GetAsync(new CsatFilter(range.FromUtc, range.ToUtcExclusive), cancellationToken);
+        var snapshot = await readModel.GetAsync(new CsatFilter(range.FromUtc, range.ToUtcExclusive, query.BranchId), cancellationToken);
         var ratings = snapshot.Ratings;
 
         var byDay = Enumerable.Range(0, range.Days).Select(offset =>

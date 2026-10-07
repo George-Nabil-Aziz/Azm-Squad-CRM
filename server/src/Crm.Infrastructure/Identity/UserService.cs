@@ -1,5 +1,6 @@
 using Crm.Application.Audit;
 using Crm.Application.Auth;
+using Crm.Application.Branches;
 using Crm.Application.Common.Exceptions;
 using Crm.Application.Common.Paging;
 using Crm.Application.Common.Security;
@@ -72,6 +73,10 @@ public sealed class UserService(
         var roles = request.Roles!.Distinct(StringComparer.Ordinal).ToList();
         EnsureMayManage(roles);
         var departmentIds = await ValidDepartmentIdsAsync(request.DepartmentIds, cancellationToken);
+        if (request.BranchId is not null)
+        {
+            await EnsureMayAssignBranchAsync(request.BranchId, cancellationToken);
+        }
 
         var email = request.Email!.Trim();
         if (await userManager.FindByEmailAsync(email) is not null)
@@ -85,6 +90,7 @@ public sealed class UserService(
             Email = email,
             EmailConfirmed = true,
             FullName = request.FullName!.Trim(),
+            BranchId = request.BranchId,
         };
 
         // One transaction: a user is never left without roles.
@@ -138,6 +144,44 @@ public sealed class UserService(
             cancellationToken);
 
         return ToResponse(user, roles, await DepartmentIdsAsync(user.Id, cancellationToken));
+    }
+
+    public async Task<UserResponse> SetBranchAsync(Guid id, SetUserBranchRequest request, CancellationToken cancellationToken)
+    {
+        EnsureMayAssignBranch();
+        var user = await FindAsync(id);
+        await EnsureBranchExistsAsync(request.BranchId, cancellationToken);
+
+        var old = user.BranchId;
+        user.BranchId = request.BranchId;
+        ThrowIfFailed(await userManager.UpdateAsync(user));
+        await audit.LogAsync(
+            new AuditEvent(AuditActions.UserUpdated, "User", user.Id.ToString(), new { branchId = old }, new { branchId = user.BranchId }),
+            cancellationToken);
+        return ToResponse(user, [.. await userManager.GetRolesAsync(user)], await DepartmentIdsAsync(user.Id, cancellationToken));
+    }
+
+    /// <summary>CRM-62: only a user with branches.manage may put users in a branch (a branch user must not lift their own restriction).</summary>
+    private void EnsureMayAssignBranch()
+    {
+        if (!currentUser.HasPermission(Permissions.BranchesManage))
+        {
+            throw new ForbiddenException(UserText.SuperAdminOnly);
+        }
+    }
+
+    private async Task EnsureMayAssignBranchAsync(Guid? branchId, CancellationToken cancellationToken)
+    {
+        EnsureMayAssignBranch();
+        await EnsureBranchExistsAsync(branchId, cancellationToken);
+    }
+
+    private async Task EnsureBranchExistsAsync(Guid? branchId, CancellationToken cancellationToken)
+    {
+        if (branchId is { } id && !await db.Branches.AnyAsync(b => b.Id == id && b.IsActive, cancellationToken))
+        {
+            throw new ValidationException(new Dictionary<string, string[]> { ["branchId"] = [BranchText.Unavailable] });
+        }
     }
 
     public async Task DeactivateAsync(Guid id, CancellationToken cancellationToken)
@@ -269,5 +313,5 @@ public sealed class UserService(
             .Replace("_", LikeEscape + "_");
 
     private static UserResponse ToResponse(ApplicationUser user, IReadOnlyList<string> roles, IReadOnlyList<Guid> departmentIds) =>
-        new(user.Id, user.Email!, user.FullName, [.. roles.Order(StringComparer.Ordinal)], user.IsActive, [.. departmentIds.Order()]);
+        new(user.Id, user.Email!, user.FullName, [.. roles.Order(StringComparer.Ordinal)], user.IsActive, [.. departmentIds.Order()], user.BranchId);
 }

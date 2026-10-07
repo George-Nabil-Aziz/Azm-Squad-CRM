@@ -7,6 +7,7 @@ Entry point for the **platform** feature (Phase 3): organisation structure (depa
 | NN | File | Title | Tracker id | Depends on |
 |----|------|-------|------------|------------|
 | 61 | [61-story-multi-department-CRM-61.md](61-story-multi-department-CRM-61.md) | Multi-department | CRM-61 | 12–20 (tickets, SLA), 06 (users) |
+| 62 | [62-story-multi-branch-CRM-62.md](62-story-multi-branch-CRM-62.md) | Multi-branch | CRM-62 | 61 (data scope), 08–11 (customers), 45–49 (reports) |
 
 ## Dependency notes
 

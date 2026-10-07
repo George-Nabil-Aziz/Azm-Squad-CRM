@@ -9,6 +9,7 @@ import { saveFile } from '@/lib/save-file'
 import { BreakdownTable } from '@/features/reports/BreakdownTable'
 import { DateRangeFields } from '@/features/reports/DateRangeFields'
 import { ExportButtons } from '@/features/reports/ExportButtons'
+import { useReportBranch, withBranch } from '@/features/reports/report-branch'
 import { useTicketReport } from '@/features/reports/useTicketReport'
 import { useTicketCategories } from '@/features/ticket-categories/useTicketCategories'
 import {
@@ -55,8 +56,10 @@ export function TicketReportPage() {
     setFilters((current) => ({ ...current, [key]: value }))
   }
 
+  const branchId = useReportBranch()
+
   async function onExport(format: ExportFormat) {
-    const blob = await exportTicketReport(params, format)
+    const blob = await exportTicketReport(withBranch(params, branchId), format)
     const range = report.data ? `${report.data.from}_${report.data.to}` : 'export'
     saveFile(blob, `ticket-report-${range}.${format}`)
   }

@@ -1,5 +1,6 @@
 using Crm.Application.Audit;
 using Crm.Application.Auth;
+using Crm.Application.Branches;
 using Crm.Application.Common.Files;
 using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
@@ -16,6 +17,7 @@ using Crm.Application.Tasks;
 using Crm.Application.Tickets;
 using Crm.Application.Users;
 using Crm.Infrastructure.Audit;
+using Crm.Infrastructure.Branches;
 using Crm.Infrastructure.Channels;
 using Crm.Infrastructure.Customers;
 using Crm.Infrastructure.Departments;
@@ -74,6 +76,7 @@ public static class DependencyInjection
         services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
         services.AddScoped<ISlaPolicyRepository, SlaPolicyRepository>();
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        services.AddScoped<IBranchRepository, BranchRepository>();
         // CRM-61: one DataScope per request; the API middleware fills it, EF Core query filters read it.
         services.AddScoped<DataScope>();
         services.AddScoped<IDataScope>(provider => provider.GetRequiredService<DataScope>());

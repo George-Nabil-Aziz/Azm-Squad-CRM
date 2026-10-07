@@ -7,10 +7,10 @@ using FluentValidation;
 namespace Crm.Application.Reports;
 
 /// <summary>GET /api/reports/sla: tickets created in the range (<c>yyyy-MM-dd</c>, UTC days, inclusive).</summary>
-public sealed record SlaQuery(DateOnly? From, DateOnly? To);
+public sealed record SlaQuery(DateOnly? From, DateOnly? To, Guid? BranchId = null);
 
 /// <summary>GET /api/reports/sla/breaches: the same range plus paging (page 1.., pageSize 1..100, default 20).</summary>
-public sealed record SlaBreachesQuery(DateOnly? From, DateOnly? To, int? Page, int? PageSize);
+public sealed record SlaBreachesQuery(DateOnly? From, DateOnly? To, int? Page, int? PageSize, Guid? BranchId = null);
 
 /// <summary>One SLA target (response or resolution) of a priority: how many tickets met it, breached it, or still wait.</summary>
 public sealed record SlaTargetStats(int Met, int Breached, int Pending, double? CompliancePercent, double? AverageMinutes);
@@ -34,7 +34,7 @@ public sealed record BreachedTicketResponse(
     bool ResolutionBreached);
 
 /// <summary>The range (UTC, end exclusive) and the current time that decide "breached" versus "still pending".</summary>
-public sealed record SlaFilter(DateTime FromUtc, DateTime ToUtcExclusive, DateTime NowUtc);
+public sealed record SlaFilter(DateTime FromUtc, DateTime ToUtcExclusive, DateTime NowUtc, Guid? BranchId = null);
 
 /// <summary>What the database counted for one target: met / breached / pending tickets and the sum of the minutes of those with a result.</summary>
 public sealed record SlaTargetAggregate(int Met, int Breached, int Pending, double MinutesSum, int Measured);
@@ -70,7 +70,7 @@ public sealed class SlaReportService(IReportsRepository repository, TimeProvider
 
     public async Task<SlaReportResponse> GetAsync(SlaQuery query, CancellationToken cancellationToken)
     {
-        var (range, filter) = Filter(query.From, query.To);
+        var (range, filter) = Filter(query.From, query.To, query.BranchId);
         var aggregates = await repository.SlaAggregatesAsync(filter, cancellationToken);
 
         var rows = Priorities.Select(priority =>
@@ -96,7 +96,7 @@ public sealed class SlaReportService(IReportsRepository repository, TimeProvider
     public async Task<PagedResult<BreachedTicketResponse>> ListBreachesAsync(SlaBreachesQuery query, CancellationToken cancellationToken)
     {
         await new SlaBreachesQueryValidator().ValidateOrThrowAsync(query, cancellationToken);
-        var (_, filter) = Filter(query.From, query.To);
+        var (_, filter) = Filter(query.From, query.To, query.BranchId);
         var page = query.Page ?? PagingDefaults.DefaultPage;
         var pageSize = query.PageSize ?? PagingDefaults.DefaultPageSize;
 
@@ -109,10 +109,10 @@ public sealed class SlaReportService(IReportsRepository repository, TimeProvider
             result.Page, result.PageSize, result.TotalCount);
     }
 
-    private (ReportRange Range, SlaFilter Filter) Filter(DateOnly? from, DateOnly? to)
+    private (ReportRange Range, SlaFilter Filter) Filter(DateOnly? from, DateOnly? to, Guid? branchId)
     {
         var range = ReportRangeResolver.Resolve(from, to, timeProvider);
-        return (range, new SlaFilter(range.FromUtc, range.ToUtcExclusive, timeProvider.GetUtcNow().UtcDateTime));
+        return (range, new SlaFilter(range.FromUtc, range.ToUtcExclusive, timeProvider.GetUtcNow().UtcDateTime, branchId));
     }
 
     private static SlaTargetAggregate Sum(IEnumerable<SlaTargetAggregate> targets) =>

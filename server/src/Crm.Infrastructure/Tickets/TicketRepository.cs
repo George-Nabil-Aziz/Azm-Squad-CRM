@@ -16,8 +16,11 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
     public Task<bool> CustomerExistsAsync(Guid customerId, CancellationToken cancellationToken) =>
         db.Customers.AnyAsync(c => c.Id == customerId, cancellationToken);
 
+    public Task<Guid?> GetCustomerBranchAsync(Guid customerId, CancellationToken cancellationToken) =>
+        db.Customers.AsNoTracking().Where(c => c.Id == customerId).Select(c => c.BranchId).FirstOrDefaultAsync(cancellationToken);
+
     public async Task<int> NextNumberAsync(CancellationToken cancellationToken) =>
-        (await db.Tickets.MaxAsync(t => (int?)t.Number, cancellationToken) ?? 0) + 1;
+        (await db.Tickets.IgnoreQueryFilters().MaxAsync(t => (int?)t.Number, cancellationToken) ?? 0) + 1; // every ticket, whatever the data scope
 
     public void Add(Ticket ticket) => db.Tickets.Add(ticket);
 
@@ -164,7 +167,7 @@ public sealed class TicketRepository(CrmDbContext db) : ITicketRepository
         var added = db.ChangeTracker.Entries<Ticket>().Where(e => e.State == EntityState.Added).Select(e => e.Entity).ToList();
         foreach (var ticket in added)
         {
-            if (await db.Tickets.AsNoTracking().AnyAsync(t => t.Number == ticket.Number && t.Id != ticket.Id, cancellationToken))
+            if (await db.Tickets.IgnoreQueryFilters().AsNoTracking().AnyAsync(t => t.Number == ticket.Number && t.Id != ticket.Id, cancellationToken))
             {
                 return true;
             }

@@ -55,4 +55,8 @@ internal sealed class FakeDataScope(bool restrictDepartments = false, params Gui
     public bool RestrictDepartments { get; } = restrictDepartments;
 
     public IReadOnlyList<Guid> DepartmentIds { get; } = departmentIds;
+
+    public bool RestrictBranch { get; init; }
+
+    public Guid? BranchId { get; init; }
 }

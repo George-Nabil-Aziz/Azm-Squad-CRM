@@ -12,4 +12,10 @@ public interface IDataScope
 
     /// <summary>The departments the restricted user belongs to.</summary>
     IReadOnlyList<Guid> DepartmentIds { get; }
+
+    /// <summary>True for a staff user (other than SuperAdmin) who is assigned to a branch (CRM-62): they see only rows of <see cref="BranchId"/>.</summary>
+    bool RestrictBranch { get; }
+
+    /// <summary>The branch of the restricted user.</summary>
+    Guid? BranchId { get; }
 }

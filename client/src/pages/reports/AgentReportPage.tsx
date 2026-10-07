@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { DateRangeFields } from '@/features/reports/DateRangeFields'
 import { ExportButtons } from '@/features/reports/ExportButtons'
+import { useReportBranch, withBranch } from '@/features/reports/report-branch'
 import { useAgentReport } from '@/features/reports/useAgentReport'
 import { formatMinutes } from '@/features/sla/sla-format'
 import { saveFile } from '@/lib/save-file'
@@ -21,8 +22,10 @@ export function AgentReportPage() {
   const data = report.data
   const minutes = (value: number | null) => (value === null ? NONE : formatMinutes(Math.round(value), t))
 
+  const branchId = useReportBranch()
+
   async function onExport(format: ExportFormat) {
-    const blob = await exportAgentReport(params, format)
+    const blob = await exportAgentReport(withBranch(params, branchId), format)
     saveFile(blob, `agent-report-${data ? `${data.from}_${data.to}` : 'export'}.${format}`)
   }
 

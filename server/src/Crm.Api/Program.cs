@@ -61,6 +61,7 @@ app.MapWhatsAppWebhookEndpoints();
 app.MapTicketCategoriesEndpoints();
 app.MapSlaPoliciesEndpoints();
 app.MapDepartmentsEndpoints();
+app.MapBranchesEndpoints();
 app.MapTicketsEndpoints();
 app.MapTicketSlaEndpoints();
 app.MapTicketMessagesEndpoints();

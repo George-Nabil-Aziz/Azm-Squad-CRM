@@ -33,7 +33,7 @@ public class DashboardServiceTests
             new CsatRating(Guid.NewGuid(), "T", 4, null, Now.UtcDateTime, null, null, null, null),
         ], 0);
 
-        var dashboard = await _service.GetAsync(CancellationToken.None);
+        var dashboard = await _service.GetAsync(null, CancellationToken.None);
 
         Assert.Equal(12, dashboard.OpenTickets);
         Assert.Equal(3, dashboard.BreachedToday);
@@ -45,7 +45,7 @@ public class DashboardServiceTests
     [Fact]
     public async Task WithoutData_AveragesAreNull()
     {
-        var dashboard = await _service.GetAsync(CancellationToken.None);
+        var dashboard = await _service.GetAsync(null, CancellationToken.None);
 
         Assert.Equal(0, dashboard.OpenTickets);
         Assert.Null(dashboard.AverageResponseMinutes);
@@ -62,7 +62,7 @@ public class DashboardServiceTests
             ByChannel = new Dictionary<TicketChannel, int> { [TicketChannel.Email] = 6, [TicketChannel.Manual] = 1 },
         };
 
-        var dashboard = await _service.GetAsync(CancellationToken.None);
+        var dashboard = await _service.GetAsync(null, CancellationToken.None);
 
         Assert.Equal(14, dashboard.TicketsPerDay.Count);
         Assert.Equal(new DateOnly(2026, 9, 23), dashboard.TicketsPerDay[0].Date);
@@ -76,7 +76,7 @@ public class DashboardServiceTests
     [Fact]
     public async Task TheWindows_AreTodayAnd14And30Days()
     {
-        await _service.GetAsync(CancellationToken.None);
+        await _service.GetAsync(null, CancellationToken.None);
 
         Assert.Equal(
             (new DateTime(2026, 10, 6, 0, 0, 0, DateTimeKind.Utc), new DateTime(2026, 10, 7, 0, 0, 0, DateTimeKind.Utc), Now.UtcDateTime),

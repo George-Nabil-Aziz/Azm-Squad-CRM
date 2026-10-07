@@ -55,6 +55,12 @@ internal sealed class FakeTicketRepository(FakeTicketCategoryRepository categori
     public Task<bool> CustomerExistsAsync(Guid customerId, CancellationToken cancellationToken) =>
         Task.FromResult(Customers.ContainsKey(customerId));
 
+    /// <summary>The branch of a customer (CRM-62); customers without an entry have none.</summary>
+    public Dictionary<Guid, Guid> CustomerBranches { get; } = [];
+
+    public Task<Guid?> GetCustomerBranchAsync(Guid customerId, CancellationToken cancellationToken) =>
+        Task.FromResult<Guid?>(CustomerBranches.TryGetValue(customerId, out var branch) ? branch : null);
+
     public int SaveCount { get; private set; }
 
     public async Task<int> NextNumberAsync(CancellationToken cancellationToken)

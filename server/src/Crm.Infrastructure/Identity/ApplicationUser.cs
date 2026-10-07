@@ -12,4 +12,7 @@ public class ApplicationUser : IdentityUser<Guid>
 
     /// <summary>False while an agent is off duty: automatic assignment (CRM-27) skips them. Does not affect login.</summary>
     public bool IsOnDuty { get; set; } = true;
+
+    /// <summary>The branch the user works in (CRM-62); null = no branch (head office: sees every branch).</summary>
+    public Guid? BranchId { get; set; }
 }

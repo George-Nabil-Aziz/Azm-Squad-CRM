@@ -17,6 +17,8 @@ import {
 } from '@/components/ui/dialog'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { useBranches } from '@/features/branches/useBranches'
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { createCustomerFormSchema, customerFormFields, type CustomerFormValues } from './customer-form-schema'
 import { customersQueryKey } from './useCustomers'
 
@@ -27,8 +29,8 @@ interface CustomerFormDialogProps {
 }
 
 /** Empty email / phone are sent as null (the API stores "no value", not an empty string). */
-function toRequest({ name, email, phone }: CustomerFormValues): CustomerRequest {
-  return { name, email: email || null, phone: phone || null }
+function toRequest({ name, email, phone, branchId }: CustomerFormValues): CustomerRequest {
+  return { name, email: email || null, phone: phone || null, ...(branchId ? { branchId } : {}) }
 }
 
 /** Create / edit dialog. Mounted only while open (key per customer), so the form always starts from fresh values. */
@@ -36,12 +38,14 @@ export function CustomerFormDialog({ customer, onClose }: CustomerFormDialogProp
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const schema = useMemo(() => createCustomerFormSchema(t), [t])
+  const branches = useBranches({ activeOnly: true })
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: customer?.name ?? '',
       email: customer?.email ?? '',
       phone: customer?.phone ?? '',
+      branchId: customer?.branchId ?? '',
     },
   })
 
@@ -125,6 +129,26 @@ export function CustomerFormDialog({ customer, onClose }: CustomerFormDialogProp
                 </Field>
               )}
             />
+            {branches.data && branches.data.length > 0 ? (
+              <Controller
+                name="branchId"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="customer-branch">{t('customers.branch')}</FieldLabel>
+                    <NativeSelect {...field} id="customer-branch" className="w-full" aria-invalid={fieldState.invalid}>
+                      <NativeSelectOption value="">{t('customers.noBranch')}</NativeSelectOption>
+                      {branches.data?.map((branch) => (
+                        <NativeSelectOption key={branch.id} value={branch.id}>
+                          {branch.name}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                  </Field>
+                )}
+              />
+            ) : null}
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose}>
                 {t('customers.cancel')}

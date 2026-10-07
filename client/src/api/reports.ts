@@ -9,6 +9,8 @@ export type ExportFormat = 'csv' | 'xlsx'
 export interface ReportRangeParams {
   from?: string
   to?: string
+  /** Only the tickets of this branch (CRM-62). */
+  branchId?: string
 }
 
 /** `path` plus the query string of the parameters that are set. */
@@ -193,6 +195,6 @@ export interface Dashboard {
   ticketsByChannel: ReportCount<TicketChannel>[]
 }
 
-export function getDashboard(signal?: AbortSignal): Promise<Dashboard> {
-  return apiGet<Dashboard>('/api/reports/dashboard', signal)
+export function getDashboard(signal?: AbortSignal, branchId?: string): Promise<Dashboard> {
+  return apiGet<Dashboard>(reportPath('/api/reports/dashboard', { branchId }), signal)
 }
