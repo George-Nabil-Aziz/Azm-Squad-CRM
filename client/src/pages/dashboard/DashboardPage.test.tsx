@@ -3,13 +3,11 @@ import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getCurrentUser, type CurrentUser } from '@/api/auth'
-import { getHealth } from '@/api/health'
 import { getMyTickets, type MyTickets, type Ticket } from '@/api/tickets'
 import { createQueryClient } from '@/app/query-client'
 import { permissions } from '@/auth/permissions'
 import { DashboardPage } from './DashboardPage'
 
-vi.mock('@/api/health', () => ({ getHealth: vi.fn() }))
 vi.mock('@/api/auth', () => ({ getCurrentUser: vi.fn() }))
 vi.mock('@/api/tickets', () => ({ getMyTickets: vi.fn() }))
 
@@ -75,35 +73,25 @@ function renderDashboard() {
 
 describe('DashboardPage', () => {
   beforeEach(() => {
-    vi.mocked(getHealth).mockReset()
     vi.mocked(getCurrentUser).mockResolvedValue(admin)
     vi.mocked(getMyTickets).mockReset().mockResolvedValue(mine)
   })
 
+  it('has no API status card', async () => {
+    renderDashboard()
+    await screen.findByText('Welcome, System Administrator')
+
+    expect(screen.queryByText('API status')).not.toBeInTheDocument()
+  })
+
   it('welcomes the signed-in user', async () => {
-    vi.mocked(getHealth).mockResolvedValue({ status: 'ok' })
     renderDashboard()
 
     expect(screen.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeInTheDocument()
     expect(await screen.findByText('Welcome, System Administrator')).toBeInTheDocument()
   })
 
-  it('shows "ok" when the API is healthy', async () => {
-    vi.mocked(getHealth).mockResolvedValue({ status: 'ok' })
-    renderDashboard()
-
-    expect(await screen.findByText('ok')).toBeInTheDocument()
-  })
-
-  it('shows "unavailable" when the API call fails', async () => {
-    vi.mocked(getHealth).mockRejectedValue(new Error('503'))
-    renderDashboard()
-
-    expect(await screen.findByText('unavailable')).toBeInTheDocument()
-  })
-
   it('shows the counters: open, pending and breached today', async () => {
-    vi.mocked(getHealth).mockResolvedValue({ status: 'ok' })
     renderDashboard()
 
     const open = await screen.findByRole('group', { name: 'Open' })
@@ -113,7 +101,6 @@ describe('DashboardPage', () => {
   })
 
   it('lists my tickets in the order of the server, each linking to its details', async () => {
-    vi.mocked(getHealth).mockResolvedValue({ status: 'ok' })
     renderDashboard()
 
     await screen.findByRole('link', { name: 'TKT-000002' })
@@ -126,7 +113,6 @@ describe('DashboardPage', () => {
   })
 
   it('shows a message when no ticket is assigned to me', async () => {
-    vi.mocked(getHealth).mockResolvedValue({ status: 'ok' })
     vi.mocked(getMyTickets).mockResolvedValue({
       counters: { open: 0, pending: 0, breachedToday: 0 },
       tickets: { items: [], page: 1, pageSize: 50, totalCount: 0 },
@@ -137,7 +123,6 @@ describe('DashboardPage', () => {
   })
 
   it('does not ask for my tickets without tickets.view', async () => {
-    vi.mocked(getHealth).mockResolvedValue({ status: 'ok' })
     vi.mocked(getCurrentUser).mockResolvedValue({ ...admin, permissions: [] })
     renderDashboard()
     await screen.findByText('Welcome, System Administrator')
