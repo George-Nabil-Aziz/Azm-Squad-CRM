@@ -57,6 +57,21 @@ describe('Demo accounts on the sign-in pages', () => {
     expect(screen.getByLabelText('Password')).toHaveValue('')
   })
 
+  it('fills the email and the password when the server sends the dev password, so Sign in is one click away', async () => {
+    vi.stubGlobal('fetch', (path: string) => {
+      if (path === '/api/auth/demo-accounts')
+        return Promise.resolve(json(200, DEMO.map((a) => ({ ...a, password: a.role === 'Customer' ? null : 'Dev#Pass1' }))))
+      if (path === '/api/branding') return Promise.resolve(json(200, { primaryColor: null, secondaryColor: null, logoUrl: null }))
+      return Promise.resolve(json(404, { status: 404 }, 'application/problem+json'))
+    })
+    renderAt('/login')
+
+    fireEvent.click(await screen.findByRole('button', { name: /supervisor@crm.com/ }))
+
+    expect(screen.getByLabelText('Email')).toHaveValue('supervisor@crm.com')
+    expect(screen.getByLabelText('Password')).toHaveValue('Dev#Pass1')
+  })
+
   it('shows the Arabic role labels in Arabic', async () => {
     stubApi(200)
     renderAt('/login')

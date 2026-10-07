@@ -15,10 +15,16 @@ public static class AuthEndpoints
             .AllowAnonymous()
             .WithName("Login");
 
-        // Development only (404 elsewhere): the demo sign-ins the login pages offer. Never returns passwords.
+        // Development only (404 elsewhere): the demo sign-ins the login pages offer. Staff entries carry the dev seed
+        // password (read from user-secrets at runtime, never committed) so one click fills the whole form.
         group.MapGet("/demo-accounts", (IHostEnvironment environment, IConfiguration configuration) =>
                 DemoAccounts.IsEnabled(environment.EnvironmentName, configuration["Seed:DemoAccounts"])
-                    ? Results.Ok(DemoAccounts.All)
+                    ? Results.Ok(DemoAccounts.All.Select(account => new DemoAccountResponse(
+                        account.Email,
+                        account.Role,
+                        string.Equals(account.Role, "Customer", StringComparison.OrdinalIgnoreCase)
+                            ? null
+                            : configuration["Seed:SuperAdminPassword"])))
                     : Results.NotFound())
             .AllowAnonymous()
             .WithName("GetDemoAccounts");

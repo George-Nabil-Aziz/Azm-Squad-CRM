@@ -3,6 +3,9 @@ namespace Crm.Application.Auth;
 /// <summary>A development demo sign-in (never carries a password).</summary>
 public sealed record DemoAccount(string Email, string Role);
 
+/// <summary>GET /api/auth/demo-accounts item (Development only). Password is the dev seed password for staff, null for the customer.</summary>
+public sealed record DemoAccountResponse(string Email, string Role, string? Password);
+
 /// <summary>
 /// The demo accounts that exist in Development only (they share the password of <c>Seed:SuperAdminPassword</c>).
 /// The test host can switch them on with <c>Seed:DemoAccounts=true</c>; no other environment can.

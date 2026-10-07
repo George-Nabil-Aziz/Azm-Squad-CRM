@@ -67,9 +67,10 @@ export function LoginForm() {
       </form>
       <DemoAccounts
         audience="staff"
-        onPick={(email) => {
-          form.setValue('email', email, { shouldValidate: form.formState.isSubmitted })
-          form.setFocus('password')
+        onPick={(account) => {
+          form.setValue('email', account.email, { shouldValidate: form.formState.isSubmitted })
+          form.setValue('password', account.password ?? '', { shouldValidate: form.formState.isSubmitted })
+          form.setFocus(account.password ? 'email' : 'password')
         }}
       />
     </>

@@ -30,9 +30,11 @@ export function getCurrentUser(signal?: AbortSignal): Promise<CurrentUser> {
   return apiGet<CurrentUser>('/api/auth/me', signal)
 }
 
-/** A development demo sign-in (server: DemoAccount); never carries a password. */
+/** A development demo sign-in (server: DemoAccountResponse). Staff entries carry the dev seed password. */
 export interface DemoAccount {
   email: string
+  /** Development seed password for staff accounts; null for the portal customer (one-time code). */
+  password?: string | null
   /** A staff role name, or the portal demo customer (role "customer" in any letter case). */
   role: string
 }

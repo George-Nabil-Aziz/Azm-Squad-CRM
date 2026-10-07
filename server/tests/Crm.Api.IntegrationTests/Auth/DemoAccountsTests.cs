@@ -15,7 +15,7 @@ namespace Crm.Api.IntegrationTests.Auth;
 
 public class DemoAccountsTests(CrmApiFactory factory) : IClassFixture<CrmApiFactory>
 {
-    private sealed record DemoBody(string Email, string Role);
+    private sealed record DemoBody(string Email, string Role, string? Password);
 
     private static WebApplicationFactory<Program> WithDemo(CrmApiFactory f, bool demo = true, bool logCodes = false) =>
         f.WithWebHostBuilder(b => b.ConfigureAppConfiguration((_, c) => c.AddInMemoryCollection(new Dictionary<string, string?>
@@ -65,19 +65,20 @@ public class DemoAccountsTests(CrmApiFactory factory) : IClassFixture<CrmApiFact
     }
 
     [Fact]
-    public async Task TheEndpoint_ListsTheDemoAccountsWithoutPasswords()
+    public async Task TheEndpoint_ListsTheDemoAccounts_StaffWithTheSeedPassword_CustomerWithout()
     {
         using var app = WithDemo(factory);
 
         var response = await app.CreateClient().GetAsync("/api/auth/demo-accounts");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.DoesNotContain("assword", await response.Content.ReadAsStringAsync());
         var list = await response.Content.ReadFromJsonAsync<List<DemoBody>>();
         Assert.Equal(
             [("superadmin@crm.com", "SuperAdmin"), ("admin@crm.com", "Admin"), ("supervisor@crm.com", "Supervisor"),
              ("agent@crm.com", "Agent"), ("customer@crm.com", "Customer")],
             list!.Select(a => (a.Email, a.Role)));
+        Assert.All(list.Where(a => a.Role != "Customer"), a => Assert.Equal(CrmApiFactory.SuperAdminPassword, a.Password));
+        Assert.Null(list.Single(a => a.Role == "Customer").Password);
     }
 
     [Fact]

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { getDemoAccounts } from '@/api/auth'
+import { getDemoAccounts, type DemoAccount } from '@/api/auth'
 import type { RoleName } from '@/api/users'
 import { Button } from '@/components/ui/button'
 
@@ -8,9 +8,9 @@ const isCustomer = (role: string) => role.toLowerCase() === 'customer'
 
 /**
  * Development-only shortcut list: the server answers 404 outside Development, and then nothing is shown.
- * Picking an account hands its email to the form (the user still types the password / asks for the code).
+ * Picking an account hands it to the form: email and password for staff, email only for the portal customer.
  */
-export function DemoAccounts({ audience, onPick }: { audience: 'staff' | 'customer'; onPick: (email: string) => void }) {
+export function DemoAccounts({ audience, onPick }: { audience: 'staff' | 'customer'; onPick: (account: DemoAccount) => void }) {
   const { t } = useTranslation()
   const query = useQuery({
     queryKey: ['demo-accounts'],
@@ -34,7 +34,7 @@ export function DemoAccounts({ audience, onPick }: { audience: 'staff' | 'custom
               variant="ghost"
               size="sm"
               className="h-auto w-full justify-between gap-2 py-1"
-              onClick={() => onPick(account.email)}
+              onClick={() => onPick(account)}
             >
               <span dir="ltr">{account.email}</span>
               <span className="text-xs text-muted-foreground">

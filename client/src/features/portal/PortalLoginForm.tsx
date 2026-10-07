@@ -49,7 +49,7 @@ function EmailStep({ onSent }: { onSent: (email: string) => void }) {
           </Button>
         </FieldGroup>
       </form>
-      <DemoAccounts audience="customer" onPick={(email) => form.setValue('email', email, { shouldValidate: form.formState.isSubmitted })} />
+      <DemoAccounts audience="customer" onPick={(account) => form.setValue('email', account.email, { shouldValidate: form.formState.isSubmitted })} />
     </>
   )
 }
