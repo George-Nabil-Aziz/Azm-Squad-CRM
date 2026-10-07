@@ -73,15 +73,15 @@ describe('App layout and routing', () => {
     expect(await screen.findByText('System Administrator')).toBeInTheDocument()
   })
 
-  it('signs out: clears the token and returns to the welcome page', async () => {
+  it('signs out: clears the token and goes to the login page', async () => {
     signedIn()
     vi.stubGlobal('fetch', fakeApi())
     renderAt('/')
 
     fireEvent.click(await screen.findByRole('button', { name: 'Sign out' }))
 
-    expect(await screen.findByRole('heading', { level: 1, name: 'Customer support, all in one place' })).toBeInTheDocument()
-    expect(window.location.pathname).toBe('/welcome')
+    expect(await screen.findByRole('form', { name: 'Sign in' })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/login')
     expect(getAccessToken()).toBeNull()
   })
 
@@ -92,7 +92,6 @@ describe('App layout and routing', () => {
     renderAt('/')
     await screen.findByText('System Administrator')
     fireEvent.click(screen.getByRole('button', { name: 'Sign out' }))
-    fireEvent.click(await screen.findByRole('link', { name: 'Sign in' }))
     await screen.findByRole('form', { name: 'Sign in' })
 
     submitSignIn('admin@crm.local', ADMIN_PASSWORD)
