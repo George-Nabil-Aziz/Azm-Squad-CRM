@@ -7,9 +7,9 @@ public static class BranchesEndpoints
 {
     public static IEndpointRouteBuilder MapBranchesEndpoints(this IEndpointRouteBuilder app)
     {
-        // Every signed-in staff user may read the list (a branch user only gets their own branch); writing needs
+        // Every staff user with tickets.view (all roles) may read the list (a branch user only gets their own branch); writing needs
         // branches.manage (SuperAdmin). 401 without a valid token.
-        var group = app.MapGroup("/api/branches").RequireAuthorization();
+        var group = app.MapGroup("/api/branches").RequireAuthorization(Permissions.TicketsView);
 
         group.MapGet("", async ([AsParameters] ListBranchesQuery query, IBranchService branches, CancellationToken cancellationToken) =>
                 Results.Ok(await branches.ListAsync(query, cancellationToken)))
