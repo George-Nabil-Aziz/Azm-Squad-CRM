@@ -14,3 +14,4 @@ One row per feature folder under `.squad/plans/`. `NN` continues as a global exe
 | 07-agent-dashboard | [07-agent-dashboard/00-overview.md](07-agent-dashboard/00-overview.md) | 29–33 |
 | 08-knowledge-base | [08-knowledge-base/00-overview.md](08-knowledge-base/00-overview.md) | 36–39 |
 | 09-customer-portal | [09-customer-portal/00-overview.md](09-customer-portal/00-overview.md) | 40–44 |
+| 12-integrations | [12-integrations/00-overview.md](12-integrations/00-overview.md) | 58–60 |
