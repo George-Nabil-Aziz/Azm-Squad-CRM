@@ -29,7 +29,7 @@ vi.mock('@/api/auth', () => ({ getCurrentUser: vi.fn() }))
 vi.mock('@/api/ai', () => ({
   getAiStatus: vi.fn().mockResolvedValue({ enabled: false }),
   getTicketSummary: vi.fn(),
-  generateReplyDraft: vi.fn(),
+  generateReplyDraft: vi.fn(), getSuggestions: vi.fn().mockResolvedValue([]),
   getTicketClassification: vi.fn(),
   generateTicketSummary: vi.fn(),
 }))

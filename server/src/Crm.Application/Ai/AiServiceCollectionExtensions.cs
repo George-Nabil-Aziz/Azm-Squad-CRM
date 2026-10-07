@@ -10,6 +10,7 @@ public static class AiServiceCollectionExtensions
         services.AddScoped<ITicketSummaryService, TicketSummaryService>();
         services.AddScoped<IReplyDraftService, ReplyDraftService>();
         services.AddScoped<IAiClassificationService, AiClassificationService>();
+        services.AddScoped<ISuggestedSolutionsService, SuggestedSolutionsService>();
         return services;
     }
 }

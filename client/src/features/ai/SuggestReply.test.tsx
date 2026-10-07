@@ -14,7 +14,7 @@ vi.mock('@/api/auth', () => ({ getCurrentUser: vi.fn() }))
 vi.mock('@/api/tickets', () => ({ addTicketMessage: vi.fn(), listTicketAssignees: vi.fn().mockResolvedValue([]) }))
 vi.mock('@/api/knowledge-base', () => ({ searchKb: vi.fn(), linkTicketArticle: vi.fn(), listTicketArticles: vi.fn() }))
 vi.mock('@/api/quick-replies', () => ({ listQuickReplies: vi.fn().mockResolvedValue([]) }))
-vi.mock('@/api/ai', () => ({ getAiStatus: vi.fn(), generateReplyDraft: vi.fn() }))
+vi.mock('@/api/ai', () => ({ getAiStatus: vi.fn(), generateReplyDraft: vi.fn(), getSuggestions: vi.fn().mockResolvedValue([]) }))
 
 const agent: CurrentUser = {
   id: '2',

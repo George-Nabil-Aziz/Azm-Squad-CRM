@@ -60,6 +60,10 @@ public static class AiText
         "The AI service could not complete the request. Try again later.",
         "تعذّر على خدمة الذكاء الاصطناعي إكمال الطلب. حاول مرة أخرى لاحقاً.");
 
+    public static string UsefulRequired => LocalizedText.Get("Say whether the suggestion was useful (true or false).", "حدد ما إذا كان الاقتراح مفيداً (true أو false).");
+
+    public static string ArticleNotPublished => LocalizedText.Get("Only a published article can get feedback.", "يمكن تقييم المقال المنشور فقط.");
+
     public static string NotConfiguredTitle => LocalizedText.Get("AI not configured", "الذكاء الاصطناعي غير مُعدّ");
 
     public static string FailedTitle => LocalizedText.Get("AI request failed", "فشل طلب الذكاء الاصطناعي");

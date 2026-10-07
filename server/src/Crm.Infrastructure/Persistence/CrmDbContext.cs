@@ -65,6 +65,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<TicketAiClassification> TicketAiClassifications => Set<TicketAiClassification>();
 
+    public DbSet<TicketSuggestionFeedback> TicketSuggestionFeedback => Set<TicketSuggestionFeedback>();
+
     public DbSet<PortalAccount> PortalAccounts => Set<PortalAccount>();
 
     public DbSet<PortalLoginCode> PortalLoginCodes => Set<PortalLoginCode>();

@@ -994,6 +994,12 @@
       "suggestionOnly": "Suggestion only",
       "overridden": "The suggestion was changed by an agent.",
       "apply": "Apply suggestion"
+    },
+    "suggestions": {
+      "title": "Suggested articles",
+      "insert": "Insert",
+      "useful": "Useful",
+      "notUseful": "Not useful"
     }
   }
 }

@@ -994,6 +994,12 @@
       "suggestionOnly": "اقتراح فقط",
       "overridden": "غيّر أحد الموظفين هذا الاقتراح.",
       "apply": "طبّق الاقتراح"
+    },
+    "suggestions": {
+      "title": "مقالات مقترحة",
+      "insert": "إدراج",
+      "useful": "مفيد",
+      "notUseful": "غير مفيد"
     }
   }
 }

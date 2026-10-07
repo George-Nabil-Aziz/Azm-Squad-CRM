@@ -32,6 +32,7 @@ public static class AiInfrastructureExtensions
             client.Timeout = TimeSpan.FromSeconds(provider.GetRequiredService<AiOptions>().TimeoutSeconds));
         services.AddScoped<ITicketSummaryRepository, TicketSummaryRepository>();
         services.AddScoped<ITicketAiClassificationRepository, AiClassificationRepository>();
+        services.AddScoped<ISuggestionFeedbackRepository, SuggestionFeedbackRepository>();
         return services;
     }
 }

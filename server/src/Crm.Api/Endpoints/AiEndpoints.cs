@@ -36,6 +36,18 @@ public static class AiEndpoints
                 Results.Ok(await classification.GetAsync(id, cancellationToken)))
             .WithName("GetTicketAiClassification");
 
+        // CRM-53: the best published articles for the ticket (needs kb.view) and the agent's vote on one of them.
+        ticket.MapGet("/ai-suggestions", async (Guid id, ISuggestedSolutionsService suggestions, CancellationToken cancellationToken) =>
+                Results.Ok(await suggestions.ListAsync(id, cancellationToken)))
+            .RequireAuthorization(Permissions.KbView)
+            .WithName("ListTicketAiSuggestions");
+
+        ticket.MapPut("/ai-suggestions/{articleId:guid}/feedback", async (Guid id, Guid articleId, SuggestionFeedbackRequest request,
+                    ISuggestedSolutionsService suggestions, CancellationToken cancellationToken) =>
+                Results.Ok(await suggestions.RecordFeedbackAsync(id, articleId, request, cancellationToken)))
+            .RequireAuthorization(Permissions.TicketsManage, Permissions.KbView)
+            .WithName("RecordTicketAiSuggestionFeedback");
+
         return app;
     }
 }

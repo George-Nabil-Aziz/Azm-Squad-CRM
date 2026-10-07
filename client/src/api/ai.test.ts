@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { generateReplyDraft, generateTicketSummary, getAiStatus, getTicketSummary } from './ai'
+import { generateReplyDraft, generateTicketSummary, getAiStatus, getSuggestions, getTicketSummary, sendSuggestionFeedback } from './ai'
 
 function fakeFetch(response: Response) {
   const fetchMock = vi.fn().mockResolvedValue(response)
@@ -45,5 +45,16 @@ describe('AI API', () => {
     expect(draft.articles[0].title).toBe('Reset')
     expect(fetchMock.mock.calls[0][0]).toBe('/api/tickets/t1/ai-reply-draft')
     expect((fetchMock.mock.calls[0][1] as RequestInit).method).toBe('POST')
+  })
+
+  it('reads suggestions and sends feedback', async () => {
+    const fetchMock = fakeFetch(json([]))
+    await getSuggestions('t1')
+    expect(fetchMock.mock.calls[0][0]).toBe('/api/tickets/t1/ai-suggestions')
+
+    const put = fakeFetch(json({ articleId: 'a1', useful: true }))
+    await sendSuggestionFeedback('t1', 'a1', true)
+    expect(put.mock.calls[0][0]).toBe('/api/tickets/t1/ai-suggestions/a1/feedback')
+    expect((put.mock.calls[0][1] as RequestInit).method).toBe('PUT')
   })
 })

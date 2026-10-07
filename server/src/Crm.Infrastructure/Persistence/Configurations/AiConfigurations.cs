@@ -34,3 +34,15 @@ public sealed class TicketAiClassificationConfiguration : IEntityTypeConfigurati
         classification.HasOne<Ticket>().WithMany().HasForeignKey(c => c.TicketId).OnDelete(DeleteBehavior.Restrict);
     }
 }
+
+public sealed class TicketSuggestionFeedbackConfiguration : IEntityTypeConfiguration<TicketSuggestionFeedback>
+{
+    public void Configure(EntityTypeBuilder<TicketSuggestionFeedback> feedback)
+    {
+        feedback.ToTable("TicketSuggestionFeedback");
+        feedback.HasKey(f => f.Id);
+        feedback.Property(f => f.Id).ValueGeneratedNever(); // set by TicketSuggestionFeedback.Create
+        feedback.HasIndex(f => new { f.TicketId, f.ArticleId, f.UserId }).IsUnique(); // one vote per user and suggestion
+        feedback.HasOne<Ticket>().WithMany().HasForeignKey(f => f.TicketId).OnDelete(DeleteBehavior.Restrict);
+    }
+}
