@@ -986,6 +986,14 @@
       "suggesting": "Writing a draft…",
       "review": "Review the draft before you send it.",
       "basedOn": "Based on:"
+    },
+    "classification": {
+      "title": "AI classification",
+      "suggested": "Category: {{category}}, priority: {{priority}} (confidence {{confidence}}%)",
+      "applied": "Applied automatically",
+      "suggestionOnly": "Suggestion only",
+      "overridden": "The suggestion was changed by an agent.",
+      "apply": "Apply suggestion"
     }
   }
 }

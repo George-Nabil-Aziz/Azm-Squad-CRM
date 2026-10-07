@@ -986,6 +986,14 @@
       "suggesting": "جارٍ كتابة المسودة…",
       "review": "راجع المسودة قبل إرسالها.",
       "basedOn": "استناداً إلى:"
+    },
+    "classification": {
+      "title": "تصنيف الذكاء الاصطناعي",
+      "suggested": "الفئة: {{category}}، الأولوية: {{priority}} (نسبة الثقة {{confidence}}%)",
+      "applied": "طُبّق تلقائياً",
+      "suggestionOnly": "اقتراح فقط",
+      "overridden": "غيّر أحد الموظفين هذا الاقتراح.",
+      "apply": "طبّق الاقتراح"
     }
   }
 }

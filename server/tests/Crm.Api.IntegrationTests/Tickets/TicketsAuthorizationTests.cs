@@ -89,6 +89,7 @@ public class TicketsAuthorizationTests(CrmApiFactory factory) : IClassFixture<Cr
         Assert.Equal(read, policies["GET /api/tickets/{id:guid}/ai-summary"]); // CRM-50
         Assert.Equal(write, policies["POST /api/tickets/{id:guid}/ai-summary"]);
         Assert.Equal(write, policies["POST /api/tickets/{id:guid}/ai-reply-draft"]); // CRM-51
-        Assert.Equal(20, policies.Count);
+        Assert.Equal(read, policies["GET /api/tickets/{id:guid}/ai-classification"]); // CRM-52
+        Assert.Equal(21, policies.Count);
     }
 }

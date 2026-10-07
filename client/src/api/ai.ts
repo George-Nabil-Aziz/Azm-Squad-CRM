@@ -41,3 +41,22 @@ export interface ReplyDraft {
 export function generateReplyDraft(ticketId: string): Promise<ReplyDraft> {
   return apiPost<ReplyDraft>(`/api/tickets/${encodeURIComponent(ticketId)}/ai-reply-draft`, {})
 }
+
+/** The AI category / priority suggestion of a ticket (server: TicketAiClassificationResponse); `status` "none" has no data. */
+export interface TicketClassification {
+  status: 'none' | 'applied' | 'suggested'
+  suggestedCategoryId: string | null
+  suggestedCategoryName: string | null
+  suggestedPriority: 'high' | 'mid' | 'low' | null
+  /** 0..1 */
+  confidence: number | null
+  categoryApplied: boolean
+  priorityApplied: boolean
+  createdAt: string | null
+  categoryOverriddenAt: string | null
+  priorityOverriddenAt: string | null
+}
+
+export function getTicketClassification(ticketId: string, signal?: AbortSignal): Promise<TicketClassification> {
+  return apiGet<TicketClassification>(`/api/tickets/${encodeURIComponent(ticketId)}/ai-classification`, signal)
+}

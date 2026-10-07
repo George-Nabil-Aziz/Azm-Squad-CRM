@@ -15,3 +15,12 @@ public sealed class TicketSummaryRepository(CrmDbContext db) : ITicketSummaryRep
 
     public Task SaveChangesAsync(CancellationToken cancellationToken) => db.SaveChangesAsync(cancellationToken);
 }
+
+/// <summary>EF Core storage of the AI classifications; they are saved by the ticket's own save.</summary>
+public sealed class AiClassificationRepository(CrmDbContext db) : ITicketAiClassificationRepository
+{
+    public Task<TicketAiClassification?> FindAsync(Guid ticketId, CancellationToken cancellationToken) =>
+        db.TicketAiClassifications.FirstOrDefaultAsync(c => c.TicketId == ticketId, cancellationToken);
+
+    public void Add(TicketAiClassification classification) => db.TicketAiClassifications.Add(classification);
+}

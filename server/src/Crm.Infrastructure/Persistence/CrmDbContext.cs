@@ -63,6 +63,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<TicketAiSummary> TicketAiSummaries => Set<TicketAiSummary>();
 
+    public DbSet<TicketAiClassification> TicketAiClassifications => Set<TicketAiClassification>();
+
     public DbSet<PortalAccount> PortalAccounts => Set<PortalAccount>();
 
     public DbSet<PortalLoginCode> PortalLoginCodes => Set<PortalLoginCode>();

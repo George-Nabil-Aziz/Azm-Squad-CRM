@@ -45,3 +45,7 @@ Re-classifying existing tickets, training on overrides, per-category thresholds.
 ## Verification / done
 
 All build / test / lint commands green; AC 1–4 each have a test; migration `AddTicketAiClassifications`; `dotnet ef migrations has-pending-model-changes` clean.
+
+## As built
+
+- As planned. Migration `AddTicketAiClassifications`; route `GET /api/tickets/{id}/ai-classification` added to `TicketsAuthorizationTests`. Integration tests that read the fake AI requests use `.Last()` because ticket creation now also calls the AI.

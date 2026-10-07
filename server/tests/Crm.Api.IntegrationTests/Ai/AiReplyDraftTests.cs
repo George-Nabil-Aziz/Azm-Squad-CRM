@@ -37,7 +37,7 @@ public class AiReplyDraftTests(CrmApiFactory factory) : IClassFixture<CrmApiFact
         Assert.Equal("Hi, use the reset link. [Agent name]", draft!.Draft);
         Assert.Equal("en", draft.Language);
         Assert.Equal([published], draft.Articles.Select(a => a.Id));
-        var prompt = ai.Fake.Requests.Single().User;
+        var prompt = ai.Fake.Requests.Last().User;
         Assert.Contains("Press the reset link on the sign in page.", prompt);
         Assert.DoesNotContain("Secret draft instructions.", prompt);
     }
@@ -72,7 +72,7 @@ public class AiReplyDraftTests(CrmApiFactory factory) : IClassFixture<CrmApiFact
         var draft = await (await agent.PostAsync($"/api/tickets/{ticketId}/ai-reply-draft", null)).Content.ReadFromJsonAsync<DraftBody>();
 
         Assert.Equal("ar", draft!.Language);
-        Assert.Contains("Arabic", ai.Fake.Requests.Single().System);
+        Assert.Contains("Arabic", ai.Fake.Requests.Last().System);
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class AiReplyDraftTests(CrmApiFactory factory) : IClassFixture<CrmApiFact
 
         await agent.PostAsync($"/api/tickets/{ticketId}/ai-reply-draft", null);
 
-        var sent = ai.Fake.Requests.Single().User + ai.Fake.Requests.Single().System;
+        var sent = ai.Fake.Requests.Last().User + ai.Fake.Requests.Last().System;
         Assert.DoesNotContain("VIP", sent);
         Assert.DoesNotContain("123 4567", sent);
         Assert.DoesNotContain("nour@corp.example", sent);

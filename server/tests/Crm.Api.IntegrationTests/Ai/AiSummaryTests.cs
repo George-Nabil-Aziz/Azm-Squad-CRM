@@ -42,7 +42,7 @@ public class AiSummaryTests(CrmApiFactory factory) : IClassFixture<CrmApiFactory
         Assert.Equal("- Duplicate charge", created!.Text);
         Assert.Equal(created, saved);
         Assert.Equal(factory.Time.GetUtcNow().UtcDateTime, saved!.GeneratedAt);
-        Assert.Contains("Line 3 is charged twice.", ai.Fake.Requests.Single().User);
+        Assert.Contains("Line 3 is charged twice.", ai.Fake.Requests.Last().User);
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class AiSummaryTests(CrmApiFactory factory) : IClassFixture<CrmApiFactory
 
         await agent.PostAsync($"/api/tickets/{ticketId}/ai-summary", null);
 
-        Assert.Contains("Arabic", ai.Fake.Requests.Single().System);
+        Assert.Contains("Arabic", ai.Fake.Requests.Last().System);
         Assert.Equal("ar", (await agent.GetFromJsonAsync<SummaryBody>($"/api/tickets/{ticketId}/ai-summary"))!.Language);
     }
 
@@ -133,7 +133,7 @@ public class AiSummaryTests(CrmApiFactory factory) : IClassFixture<CrmApiFactory
 
         await agent.PostAsync($"/api/tickets/{ticketId}/ai-summary", null);
 
-        var prompt = ai.Fake.Requests.Single();
+        var prompt = ai.Fake.Requests.Last();
         var sent = prompt.System + prompt.User;
         Assert.DoesNotContain("nour@corp.example", sent);
         Assert.DoesNotContain("123 4567", sent);

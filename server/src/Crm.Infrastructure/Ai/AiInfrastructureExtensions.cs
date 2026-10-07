@@ -31,6 +31,7 @@ public static class AiInfrastructureExtensions
         services.AddHttpClient<IAiTextService, AnthropicTextService>((provider, client) =>
             client.Timeout = TimeSpan.FromSeconds(provider.GetRequiredService<AiOptions>().TimeoutSeconds));
         services.AddScoped<ITicketSummaryRepository, TicketSummaryRepository>();
+        services.AddScoped<ITicketAiClassificationRepository, AiClassificationRepository>();
         return services;
     }
 }

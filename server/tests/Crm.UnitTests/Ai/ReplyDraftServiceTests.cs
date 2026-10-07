@@ -148,7 +148,7 @@ public class ReplyDraftServiceTests
 
         await SuggestAsync();
 
-        Assert.Equal(1, _messages.Messages.Count);
+        Assert.Single(_messages.Messages);
         Assert.Equal(0, _tickets.SaveCount);
     }
 

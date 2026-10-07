@@ -31,6 +31,11 @@ public static class AiEndpoints
             .RequireAuthorization(Permissions.TicketsManage)
             .WithName("SuggestTicketReplyDraft");
 
+        // CRM-52: what the AI suggested when the ticket was created, and whether it was applied.
+        ticket.MapGet("/ai-classification", async (Guid id, IAiClassificationService classification, CancellationToken cancellationToken) =>
+                Results.Ok(await classification.GetAsync(id, cancellationToken)))
+            .WithName("GetTicketAiClassification");
+
         return app;
     }
 }

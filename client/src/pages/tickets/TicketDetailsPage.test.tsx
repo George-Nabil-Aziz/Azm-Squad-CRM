@@ -2,7 +2,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { getAiStatus, getTicketSummary } from '@/api/ai'
+import { getAiStatus, getTicketClassification, getTicketSummary } from '@/api/ai'
 import { getCurrentUser, type CurrentUser } from '@/api/auth'
 import { ApiError } from '@/api/errors'
 import { listTicketCategories } from '@/api/ticket-categories'
@@ -30,6 +30,7 @@ vi.mock('@/api/ai', () => ({
   getAiStatus: vi.fn().mockResolvedValue({ enabled: false }),
   getTicketSummary: vi.fn(),
   generateReplyDraft: vi.fn(),
+  getTicketClassification: vi.fn(),
   generateTicketSummary: vi.fn(),
 }))
 vi.mock('@/api/ticket-categories', () => ({ listTicketCategories: vi.fn() }))
@@ -121,6 +122,7 @@ function renderPage() {
 describe('TicketDetailsPage', () => {
   beforeEach(() => {
     vi.mocked(getCurrentUser).mockReset().mockResolvedValue(signedInAgent)
+    vi.mocked(getTicketClassification).mockReset().mockResolvedValue({ status: 'none' } as never)
     vi.mocked(getAiStatus).mockReset().mockResolvedValue({ enabled: false })
     vi.mocked(getTicketSummary).mockReset().mockResolvedValue({ text: 'Saved AI summary', language: 'en', generatedAt: '2026-10-01T08:00:00Z' })
     vi.mocked(getTicket).mockReset().mockResolvedValue(invoiceTicket)
