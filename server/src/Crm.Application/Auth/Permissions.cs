@@ -62,6 +62,9 @@ public static class Permissions
     /// <summary>Change the system settings: business hours, time zone, ticket prefix, channel credentials (CRM-35): SuperAdmin only.</summary>
     public const string SettingsManage = "settings.manage";
 
+    /// <summary>Manage API keys, webhooks and the ERP sync log (/api/api-keys, /api/webhooks, /api/integrations; CRM-58..60): SuperAdmin and Admin.</summary>
+    public const string IntegrationsManage = "integrations.manage";
+
     /// <summary>Take and answer live chats from the website (CRM-56): connect to the chat hub as an agent.</summary>
     public const string ChatHandle = "chat.handle";
 
@@ -74,6 +77,7 @@ public static class Permissions
         CategoriesManage, SlaManage, ChannelsManage,
         ReportsView, AuditView, SettingsManage,
         KbView, KbManage,
+        IntegrationsManage,
         ChatHandle,
     ];
 }

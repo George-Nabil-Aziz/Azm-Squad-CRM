@@ -14,6 +14,7 @@ import { PortalNewTicketPage } from '@/pages/portal/PortalNewTicketPage'
 import { PortalSurveyPage } from '@/pages/portal/PortalSurveyPage'
 import { PortalTicketDetailsPage } from '@/pages/portal/PortalTicketDetailsPage'
 import { PortalTicketsPage } from '@/pages/portal/PortalTicketsPage'
+import { IntegrationsLayout } from '@/features/integrations/IntegrationsLayout'
 import { ReportsLayout } from '@/features/reports/ReportsLayout'
 import { AuditLogsPage } from '@/pages/audit/AuditLogsPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
@@ -21,6 +22,9 @@ import { CustomerDetailsPage } from '@/pages/customers/CustomerDetailsPage'
 import { CustomersPage } from '@/pages/customers/CustomersPage'
 import { AssignmentSettingsPage } from '@/pages/assignment/AssignmentSettingsPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
+import { ApiKeysPage } from '@/pages/integrations/ApiKeysPage'
+import { ErpLogsPage } from '@/pages/integrations/ErpLogsPage'
+import { WebhooksPage } from '@/pages/integrations/WebhooksPage'
 import { KnowledgeBasePage } from '@/pages/knowledge-base/KnowledgeBasePage'
 import { AgentReportPage } from '@/pages/reports/AgentReportPage'
 import { DashboardReportPage } from '@/pages/reports/DashboardReportPage'
@@ -78,6 +82,14 @@ export function AppRoutes() {
           </Route>
           <Route element={<RequirePermission permission={permissions.settingsManage} />}>
             <Route path="settings" element={<SettingsPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.integrationsManage} />}>
+            <Route path="integrations" element={<IntegrationsLayout />}>
+              <Route index element={<Navigate to="api-keys" replace />} />
+              <Route path="api-keys" element={<ApiKeysPage />} />
+              <Route path="webhooks" element={<WebhooksPage />} />
+              <Route path="erp-logs" element={<ErpLogsPage />} />
+            </Route>
           </Route>
           <Route element={<RequirePermission permission={permissions.chatHandle} />}>
             <Route path="chat" element={<ChatConsolePage />} />

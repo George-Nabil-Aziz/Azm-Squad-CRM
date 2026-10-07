@@ -20,7 +20,8 @@
     "auditLogs": "Audit log",
     "settings": "Settings",
     "webForms": "Web forms",
-    "chat": "Live chat"
+    "chat": "Live chat",
+    "integrations": "Integrations"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -1077,5 +1078,123 @@
       "required": "Enter your name and email.",
       "failed": "Could not start the chat. Try again."
     }
+  },
+  "integrations": {
+    "description": "Connect other systems to the CRM: API keys for the public API, webhooks and the ERP.",
+    "navigation": "Integrations sections",
+    "nav": {
+      "apiKeys": "API keys",
+      "webhooks": "Webhooks",
+      "erpLogs": "ERP sync log"
+    },
+    "apiKeys": {
+      "description": "API keys let external systems call the public API (/api/v1) with the X-Api-Key header. A key is shown only once, right after it is created.",
+      "swagger": "Open the API documentation (Swagger)",
+      "name": "Name",
+      "scopes": "Scopes",
+      "create": "Create API key",
+      "nameRequired": "Enter a name.",
+      "scopesRequired": "Choose at least one scope.",
+      "created": "API key created. Copy it now: it will not be shown again.",
+      "keyLabel": "API key",
+      "dismiss": "I have copied the key",
+      "loading": "Loading API keys…",
+      "empty": "No API keys yet.",
+      "prefix": "Key",
+      "lastUsed": "Last used",
+      "never": "Never",
+      "status": "Status",
+      "actions": "Actions",
+      "active": "Active",
+      "revoked": "Revoked",
+      "revoke": "Revoke",
+      "revokeFor": "Revoke {{name}}",
+      "scopeLabels": {
+        "ticketsRead": "Read tickets",
+        "ticketsWrite": "Create tickets",
+        "customersRead": "Read customers",
+        "customersWrite": "Create customers"
+      }
+    },
+    "webhooks": {
+      "description": "Webhooks notify other systems when something happens in the CRM. Every delivery is a JSON POST signed with the webhook secret (header X-Crm-Signature, HMAC-SHA256 of the body).",
+      "name": "Name",
+      "url": "URL",
+      "events": "Events",
+      "register": "Register webhook",
+      "nameRequired": "Enter a name.",
+      "urlInvalid": "Enter a valid http or https URL.",
+      "eventsRequired": "Choose at least one event.",
+      "created": "Webhook registered. Copy the signing secret now: it will not be shown again.",
+      "secretLabel": "Signing secret",
+      "dismiss": "I have copied the secret",
+      "loading": "Loading webhooks…",
+      "empty": "No webhooks yet.",
+      "status": "Status",
+      "actions": "Actions",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "enable": "Enable",
+      "disable": "Disable",
+      "delete": "Delete",
+      "enableFor": "Enable {{name}}",
+      "disableFor": "Disable {{name}}",
+      "deleteFor": "Delete {{name}}",
+      "deliveriesFor": "Deliveries of {{name}}",
+      "deliveries": "Deliveries",
+      "deliveriesEmpty": "No deliveries yet.",
+      "deliveriesLoading": "Loading deliveries…",
+      "event": "Event",
+      "attempts": "Attempts",
+      "result": "Result",
+      "time": "Time",
+      "deliveryStatus": {
+        "pending": "Pending",
+        "delivered": "Delivered",
+        "failed": "Failed"
+      },
+      "eventLabels": {
+        "ticketCreated": "Ticket created",
+        "ticketResolved": "Ticket resolved"
+      }
+    },
+    "erpLogs": {
+      "description": "Every time the CRM reads a customer's data from the ERP, the result is logged here.",
+      "loading": "Loading the log…",
+      "empty": "No ERP syncs yet.",
+      "time": "Time",
+      "customer": "Customer",
+      "erpId": "ERP id",
+      "result": "Result",
+      "error": "Details",
+      "previous": "Previous",
+      "next": "Next",
+      "results": {
+        "success": "Success",
+        "failed": "Failed",
+        "not_configured": "Not configured"
+      }
+    }
+  },
+  "erp": {
+    "title": "ERP",
+    "loading": "Loading ERP data…",
+    "notLinked": "This customer is not linked to an ERP customer.",
+    "erpId": "ERP customer id",
+    "link": "Link",
+    "unlink": "Remove link",
+    "linkLabel": "ERP customer id",
+    "linkedAs": "Linked to ERP customer {{id}}",
+    "orders": "Recent orders",
+    "invoices": "Recent invoices",
+    "noOrders": "No orders.",
+    "noInvoices": "No invoices.",
+    "number": "Number",
+    "date": "Date",
+    "dueDate": "Due date",
+    "status": "Status",
+    "total": "Total",
+    "unavailable": "ERP data is not available right now.",
+    "updated": "Updated at {{time}}"
   }
 }

@@ -67,6 +67,15 @@ public class RolePermissionsTests
     }
 
     [Fact]
+    public void IntegrationsManage_IsForSuperAdminAndAdminOnly()
+    {
+        Assert.True(RolePermissions.HasPermission([Roles.SuperAdmin], Permissions.IntegrationsManage));
+        Assert.True(RolePermissions.HasPermission([Roles.Admin], Permissions.IntegrationsManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Supervisor], Permissions.IntegrationsManage));
+        Assert.False(RolePermissions.HasPermission([Roles.Agent], Permissions.IntegrationsManage));
+    }
+
+    [Fact]
     public void Agent_WorksTicketsAndCustomersOnly()
     {
         Assert.Equal(

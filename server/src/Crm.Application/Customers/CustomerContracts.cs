@@ -20,7 +20,8 @@ public sealed record CustomerResponse(
     string? Phone,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    IReadOnlyList<CustomerContactResponse> Contacts);
+    IReadOnlyList<CustomerContactResponse> Contacts,
+    string? ErpCustomerId = null);
 
 /// <summary>One contact: <c>Type</c> is "phone", "email" or "whatsapp"; numbers are E.164, emails lower case.</summary>
 public sealed record CustomerContactResponse(Guid Id, string Type, string Value, bool IsPrimary);

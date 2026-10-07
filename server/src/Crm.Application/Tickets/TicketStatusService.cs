@@ -20,7 +20,8 @@ public sealed class TicketStatusService(
     ITicketRepository tickets,
     ITicketHistoryRecorder history,
     TimeProvider timeProvider,
-    Crm.Application.Portal.ISurveyService? surveys = null) : ITicketStatusService
+    Crm.Application.Portal.ISurveyService? surveys = null,
+    Crm.Application.Integrations.IWebhookEventPublisher? webhooks = null) : ITicketStatusService
 {
     public async Task<TicketResponse> ChangeAsync(Guid ticketId, ChangeTicketStatusRequest request, CancellationToken cancellationToken)
     {
@@ -45,6 +46,13 @@ public sealed class TicketStatusService(
         if (target == TicketStatus.Resolved && surveys is not null)
         {
             await surveys.OnTicketResolvedAsync(ticket, cancellationToken); // CRM-44: the customer gets the satisfaction survey
+        }
+
+        if (target == TicketStatus.Resolved && webhooks is not null)
+        {
+            await webhooks.PublishAsync(
+                Crm.Domain.Integrations.WebhookEvents.TicketResolved,
+                Crm.Application.Integrations.WebhookTicketData.From(ticket), cancellationToken); // CRM-59
         }
 
         return TicketService.ToResponse(await tickets.GetViewAsync(ticketId, cancellationToken)

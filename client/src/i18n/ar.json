@@ -20,7 +20,8 @@
     "auditLogs": "سجل التدقيق",
     "settings": "الإعدادات",
     "webForms": "نماذج الويب",
-    "chat": "المحادثات المباشرة"
+    "chat": "المحادثات المباشرة",
+    "integrations": "التكاملات"
   },
   "shell": {
     "mainNavigation": "التنقل الرئيسي",
@@ -1077,5 +1078,123 @@
       "required": "أدخل اسمك وبريدك الإلكتروني.",
       "failed": "تعذر بدء المحادثة. حاول مرة أخرى."
     }
+  },
+  "integrations": {
+    "description": "اربط أنظمة أخرى بنظام إدارة العملاء: مفاتيح API للواجهة العامة، وخطافات الويب، ونظام تخطيط الموارد.",
+    "navigation": "أقسام التكاملات",
+    "nav": {
+      "apiKeys": "مفاتيح API",
+      "webhooks": "خطافات الويب",
+      "erpLogs": "سجل مزامنة ERP"
+    },
+    "apiKeys": {
+      "description": "تتيح مفاتيح API للأنظمة الخارجية استدعاء الواجهة العامة (/api/v1) بالترويسة X-Api-Key. يظهر المفتاح مرة واحدة فقط بعد إنشائه.",
+      "swagger": "افتح توثيق الواجهة (Swagger)",
+      "name": "الاسم",
+      "scopes": "النطاقات",
+      "create": "إنشاء مفتاح API",
+      "nameRequired": "أدخل اسماً.",
+      "scopesRequired": "اختر نطاقاً واحداً على الأقل.",
+      "created": "تم إنشاء المفتاح. انسخه الآن فلن يظهر مرة أخرى.",
+      "keyLabel": "مفتاح API",
+      "dismiss": "نسخت المفتاح",
+      "loading": "جارٍ تحميل المفاتيح…",
+      "empty": "لا توجد مفاتيح API بعد.",
+      "prefix": "المفتاح",
+      "lastUsed": "آخر استخدام",
+      "never": "أبداً",
+      "status": "الحالة",
+      "actions": "الإجراءات",
+      "active": "نشط",
+      "revoked": "ملغى",
+      "revoke": "إلغاء",
+      "revokeFor": "إلغاء {{name}}",
+      "scopeLabels": {
+        "ticketsRead": "قراءة التذاكر",
+        "ticketsWrite": "إنشاء التذاكر",
+        "customersRead": "قراءة العملاء",
+        "customersWrite": "إنشاء العملاء"
+      }
+    },
+    "webhooks": {
+      "description": "تُعلِم خطافات الويب الأنظمة الأخرى عند حدوث شيء في النظام. كل إرسال هو طلب POST بصيغة JSON موقّع بسر الخطاف (الترويسة X-Crm-Signature، وهي HMAC-SHA256 لمحتوى الطلب).",
+      "name": "الاسم",
+      "url": "الرابط",
+      "events": "الأحداث",
+      "register": "تسجيل خطاف ويب",
+      "nameRequired": "أدخل اسماً.",
+      "urlInvalid": "أدخل رابط http أو https صالحاً.",
+      "eventsRequired": "اختر حدثاً واحداً على الأقل.",
+      "created": "تم تسجيل الخطاف. انسخ سر التوقيع الآن فلن يظهر مرة أخرى.",
+      "secretLabel": "سر التوقيع",
+      "dismiss": "نسخت السر",
+      "loading": "جارٍ تحميل الخطافات…",
+      "empty": "لا توجد خطافات ويب بعد.",
+      "status": "الحالة",
+      "actions": "الإجراءات",
+      "enabled": "مفعّل",
+      "disabled": "معطّل",
+      "enable": "تفعيل",
+      "disable": "تعطيل",
+      "delete": "حذف",
+      "enableFor": "تفعيل {{name}}",
+      "disableFor": "تعطيل {{name}}",
+      "deleteFor": "حذف {{name}}",
+      "deliveriesFor": "عمليات إرسال {{name}}",
+      "deliveries": "عمليات الإرسال",
+      "deliveriesEmpty": "لا توجد عمليات إرسال بعد.",
+      "deliveriesLoading": "جارٍ تحميل عمليات الإرسال…",
+      "event": "الحدث",
+      "attempts": "المحاولات",
+      "result": "النتيجة",
+      "time": "الوقت",
+      "deliveryStatus": {
+        "pending": "قيد الانتظار",
+        "delivered": "تم التسليم",
+        "failed": "فشل"
+      },
+      "eventLabels": {
+        "ticketCreated": "إنشاء تذكرة",
+        "ticketResolved": "حل تذكرة"
+      }
+    },
+    "erpLogs": {
+      "description": "في كل مرة يقرأ النظام بيانات عميل من نظام ERP تُسجَّل النتيجة هنا.",
+      "loading": "جارٍ تحميل السجل…",
+      "empty": "لا توجد عمليات مزامنة بعد.",
+      "time": "الوقت",
+      "customer": "العميل",
+      "erpId": "معرّف ERP",
+      "result": "النتيجة",
+      "error": "التفاصيل",
+      "previous": "السابق",
+      "next": "التالي",
+      "results": {
+        "success": "نجحت",
+        "failed": "فشلت",
+        "not_configured": "غير مُعدّ"
+      }
+    }
+  },
+  "erp": {
+    "title": "نظام ERP",
+    "loading": "جارٍ تحميل بيانات ERP…",
+    "notLinked": "هذا العميل غير مرتبط بعميل في نظام ERP.",
+    "erpId": "معرّف العميل في ERP",
+    "link": "ربط",
+    "unlink": "إزالة الربط",
+    "linkLabel": "معرّف العميل في ERP",
+    "linkedAs": "مرتبط بالعميل {{id}} في ERP",
+    "orders": "أحدث الطلبات",
+    "invoices": "أحدث الفواتير",
+    "noOrders": "لا توجد طلبات.",
+    "noInvoices": "لا توجد فواتير.",
+    "number": "الرقم",
+    "date": "التاريخ",
+    "dueDate": "تاريخ الاستحقاق",
+    "status": "الحالة",
+    "total": "الإجمالي",
+    "unavailable": "بيانات ERP غير متاحة حالياً.",
+    "updated": "آخر تحديث {{time}}"
   }
 }

@@ -1,9 +1,11 @@
 using Crm.Application.Channels;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Integrations;
 using Crm.Application.Settings;
 using Crm.Application.Sla;
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
+using Crm.Domain.Integrations;
 using Crm.Domain.Tickets;
 
 namespace Crm.Application.Tickets;
@@ -30,7 +32,8 @@ public sealed class ChannelTicketService(
     TimeProvider timeProvider,
     ISystemSettingsProvider settings,
     IAutoAssignmentService? autoAssigner = null,
-    Crm.Application.Ai.IAiClassificationService? aiClassification = null) : IChannelTicketService
+    Crm.Application.Ai.IAiClassificationService? aiClassification = null,
+    IWebhookEventPublisher? webhooks = null) : IChannelTicketService
 {
     private const int WhatsAppSubjectLength = 80;
     private const int TimelineDetailsLength = 200;
@@ -92,6 +95,11 @@ public sealed class ChannelTicketService(
         if (autoAssigner is not null && autoAssignee is { } agent)
         {
             await autoAssigner.NotifyAssignedAsync(ticket.Id, agent, now, cancellationToken); // CRM-28
+        }
+
+        if (webhooks is not null)
+        {
+            await webhooks.PublishAsync(WebhookEvents.TicketCreated, WebhookTicketData.From(ticket), cancellationToken); // CRM-59
         }
 
         return new ChannelTicketResult(ticket.Id, true);

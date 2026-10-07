@@ -3,6 +3,7 @@ using Crm.Domain.Audit;
 using Crm.Domain.Channels;
 using Crm.Domain.Chat;
 using Crm.Domain.Customers;
+using Crm.Domain.Integrations;
 using Crm.Domain.KnowledgeBase;
 using Crm.Domain.Notifications;
 using Crm.Domain.Portal;
@@ -80,6 +81,13 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<QuickReply> QuickReplies => Set<QuickReply>();
 
+    public DbSet<ApiKey> ApiKeys => Set<ApiKey>();
+
+    public DbSet<ErpSyncLog> ErpSyncLogs => Set<ErpSyncLog>();
+
+    public DbSet<Webhook> Webhooks => Set<Webhook>();
+
+    public DbSet<WebhookDelivery> WebhookDeliveries => Set<WebhookDelivery>();
     public DbSet<ChatSession> ChatSessions => Set<ChatSession>();
 
     protected override void OnModelCreating(ModelBuilder builder)

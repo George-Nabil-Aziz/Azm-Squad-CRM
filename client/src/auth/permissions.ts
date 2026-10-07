@@ -22,6 +22,7 @@ export const permissions = {
   kbManage: 'kb.manage',
   auditView: 'audit.view',
   settingsManage: 'settings.manage',
+  integrationsManage: 'integrations.manage',
   chatHandle: 'chat.handle',
 } as const
 

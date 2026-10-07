@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.DataProtection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+builder.Services.AddPublicApi(); // CRM-58: API keys, rate limit, the public OpenAPI document
 builder.Services.AddCrmLocalization();
 builder.Services.AddCrmErrorHandling();
 builder.Services.AddApplication();
@@ -45,12 +46,17 @@ app.UseCrmLocalization();
 app.UseCrmErrorHandling();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
+app.UseMiddleware<ApiKeyMiddleware>();
 app.UseWhen(context => context.Request.Path.StartsWithSegments(ChatHub.Path), chat => chat.UseMiddleware<ChatHubAccessMiddleware>());
 // CRM-56: the chat hub is open to visitors with a chat token and to agents with chat.handle; everyone else is refused here.
 
+// The public API document and Swagger UI are served everywhere; the internal API document only in Development.
+app.MapOpenApi("/openapi/{documentName:regex(^public-v1$)}.json");
+app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/public-v1.json", "CRM public API v1"));
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi("/openapi/{documentName:regex(^v1$)}.json");
 }
 
 app.MapHealthEndpoints();
@@ -85,6 +91,10 @@ app.MapTicketAttachmentsEndpoints();
 app.MapNotificationsEndpoints();
 app.MapTasksEndpoints();
 app.MapQuickRepliesEndpoints();
+app.MapApiKeysEndpoints();
+app.MapWebhooksEndpoints();
+app.MapErpEndpoints();
+app.MapPublicApiEndpoints();
 app.MapHub<NotificationsHub>(NotificationsHub.Path).RequireAuthorization(Permissions.NotificationsView);
 app.MapHub<ChatHub>(ChatHub.Path); // access is checked by ChatHubAccessMiddleware
 

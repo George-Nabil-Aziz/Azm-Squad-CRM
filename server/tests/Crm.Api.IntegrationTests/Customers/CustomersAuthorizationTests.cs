@@ -107,6 +107,8 @@ public class CustomersAuthorizationTests(CrmApiFactory factory) : IClassFixture<
         Assert.Equal(read, policies["GET /api/customers/{id:guid}/attachments"]);
         Assert.Equal(write, policies["POST /api/customers/{id:guid}/attachments"]);
         Assert.Equal(read, policies["GET /api/customers/{id:guid}/attachments/{attachmentId:guid}"]);
-        Assert.Equal(15, policies.Count);
+        Assert.Equal(read, policies["GET /api/customers/{id:guid}/erp"]); // CRM-60
+        Assert.Equal(write, policies["PUT /api/customers/{id:guid}/erp-link"]);
+        Assert.Equal(17, policies.Count);
     }
 }

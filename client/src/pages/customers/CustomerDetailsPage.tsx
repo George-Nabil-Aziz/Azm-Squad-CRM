@@ -2,6 +2,7 @@ import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
 import { isApiError } from '@/api/errors'
+import { ErpPanel } from '@/features/customers/ErpPanel'
 import { CustomerAttachments } from '@/features/customers/CustomerAttachments'
 import { CustomerContactsTable } from '@/features/customers/CustomerContactsTable'
 import { CustomerNotes } from '@/features/customers/CustomerNotes'
@@ -37,6 +38,7 @@ export function CustomerDetailsPage() {
               <p className="text-muted-foreground">{t('customers.contacts.empty')}</p>
             )}
           </section>
+          <ErpPanel customerId={id} />
           <CustomerNotes customerId={id} />
           <CustomerAttachments customerId={id} />
           <CustomerTimeline customerId={id} />

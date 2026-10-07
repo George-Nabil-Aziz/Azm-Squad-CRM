@@ -5,6 +5,7 @@ using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Integrations;
 using Crm.Application.Reports;
 using Crm.Application.Settings;
 using Crm.Application.Notifications;
@@ -20,6 +21,7 @@ using Crm.Infrastructure.Chat;
 using Crm.Infrastructure.Customers;
 using Crm.Infrastructure.Files;
 using Crm.Infrastructure.Identity;
+using Crm.Infrastructure.Integrations;
 using Crm.Infrastructure.KnowledgeBase;
 using Crm.Infrastructure.Persistence;
 using Crm.Infrastructure.Portal;
@@ -94,6 +96,11 @@ public static class DependencyInjection
         services.AddScoped<ICustomerContextRepository, CustomerContextRepository>();
         services.AddScoped<ITaskRepository, TaskRepository>();
         services.AddScoped<IQuickReplyRepository, QuickReplyRepository>();
+        services.AddScoped<IApiKeyRepository, ApiKeyRepository>();
+        services.AddScoped<IWebhookRepository, WebhookRepository>();
+        services.AddScoped<IErpRepository, ErpRepository>();
+        services.AddHttpClient<IErpClient, HttpErpClient>(); // CRM-60: configured by Integrations:Erp:* (user-secrets / environment)
+        services.AddHttpClient<IWebhookSender, HttpWebhookSender>(client => client.Timeout = TimeSpan.FromSeconds(10));
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IStaffDirectory, StaffDirectory>();
         services.AddScoped<INotificationEmailSender, NotificationEmailSender>();

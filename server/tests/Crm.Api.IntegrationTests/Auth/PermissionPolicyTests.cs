@@ -20,6 +20,8 @@ public partial class PermissionPolicyTests(CrmApiFactory factory) : IClassFixtur
             .Where(e => e.RoutePattern.RawText?.StartsWith("/api/", StringComparison.Ordinal) == true
                         // Portal endpoints (CRM-40+) use the Portal policy for customers, not staff permissions.
                         && !e.RoutePattern.RawText.StartsWith("/api/portal/", StringComparison.Ordinal)
+                        // The public API (CRM-58) uses API keys, not staff permissions (see PublicApiTests).
+                        && e.Metadata.GetMetadata<Crm.Api.Endpoints.RequiredApiScope>() is null
                         && e.Metadata.GetMetadata<IAllowAnonymous>() is null)
             .ToList();
 

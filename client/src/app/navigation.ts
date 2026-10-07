@@ -4,6 +4,7 @@ import {
   FileInputIcon,
   MessagesSquareIcon,
   LayoutDashboardIcon,
+  PlugIcon,
   ScrollTextIcon,
   SettingsIcon,
   ShuffleIcon,
@@ -48,5 +49,6 @@ export const navigationItems: readonly NavigationItem[] = [
   { id: 'slaPolicies', path: '/sla-policies', icon: TimerIcon, permission: permissions.slaManage },
   { id: 'auditLogs', path: '/audit-logs', icon: ScrollTextIcon, permission: permissions.auditView },
   { id: 'webForms', path: '/web-forms', icon: FileInputIcon, permission: permissions.channelsManage },
+  { id: 'integrations', path: '/integrations', icon: PlugIcon, permission: permissions.integrationsManage },
   { id: 'settings', path: '/settings', icon: SettingsIcon, permission: permissions.settingsManage },
 ]
