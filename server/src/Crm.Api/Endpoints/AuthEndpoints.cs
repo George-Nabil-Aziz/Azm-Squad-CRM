@@ -15,6 +15,14 @@ public static class AuthEndpoints
             .AllowAnonymous()
             .WithName("Login");
 
+        // Development only (404 elsewhere): the demo sign-ins the login pages offer. Never returns passwords.
+        group.MapGet("/demo-accounts", (IHostEnvironment environment, IConfiguration configuration) =>
+                DemoAccounts.IsEnabled(environment.EnvironmentName, configuration["Seed:DemoAccounts"])
+                    ? Results.Ok(DemoAccounts.All)
+                    : Results.NotFound())
+            .AllowAnonymous()
+            .WithName("GetDemoAccounts");
+
         // Any signed-in user (no permission): the client reads its permissions here to hide menu items and actions.
         group.MapGet("/me", (ClaimsPrincipal user) =>
             {

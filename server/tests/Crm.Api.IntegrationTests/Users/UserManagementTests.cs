@@ -49,7 +49,7 @@ public class UserManagementTests(CrmApiFactory factory) : IClassFixture<CrmApiFa
 
     [Theory]
     [InlineData(CrmApiFactory.SuperAdminEmail)]
-    [InlineData("ADMIN@CRM.LOCAL")]
+    [InlineData("SUPERADMIN@CRM.COM")]
     public async Task CreateUser_WithExistingEmail_Returns400WithEmailError(string email)
     {
         var admin = await AdminClientAsync();

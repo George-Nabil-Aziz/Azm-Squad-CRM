@@ -26,7 +26,7 @@ namespace Crm.Api.IntegrationTests.Infrastructure;
 /// </summary>
 public class CrmApiFactory : WebApplicationFactory<Program>
 {
-    public const string SuperAdminEmail = "admin@crm.local";
+    public const string SuperAdminEmail = "superadmin@crm.com";
     public const string SuperAdminPassword = "Test#Admin123";
     public const string JwtSigningKey = "test-signing-key-for-integration-tests-only-0123456789";
     public const string TestUserPassword = "Test#User123";

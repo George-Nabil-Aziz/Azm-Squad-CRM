@@ -1,6 +1,8 @@
 using Crm.Application.Portal;
 using Microsoft.Extensions.Configuration;
+using Crm.Application.Auth;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Crm.Infrastructure.Portal;
 
@@ -29,6 +31,9 @@ public static class PortalServiceCollectionExtensions
                 options.SurveyValidDays = defaults.SurveyValidDays;
             }
 
+            var env = provider.GetRequiredService<IHostEnvironment>().EnvironmentName;
+            options.LogLoginCodes = DemoAccounts.IsEnabled(env, options.LogLoginCodes ? "true" : "false")
+                                    || string.Equals(env, "Development", StringComparison.OrdinalIgnoreCase);
             return options;
         });
         return services;

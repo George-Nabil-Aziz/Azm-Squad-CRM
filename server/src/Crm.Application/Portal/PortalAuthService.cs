@@ -7,6 +7,7 @@ using Crm.Domain.Channels;
 using Crm.Domain.Customers;
 using Crm.Domain.Portal;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 
 namespace Crm.Application.Portal;
 
@@ -73,6 +74,8 @@ public sealed class PortalAuthService(
     IChannelSender sender,
     IAccessTokenGenerator tokens,
     IPortalCodeGenerator codeGenerator,
+    PortalOptions options,
+    ILogger<PortalAuthService> logger,
     TimeProvider timeProvider,
     IValidator<RequestCodeRequest> requestValidator,
     IValidator<VerifyCodeRequest> verifyValidator) : IPortalAuthService
@@ -100,6 +103,12 @@ public sealed class PortalAuthService(
         var code = codeGenerator.NewCode();
         accounts.AddCode(PortalLoginCode.Issue(email, PortalCodeHash.Compute(email, code), now));
         await accounts.SaveChangesAsync(cancellationToken);
+
+        if (options.LogLoginCodes)
+        {
+            // Development only: lets a developer sign in without a configured mail channel.
+            logger.LogInformation("Portal login code for {Email}: {Code}", email, code);
+        }
 
         await sender.SendAsync(
             new ChannelReply(ChannelKind.Email, email, PortalText.CodeEmailSubject,
