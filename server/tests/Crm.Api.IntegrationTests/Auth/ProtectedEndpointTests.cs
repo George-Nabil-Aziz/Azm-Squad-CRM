@@ -99,7 +99,9 @@ public class ProtectedEndpointTests(CrmApiFactory factory) : IClassFixture<CrmAp
     {
         var endpoints = factory.Services.GetRequiredService<EndpointDataSource>().Endpoints
             .OfType<RouteEndpoint>()
-            .Where(e => e.RoutePattern.RawText?.StartsWith("/api/", StringComparison.Ordinal) == true)
+            .Where(e => e.RoutePattern.RawText?.StartsWith("/api/", StringComparison.Ordinal) == true
+                        // The public API (CRM-58) is protected by API keys (RequiredApiScope), covered by PublicApiTests.
+                        && e.Metadata.GetMetadata<Crm.Api.Endpoints.RequiredApiScope>() is null)
             .ToList();
 
         Assert.NotEmpty(endpoints);
