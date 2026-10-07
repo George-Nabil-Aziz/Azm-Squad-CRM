@@ -72,7 +72,8 @@ internal sealed class PortalApp
 
     public CapturingEmailProvider Email { get; }
 
-    public static PortalApp Create(CrmApiFactory factory, IDictionary<string, string?>? settings = null)
+    public static PortalApp Create(
+        CrmApiFactory factory, IDictionary<string, string?>? settings = null, Action<IServiceCollection>? configureServices = null)
     {
         var email = new CapturingEmailProvider();
         var app = factory.WithWebHostBuilder(builder =>
@@ -86,6 +87,7 @@ internal sealed class PortalApp
             {
                 services.RemoveAll<IChannelProvider>();
                 services.AddSingleton<IChannelProvider>(email);
+                configureServices?.Invoke(services);
             });
         });
         return new PortalApp(factory, app, email);

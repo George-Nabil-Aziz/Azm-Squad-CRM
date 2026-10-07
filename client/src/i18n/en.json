@@ -860,7 +860,8 @@
     "nav": {
       "help": "Help center",
       "tickets": "My requests",
-      "newTicket": "New request"
+      "newTicket": "New request",
+      "chat": "Chat"
     },
     "home": {
       "title": "How can we help?",
@@ -970,6 +971,21 @@
       "yourRating": "Your rating: {{count}} out of 5.",
       "expired": "This survey link has expired.",
       "notFound": "This survey was not found."
+    },
+    "chat": {
+      "title": "Help chat",
+      "intro": "Ask a question and get an answer from our help articles. You can ask for an agent at any time.",
+      "loading": "Loading…",
+      "unavailable": "The chat is not available right now.",
+      "conversation": "Conversation",
+      "message": "Your message",
+      "send": "Send",
+      "thinking": "Looking in the help articles…",
+      "failed": "The message could not be sent. Please try again.",
+      "sources": "Source:",
+      "ticketCreated": "Your request:",
+      "talkToAgent": "Talk to an agent",
+      "agentRequest": "I would like to talk to an agent."
     }
   },
   "ai": {

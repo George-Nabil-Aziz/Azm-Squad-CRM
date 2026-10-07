@@ -28,3 +28,7 @@ Without a key the endpoint is **503** and status says disabled; a failing provid
 ## Out of scope
 
 Live chat, stored chat sessions, streaming, rate limiting per IP.
+
+## As built
+
+- As planned: `ChatbotService`, `PortalChatbotEndpoints`, `/portal/chat` page and header link (shown only while the status endpoint says enabled). The hand-off button adds a customer message ("I would like to talk to an agent.") so the transcript always ends with the customer. No migration, no new permission. `PortalApp.Create` got an optional service configuration hook for the tests; the portal sign-in test ignores the new status request.

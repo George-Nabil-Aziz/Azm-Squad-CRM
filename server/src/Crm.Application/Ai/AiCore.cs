@@ -64,6 +64,10 @@ public static class AiText
 
     public static string ArticleNotPublished => LocalizedText.Get("Only a published article can get feedback.", "يمكن تقييم المقال المنشور فقط.");
 
+    public static string ChatMessagesInvalid(int maxMessages, int maxChars) => LocalizedText.Get(
+        $"Send between 1 and {maxMessages} messages of at most {maxChars} characters; the last one must be from the customer.",
+        $"أرسل من 1 إلى {maxMessages} رسالة بحد أقصى {maxChars} حرف، على أن تكون الأخيرة من العميل.");
+
     public static string NotConfiguredTitle => LocalizedText.Get("AI not configured", "الذكاء الاصطناعي غير مُعدّ");
 
     public static string FailedTitle => LocalizedText.Get("AI request failed", "فشل طلب الذكاء الاصطناعي");

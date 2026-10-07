@@ -3,6 +3,7 @@ import { permissions } from '@/auth/permissions'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { PortalLayout } from '@/components/portal/PortalLayout'
 import { PortalArticlePage } from '@/pages/portal/PortalArticlePage'
+import { PortalChatPage } from '@/pages/portal/PortalChatPage'
 import { PortalHomePage } from '@/pages/portal/PortalHomePage'
 import { PortalLoginPage } from '@/pages/portal/PortalLoginPage'
 import { PortalNewTicketPage } from '@/pages/portal/PortalNewTicketPage'
@@ -41,6 +42,7 @@ export function AppRoutes() {
       <Route path="/portal" element={<PortalLayout />}>
         <Route index element={<PortalHomePage />} />
         <Route path="login" element={<PortalLoginPage />} />
+        <Route path="chat" element={<PortalChatPage />} />
         <Route path="kb/articles/:id" element={<PortalArticlePage />} />
         <Route path="survey/:token" element={<PortalSurveyPage />} />
         <Route element={<RequirePortalAuth />}>

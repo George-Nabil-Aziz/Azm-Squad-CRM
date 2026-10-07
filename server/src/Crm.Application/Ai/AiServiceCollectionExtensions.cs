@@ -11,6 +11,7 @@ public static class AiServiceCollectionExtensions
         services.AddScoped<IReplyDraftService, ReplyDraftService>();
         services.AddScoped<IAiClassificationService, AiClassificationService>();
         services.AddScoped<ISuggestedSolutionsService, SuggestedSolutionsService>();
+        services.AddScoped<IChatbotService, ChatbotService>();
         return services;
     }
 }
