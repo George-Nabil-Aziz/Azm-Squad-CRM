@@ -26,7 +26,7 @@ export function KbSearchPanel() {
 
   return (
     <section aria-label={t('knowledgeBase.search.title')} className="flex flex-col gap-3">
-      <form role="search" onSubmit={submit} className="flex gap-2">
+      <form role="search" onSubmit={submit} className="flex w-full max-w-xl gap-2">
         <Input
           type="search"
           aria-label={t('knowledgeBase.search.label')}

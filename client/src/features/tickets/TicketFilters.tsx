@@ -61,7 +61,7 @@ export function TicketFilters({ value, onChange, onClear }: TicketFiltersProps) 
   }
 
   return (
-    <div className="grid items-end gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+    <div className="grid grid-cols-1 items-end gap-3 *:min-w-0 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
       <Field>
         <FieldLabel htmlFor="filter-status">{t('tickets.filters.status')}</FieldLabel>
         <NativeSelect

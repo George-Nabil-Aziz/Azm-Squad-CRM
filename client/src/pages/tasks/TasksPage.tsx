@@ -43,28 +43,28 @@ export function TasksPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex min-w-0 flex-col gap-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold">{t('nav.tasks')}</h1>
         <p className="text-muted-foreground">{t('tasks.description')}</p>
       </div>
 
-      <form onSubmit={(event) => void submit(event)} noValidate className="flex flex-wrap items-start gap-3">
+      <form onSubmit={(event) => void submit(event)} noValidate className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-start">
         <div className="flex flex-col gap-1">
           <label htmlFor="task-title" className="text-sm font-medium">
             {t('tasks.title')}
           </label>
-          <Input id="task-title" value={title} aria-invalid={errors.title ? true : undefined} onChange={(e) => setTitle(e.target.value)} />
+          <Input id="task-title" className="w-full" value={title} aria-invalid={errors.title ? true : undefined} onChange={(e) => setTitle(e.target.value)} />
           {errors.title ? <p role="alert" className="text-sm text-destructive">{errors.title}</p> : null}
         </div>
         <div className="flex flex-col gap-1">
           <label htmlFor="task-due" className="text-sm font-medium">
             {t('tasks.dueAt')}
           </label>
-          <Input id="task-due" type="datetime-local" value={due} aria-invalid={errors.dueAt ? true : undefined} onChange={(e) => setDue(e.target.value)} />
+          <Input id="task-due" className="w-full" type="datetime-local" value={due} aria-invalid={errors.dueAt ? true : undefined} onChange={(e) => setDue(e.target.value)} />
           {errors.dueAt ? <p role="alert" className="text-sm text-destructive">{errors.dueAt}</p> : null}
         </div>
-        <Button type="submit" className="mt-6" disabled={create.isPending}>
+        <Button type="submit" className="sm:mt-6" disabled={create.isPending}>
           {t('tasks.add')}
         </Button>
       </form>

@@ -70,7 +70,7 @@ export function TicketsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex min-w-0 flex-col gap-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold">{t('nav.tickets')}</h1>
@@ -84,7 +84,7 @@ export function TicketsPage() {
         </Can>
       </div>
 
-      <form role="search" className="flex max-w-md gap-2" onSubmit={onSearch}>
+      <form role="search" className="flex w-full max-w-md gap-2" onSubmit={onSearch}>
         <Input
           type="search"
           aria-label={t('tickets.searchLabel')}
@@ -108,7 +108,7 @@ export function TicketsPage() {
         <p className="text-muted-foreground">{t('tickets.empty')}</p>
       )}
 
-      <div className="flex items-center justify-end gap-2">
+      <div className="flex flex-wrap items-center justify-end gap-2">
         <span className="text-sm text-muted-foreground">{t('tickets.pageInfo', { page, pages: totalPages })}</span>
         <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}>
           {t('tickets.previous')}

@@ -18,7 +18,7 @@ export function KnowledgeBasePage() {
   const Panel = panels[tab]
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex min-w-0 flex-col gap-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold">{t('nav.knowledgeBase')}</h1>
         <p className="text-muted-foreground">{t('knowledgeBase.description')}</p>
@@ -26,7 +26,7 @@ export function KnowledgeBasePage() {
 
       <KbSearchPanel />
 
-      <div role="tablist" aria-label={t('knowledgeBase.sections')} className="flex gap-2">
+      <div role="tablist" aria-label={t('knowledgeBase.sections')} className="flex flex-wrap gap-2">
         {tabs.map((id) => (
           <Button
             key={id}

@@ -84,9 +84,9 @@ export function ArticlesPanel() {
   const totalPages = Math.max(1, Math.ceil((articles.data?.totalCount ?? 0) / PAGE_SIZE))
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex min-w-0 flex-col gap-4">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-wrap gap-3">
+        <div className="flex min-w-0 flex-wrap gap-3">
           <NativeSelect
             aria-label={t('knowledgeBase.filterCategory')}
             value={categoryId}
