@@ -193,6 +193,7 @@ export function QuickRepliesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t('quickReplies.title')}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t('quickReplies.preview')}</TableHead>
                   <TableHead>{t('quickReplies.shortcut')}</TableHead>
                   <TableHead>{t('quickReplies.visibility')}</TableHead>
                   <TableHead className="text-end">{t('quickReplies.actions')}</TableHead>
@@ -201,9 +202,13 @@ export function QuickRepliesPage() {
               <TableBody>
                 {visible.map((reply) => (
                   <TableRow key={reply.id}>
-                    <TableCell className="max-w-md whitespace-normal">
-                      <div className="font-medium">{reply.title}</div>
-                      <QuickReplyBody body={reply.body} className="line-clamp-2 text-sm leading-6 text-muted-foreground" />
+                    <TableCell className="max-w-48 font-medium">
+                      <div className="truncate" title={reply.title}>
+                        {reply.title}
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden max-w-sm md:table-cell">
+                      <QuickReplyBody body={reply.body} className="block truncate text-sm text-muted-foreground" />
                     </TableCell>
                     <TableCell dir="ltr" className="text-start">
                       {reply.shortcut ? <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{reply.shortcut}</code> : null}

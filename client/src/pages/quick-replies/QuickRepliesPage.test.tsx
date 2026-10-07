@@ -63,6 +63,18 @@ describe('QuickRepliesPage', () => {
     expect(within(screen.getByRole('row', { name: /Refund policy/ })).getByText('Shared')).toBeInTheDocument()
   })
 
+  it('shows only the title, on one line, in the Title column; the text has its own Preview column', async () => {
+    renderPage()
+
+    const row = await screen.findByRole('row', { name: /Greeting/ })
+    const titleCell = within(row).getAllByRole('cell')[0]
+    expect(titleCell).toHaveTextContent(/^Greeting$/)
+    expect(within(titleCell).getByText('Greeting')).toHaveClass('truncate')
+    expect(within(titleCell).getByText('Greeting')).toHaveAttribute('title', 'Greeting')
+    expect(screen.getByRole('columnheader', { name: 'Preview' })).toBeInTheDocument()
+    expect(within(row).getAllByRole('cell')[1]).toHaveTextContent('Hello')
+  })
+
   it('creates a personal reply with placeholders', async () => {
     renderPage()
     await screen.findByRole('row', { name: /Greeting/ })
