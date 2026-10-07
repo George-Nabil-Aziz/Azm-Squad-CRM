@@ -67,10 +67,10 @@ const created: Ticket = {
   responseWarnedAt: null,
 }
 
-function renderPage() {
+function renderPage(url = '/') {
   return render(
     <QueryClientProvider client={createQueryClient()}>
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[url]}>
         <TicketsPage />
       </MemoryRouter>
       <ApiErrorToaster />
@@ -202,5 +202,31 @@ describe('TicketsPage — new ticket', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: 'Tickets' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'New ticket' })).not.toBeInTheDocument()
+  })
+})
+
+describe('TicketsPage — filters from the address', () => {
+  beforeEach(() => {
+    vi.mocked(getCurrentUser).mockReset().mockResolvedValue(signedInAgent)
+    vi.mocked(listTickets).mockReset().mockResolvedValue({ items: [], page: 1, pageSize: 20, totalCount: 0 })
+    vi.mocked(listTicketAssignees).mockReset().mockResolvedValue([])
+    vi.mocked(listTicketCategories).mockReset().mockResolvedValue([])
+  })
+
+  it('starts with the status, assignee and created-from filters of the query string (links of the dashboard)', async () => {
+    renderPage('/tickets?status=pending&assignee=u2&createdFrom=2026-10-06')
+
+    await waitFor(() =>
+      expect(listTickets).toHaveBeenCalledWith(
+        { status: 'pending', assigneeId: 'u2', createdFrom: '2026-10-06', page: 1, pageSize: 20 },
+        expect.anything(),
+      ),
+    )
+  })
+
+  it('ignores an unknown status', async () => {
+    renderPage('/tickets?status=bogus')
+
+    await waitFor(() => expect(listTickets).toHaveBeenCalledWith({ page: 1, pageSize: 20 }, expect.anything()))
   })
 })
