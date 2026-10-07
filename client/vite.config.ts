@@ -15,6 +15,8 @@ export default defineConfig({
     proxy: {
       // Must match applicationUrl of the "http" profile in server/src/Crm.Api/Properties/launchSettings.json
       '/api': 'http://localhost:5080',
+      // SignalR hubs (notifications, live chat) need WebSocket proxying too.
+      '/hubs': { target: 'http://localhost:5080', ws: true },
     },
   },
   test: {
