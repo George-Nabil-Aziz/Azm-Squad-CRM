@@ -23,8 +23,8 @@ export function DemoAccounts({ audience, onPick }: { audience: 'staff' | 'custom
   if (accounts.length === 0) return null
 
   return (
-    <section aria-label={t('auth.demo.title')} className="mt-4 space-y-2 border-t pt-4">
-      <h2 className="text-sm font-medium">{t('auth.demo.title')}</h2>
+    <section aria-label={t('auth.demo.title')} className="mt-4 space-y-2 rounded-lg border bg-muted/40 p-3">
+      <h2 className="text-sm font-medium">{t('auth.demo.heading')}</h2>
       {audience === 'customer' && <p className="text-xs text-muted-foreground">{t('auth.demo.customerHint')}</p>}
       <ul className="space-y-1">
         {accounts.map((account) => (

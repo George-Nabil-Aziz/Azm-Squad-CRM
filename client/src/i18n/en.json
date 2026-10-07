@@ -189,6 +189,7 @@
     "signOut": "Sign out",
     "demo": {
       "title": "Accounts",
+      "heading": "Accounts:",
       "customerHint": "Development only. Click the demo customer to fill the email; the sign-in code appears in the API log.",
       "customer": "Customer"
     }
