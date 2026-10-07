@@ -1,9 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { callsTo, fakeApi, submitSignIn } from './test/fake-api'
 
 describe('Login page', () => {
+  beforeEach(() => {
+    window.history.replaceState(null, '', '/login')
+  })
+
   afterEach(() => {
     vi.unstubAllGlobals()
   })

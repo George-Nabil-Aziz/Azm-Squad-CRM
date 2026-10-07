@@ -33,10 +33,6 @@
   },
   "dashboard": {
     "welcome": "Welcome, {{name}}",
-    "apiStatus": "API status",
-    "apiOk": "ok",
-    "apiLoading": "loading",
-    "apiUnavailable": "unavailable",
     "myTickets": {
       "title": "My tickets",
       "loading": "Loading your tickets…",
@@ -1297,9 +1293,34 @@
     "logoRemoved": "The logo was removed."
   },
   "theme": {
-    "label": "Appearance",
-    "light": "Light",
-    "dark": "Dark",
-    "system": "System"
+    "toLight": "Switch to light mode",
+    "toDark": "Switch to dark mode"
+  },
+  "landing": {
+    "headline": "Customer support, all in one place",
+    "subtitle": "Customers reach you by email, WhatsApp, chat or web form. Your team resolves every ticket on time.",
+    "portal": "Customer portal",
+    "sample": {
+      "channel": "WhatsApp",
+      "status": "In progress",
+      "subject": "I cannot find my invoice",
+      "message": "Hello, could you resend the invoice for last month?",
+      "sla": "Replying within the service level"
+    },
+    "how": {
+      "title": "How it works",
+      "reach": {
+        "title": "Customer reaches out",
+        "text": "By email, WhatsApp, chat or a web form: every message becomes a ticket."
+      },
+      "resolve": {
+        "title": "Your team resolves it",
+        "text": "Tickets go to the right agent and are tracked against the SLA until they are solved."
+      },
+      "rate": {
+        "title": "Customer rates the service",
+        "text": "After the ticket is closed the customer says how it went."
+      }
+    }
   }
 }

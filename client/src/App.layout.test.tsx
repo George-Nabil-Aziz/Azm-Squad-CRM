@@ -22,9 +22,27 @@ describe('App layout and routing', () => {
     vi.unstubAllGlobals()
   })
 
-  it('redirects / to /login when signed out', async () => {
+  it('redirects / to the welcome page when signed out', async () => {
     vi.stubGlobal('fetch', fakeApi())
     renderAt('/')
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Customer support, all in one place' })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/welcome')
+  })
+
+  it('shows the welcome page at /welcome and its Sign in link opens the login page', async () => {
+    vi.stubGlobal('fetch', fakeApi())
+    renderAt('/welcome')
+
+    fireEvent.click(await screen.findByRole('link', { name: 'Sign in' }))
+
+    expect(await screen.findByRole('form', { name: 'Sign in' })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/login')
+  })
+
+  it('still redirects other protected pages to /login when signed out', async () => {
+    vi.stubGlobal('fetch', fakeApi())
+    renderAt('/tickets')
 
     expect(await screen.findByRole('form', { name: 'Sign in' })).toBeInTheDocument()
     expect(window.location.pathname).toBe('/login')
@@ -32,7 +50,7 @@ describe('App layout and routing', () => {
 
   it('lands on the dashboard with the sidebar navigation after a successful login', async () => {
     vi.stubGlobal('fetch', fakeApi())
-    renderAt('/')
+    renderAt('/login')
     await screen.findByRole('form', { name: 'Sign in' })
 
     submitSignIn('admin@crm.local', ADMIN_PASSWORD)
@@ -55,15 +73,15 @@ describe('App layout and routing', () => {
     expect(await screen.findByText('System Administrator')).toBeInTheDocument()
   })
 
-  it('signs out: clears the token and returns to /login', async () => {
+  it('signs out: clears the token and returns to the welcome page', async () => {
     signedIn()
     vi.stubGlobal('fetch', fakeApi())
     renderAt('/')
 
     fireEvent.click(await screen.findByRole('button', { name: 'Sign out' }))
 
-    expect(await screen.findByRole('form', { name: 'Sign in' })).toBeInTheDocument()
-    expect(window.location.pathname).toBe('/login')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Customer support, all in one place' })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/welcome')
     expect(getAccessToken()).toBeNull()
   })
 
@@ -74,6 +92,7 @@ describe('App layout and routing', () => {
     renderAt('/')
     await screen.findByText('System Administrator')
     fireEvent.click(screen.getByRole('button', { name: 'Sign out' }))
+    fireEvent.click(await screen.findByRole('link', { name: 'Sign in' }))
     await screen.findByRole('form', { name: 'Sign in' })
 
     submitSignIn('admin@crm.local', ADMIN_PASSWORD)
@@ -85,7 +104,7 @@ describe('App layout and routing', () => {
   it('returns to /login when the stored token is rejected', async () => {
     saveSession('expired-token', inOneHour())
     vi.stubGlobal('fetch', fakeApi())
-    renderAt('/')
+    renderAt('/tickets')
 
     expect(await screen.findByRole('form', { name: 'Sign in' })).toBeInTheDocument()
     expect(window.location.pathname).toBe('/login')
