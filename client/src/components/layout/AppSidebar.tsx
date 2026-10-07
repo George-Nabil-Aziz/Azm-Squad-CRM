@@ -16,18 +16,20 @@ import { usePermissions } from '@/features/auth/usePermissions'
 import { BrandLogo } from '@/features/branding/BrandLogo'
 
 function AppSidebarLink({ item }: { item: NavigationItem }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const isRoot = item.path === '/'
   const isActive = useMatch({ path: item.path, end: isRoot }) !== null
   const { isMobile, setOpenMobile } = useSidebar()
+  const label = t(`nav.${item.id}`)
+  const dir = i18n.dir()
   const Icon = item.icon
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild isActive={isActive}>
+      <SidebarMenuButton asChild isActive={isActive} tooltip={{ children: label, side: dir === 'rtl' ? 'left' : 'right' }}>
         <NavLink to={item.path} end={isRoot} onClick={() => isMobile && setOpenMobile(false)}>
           <Icon aria-hidden="true" />
-          <span>{t(`nav.${item.id}`)}</span>
+          <span>{label}</span>
         </NavLink>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -43,11 +45,11 @@ export function AppSidebar() {
 
   // The sidebar sits on the reading-start side: left in English, right in Arabic (also the mobile sheet).
   return (
-    <Sidebar side={dir === 'rtl' ? 'right' : 'left'} dir={dir}>
+    <Sidebar side={dir === 'rtl' ? 'right' : 'left'} dir={dir} collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1">
           <BrandLogo alt={t('app.name')} />
-          <span className="text-base font-semibold">{t('app.name')}</span>
+          <span className="text-base font-semibold group-data-[collapsible=icon]:hidden">{t('app.name')}</span>
         </div>
       </SidebarHeader>
       <SidebarContent>
