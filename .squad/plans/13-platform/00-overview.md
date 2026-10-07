@@ -8,6 +8,7 @@ Entry point for the **platform** feature (Phase 3): organisation structure (depa
 |----|------|-------|------------|------------|
 | 61 | [61-story-multi-department-CRM-61.md](61-story-multi-department-CRM-61.md) | Multi-department | CRM-61 | 12–20 (tickets, SLA), 06 (users) |
 | 62 | [62-story-multi-branch-CRM-62.md](62-story-multi-branch-CRM-62.md) | Multi-branch | CRM-62 | 61 (data scope), 08–11 (customers), 45–49 (reports) |
+| 63 | [63-story-custom-branding-CRM-63.md](63-story-custom-branding-CRM-63.md) | Custom branding (colors & logo) | CRM-63 | 35 (system settings), 11 (file storage), 23 (email), 40 (portal) |
 
 ## Dependency notes
 
