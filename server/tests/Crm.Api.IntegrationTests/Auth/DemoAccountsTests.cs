@@ -77,8 +77,8 @@ public class DemoAccountsTests(CrmApiFactory factory) : IClassFixture<CrmApiFact
             [("superadmin@crm.com", "SuperAdmin"), ("admin@crm.com", "Admin"), ("supervisor@crm.com", "Supervisor"),
              ("agent@crm.com", "Agent"), ("customer@crm.com", "Customer")],
             list!.Select(a => (a.Email, a.Role)));
-        Assert.All(list.Where(a => a.Role != "Customer"), a => Assert.Equal(CrmApiFactory.SuperAdminPassword, a.Password));
-        Assert.Null(list.Single(a => a.Role == "Customer").Password);
+        Assert.All(list!.Where(a => a.Role != "Customer"), a => Assert.Equal(CrmApiFactory.SuperAdminPassword, a.Password));
+        Assert.Null(list!.Single(a => a.Role == "Customer").Password);
     }
 
     [Fact]
