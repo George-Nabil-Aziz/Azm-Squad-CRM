@@ -69,7 +69,7 @@ export function SystemOverview() {
       {overview.isPending ? <SectionSkeleton rows={4} label={t('dashboard.loading')} /> : null}
       {overview.isError ? <SectionError message={s('loadError')} /> : null}
       {d ? (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col divide-y divide-border [&>*]:py-6 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
           <Group id="system-support" title={s('groups.support')}>
             {card(s('customers'), d.customers, '/customers')}
             {ticketStatuses.map((status) => card(t(`tickets.statuses.${status}`), statusCount(status), `/tickets?status=${status}`))}
