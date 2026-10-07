@@ -1453,7 +1453,23 @@
     "logoTooLarge": "The logo must be 2 MB or smaller.",
     "logoSaved": "The logo was saved.",
     "removeLogo": "Remove the logo",
-    "logoRemoved": "The logo was removed."
+    "logoRemoved": "The logo was removed.",
+    "pickColor": "Choose {{label}} with the colour picker",
+    "presets": "{{label}} presets",
+    "colors": {
+      "blue": "Blue",
+      "indigo": "Indigo",
+      "violet": "Violet",
+      "teal": "Teal",
+      "emerald": "Emerald",
+      "green": "Green",
+      "amber": "Amber",
+      "orange": "Orange",
+      "red": "Red",
+      "rose": "Rose",
+      "slate": "Slate",
+      "zinc": "Zinc"
+    }
   },
   "theme": {
     "toLight": "Switch to light mode",

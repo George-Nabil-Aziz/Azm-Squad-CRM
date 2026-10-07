@@ -1,11 +1,12 @@
 import { QueryClientProvider } from '@tanstack/react-query'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getBranding, removeBrandingLogo, updateBranding, uploadBrandingLogo, type Branding } from '@/api/branding'
 import { ApiError } from '@/api/errors'
 import { createQueryClient } from '@/app/query-client'
 import { ApiErrorToaster } from '@/components/ApiErrorToaster'
 import { BrandingProvider } from '@/features/branding/BrandingProvider'
+import { i18n } from '@/i18n/i18n'
 import { BrandingPage } from './BrandingPage'
 
 vi.mock('@/api/branding', async (importOriginal) => ({
@@ -111,5 +112,60 @@ describe('BrandingPage', () => {
 
     await waitFor(() => expect(removeBrandingLogo).toHaveBeenCalled())
     expect(await screen.findByText('The logo was removed.')).toBeInTheDocument()
+  })
+
+  describe('colour picker', () => {
+    it('sets the colour when a preset swatch is clicked and keeps the hex field and picker in sync', async () => {
+      renderPage()
+      await waitFor(() => expect(getBranding).toHaveBeenCalled())
+      const presets = within(screen.getByRole('group', { name: 'Primary colour presets' }))
+      expect(presets.getAllByRole('button')).toHaveLength(12)
+
+      fireEvent.click(presets.getByRole('button', { name: 'Teal' }))
+
+      expect(screen.getByLabelText('Primary colour')).toHaveValue('#0d9488')
+      expect(screen.getByLabelText('Choose Primary colour with the colour picker')).toHaveValue('#0d9488')
+      expect(presets.getByRole('button', { name: 'Teal' })).toHaveAttribute('aria-pressed', 'true')
+      expect(presets.getByRole('button', { name: 'Blue' })).toHaveAttribute('aria-pressed', 'false')
+      // The secondary colour is independent.
+      expect(screen.getByLabelText('Secondary colour')).toHaveValue('')
+    })
+
+    it('follows the native picker and the hex field', async () => {
+      renderPage()
+      await waitFor(() => expect(getBranding).toHaveBeenCalled())
+
+      fireEvent.change(screen.getByLabelText('Choose Secondary colour with the colour picker'), { target: { value: '#ff8800' } })
+      expect(screen.getByLabelText('Secondary colour')).toHaveValue('#ff8800')
+
+      fireEvent.change(screen.getByLabelText('Secondary colour'), { target: { value: '#ABC' } })
+      expect(screen.getByLabelText('Choose Secondary colour with the colour picker')).toHaveValue('#aabbcc')
+    })
+
+    it('saves a preset colour', async () => {
+      vi.mocked(updateBranding).mockResolvedValue({ ...plain, primaryColor: '#dc2626' })
+      renderPage()
+      await waitFor(() => expect(getBranding).toHaveBeenCalled())
+
+      fireEvent.click(within(screen.getByRole('group', { name: 'Primary colour presets' })).getByRole('button', { name: 'Red' }))
+      fireEvent.click(screen.getByRole('button', { name: 'Save colours' }))
+
+      await waitFor(() => expect(updateBranding).toHaveBeenCalledWith({ primaryColor: '#dc2626', secondaryColor: '' }))
+    })
+
+    it('has Arabic names for the swatches', async () => {
+      await i18n.changeLanguage('ar')
+      try {
+        renderPage()
+        await waitFor(() => expect(getBranding).toHaveBeenCalled())
+
+        const presets = within(screen.getByRole('group', { name: 'ألوان جاهزة لـ اللون الأساسي' }))
+        expect(presets.getByRole('button', { name: 'أزرق' })).toBeInTheDocument()
+        expect(presets.getByRole('button', { name: 'وردي' })).toBeInTheDocument()
+        expect(screen.getByLabelText('اختيار اللون الأساسي من أداة الألوان')).toBeInTheDocument()
+      } finally {
+        await i18n.changeLanguage('en')
+      }
+    })
   })
 })

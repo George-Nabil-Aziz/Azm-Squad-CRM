@@ -1,0 +1,14 @@
+[
+  { "id": "blue", "hex": "#2563eb" },
+  { "id": "indigo", "hex": "#4f46e5" },
+  { "id": "violet", "hex": "#7c3aed" },
+  { "id": "teal", "hex": "#0d9488" },
+  { "id": "emerald", "hex": "#059669" },
+  { "id": "green", "hex": "#16a34a" },
+  { "id": "amber", "hex": "#d97706" },
+  { "id": "orange", "hex": "#ea580c" },
+  { "id": "red", "hex": "#dc2626" },
+  { "id": "rose", "hex": "#e11d48" },
+  { "id": "slate", "hex": "#475569" },
+  { "id": "zinc", "hex": "#52525b" }
+]

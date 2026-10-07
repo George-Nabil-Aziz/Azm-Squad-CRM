@@ -31,3 +31,9 @@ export function contrastForeground(color: string): string {
   if (!rgb) return LIGHT_FOREGROUND
   return luminance(rgb) > 0.4 ? DARK_FOREGROUND : LIGHT_FOREGROUND
 }
+
+/** A "#RGB" / "#RRGGBB" colour as lowercase "#rrggbb" (the only form `<input type="color">` accepts), or null. */
+export function normalizeHexColor(color: string): string | null {
+  const rgb = parseHexColor(color)
+  return rgb ? `#${rgb.map((channel) => channel.toString(16).padStart(2, '0')).join('')}` : null
+}

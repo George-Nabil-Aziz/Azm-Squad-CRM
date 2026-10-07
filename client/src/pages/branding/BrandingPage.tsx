@@ -14,10 +14,14 @@ import { Button } from '@/components/ui/button'
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { BrandLogo } from '@/features/branding/BrandLogo'
-import { parseHexColor } from '@/features/branding/branding-colors'
+import { normalizeHexColor } from '@/features/branding/branding-colors'
+import colorPresets from '@/features/branding/color-presets.json'
+import { cn } from '@/lib/utils'
 import { useBranding } from '@/features/branding/branding-context'
 
 const brandingQueryKey = ['branding'] as const
+
+type PresetId = 'blue' | 'indigo' | 'violet' | 'teal' | 'emerald' | 'green' | 'amber' | 'orange' | 'red' | 'rose' | 'slate' | 'zinc'
 
 /** Branding admin page (SuperAdmin): primary and secondary colour, logo upload / removal. Applied to the whole app at once. */
 export function BrandingPage() {
@@ -80,8 +84,6 @@ function BrandingForm({ branding }: { branding: Branding }) {
     if (fileInput.current) fileInput.current.value = ''
   }
 
-  const swatch = (value: string) => (parseHexColor(value) ? value : undefined)
-
   return (
     <div className="flex max-w-2xl flex-col gap-6">
       <div className="flex flex-col gap-1">
@@ -104,7 +106,6 @@ function BrandingForm({ branding }: { branding: Branding }) {
             value={primary}
             onChange={setPrimary}
             error={errors.primaryColor}
-            swatch={swatch(primary)}
           />
           <ColorField
             id="branding-secondary"
@@ -112,7 +113,6 @@ function BrandingForm({ branding }: { branding: Branding }) {
             value={secondary}
             onChange={setSecondary}
             error={errors.secondaryColor}
-            swatch={swatch(secondary)}
           />
         </FieldGroup>
         <div className="flex flex-wrap gap-2">
@@ -172,11 +172,12 @@ interface ColorFieldProps {
   value: string
   onChange: (value: string) => void
   error?: string
-  swatch?: string
 }
 
-function ColorField({ id, label, value, onChange, error, swatch }: ColorFieldProps) {
+/** Hex text field + native colour picker (the swatch) + preset palette, all bound to one value. */
+function ColorField({ id, label, value, onChange, error }: ColorFieldProps) {
   const { t } = useTranslation()
+  const current = normalizeHexColor(value)
   return (
     <Field data-invalid={error ? true : undefined}>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
@@ -190,11 +191,38 @@ function ColorField({ id, label, value, onChange, error, swatch }: ColorFieldPro
           aria-invalid={error ? true : undefined}
           onChange={(event) => onChange(event.target.value)}
         />
-        <span
-          aria-hidden="true"
-          className="size-9 shrink-0 rounded-md border"
-          style={swatch ? { backgroundColor: swatch } : undefined}
+        {/* The native picker, styled as the swatch: clicking it opens the browser's colour dialog. */}
+        <input
+          type="color"
+          aria-label={t('branding.pickColor', { label })}
+          value={current ?? colorPresets[0].hex}
+          onChange={(event) => onChange(event.target.value)}
+          className={cn(
+            'size-9 shrink-0 cursor-pointer rounded-md border bg-transparent p-0.5',
+            current ? undefined : 'opacity-50',
+          )}
         />
+      </div>
+      <div role="group" aria-label={t('branding.presets', { label })} className="flex flex-wrap gap-2">
+        {colorPresets.map((preset) => {
+          const name = t(`branding.colors.${preset.id as PresetId}`)
+          const selected = current === preset.hex
+          return (
+            <button
+              key={preset.id}
+              type="button"
+              title={name}
+              aria-label={name}
+              aria-pressed={selected}
+              style={{ backgroundColor: preset.hex }}
+              className={cn(
+                'size-7 rounded-full border outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring',
+                selected && 'ring-2 ring-ring ring-offset-2 ring-offset-background',
+              )}
+              onClick={() => onChange(preset.hex)}
+            />
+          )
+        })}
       </div>
       {error ? <FieldError errors={[{ message: error }]} /> : null}
     </Field>
