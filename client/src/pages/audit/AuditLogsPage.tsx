@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { auditActionKeys, auditActions, type AuditAction } from '@/api/audit-logs'
 import { Button } from '@/components/ui/button'
@@ -29,6 +29,10 @@ export function AuditLogsPage() {
     pageSize: PAGE_SIZE,
   })
 
+  const userNames = useMemo(
+    () => Object.fromEntries((users.data?.items ?? []).map((user) => [user.id, user.fullName])),
+    [users.data],
+  )
   const totalPages = logs.data ? Math.max(1, Math.ceil(logs.data.totalCount / logs.data.pageSize)) : 1
 
   /** A filter changed: show the first page of the new result. */
@@ -108,7 +112,7 @@ export function AuditLogsPage() {
       {logs.isPending ? (
         <p className="text-muted-foreground">{t('auditLogs.loading')}</p>
       ) : logs.data && logs.data.items.length > 0 ? (
-        <AuditLogsTable entries={logs.data.items} />
+        <AuditLogsTable entries={logs.data.items} userNames={userNames} />
       ) : (
         <p className="text-muted-foreground">{t('auditLogs.empty')}</p>
       )}
