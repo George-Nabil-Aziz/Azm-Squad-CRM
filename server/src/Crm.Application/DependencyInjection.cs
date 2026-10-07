@@ -5,6 +5,7 @@ using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
 using Crm.Application.Customers.Notes;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Integrations;
 using Crm.Application.KnowledgeBase;
 using Crm.Application.Portal;
 using Crm.Application.Reports;
@@ -64,6 +65,7 @@ public static class DependencyInjection
         services.AddScoped<ITicketCustomerContextService, TicketCustomerContextService>();
         services.AddScoped<ITaskService, TaskService>();
         services.AddScoped<IQuickReplyService, QuickReplyService>();
+        services.AddScoped<IApiKeyService, ApiKeyService>();
         services.AddScoped<TaskReminderJob>();
         services.AddScoped<IAssignmentSettingsService, AssignmentSettingsService>();
         services.AddScoped<ITicketStatusService, TicketStatusService>();

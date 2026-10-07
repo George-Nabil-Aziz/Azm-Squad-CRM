@@ -36,3 +36,8 @@ An admin creates scoped API keys; external systems call `/api/v1/*` with header 
 
 - Key header with the wrong prefix / empty → 401 without a DB hit.
 - Out of scope: IP allow-lists, key expiry, update / delete endpoints in v1.
+
+## Deviations (as built)
+
+- The client area lives at `/integrations` (sidebar item "Integrations", `IntegrationsLayout`, child route `api-keys`) instead of `/settings/integrations`, because `/settings` needs `settings.manage` (SuperAdmin only) and this area is for Admin too.
+- Public API authentication is `ApiKeyMiddleware` reading `RequiredApiScope` endpoint metadata (so a bad key is answered before the request body is bound), not an endpoint filter. The internal OpenAPI document stays Development-only; `public-v1` and `/swagger` are always served.

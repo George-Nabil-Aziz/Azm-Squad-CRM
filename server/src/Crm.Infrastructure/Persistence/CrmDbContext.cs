@@ -1,6 +1,7 @@
 using Crm.Domain.Audit;
 using Crm.Domain.Channels;
 using Crm.Domain.Customers;
+using Crm.Domain.Integrations;
 using Crm.Domain.KnowledgeBase;
 using Crm.Domain.Notifications;
 using Crm.Domain.Portal;
@@ -71,6 +72,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<WorkTask> Tasks => Set<WorkTask>();
 
     public DbSet<QuickReply> QuickReplies => Set<QuickReply>();
+
+    public DbSet<ApiKey> ApiKeys => Set<ApiKey>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

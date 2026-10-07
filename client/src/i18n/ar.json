@@ -18,7 +18,8 @@
     "tasks": "المهام",
     "quickReplies": "الردود السريعة",
     "auditLogs": "سجل التدقيق",
-    "settings": "الإعدادات"
+    "settings": "الإعدادات",
+    "integrations": "التكاملات"
   },
   "shell": {
     "mainNavigation": "التنقل الرئيسي",
@@ -970,6 +971,42 @@
       "yourRating": "تقييمك: {{count}} من 5.",
       "expired": "انتهت صلاحية رابط الاستبيان.",
       "notFound": "لم يتم العثور على هذا الاستبيان."
+    }
+  },
+  "integrations": {
+    "description": "اربط أنظمة أخرى بنظام إدارة العملاء: مفاتيح API للواجهة العامة، وخطافات الويب، ونظام تخطيط الموارد.",
+    "navigation": "أقسام التكاملات",
+    "nav": {
+      "apiKeys": "مفاتيح API"
+    },
+    "apiKeys": {
+      "description": "تتيح مفاتيح API للأنظمة الخارجية استدعاء الواجهة العامة (/api/v1) بالترويسة X-Api-Key. يظهر المفتاح مرة واحدة فقط بعد إنشائه.",
+      "swagger": "افتح توثيق الواجهة (Swagger)",
+      "name": "الاسم",
+      "scopes": "النطاقات",
+      "create": "إنشاء مفتاح API",
+      "nameRequired": "أدخل اسماً.",
+      "scopesRequired": "اختر نطاقاً واحداً على الأقل.",
+      "created": "تم إنشاء المفتاح. انسخه الآن فلن يظهر مرة أخرى.",
+      "keyLabel": "مفتاح API",
+      "dismiss": "نسخت المفتاح",
+      "loading": "جارٍ تحميل المفاتيح…",
+      "empty": "لا توجد مفاتيح API بعد.",
+      "prefix": "المفتاح",
+      "lastUsed": "آخر استخدام",
+      "never": "أبداً",
+      "status": "الحالة",
+      "actions": "الإجراءات",
+      "active": "نشط",
+      "revoked": "ملغى",
+      "revoke": "إلغاء",
+      "revokeFor": "إلغاء {{name}}",
+      "scopeLabels": {
+        "ticketsRead": "قراءة التذاكر",
+        "ticketsWrite": "إنشاء التذاكر",
+        "customersRead": "قراءة العملاء",
+        "customersWrite": "إنشاء العملاء"
+      }
     }
   }
 }

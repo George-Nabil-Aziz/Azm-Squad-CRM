@@ -62,6 +62,9 @@ public static class Permissions
     /// <summary>Change the system settings: business hours, time zone, ticket prefix, channel credentials (CRM-35): SuperAdmin only.</summary>
     public const string SettingsManage = "settings.manage";
 
+    /// <summary>Manage API keys, webhooks and the ERP sync log (/api/api-keys, /api/webhooks, /api/integrations; CRM-58..60): SuperAdmin and Admin.</summary>
+    public const string IntegrationsManage = "integrations.manage";
+
     /// <summary>Every permission, in catalogue order (the order used in /api/auth/me).</summary>
     public static IReadOnlyList<string> All { get; } =
     [
@@ -71,5 +74,6 @@ public static class Permissions
         CategoriesManage, SlaManage, ChannelsManage,
         ReportsView, AuditView, SettingsManage,
         KbView, KbManage,
+        IntegrationsManage,
     ];
 }

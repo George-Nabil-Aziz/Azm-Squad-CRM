@@ -18,7 +18,8 @@
     "tasks": "Tasks",
     "quickReplies": "Quick replies",
     "auditLogs": "Audit log",
-    "settings": "Settings"
+    "settings": "Settings",
+    "integrations": "Integrations"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -970,6 +971,42 @@
       "yourRating": "Your rating: {{count}} out of 5.",
       "expired": "This survey link has expired.",
       "notFound": "This survey was not found."
+    }
+  },
+  "integrations": {
+    "description": "Connect other systems to the CRM: API keys for the public API, webhooks and the ERP.",
+    "navigation": "Integrations sections",
+    "nav": {
+      "apiKeys": "API keys"
+    },
+    "apiKeys": {
+      "description": "API keys let external systems call the public API (/api/v1) with the X-Api-Key header. A key is shown only once, right after it is created.",
+      "swagger": "Open the API documentation (Swagger)",
+      "name": "Name",
+      "scopes": "Scopes",
+      "create": "Create API key",
+      "nameRequired": "Enter a name.",
+      "scopesRequired": "Choose at least one scope.",
+      "created": "API key created. Copy it now: it will not be shown again.",
+      "keyLabel": "API key",
+      "dismiss": "I have copied the key",
+      "loading": "Loading API keys…",
+      "empty": "No API keys yet.",
+      "prefix": "Key",
+      "lastUsed": "Last used",
+      "never": "Never",
+      "status": "Status",
+      "actions": "Actions",
+      "active": "Active",
+      "revoked": "Revoked",
+      "revoke": "Revoke",
+      "revokeFor": "Revoke {{name}}",
+      "scopeLabels": {
+        "ticketsRead": "Read tickets",
+        "ticketsWrite": "Create tickets",
+        "customersRead": "Read customers",
+        "customersWrite": "Create customers"
+      }
     }
   }
 }

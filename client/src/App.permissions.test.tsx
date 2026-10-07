@@ -70,6 +70,23 @@ describe('Menu and pages follow the user permissions', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Dashboard' })).toBeInTheDocument()
     expect(window.location.pathname).toBe('/')
   })
+  it('opens Integrations (API keys) for an admin and sends an agent away', async () => {
+    const adminMe = { ...agentMe, id: '9', roles: ['Admin' as const], permissions: [...agentMe.permissions, permissions.integrationsManage] }
+    vi.stubGlobal('fetch', fakeApi({ me: adminMe }))
+    renderSignedInAt('/integrations')
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Integrations' })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/integrations/api-keys')
+    expect(await screen.findByRole('link', { name: 'API keys', current: 'page' })).toBeInTheDocument()
+  })
+
+  it('sends an agent from /integrations to the dashboard', async () => {
+    vi.stubGlobal('fetch', fakeApi({ me: agentMe }))
+    renderSignedInAt('/integrations/api-keys')
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Dashboard' })).toBeInTheDocument()
+  })
+
   it('opens the reports area for a supervisor, on the dashboard', async () => {
     vi.stubGlobal('fetch', fakeApi({ me: supervisorMe }))
     renderSignedInAt('/reports')
