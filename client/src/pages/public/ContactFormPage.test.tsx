@@ -2,6 +2,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createQueryClient } from '@/app/query-client'
+import { i18n } from '@/i18n/i18n'
 import { ContactFormPage } from './ContactFormPage'
 
 function json(status: number, body: unknown, type = 'application/json') {
@@ -59,6 +60,29 @@ describe('Contact form (embedded web form)', () => {
       subject: 'Printer',
       message: 'Blank pages',
     })
+  })
+
+  it('renders for an anonymous visitor as a centred card with the company name and a short intro', () => {
+    stubApi()
+    renderPage()
+
+    const card = screen.getByRole('region', { name: 'Contact us' })
+    expect(card).toHaveAttribute('data-slot', 'card')
+    expect(screen.getByRole('heading', { level: 1, name: 'Contact us' })).toBeInTheDocument()
+    expect(screen.getByText('Customer Support CRM')).toBeInTheDocument()
+    expect(screen.getByRole('form', { name: 'Contact us' })).toBeInTheDocument()
+  })
+
+  it('does not overwrite the saved language when the address asks for one (the admin preview shares the browser)', async () => {
+    stubApi()
+    localStorage.setItem('crm.language', 'en')
+    window.history.replaceState(null, '', '/embed/contact?lang=ar')
+    renderPage()
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'تواصل معنا' })).toBeInTheDocument()
+    expect(localStorage.getItem('crm.language')).toBe('en')
+    window.history.replaceState(null, '', '/')
+    await i18n.changeLanguage('en')
   })
 
   it('asks for the required fields before calling the API', async () => {

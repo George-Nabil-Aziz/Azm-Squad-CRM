@@ -11,9 +11,19 @@ describe('Web forms admin page', () => {
     expect((snippet as HTMLTextAreaElement).value).toContain('<iframe')
   })
 
-  it('offers a link to preview the form', () => {
+  it('offers a link that opens the form in a new tab', () => {
     render(<WebFormsPage />)
 
-    expect(screen.getByRole('link', { name: 'Open the form' })).toHaveAttribute('href', '/embed/contact')
+    const link = screen.getByRole('link', { name: 'Open in new tab' })
+    expect(link).toHaveAttribute('href', '/embed/contact')
+    expect(link).toHaveAttribute('target', '_blank')
+  })
+
+  it('shows a live preview of the form in an iframe', () => {
+    render(<WebFormsPage />)
+
+    const preview = screen.getByTitle('Live preview of the contact form')
+    expect(preview.tagName).toBe('IFRAME')
+    expect(preview).toHaveAttribute('src', '/embed/contact')
   })
 })
