@@ -45,7 +45,7 @@ describe('Demo accounts on the sign-in pages', () => {
     renderAt('/login')
 
     const section = await screen.findByRole('region', {
-      name: 'Demo accounts',
+      name: 'Accounts',
     })
     expect(section).toHaveTextContent('superadmin@crm.com')
     expect(section).toHaveTextContent('Support agent')
@@ -78,7 +78,7 @@ describe('Demo accounts on the sign-in pages', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'العربية' }))
 
     const section = await screen.findByRole('region', {
-      name: 'حسابات تجريبية',
+      name: 'الحسابات',
     })
     expect(section).toHaveTextContent('مدير النظام')
     expect(section).toHaveTextContent('مسؤول')
@@ -91,7 +91,7 @@ describe('Demo accounts on the sign-in pages', () => {
     renderAt('/login')
     await screen.findByRole('form', { name: 'Sign in' })
 
-    expect(screen.queryByRole('region', { name: 'Demo accounts' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: 'Accounts' })).not.toBeInTheDocument()
   })
 
   it('fills the email of the portal sign-in with the demo customer', async () => {
@@ -99,7 +99,7 @@ describe('Demo accounts on the sign-in pages', () => {
     renderAt('/portal/login')
 
     const section = await screen.findByRole('region', {
-      name: 'Demo accounts',
+      name: 'Accounts',
     })
     expect(section).not.toHaveTextContent('agent@crm.com')
     fireEvent.click(screen.getByRole('button', { name: /customer@crm.com/ }))
@@ -112,6 +112,6 @@ describe('Demo accounts on the sign-in pages', () => {
     renderAt('/portal/login')
     await screen.findByRole('form', { name: 'Enter your email' }).catch(() => undefined)
 
-    expect(screen.queryByRole('region', { name: 'Demo accounts' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: 'Accounts' })).not.toBeInTheDocument()
   })
 })

@@ -188,8 +188,7 @@
     "invalidCredentials": "Invalid email or password.",
     "signOut": "Sign out",
     "demo": {
-      "title": "Demo accounts",
-      "staffHint": "Development only. Click an account to fill the email and password, then press Sign in.",
+      "title": "Accounts",
       "customerHint": "Development only. Click the demo customer to fill the email; the sign-in code appears in the API log.",
       "customer": "Customer"
     }
