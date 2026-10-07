@@ -79,7 +79,7 @@ describe('describeAuditEntry', () => {
         newValues: '{"responseMinutes":30,"resolutionMinutes":480}',
       }),
     )
-    expect(d.summary).toEqual({ key: 'slaChanged', values: { priority: 'High', changes: [{ part: 'response', from: '60', to: '30' }] } })
+    expect(d.summary).toEqual({ key: 'slaChanged', values: { priority: 'High', changes: [{ part: 'responseMinutes', from: '60', to: '30' }] } })
   })
 
   it('describes a department SLA policy by its priority (the last part of the entity id)', () => {

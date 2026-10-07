@@ -762,8 +762,8 @@
       "wrong-password": "wrong password"
     },
     "slaParts": {
-      "response": "response",
-      "resolution": "resolution"
+      "responseMinutes": "response time",
+      "resolutionMinutes": "resolution time"
     },
     "slaChange": "{{part}} {{from}} → {{to}} min",
     "summary": {

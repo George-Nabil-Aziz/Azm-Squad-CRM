@@ -75,7 +75,7 @@ describe('AuditLogsPage', () => {
     expect(within(failed).getByText('Failed sign-in (unknown account)')).toBeInTheDocument()
     expect(within(failed).getByText('10.0.0.8')).toBeInTheDocument()
     const sla = screen.getByRole('row', { name: /admin@crm.local/ })
-    expect(within(sla).getByText('Updated SLA policy High: response 120 → 60 min')).toBeInTheDocument()
+    expect(within(sla).getByText('Updated SLA policy High: response time 120 → 60 min')).toBeInTheDocument()
     expect(within(sla).getByText('Local (this computer)')).toBeInTheDocument()
     expect(screen.queryByText('{"responseMinutes":120}')).not.toBeInTheDocument()
   })

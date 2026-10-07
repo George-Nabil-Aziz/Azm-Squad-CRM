@@ -762,8 +762,8 @@
       "wrong-password": "كلمة مرور خاطئة"
     },
     "slaParts": {
-      "response": "الاستجابة",
-      "resolution": "الحل"
+      "responseMinutes": "الاستجابة",
+      "resolutionMinutes": "الحل"
     },
     "slaChange": "{{part}} {{from}} ← {{to}} دقيقة",
     "summary": {

@@ -121,9 +121,9 @@ export function describeAuditEntry(entry: AuditLogEntry, context: DescribeContex
     case 'sla-policy.updated': {
       const priority = (entry.entityId ?? '').split('/').pop() ?? ''
       if (entry.newValues === null) return summary('slaRemoved', { priority })
-      const changes = (['response', 'resolution'] as const).flatMap((part) => {
-        const from = scalar(oldObject[`${part}Minutes`])
-        const to = scalar(newObject[`${part}Minutes`])
+      const changes = (['responseMinutes', 'resolutionMinutes'] as const).flatMap((part) => {
+        const from = scalar(oldObject[part])
+        const to = scalar(newObject[part])
         return from !== to ? [{ part, from, to }] : []
       })
       return summary(entry.oldValues === null ? 'slaSet' : 'slaChanged', { priority, changes })
