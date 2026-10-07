@@ -7,7 +7,7 @@ export function ComingSoonPage({ area }: { area: NavigationId }) {
 
   return (
     <div className="flex flex-col gap-1">
-      <h1 className="text-2xl font-semibold">{t(`nav.${area}`)}</h1>
+      <h1 className="text-2xl font-semibold text-primary">{t(`nav.${area}`)}</h1>
       <p className="text-muted-foreground">{t('shell.comingSoon')}</p>
     </div>
   )

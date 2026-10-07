@@ -225,7 +225,7 @@ export function WebhooksPage() {
 
       {selected ? (
         <section aria-label={t('integrations.webhooks.deliveriesFor', { name: selected.name })} className="flex flex-col gap-2">
-          <h2 className="text-lg font-semibold">{t('integrations.webhooks.deliveriesFor', { name: selected.name })}</h2>
+          <h2 className="text-lg font-semibold text-primary">{t('integrations.webhooks.deliveriesFor', { name: selected.name })}</h2>
           {deliveries.isPending ? <p className="text-muted-foreground">{t('integrations.webhooks.deliveriesLoading')}</p> : null}
           {deliveries.data?.length === 0 ? <p className="text-muted-foreground">{t('integrations.webhooks.deliveriesEmpty')}</p> : null}
           {deliveries.data && deliveries.data.length > 0 ? (

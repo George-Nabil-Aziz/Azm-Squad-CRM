@@ -19,7 +19,7 @@ export function PortalTicketsPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold">{t('portal.tickets.title')}</h1>
+        <h1 className="text-2xl font-semibold text-primary">{t('portal.tickets.title')}</h1>
         <Button asChild>
           <Link to="/portal/tickets/new">{t('portal.nav.newTicket')}</Link>
         </Button>

@@ -69,7 +69,7 @@ export function ChatConsolePage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold">{t('nav.chat')}</h1>
+      <h1 className="text-2xl font-semibold text-primary">{t('nav.chat')}</h1>
       {connectionFailed ? <p role="alert" className="text-destructive">{t('chat.connectionFailed')}</p> : null}
       <div className="grid gap-6 md:grid-cols-[18rem_1fr]">
         <div className="flex flex-col gap-4">

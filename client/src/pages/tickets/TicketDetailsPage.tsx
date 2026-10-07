@@ -61,7 +61,7 @@ function TicketDetails({ ticket }: { ticket: Ticket }) {
         <p dir="ltr" className="text-sm font-medium text-muted-foreground">
           {ticket.number}
         </p>
-        <h1 className="text-2xl font-semibold">{ticket.subject}</h1>
+        <h1 className="text-2xl font-semibold text-primary">{ticket.subject}</h1>
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="secondary">{t(`tickets.statuses.${ticket.status}`)}</Badge>
           <Badge variant={ticket.priority === 'high' ? 'destructive' : 'outline'}>

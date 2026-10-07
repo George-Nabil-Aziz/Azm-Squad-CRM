@@ -25,7 +25,7 @@ export function ReportsLayout() {
     <ReportBranchContext.Provider value={branchId || undefined}>
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold">{t('nav.reports')}</h1>
+        <h1 className="text-2xl font-semibold text-primary">{t('nav.reports')}</h1>
         <p className="text-muted-foreground">{t('reports.description')}</p>
       </div>
       <nav aria-label={t('reports.navigation')} className="flex flex-wrap gap-1 border-b">

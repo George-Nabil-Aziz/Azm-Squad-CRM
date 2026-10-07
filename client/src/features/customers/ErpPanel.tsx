@@ -41,7 +41,7 @@ export function ErpPanel({ customerId }: { customerId: string }) {
 
   return (
     <section aria-label={t('erp.title')} className="flex flex-col gap-4">
-      <h2 className="text-lg font-semibold">{t('erp.title')}</h2>
+      <h2 className="text-lg font-semibold text-primary">{t('erp.title')}</h2>
       {erp.isPending ? <p className="text-muted-foreground">{t('erp.loading')}</p> : null}
       {erp.isError ? <p role="alert" className="text-sm text-destructive">{t('erp.unavailable')}</p> : null}
 

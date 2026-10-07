@@ -17,7 +17,7 @@ export function TicketThread({ ticketId, customerName }: TicketThreadProps) {
 
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="text-lg font-semibold">{t('tickets.details.conversation')}</h2>
+      <h2 className="text-lg font-semibold text-primary">{t('tickets.details.conversation')}</h2>
       {messages.isPending ? (
         <p className="text-muted-foreground">{t('tickets.details.loadingMessages')}</p>
       ) : messages.data && messages.data.length > 0 ? (

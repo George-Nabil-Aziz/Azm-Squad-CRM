@@ -35,7 +35,7 @@ export function CustomerAttachments({ customerId }: { customerId: string }) {
 
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-lg font-semibold">{t('customers.attachments.title')}</h2>
+      <h2 className="text-lg font-semibold text-primary">{t('customers.attachments.title')}</h2>
       <Can permission={permissions.customersManage}>
         <UploadForm customerId={customerId} />
       </Can>

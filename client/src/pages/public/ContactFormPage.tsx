@@ -26,7 +26,7 @@ export function ContactFormPage() {
         <CardHeader className="items-center text-center">
           <BrandLogo alt={t('app.name')} className="mb-1 h-12 w-auto max-w-48 object-contain" />
           <p className="text-sm font-medium text-muted-foreground">{t('app.name')}</p>
-          <h1 className="text-2xl font-semibold">{t('webForms.form.title')}</h1>
+          <h1 className="text-2xl font-semibold text-primary">{t('webForms.form.title')}</h1>
           <CardDescription>{t('webForms.form.subtitle')}</CardDescription>
         </CardHeader>
         <CardContent>

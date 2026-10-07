@@ -1,5 +1,7 @@
 import { LogOutIcon } from 'lucide-react'
+import { flushSync } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 import { signOut } from '@/auth/sign-in'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { Button } from '@/components/ui/button'
@@ -13,6 +15,14 @@ import { ThemeToggle } from '@/features/theme/ThemeToggle'
 export function AppHeader() {
   const { t } = useTranslation()
   const { data: user } = useCurrentUser()
+  const navigate = useNavigate()
+
+  // Sign out always lands on the login page (not the landing page the root path redirects to).
+  function handleSignOut() {
+    // Commit the signed-out state first (RequireAuth may redirect / to the landing page), then go to /login.
+    flushSync(signOut)
+    navigate('/login', { replace: true })
+  }
 
   return (
     <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b bg-background/80 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -24,7 +34,7 @@ export function AppHeader() {
         <NotificationBell />
         <LanguageSwitcher />
         <ThemeToggle />
-        <Button variant="outline" size="sm" onClick={signOut}>
+        <Button variant="outline" size="sm" onClick={handleSignOut}>
           <LogOutIcon aria-hidden="true" />
           <span className="max-sm:sr-only">{t('auth.signOut')}</span>
         </Button>

@@ -35,7 +35,7 @@ export function PortalHomePage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold">{t('portal.home.title')}</h1>
+        <h1 className="text-2xl font-semibold text-primary">{t('portal.home.title')}</h1>
         <p className="text-muted-foreground">{t('portal.home.description')}</p>
         <form role="search" onSubmit={submit} className="flex gap-2">
           <Input
@@ -54,7 +54,7 @@ export function PortalHomePage() {
 
       {query ? (
         <section aria-label={t('portal.home.results')} className="flex flex-col gap-2">
-          <h2 className="text-lg font-semibold">{t('portal.home.results')}</h2>
+          <h2 className="text-lg font-semibold text-primary">{t('portal.home.results')}</h2>
           {results.data && results.data.length === 0 ? <p className="text-muted-foreground">{t('portal.home.noResults')}</p> : null}
           <ul className="flex flex-col gap-2">
             {results.data?.map((hit) =>
@@ -77,7 +77,7 @@ export function PortalHomePage() {
       ) : null}
 
       <section aria-label={t('portal.home.faqs')} className="flex flex-col gap-2">
-        <h2 className="text-lg font-semibold">{t('portal.home.faqs')}</h2>
+        <h2 className="text-lg font-semibold text-primary">{t('portal.home.faqs')}</h2>
         {faqs.data && faqs.data.length === 0 ? <p className="text-muted-foreground">{t('portal.home.noFaqs')}</p> : null}
         {faqs.data?.map((faq) => (
           <details key={faq.id} className="rounded-lg border p-3">
@@ -90,7 +90,7 @@ export function PortalHomePage() {
       </section>
 
       <section aria-label={t('portal.home.articles')} className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">{t('portal.home.articles')}</h2>
+        <h2 className="text-lg font-semibold text-primary">{t('portal.home.articles')}</h2>
         {categories.data && categories.data.length > 0 ? (
           <div className="flex flex-wrap gap-2" role="group" aria-label={t('portal.home.categories')}>
             <Button size="sm" variant={categoryId === '' ? 'secondary' : 'outline'} aria-pressed={categoryId === ''} onClick={() => setCategoryId('')}>
