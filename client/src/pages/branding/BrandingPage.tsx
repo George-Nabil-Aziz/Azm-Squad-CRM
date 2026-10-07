@@ -87,7 +87,7 @@ function BrandingForm({ branding }: { branding: Branding }) {
   return (
     <div className="flex max-w-2xl flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold">{t('nav.branding')}</h1>
+        <h1 className="text-2xl font-semibold text-primary">{t('nav.branding')}</h1>
         <p className="text-muted-foreground">{t('branding.description')}</p>
       </div>
 
@@ -133,12 +133,18 @@ function BrandingForm({ branding }: { branding: Branding }) {
       </form>
 
       <section aria-labelledby="branding-logo-heading" className="flex flex-col gap-3">
-        <h2 id="branding-logo-heading" className="text-lg font-semibold">
+        <h2 id="branding-logo-heading" className="text-lg font-semibold text-primary">
           {t('branding.logo')}
         </h2>
-        <div className="flex min-h-12 items-center rounded-md border p-3">
-          <BrandLogo alt={t('branding.logoAlt')} className="h-12 w-auto max-w-60 object-contain" />
-          {branding.logoUrl ? null : <span className="text-muted-foreground">{t('branding.noLogo')}</span>}
+        <div role="group" aria-label={t('branding.preview')} className="grid gap-3 sm:grid-cols-2">
+          <div className="flex min-h-20 flex-col gap-2 rounded-md border surface-light p-3">
+            <span className="text-xs text-muted-foreground">{t('branding.previewLight')}</span>
+            <BrandLogo alt={t('branding.logoAlt')} className="h-12 w-auto max-w-60 object-contain" />
+          </div>
+          <div className="surface-dark flex min-h-20 flex-col gap-2 rounded-md border p-3">
+            <span className="text-xs text-muted-foreground">{t('branding.previewDark')}</span>
+            <BrandLogo alt="" className="h-12 w-auto max-w-60 object-contain" />
+          </div>
         </div>
         <Field data-invalid={errors.file ? true : undefined}>
           <FieldLabel htmlFor="branding-logo-file">{t('branding.logoFile')}</FieldLabel>
@@ -157,7 +163,7 @@ function BrandingForm({ branding }: { branding: Branding }) {
         {branding.logoUrl ? (
           <div>
             <Button type="button" variant="outline" disabled={remove.isPending} onClick={() => remove.mutate()}>
-              {t('branding.removeLogo')}
+              {t('branding.useDefaultLogo')}
             </Button>
           </div>
         ) : null}

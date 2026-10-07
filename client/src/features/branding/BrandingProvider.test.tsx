@@ -52,13 +52,13 @@ describe('BrandingProvider', () => {
     expect(await screen.findByRole('img', { name: 'Company' })).toHaveAttribute('src', '/api/branding/logo?v=1')
   })
 
-  it('leaves the default theme and shows no logo when nothing is set', async () => {
+  it('leaves the default theme and shows the default logo when nothing is set', async () => {
     vi.mocked(getBranding).mockResolvedValue({ primaryColor: null, secondaryColor: null, logoUrl: null })
     renderProvider()
 
     await waitFor(() => expect(getBranding).toHaveBeenCalled())
     expect(document.documentElement.style.getPropertyValue('--primary')).toBe('')
-    expect(screen.queryByRole('img')).not.toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Company' })).not.toHaveAttribute('src')
   })
 
   it('keeps the default theme when the branding cannot be read', async () => {
@@ -67,7 +67,7 @@ describe('BrandingProvider', () => {
 
     await waitFor(() => expect(getBranding).toHaveBeenCalled())
     expect(document.documentElement.style.getPropertyValue('--primary')).toBe('')
-    expect(screen.queryByRole('img')).not.toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Company' })).not.toHaveAttribute('src')
   })
 })
 

@@ -44,7 +44,7 @@ describe('BrandingPage', () => {
     renderPage()
 
     await waitFor(() => expect(screen.getByLabelText('Primary colour')).toHaveValue('#0a5cad'))
-    expect(screen.getByRole('heading', { level: 1, name: 'Branding' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Branding' })).toHaveClass('text-primary')
   })
 
   it('saves the colours and applies them at once', async () => {
@@ -103,15 +103,17 @@ describe('BrandingPage', () => {
     expect(uploadBrandingLogo).not.toHaveBeenCalled()
   })
 
-  it('removes the logo', async () => {
+  it('uses the default logo: deletes the custom one and shows the default', async () => {
     vi.mocked(getBranding).mockResolvedValue({ ...plain, logoUrl: '/api/branding/logo?v=1' })
     vi.mocked(removeBrandingLogo).mockResolvedValue(plain)
     renderPage()
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Remove the logo' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Use default logo' }))
 
     await waitFor(() => expect(removeBrandingLogo).toHaveBeenCalled())
     expect(await screen.findByText('The logo was removed.')).toBeInTheDocument()
+    for (const logo of screen.getAllByRole('img', { name: 'Company logo' })) expect(logo).not.toHaveAttribute('src')
+    expect(screen.queryByRole('button', { name: 'Use default logo' })).not.toBeInTheDocument()
   })
 
   describe('colour picker', () => {

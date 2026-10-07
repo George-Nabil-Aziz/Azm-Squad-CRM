@@ -196,7 +196,9 @@
       "heading": "Accounts:",
       "customerHint": "Development only. Click the demo customer to fill the email; the sign-in code appears in the API log.",
       "customer": "Customer"
-    }
+    },
+    "tagline": "Every customer conversation, one place.",
+    "backToHome": "Back to the home page"
   },
   "errors": {
     "network": "Cannot reach the server. Check your connection and try again.",
@@ -1469,7 +1471,11 @@
       "rose": "Rose",
       "slate": "Slate",
       "zinc": "Zinc"
-    }
+    },
+    "useDefaultLogo": "Use default logo",
+    "previewLight": "On a light background",
+    "previewDark": "On a dark background",
+    "preview": "Logo preview"
   },
   "theme": {
     "toLight": "Switch to light mode",
