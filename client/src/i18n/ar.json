@@ -32,6 +32,10 @@
     "comingSoon": "هذا القسم قادم قريباً."
   },
   "dashboard": {
+    "tabs": {
+      "all": "كل العمل",
+      "mine": "عملي"
+    },
     "welcome": "مرحباً، {{name}}",
     "myTickets": {
       "title": "تذاكري",

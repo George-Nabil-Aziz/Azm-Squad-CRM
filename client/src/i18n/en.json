@@ -32,6 +32,10 @@
     "comingSoon": "This area is coming soon."
   },
   "dashboard": {
+    "tabs": {
+      "all": "All work",
+      "mine": "My work"
+    },
     "welcome": "Welcome, {{name}}",
     "myTickets": {
       "title": "My tickets",

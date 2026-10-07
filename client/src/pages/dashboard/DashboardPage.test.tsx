@@ -220,6 +220,34 @@ describe('DashboardPage', () => {
     expect(screen.queryByText('API status')).not.toBeInTheDocument()
   })
 
+  describe('Tabs', () => {
+    it('opens on "All work" and switches to "My work"', async () => {
+      vi.mocked(getCurrentUser).mockResolvedValue(admin)
+      renderDashboard()
+
+      const all = await screen.findByRole('tab', { name: 'All work' })
+      const mineTab = screen.getByRole('tab', { name: 'My work' })
+      expect(all).toHaveAttribute('aria-selected', 'true')
+      expect(mineTab).toHaveAttribute('aria-selected', 'false')
+      expect(screen.getByRole('tabpanel', { name: 'All work' })).toBeVisible()
+
+      fireEvent.mouseDown(mineTab, { button: 0 })
+      fireEvent.click(mineTab)
+
+      await waitFor(() => expect(mineTab).toHaveAttribute('aria-selected', 'true'))
+      expect(all).toHaveAttribute('aria-selected', 'false')
+      expect(screen.getByRole('tabpanel', { name: 'My work' })).toBeVisible()
+    })
+
+    it('has Arabic tab labels', async () => {
+      await i18n.changeLanguage('ar')
+      renderDashboard()
+
+      expect(await screen.findByRole('tab', { name: 'كل العمل' })).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: 'عملي' })).toBeInTheDocument()
+    })
+  })
+
   describe('My work', () => {
     it('shows my counters, each linking to my tickets', async () => {
       renderDashboard()
