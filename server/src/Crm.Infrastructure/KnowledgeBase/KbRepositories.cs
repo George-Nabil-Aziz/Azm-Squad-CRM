@@ -161,3 +161,17 @@ public sealed class TicketArticleRepository(CrmDbContext db) : ITicketArticleRep
 
     public Task SaveChangesAsync(CancellationToken cancellationToken) => db.SaveChangesAsync(cancellationToken);
 }
+
+/// <summary>EF Core storage behind <see cref="IKbRetriever"/> (AI features): published, non-deleted articles containing a term.</summary>
+public sealed class KbRetrievalRepository(CrmDbContext db) : IKbRetrievalRepository
+{
+    public async Task<IReadOnlyList<KbArticle>> FindPublishedByTermAsync(string term, int max, CancellationToken cancellationToken)
+    {
+        var pattern = LikePattern.Contains(term);
+        return await db.KbArticles.AsNoTracking()
+            .Where(a => a.Status == KbArticleStatus.Published && EF.Functions.Like(a.SearchText, pattern, LikePattern.EscapeCharacter))
+            .OrderByDescending(a => a.PublishedAt).ThenByDescending(a => a.CreatedAt)
+            .Take(max)
+            .ToListAsync(cancellationToken);
+    }
+}

@@ -22,6 +22,121 @@ namespace Crm.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Crm.Domain.Ai.TicketAiClassification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("CategoryApplied")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("CategoryOverriddenAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CategoryOverriddenTo")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Confidence")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("OverriddenById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("PriorityApplied")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("PriorityOverriddenAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PriorityOverriddenTo")
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<Guid?>("SuggestedCategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SuggestedPriority")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TicketId")
+                        .IsUnique();
+
+                    b.ToTable("TicketAiClassifications", (string)null);
+                });
+
+            modelBuilder.Entity("Crm.Domain.Ai.TicketAiSummary", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("GeneratedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("GeneratedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TicketId")
+                        .IsUnique();
+
+                    b.ToTable("TicketAiSummaries", (string)null);
+                });
+
+            modelBuilder.Entity("Crm.Domain.Ai.TicketSuggestionFeedback", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ArticleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Useful")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TicketId", "ArticleId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("TicketSuggestionFeedback", (string)null);
+                });
+
             modelBuilder.Entity("Crm.Domain.Audit.AuditLogEntry", b =>
                 {
                     b.Property<long>("Id")
@@ -1433,6 +1548,33 @@ namespace Crm.Infrastructure.Persistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Crm.Domain.Ai.TicketAiClassification", b =>
+                {
+                    b.HasOne("Crm.Domain.Tickets.Ticket", null)
+                        .WithMany()
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Crm.Domain.Ai.TicketAiSummary", b =>
+                {
+                    b.HasOne("Crm.Domain.Tickets.Ticket", null)
+                        .WithMany()
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Crm.Domain.Ai.TicketSuggestionFeedback", b =>
+                {
+                    b.HasOne("Crm.Domain.Tickets.Ticket", null)
+                        .WithMany()
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Crm.Domain.Channels.ReceivedMessage", b =>

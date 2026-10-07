@@ -29,7 +29,8 @@ public sealed class ChannelTicketService(
     ISlaPolicyRepository slaPolicies,
     TimeProvider timeProvider,
     ISystemSettingsProvider settings,
-    IAutoAssignmentService? autoAssigner = null) : IChannelTicketService
+    IAutoAssignmentService? autoAssigner = null,
+    Crm.Application.Ai.IAiClassificationService? aiClassification = null) : IChannelTicketService
 {
     private const int WhatsAppSubjectLength = 80;
     private const int TimelineDetailsLength = 200;
@@ -58,12 +59,24 @@ public sealed class ChannelTicketService(
             return new ChannelTicketResult(existing.Id, false);
         }
 
+        var subject = Subject(message);
+        var description = Cut(body, Ticket.DescriptionMaxLength);
+        // CRM-52: like every new ticket, the AI suggestion (above the threshold) sets category and priority before the SLA timers.
+        var aiOutcome = aiClassification is null ? null : await aiClassification.ClassifyAsync(subject, description, cancellationToken);
+        var categoryApplied = aiOutcome is { MeetsThreshold: true, CategoryId: not null };
+        var priorityApplied = aiOutcome is { MeetsThreshold: true };
         var ticket = Ticket.Create(
-            customerId, Subject(message), Cut(body, Ticket.DescriptionMaxLength), null, TicketPriority.Mid, channel, null, now);
+            customerId, subject, description, categoryApplied ? aiOutcome!.CategoryId : null,
+            priorityApplied ? aiOutcome!.Priority : TicketPriority.Mid, channel, null, now);
         var runtime = await settings.GetAsync(cancellationToken); // CRM-35: business hours + ticket prefix
         if (await slaPolicies.FindAsync(ticket.Priority, cancellationToken) is { } policy)
         {
             ticket.ApplySla(policy, runtime.Calendar); // CRM-20: due times from the policy of the priority now
+        }
+
+        if (aiOutcome is not null)
+        {
+            aiClassification!.Save(ticket.Id, aiOutcome, categoryApplied, priorityApplied, now);
         }
 
         var autoAssignee = autoAssigner is null ? null : await autoAssigner.TryAssignAsync(ticket, now, cancellationToken); // CRM-27

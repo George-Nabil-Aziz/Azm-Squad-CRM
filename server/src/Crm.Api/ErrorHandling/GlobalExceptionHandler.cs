@@ -1,3 +1,4 @@
+using Crm.Application.Ai;
 using Crm.Application.Common.Exceptions;
 using Crm.Application.Common.Localization;
 using Crm.Application.Common.RateLimiting;
@@ -88,6 +89,18 @@ public sealed class GlobalExceptionHandler(
         {
             Status = StatusCodes.Status429TooManyRequests,
             Title = ErrorText.TooManyRequests,
+        },
+        AiNotConfiguredException notConfigured => new ProblemDetails
+        {
+            Status = StatusCodes.Status503ServiceUnavailable,
+            Title = AiText.NotConfiguredTitle,
+            Detail = notConfigured.Message,
+        },
+        AiFailedException => new ProblemDetails
+        {
+            Status = StatusCodes.Status502BadGateway,
+            Title = AiText.FailedTitle,
+            Detail = AiText.Failed,
         },
         ForbiddenException forbidden => new ProblemDetails
         {
