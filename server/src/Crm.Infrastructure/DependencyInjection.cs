@@ -16,6 +16,7 @@ using Crm.Application.Sla;
 using Crm.Application.Tasks;
 using Crm.Application.Tickets;
 using Crm.Application.Users;
+using Crm.Infrastructure.Ai;
 using Crm.Infrastructure.Audit;
 using Crm.Infrastructure.Branches;
 using Crm.Infrastructure.Channels;
@@ -73,6 +74,7 @@ public static class DependencyInjection
         services.AddScoped<ICustomerAttachmentRepository, CustomerAttachmentRepository>();
         services.AddKnowledgeBaseStorage();
         services.AddPortalInfrastructure();
+        services.AddAiInfrastructure();
         services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
         services.AddScoped<ISlaPolicyRepository, SlaPolicyRepository>();
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();

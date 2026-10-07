@@ -1,3 +1,4 @@
+using Crm.Application.Ai;
 using Crm.Application.Common.Exceptions;
 using Crm.Application.Common.Paging;
 using Crm.Application.Common.Security;
@@ -30,7 +31,8 @@ public sealed class TicketService(
     ISystemSettingsProvider settings,
     IAutoAssignmentService? autoAssigner = null,
     IDepartmentRepository? departments = null,
-    IDataScope? dataScope = null) : ITicketService
+    IDataScope? dataScope = null,
+    IAiClassificationService? aiClassification = null) : ITicketService
 {
     public Task<TicketResponse> CreateAsync(CreateTicketRequest request, CancellationToken cancellationToken) =>
         CreateCoreAsync(request, TicketChannel.Manual, currentUser.UserId, cancellationToken);
@@ -56,10 +58,29 @@ public sealed class TicketService(
         }
 
         var departmentId = await ResolveDepartmentAsync(request.DepartmentId, cancellationToken);
-        var priority = TicketValues.TryParsePriority(request.Priority, out var parsed) ? parsed : TicketPriority.Mid;
+        var priorityGiven = TicketValues.TryParsePriority(request.Priority, out var parsed);
+        var priority = priorityGiven ? parsed : TicketPriority.Mid;
+        var categoryId0 = request.CategoryId;
+        // CRM-52: the AI suggestion is applied (above the threshold) to what the creator left empty, before the SLA timers and
+        // the auto-assignment. Unavailable AI gives null: the ticket is created as usual.
+        var aiOutcome = aiClassification is null
+            ? null
+            : await aiClassification.ClassifyAsync(request.Subject!, request.Description, cancellationToken);
+        var categoryApplied = aiOutcome is { MeetsThreshold: true, CategoryId: not null } && categoryId0 is null;
+        var priorityApplied = aiOutcome is { MeetsThreshold: true } && !priorityGiven;
+        if (categoryApplied)
+        {
+            categoryId0 = aiOutcome!.CategoryId;
+        }
+
+        if (priorityApplied)
+        {
+            priority = aiOutcome!.Priority;
+        }
+
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var runtime = await settings.GetAsync(cancellationToken); // CRM-35: business hours + ticket prefix
-        var ticket = Ticket.Create(customerId, request.Subject!, request.Description, request.CategoryId, priority,
+        var ticket = Ticket.Create(customerId, request.Subject!, request.Description, categoryId0, priority,
             channel, createdById, now);
         ticket.ChangeDepartment(departmentId, now); // CRM-61
         ticket.AssignBranch(await tickets.GetCustomerBranchAsync(customerId, cancellationToken)); // CRM-62: tickets follow their customer
@@ -68,6 +89,11 @@ public sealed class TicketService(
         if (await slaPolicies.FindEffectiveAsync(priority, departmentId, cancellationToken) is { } policy)
         {
             ticket.ApplySla(policy, runtime.Calendar);
+        }
+
+        if (aiOutcome is not null)
+        {
+            aiClassification!.Save(ticket.Id, aiOutcome, categoryApplied, priorityApplied, now);
         }
 
         var autoAssignee = autoAssigner is null
@@ -139,6 +165,11 @@ public sealed class TicketService(
         ticket.ChangePriority(priority, await slaPolicies.FindEffectiveAsync(priority, ticket.DepartmentId, cancellationToken), now, calendar);
         if (old != priority)
         {
+            if (aiClassification is not null)
+            {
+                await aiClassification.RecordPriorityChangeAsync(ticket.Id, priority, now, cancellationToken); // CRM-52
+            }
+
             history.Record(ticket.Id, TicketHistoryField.Priority, TicketValues.PriorityName(old), TicketValues.PriorityName(priority), now);
         }
 

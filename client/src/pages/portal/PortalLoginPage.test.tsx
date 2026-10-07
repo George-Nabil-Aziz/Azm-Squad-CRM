@@ -10,10 +10,14 @@ function json(status: number, body: unknown, type = 'application/json') {
   return new Response(body === undefined ? null : JSON.stringify(body), { status, headers: { 'Content-Type': type } })
 }
 
+// The portal header asks once whether the chat is available (CRM-54); it is not what these tests look at.
+const CHAT_STATUS = '/api/portal/chatbot/status'
+
 function stubApi(verify: () => Response) {
   const fetchMock = vi.fn(async (path: string, _init?: RequestInit) => {
     if (path === '/api/portal/auth/request-code') return new Response(null, { status: 204 })
     if (path === '/api/portal/auth/verify') return verify()
+    if (path === CHAT_STATUS) return json(200, { enabled: false })
     return json(404, { status: 404 }, 'application/problem+json')
   })
   // The public branding request of the app shell is answered apart, so the mock only records the calls of the page.
@@ -56,7 +60,7 @@ describe('Portal sign-in', () => {
 
     await waitFor(() => expect(getPortalAccessToken()).toBe('portal-token'))
     await waitFor(() => expect(window.location.pathname).toBe('/portal'))
-    expect(JSON.parse(String(fetchMock.mock.calls[1][1]?.body))).toEqual({ email: 'nour@customer.example', code: '123456' })
+    expect(JSON.parse(String(fetchMock.mock.calls.filter(([p]) => p !== CHAT_STATUS)[1][1]?.body))).toEqual({ email: 'nour@customer.example', code: '123456' })
     expect(getAccessToken()).toBeNull() // the staff session is untouched
   })
 
@@ -78,7 +82,7 @@ describe('Portal sign-in', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: 'Send me a code' }))
     expect(await screen.findByText('Enter your email.')).toBeInTheDocument()
-    expect(fetchMock).not.toHaveBeenCalled()
+    expect(fetchMock.mock.calls.filter(([p]) => p !== CHAT_STATUS)).toHaveLength(0)
 
     await requestCode()
     fireEvent.change(screen.getByLabelText('Code'), { target: { value: '12' } })

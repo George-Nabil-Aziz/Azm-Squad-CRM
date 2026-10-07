@@ -1,4 +1,5 @@
 using Crm.Application.Common.Security;
+using Crm.Domain.Ai;
 using Crm.Domain.Audit;
 using Crm.Domain.Branches;
 using Crm.Domain.Channels;
@@ -86,6 +87,12 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options, IDataScope? da
     public DbSet<TicketAttachment> TicketAttachments => Set<TicketAttachment>();
 
     public DbSet<TicketSurvey> TicketSurveys => Set<TicketSurvey>();
+
+    public DbSet<TicketAiSummary> TicketAiSummaries => Set<TicketAiSummary>();
+
+    public DbSet<TicketAiClassification> TicketAiClassifications => Set<TicketAiClassification>();
+
+    public DbSet<TicketSuggestionFeedback> TicketSuggestionFeedback => Set<TicketSuggestionFeedback>();
 
     public DbSet<PortalAccount> PortalAccounts => Set<PortalAccount>();
 
