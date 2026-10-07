@@ -66,6 +66,7 @@ app.MapUsersEndpoints();
 app.MapAuditLogsEndpoints();
 app.MapSettingsEndpoints();
 app.MapReportsEndpoints();
+app.MapDashboardEndpoints();
 app.MapCustomersEndpoints();
 app.MapChannelsEndpoints();
 app.MapWhatsAppWebhookEndpoints();
