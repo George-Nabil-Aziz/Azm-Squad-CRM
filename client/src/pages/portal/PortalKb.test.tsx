@@ -57,6 +57,15 @@ describe('Portal help center', () => {
     await setLanguage('en')
   })
 
+  it('the logo and name in the portal header lead back to the landing page', async () => {
+    renderAt('/portal')
+
+    const banner = await screen.findByRole('banner')
+    const home = within(banner).getAllByRole('link')[0]
+    expect(home).toHaveTextContent('Support portal')
+    expect(home).toHaveAttribute('href', '/')
+  })
+
   it('shows FAQs and published articles without signing in (no Authorization header)', async () => {
     stubApi()
     renderAt('/portal')

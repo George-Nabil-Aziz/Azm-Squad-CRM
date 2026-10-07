@@ -17,7 +17,6 @@ import { PortalTicketsPage } from '@/pages/portal/PortalTicketsPage'
 import { IntegrationsLayout } from '@/features/integrations/IntegrationsLayout'
 import { ReportsLayout } from '@/features/reports/ReportsLayout'
 import { AuditLogsPage } from '@/pages/audit/AuditLogsPage'
-import { LandingPage } from '@/pages/landing/LandingPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { CustomerDetailsPage } from '@/pages/customers/CustomerDetailsPage'
 import { CustomersPage } from '@/pages/customers/CustomersPage'
@@ -50,7 +49,8 @@ import { RequirePortalAuth } from './RequirePortalAuth'
 export function AppRoutes() {
   return (
     <Routes>
-      <Route path="/welcome" element={<LandingPage />} />
+      {/* Old address of the landing page: the landing page now lives at / for visitors who are not signed in. */}
+      <Route path="/welcome" element={<Navigate to="/" replace />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/embed/contact" element={<ContactFormPage />} />
       <Route path="/embed/chat" element={<ChatWidgetPage />} />
