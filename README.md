@@ -266,6 +266,24 @@ Sign in with `admin@crm.local` and the password you set in step 2.
 Check `/api/health` first when something does not work: it tells you whether the API is
 up and can reach the database.
 
+### Development demo data
+
+In the Development environment the API fills an empty system with realistic demo data on startup, so the
+dashboard and every report show real numbers (`Seed:DemoData` is `true` in `appsettings.Development.json`).
+It creates, once:
+
+- 6 agents and 1 supervisor (`sara@crm.com`, `omar@crm.com`, ... , `supervisor@crm.com`, password = `Seed:SuperAdminPassword`),
+  3 departments, 2 branches and 5 ticket categories;
+- knowledge base: 4 categories, 8 published articles and 6 FAQs (Arabic and English);
+- 60 customers (`@demo.crm.com`, Arabic and English names, Saudi and Egyptian cities, E.164 phones) with notes;
+- about 300 tickets over the last 60 days on all channels, with replies, internal notes, SLA breaches (about 10 %),
+  and CSAT ratings on about 60 % of the resolved ones; plus a few tasks and notifications for the demo agent.
+
+Nothing is ever sent (no email, WhatsApp or SMS is queued). The seeder runs only when the environment is
+`Development` and `Seed:DemoData` is true, and only when no customer with an `@demo.crm.com` email exists (that
+is the marker), so restarting never adds it twice. Turn it off with `Seed:DemoData=false` (environment variable
+`Seed__DemoData=false`). To get fresh demo data, drop the dev database and restart the API.
+
 ---
 
 ## Accounts and roles

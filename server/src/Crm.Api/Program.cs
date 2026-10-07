@@ -112,6 +112,7 @@ await using (var scope = app.Services.CreateAsyncScope())
     await scope.ServiceProvider.GetRequiredService<CrmDbInitializer>().InitializeAsync(CancellationToken.None);
     // CRM-35: channel credentials saved in the system settings override the configured ones.
     await scope.ServiceProvider.GetRequiredService<IChannelSettingsApplier>().ApplyAsync(CancellationToken.None);
+    await Crm.Infrastructure.Persistence.DemoData.DemoDataSeeder.RunAsync(scope.ServiceProvider, CancellationToken.None); // Development only, Seed:DemoData
 }
 
 app.Run();
