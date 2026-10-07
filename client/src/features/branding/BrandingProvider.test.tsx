@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getBranding } from '@/api/branding'
 import { createQueryClient } from '@/app/query-client'
 import { BrandLogo } from './BrandLogo'
+import { applyBrandColors } from './branding-context'
 import { BrandingProvider } from './BrandingProvider'
 import { contrastForeground, DARK_FOREGROUND, LIGHT_FOREGROUND, parseHexColor } from './branding-colors'
 
@@ -67,5 +68,25 @@ describe('BrandingProvider', () => {
     await waitFor(() => expect(getBranding).toHaveBeenCalled())
     expect(document.documentElement.style.getPropertyValue('--primary')).toBe('')
     expect(screen.queryByRole('img')).not.toBeInTheDocument()
+  })
+})
+
+describe('brand colours in dark mode', () => {
+  it('lightens a dark brand primary, keeps readable text and leaves the secondary to the dark palette', () => {
+    const root = document.createElement('div')
+    applyBrandColors(root, { primaryColor: '#0a2540', secondaryColor: '#ffeb3b' }, 'dark')
+
+    expect(root.style.getPropertyValue('--primary')).toContain('color-mix')
+    expect(root.style.getPropertyValue('--primary-foreground')).toBe(DARK_FOREGROUND)
+    expect(root.style.getPropertyValue('--secondary')).toBe('')
+    expect(root.style.getPropertyValue('--secondary-foreground')).toBe('')
+  })
+
+  it('keeps a bright brand primary as it is', () => {
+    const root = document.createElement('div')
+    applyBrandColors(root, { primaryColor: '#ffeb3b', secondaryColor: null }, 'dark')
+
+    expect(root.style.getPropertyValue('--primary')).toBe('#ffeb3b')
+    expect(root.style.getPropertyValue('--primary-foreground')).toBe(DARK_FOREGROUND)
   })
 })

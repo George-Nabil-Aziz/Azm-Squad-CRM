@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, type ReactNode } from 'react'
 import { getBranding } from '@/api/branding'
+import { useTheme } from '@/features/theme/theme-context'
 import { applyBrandColors, BrandingContext, defaultBranding } from './branding-context'
 
 /**
@@ -14,12 +15,13 @@ export function BrandingProvider({ children }: { children: ReactNode }) {
     staleTime: 5 * 60_000,
     retry: false,
   })
+  const { resolvedTheme } = useTheme()
   const branding = useMemo(() => query.data ?? defaultBranding, [query.data])
 
   useEffect(() => {
-    applyBrandColors(document.documentElement, branding)
+    applyBrandColors(document.documentElement, branding, resolvedTheme)
     return () => applyBrandColors(document.documentElement, defaultBranding)
-  }, [branding])
+  }, [branding, resolvedTheme])
 
   return <BrandingContext.Provider value={branding}>{children}</BrandingContext.Provider>
 }

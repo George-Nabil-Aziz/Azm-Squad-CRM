@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router'
 import { getReturnPath } from '@/app/return-path'
 import { useIsAuthenticated } from '@/auth/useIsAuthenticated'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { ThemeToggle } from '@/features/theme/ThemeToggle'
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LoginForm } from '@/features/auth/LoginForm'
 import { BrandLogo } from '@/features/branding/BrandLogo'
@@ -24,8 +25,9 @@ export function LoginPage() {
             <h1 className="text-xl font-semibold">{t('app.name')}</h1>
           </CardTitle>
           <CardDescription>{t('auth.signInDescription')}</CardDescription>
-          <CardAction>
+          <CardAction className="flex flex-col items-end gap-2">
             <LanguageSwitcher />
+            <ThemeToggle />
           </CardAction>
         </CardHeader>
         <CardContent>

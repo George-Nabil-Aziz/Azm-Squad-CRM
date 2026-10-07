@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react'
 import type { Branding } from '@/api/branding'
-import { contrastForeground } from './branding-colors'
+import type { ResolvedTheme } from '@/features/theme/theme-context'
+import { contrastForeground, DARK_FOREGROUND, isTooDarkForDarkMode } from './branding-colors'
 
 export const defaultBranding: Branding = { primaryColor: null, secondaryColor: null, logoUrl: null }
 
@@ -24,11 +25,28 @@ function apply(root: HTMLElement, variables: readonly string[], value: string | 
   }
 }
 
-/** Applies the brand colours to the theme variables of `root` (null = back to the theme default). */
-export function applyBrandColors(root: HTMLElement, branding: Pick<Branding, 'primaryColor' | 'secondaryColor'>) {
-  apply(root, primaryVariables, branding.primaryColor)
-  apply(root, primaryForegroundVariables, branding.primaryColor ? contrastForeground(branding.primaryColor) : null)
-  apply(root, secondaryVariables, branding.secondaryColor)
-  apply(root, secondaryForegroundVariables, branding.secondaryColor ? contrastForeground(branding.secondaryColor) : null)
+/**
+ * Applies the brand colours to the theme variables of `root` (null = back to the theme default).
+ *
+ * Light theme: both brand colours are used as they are. Dark theme: the primary is kept (lightened with white when it
+ * would vanish on the dark surfaces, with dark text on top) and the secondary is skipped, so the dark palette keeps
+ * its quiet surfaces and every text stays readable.
+ */
+export function applyBrandColors(
+  root: HTMLElement,
+  branding: Pick<Branding, 'primaryColor' | 'secondaryColor'>,
+  theme: ResolvedTheme = 'light',
+) {
+  const { primaryColor, secondaryColor } = branding
+  const dark = theme === 'dark'
+  const lighten = dark && primaryColor !== null && isTooDarkForDarkMode(primaryColor)
+  const primary = primaryColor && lighten ? `color-mix(in oklch, ${primaryColor}, white 55%)` : primaryColor
+  const primaryForeground = primaryColor ? (lighten ? DARK_FOREGROUND : contrastForeground(primaryColor)) : null
+  const secondary = dark ? null : secondaryColor
+
+  apply(root, primaryVariables, primary)
+  apply(root, primaryForegroundVariables, primaryForeground)
+  apply(root, secondaryVariables, secondary)
+  apply(root, secondaryForegroundVariables, secondary ? contrastForeground(secondary) : null)
 }
 

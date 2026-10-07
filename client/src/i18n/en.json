@@ -1295,5 +1295,11 @@
     "logoSaved": "The logo was saved.",
     "removeLogo": "Remove the logo",
     "logoRemoved": "The logo was removed."
+  },
+  "theme": {
+    "label": "Appearance",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
   }
 }

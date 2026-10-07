@@ -15,6 +15,12 @@ function luminance([r, g, b]: [number, number, number]): number {
   return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
 }
 
+/** True when a brand colour is too dark to stand out on the dark theme's surfaces (contrast below 3:1 with them). */
+export function isTooDarkForDarkMode(color: string): boolean {
+  const rgb = parseHexColor(color)
+  return rgb !== null && luminance(rgb) < 0.12
+}
+
 /** The theme's dark and light text colours (the shadcn defaults), picked for contrast on a brand colour. */
 export const DARK_FOREGROUND = 'oklch(0.145 0 0)'
 export const LIGHT_FOREGROUND = 'oklch(0.985 0 0)'

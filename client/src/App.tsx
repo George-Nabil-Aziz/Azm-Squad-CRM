@@ -9,6 +9,7 @@ import { getAccessToken, subscribeToSession } from '@/auth/session'
 import { ApiErrorToaster } from '@/components/ApiErrorToaster'
 import { DirectionProvider } from '@/components/ui/direction'
 import { BrandingProvider } from '@/features/branding/BrandingProvider'
+import { ThemeProvider } from '@/features/theme/ThemeProvider'
 
 function App() {
   const [queryClient] = useState(createQueryClient)
@@ -34,6 +35,7 @@ function App() {
   )
 
   return (
+    <ThemeProvider>
     <DirectionProvider dir={i18n.dir()}>
       <QueryClientProvider client={queryClient}>
         <BrandingProvider>
@@ -44,6 +46,7 @@ function App() {
         <ApiErrorToaster />
       </QueryClientProvider>
     </DirectionProvider>
+    </ThemeProvider>
   )
 }
 

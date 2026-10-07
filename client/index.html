@@ -5,6 +5,23 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Customer Support CRM</title>
+    <script>
+      // Sets the theme before the first paint (no flash). Keep in sync with features/theme/theme-context.ts.
+      ;(function () {
+        try {
+          var saved = null
+          try {
+            saved = localStorage.getItem('crm-theme')
+          } catch (e) {}
+          var dark =
+            saved === 'dark' ||
+            ((saved !== 'light') && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          var root = document.documentElement
+          if (dark) root.classList.add('dark')
+          root.style.colorScheme = dark ? 'dark' : 'light'
+        } catch (e) {}
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
