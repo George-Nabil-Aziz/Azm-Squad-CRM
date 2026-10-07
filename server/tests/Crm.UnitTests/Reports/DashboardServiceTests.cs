@@ -69,8 +69,8 @@ public class DashboardServiceTests
         Assert.Equal(new DateOnly(2026, 10, 6), dashboard.TicketsPerDay[^1].Date);
         Assert.Equal(5, dashboard.TicketsPerDay[^1].Count);
         Assert.Equal(2, dashboard.TicketsPerDay.Single(d => d.Date == new DateOnly(2026, 9, 25)).Count);
-        Assert.Equal(["manual", "email", "whatsapp", "portal", "webform"], dashboard.TicketsByChannel.Select(c => c.Key));
-        Assert.Equal([1, 6, 0, 0, 0], dashboard.TicketsByChannel.Select(c => c.Count));
+        Assert.Equal(["manual", "email", "whatsapp", "portal", "webform", "chat"], dashboard.TicketsByChannel.Select(c => c.Key));
+        Assert.Equal([1, 6, 0, 0, 0, 0], dashboard.TicketsByChannel.Select(c => c.Count));
     }
 
     [Fact]

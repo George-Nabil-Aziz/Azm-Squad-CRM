@@ -29,3 +29,6 @@ export function getWebFormConfig(signal?: AbortSignal): Promise<WebFormConfig> {
 export function submitWebForm(input: WebFormInput): Promise<WebFormReceipt> {
   return apiPost<WebFormReceipt>('/api/public/web-forms', input)
 }
+
+/** Sends a filled form somewhere (the web form endpoint, or the live chat offline form). */
+export type WebFormSubmit = (input: WebFormInput) => Promise<WebFormReceipt>

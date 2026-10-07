@@ -1,5 +1,6 @@
 using Crm.Application.Audit;
 using Crm.Application.Channels;
+using Crm.Application.Chat;
 using Crm.Application.Channels.WhatsApp;
 using Crm.Application.Customers;
 using Crm.Application.Customers.Attachments;
@@ -51,6 +52,7 @@ public static class DependencyInjection
         services.AddKnowledgeBase();
         services.AddPortal();
         services.AddWebForms();
+        services.AddChat();
         services.AddScoped<ISlaPolicyService, SlaPolicyService>();
         services.AddScoped<ITicketService, TicketService>();
         services.AddScoped<SlaMonitorJob>();

@@ -2,6 +2,8 @@ import { Navigate, Route, Routes } from 'react-router'
 import { permissions } from '@/auth/permissions'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { PortalLayout } from '@/components/portal/PortalLayout'
+import { ChatConsolePage } from '@/pages/chat/ChatConsolePage'
+import { ChatWidgetPage } from '@/pages/public/ChatWidgetPage'
 import { ContactFormPage } from '@/pages/public/ContactFormPage'
 import { WebFormsPage } from '@/pages/settings/WebFormsPage'
 import { PortalArticlePage } from '@/pages/portal/PortalArticlePage'
@@ -41,6 +43,7 @@ export function AppRoutes() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/embed/contact" element={<ContactFormPage />} />
+      <Route path="/embed/chat" element={<ChatWidgetPage />} />
       <Route path="/portal" element={<PortalLayout />}>
         <Route index element={<PortalHomePage />} />
         <Route path="login" element={<PortalLoginPage />} />
@@ -73,6 +76,9 @@ export function AppRoutes() {
           </Route>
           <Route element={<RequirePermission permission={permissions.settingsManage} />}>
             <Route path="settings" element={<SettingsPage />} />
+          </Route>
+          <Route element={<RequirePermission permission={permissions.chatHandle} />}>
+            <Route path="chat" element={<ChatConsolePage />} />
           </Route>
           <Route element={<RequirePermission permission={permissions.channelsManage} />}>
             <Route path="web-forms" element={<WebFormsPage />} />

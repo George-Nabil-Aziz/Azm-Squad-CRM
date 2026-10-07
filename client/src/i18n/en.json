@@ -19,7 +19,8 @@
     "quickReplies": "Quick replies",
     "auditLogs": "Audit log",
     "settings": "Settings",
-    "webForms": "Web forms"
+    "webForms": "Web forms",
+    "chat": "Live chat"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -1000,6 +1001,31 @@
       "copied": "Copied",
       "open": "Open the form",
       "captchaHint": "Set WebForms__CaptchaSecret and WebForms__CaptchaSiteKey on the server to turn on the captcha (Cloudflare Turnstile)."
+    }
+  },
+  "chat": {
+    "messages": "Chat messages",
+    "messageLabel": "Your message",
+    "send": "Send",
+    "end": "End chat",
+    "endedNotice": "This chat has ended. The transcript was saved as a ticket.",
+    "queue": "Waiting chats",
+    "queueEmpty": "No one is waiting.",
+    "mine": "My chats",
+    "accept": "Accept",
+    "selectChat": "Accept or select a chat to start.",
+    "connectionFailed": "Could not connect to live chat. Reload the page to try again.",
+    "widget": {
+      "title": "Chat with us",
+      "checking": "Checking availability...",
+      "offline": "No agent is online right now. Leave a message and we will reply by email.",
+      "offlineSent": "Thank you, we received your message and will reply by email.",
+      "name": "Your name",
+      "email": "Email",
+      "firstMessage": "How can we help?",
+      "start": "Start chat",
+      "required": "Enter your name and email.",
+      "failed": "Could not start the chat. Try again."
     }
   }
 }

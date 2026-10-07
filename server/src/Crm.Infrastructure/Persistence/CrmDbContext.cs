@@ -1,5 +1,6 @@
 using Crm.Domain.Audit;
 using Crm.Domain.Channels;
+using Crm.Domain.Chat;
 using Crm.Domain.Customers;
 using Crm.Domain.KnowledgeBase;
 using Crm.Domain.Notifications;
@@ -71,6 +72,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
     public DbSet<WorkTask> Tasks => Set<WorkTask>();
 
     public DbSet<QuickReply> QuickReplies => Set<QuickReply>();
+
+    public DbSet<ChatSession> ChatSessions => Set<ChatSession>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

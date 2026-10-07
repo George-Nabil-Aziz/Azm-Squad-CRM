@@ -59,6 +59,8 @@ public class CrmApiFactory : WebApplicationFactory<Program>
             // Test-only webhook values (CRM-26); no access token, so sending through WhatsApp is "not configured".
             ["Channels:WhatsApp:VerifyToken"] = WhatsAppVerifyToken,
             ["Channels:WhatsApp:AppSecret"] = WhatsAppAppSecret,
+            // Public endpoints share the loopback address in tests: a high limit, tests of the limit set their own.
+            ["WebForms:RateLimitRequests"] = "1000",
         }));
         builder.ConfigureLogging(logging => logging.AddProvider(Logs));
         builder.ConfigureTestServices(services =>

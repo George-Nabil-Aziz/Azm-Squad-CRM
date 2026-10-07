@@ -15,6 +15,7 @@ using Crm.Application.Tickets;
 using Crm.Application.Users;
 using Crm.Infrastructure.Audit;
 using Crm.Infrastructure.Channels;
+using Crm.Infrastructure.Chat;
 using Crm.Infrastructure.Customers;
 using Crm.Infrastructure.Files;
 using Crm.Infrastructure.Identity;
@@ -70,6 +71,7 @@ public static class DependencyInjection
         services.AddKnowledgeBaseStorage();
         services.AddPortalInfrastructure();
         services.AddWebFormsInfrastructure();
+        services.AddChatInfrastructure();
         services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
         services.AddScoped<ISlaPolicyRepository, SlaPolicyRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();

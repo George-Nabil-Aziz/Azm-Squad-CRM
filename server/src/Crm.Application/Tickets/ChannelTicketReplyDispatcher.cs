@@ -42,13 +42,13 @@ public sealed class ChannelTicketReplyDispatcher(
     private async Task<ChannelReply?> BuildReplyAsync(
         Ticket ticket, string body, string? templateName, Guid? sourceId, CancellationToken cancellationToken)
     {
-        if (ticket.Channel is not (TicketChannel.Email or TicketChannel.WebForm or TicketChannel.WhatsApp))
+        if (ticket.Channel is not (TicketChannel.Email or TicketChannel.WebForm or TicketChannel.Chat or TicketChannel.WhatsApp))
         {
             return null;
         }
 
         var customer = await customers.GetAsync(ticket.CustomerId, cancellationToken);
-        if (ticket.Channel is TicketChannel.Email or TicketChannel.WebForm)
+        if (ticket.Channel is TicketChannel.Email or TicketChannel.WebForm or TicketChannel.Chat)
         {
             var address = Primary(customer, "email") ?? customer.Email;
             return address is null

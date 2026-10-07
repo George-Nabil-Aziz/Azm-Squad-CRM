@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { isApiError } from '@/api/errors'
-import { getWebFormConfig, submitWebForm, type WebFormReceipt } from '@/api/web-forms'
+import { getWebFormConfig, submitWebForm, type WebFormReceipt, type WebFormSubmit } from '@/api/web-forms'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
@@ -20,7 +20,14 @@ const autoCompleteOf: Record<(typeof contactFormFields)[number], string> = {
 }
 
 /** The public contact form: on success `onSubmitted` gets the receipt (ticket number). */
-export function ContactForm({ onSubmitted }: { onSubmitted: (receipt: WebFormReceipt) => void }) {
+export function ContactForm({
+  onSubmitted,
+  submit: send = submitWebForm,
+}: {
+  onSubmitted: (receipt: WebFormReceipt) => void
+  /** Where the form goes (default: the web form endpoint; the chat widget's offline form passes its own). */
+  submit?: WebFormSubmit
+}) {
   const { t } = useTranslation()
   const schema = useMemo(() => createContactFormSchema(t), [t])
   const [captchaToken, setCaptchaToken] = useState('')
@@ -32,7 +39,7 @@ export function ContactForm({ onSubmitted }: { onSubmitted: (receipt: WebFormRec
     defaultValues: { name: '', email: '', subject: '', message: '' },
   })
   const submit = useMutation({
-    mutationFn: (values: ContactFormValues) => submitWebForm({ ...values, captchaToken, website: honeypot }),
+    mutationFn: (values: ContactFormValues) => send({ ...values, captchaToken, website: honeypot }),
     onSuccess: onSubmitted,
   })
   const onToken = useCallback((token: string) => setCaptchaToken(token), [])

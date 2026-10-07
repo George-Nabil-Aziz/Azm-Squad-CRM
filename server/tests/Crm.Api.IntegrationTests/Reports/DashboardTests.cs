@@ -92,7 +92,7 @@ public class DashboardTests(CrmApiFactory factory) : IClassFixture<CrmApiFactory
         Assert.Equal(14, dashboard.TicketsPerDay.Count);
         Assert.Equal(DateOnly.FromDateTime(factory.Time.GetUtcNow().UtcDateTime), dashboard.TicketsPerDay[^1].Date);
         Assert.True(dashboard.TicketsPerDay[^1].Count >= 1);
-        Assert.Equal(["manual", "email", "whatsapp", "portal", "webform"], dashboard.TicketsByChannel.Select(c => c.Key));
+        Assert.Equal(["manual", "email", "whatsapp", "portal", "webform", "chat"], dashboard.TicketsByChannel.Select(c => c.Key));
         Assert.True(dashboard.TicketsByChannel.Single(c => c.Key == "manual").Count >= 1);
         Assert.Equal(dashboard.TicketsPerDay.Sum(d => d.Count), dashboard.TicketsByChannel.Sum(c => c.Count));
         Assert.Null(dashboard.AverageCsat); // CRM-44 is not wired

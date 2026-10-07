@@ -19,7 +19,8 @@ public interface IWebFormService
 {
     WebFormConfigResponse GetConfig();
 
-    Task<WebFormReceipt> SubmitAsync(WebFormRequest request, string? remoteIp, CancellationToken cancellationToken);
+    Task<WebFormReceipt> SubmitAsync(
+        WebFormRequest request, string? remoteIp, CancellationToken cancellationToken, TicketChannel channel = TicketChannel.WebForm);
 }
 
 public sealed class WebFormService(
@@ -33,7 +34,8 @@ public sealed class WebFormService(
 {
     public WebFormConfigResponse GetConfig() => new(options.CaptchaConfigured, options.CaptchaConfigured ? options.CaptchaSiteKey : null);
 
-    public async Task<WebFormReceipt> SubmitAsync(WebFormRequest request, string? remoteIp, CancellationToken cancellationToken)
+    public async Task<WebFormReceipt> SubmitAsync(
+        WebFormRequest request, string? remoteIp, CancellationToken cancellationToken, TicketChannel channel = TicketChannel.WebForm)
     {
         ArgumentNullException.ThrowIfNull(request);
         if (!rateLimiter.TryAcquire(
@@ -60,7 +62,7 @@ public sealed class WebFormService(
         var ticket = await tickets.CreateForCustomerAsync(
             customer.Id,
             new CreateTicketRequest(customer.Id, request.Subject!.Trim(), request.Message!.Trim(), null, null),
-            TicketChannel.WebForm,
+            channel,
             cancellationToken);
 
         await SendConfirmationAsync(email, ticket, cancellationToken);

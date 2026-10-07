@@ -92,4 +92,11 @@ Unit (domain, service, presence), integration (hub, endpoints), client tests. `d
 
 ## Done Criteria
 
-- [ ] AC 1 real-time start. - [ ] AC 2 messages < 1 s. - [ ] AC 3 transcript ticket. - [ ] AC 4 offline form. - [ ] All builds and tests green.
+- [x] AC 1 real-time start. - [x] AC 2 messages < 1 s. - [x] AC 3 transcript ticket. - [x] AC 4 offline form. - [x] All builds and tests green.
+
+## As built
+
+- Hub access is checked by `ChatHubAccessMiddleware` (401 / 403 before SignalR), not in `OnConnectedAsync`.
+- Deviation: `ChatSession` also stores `TicketNumber`; the chat start rate limit reuses `WebForms:RateLimit*` settings.
+- Report tests that list ticket channels include `chat`; nav tests include "Live chat".
+- Migration `AddChat`.
