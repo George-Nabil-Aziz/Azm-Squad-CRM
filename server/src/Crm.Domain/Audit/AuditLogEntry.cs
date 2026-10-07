@@ -101,6 +101,7 @@ public static class AuditActions
     public const string CustomerDeleted = "customer.deleted";
     public const string CustomerContactRemoved = "customer-contact.removed";
     public const string SettingsUpdated = "settings.updated";
+    public const string BrandingUpdated = "branding.updated";
 
     public static IReadOnlyList<string> All { get; } =
     [
@@ -108,6 +109,6 @@ public static class AuditActions
         UserCreated, UserUpdated, UserDeactivated, UserReactivated,
         SlaPolicyUpdated,
         CustomerDeleted, CustomerContactRemoved,
-        SettingsUpdated,
+        SettingsUpdated, BrandingUpdated,
     ];
 }

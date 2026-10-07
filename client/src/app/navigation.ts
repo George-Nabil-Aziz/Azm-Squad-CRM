@@ -3,6 +3,7 @@ import {
   ChartColumnIcon,
   Building2Icon,
   MapPinIcon,
+  PaletteIcon,
   LayoutDashboardIcon,
   ScrollTextIcon,
   SettingsIcon,
@@ -48,5 +49,6 @@ export const navigationItems: readonly NavigationItem[] = [
   { id: 'branches', path: '/branches', icon: MapPinIcon, permission: permissions.branchesManage },
   { id: 'slaPolicies', path: '/sla-policies', icon: TimerIcon, permission: permissions.slaManage },
   { id: 'auditLogs', path: '/audit-logs', icon: ScrollTextIcon, permission: permissions.auditView },
+  { id: 'branding', path: '/branding', icon: PaletteIcon, permission: permissions.settingsManage },
   { id: 'settings', path: '/settings', icon: SettingsIcon, permission: permissions.settingsManage },
 ]

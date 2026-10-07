@@ -1,3 +1,4 @@
+using Crm.Application.Branding;
 using Crm.Application.Channels;
 using Crm.Application.Notifications;
 using Crm.Infrastructure.Channels.Email;
@@ -13,8 +14,22 @@ namespace Crm.Infrastructure.Notifications;
 public sealed class NotificationEmailSender(
     EmailChannelOptions options,
     ISmtpTransport transport,
-    ILogger<NotificationEmailSender> logger) : INotificationEmailSender
+    ILogger<NotificationEmailSender> logger,
+    IBrandingService? branding = null) : INotificationEmailSender
 {
+    private async Task<EmailBranding?> BrandingAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            return branding is null ? null : await branding.GetEmailBrandingAsync(cancellationToken);
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            logger.LogWarning(exception, "Reading the branding failed; the notification email goes out as plain text.");
+            return null;
+        }
+    }
+
     public async Task SendAsync(NotificationEmail email, CancellationToken cancellationToken)
     {
         if (!options.IsSmtpConfigured)
@@ -27,7 +42,7 @@ public sealed class NotificationEmailSender(
         message.From.Add(new MailboxAddress(options.FromName ?? options.FromAddress, options.FromAddress!));
         message.To.Add(new MailboxAddress(email.ToName, email.ToAddress));
         message.Subject = email.Subject;
-        message.Body = new TextPart("plain") { Text = email.Body };
+        message.Body = BrandedEmail.Build(email.Body, await BrandingAsync(cancellationToken));
         await transport.SendAsync(message, options.Smtp, cancellationToken);
     }
 }

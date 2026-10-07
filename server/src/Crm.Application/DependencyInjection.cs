@@ -1,5 +1,6 @@
 using Crm.Application.Audit;
 using Crm.Application.Branches;
+using Crm.Application.Branding;
 using Crm.Application.Channels;
 using Crm.Application.Channels.WhatsApp;
 using Crm.Application.Customers;
@@ -55,6 +56,7 @@ public static class DependencyInjection
         services.AddScoped<ITicketService, TicketService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IBranchService, BranchService>();
+        services.AddScoped<IBrandingService, BrandingService>();
         services.AddScoped<ITicketDepartmentService, TicketDepartmentService>();
         services.AddScoped<SlaMonitorJob>();
         services.AddScoped<ISlaNotifier, SlaNotifier>();

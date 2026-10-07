@@ -20,7 +20,8 @@
     "auditLogs": "سجل التدقيق",
     "settings": "الإعدادات",
     "departments": "الأقسام",
-    "branches": "الفروع"
+    "branches": "الفروع",
+    "branding": "الهوية البصرية"
   },
   "shell": {
     "mainNavigation": "التنقل الرئيسي",
@@ -575,7 +576,8 @@
       "slaPolicyUpdated": "تغيير سياسة SLA",
       "customerDeleted": "حذف عميل",
       "customerContactRemoved": "حذف وسيلة اتصال عميل",
-      "settingsUpdated": "تغيير الإعدادات"
+      "settingsUpdated": "تغيير الإعدادات",
+      "brandingUpdated": "تغيير الهوية البصرية"
     }
   },
   "settings": {
@@ -1049,5 +1051,24 @@
     "nameRequired": "أدخل اسم الفرع.",
     "created": "تم إنشاء الفرع {{name}}.",
     "updated": "تم حفظ الفرع {{name}}."
+  },
+  "branding": {
+    "description": "حدّد ألوان الشركة وشعارها. تُطبَّق فوراً على تطبيق الموظفين وبوابة العملاء والرسائل الصادرة.",
+    "primaryColor": "اللون الأساسي",
+    "secondaryColor": "اللون الثانوي",
+    "colorPlaceholder": "الافتراضي (مثل #0a5cad)",
+    "save": "حفظ الألوان",
+    "saving": "جارٍ الحفظ…",
+    "saved": "تم حفظ الألوان.",
+    "resetColors": "استخدام الألوان الافتراضية",
+    "logo": "الشعار",
+    "logoAlt": "شعار الشركة",
+    "noLogo": "لا يوجد شعار بعد.",
+    "logoFile": "ملف الشعار",
+    "logoHint": "صورة PNG أو JPG أو WEBP أو GIF حتى 2 ميغابايت.",
+    "logoTooLarge": "يجب ألا يتجاوز حجم الشعار 2 ميغابايت.",
+    "logoSaved": "تم حفظ الشعار.",
+    "removeLogo": "إزالة الشعار",
+    "logoRemoved": "تمت إزالة الشعار."
   }
 }

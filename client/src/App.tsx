@@ -8,6 +8,7 @@ import { getPortalAccessToken, subscribeToPortalSession } from '@/auth/portal-se
 import { getAccessToken, subscribeToSession } from '@/auth/session'
 import { ApiErrorToaster } from '@/components/ApiErrorToaster'
 import { DirectionProvider } from '@/components/ui/direction'
+import { BrandingProvider } from '@/features/branding/BrandingProvider'
 
 function App() {
   const [queryClient] = useState(createQueryClient)
@@ -35,9 +36,11 @@ function App() {
   return (
     <DirectionProvider dir={i18n.dir()}>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
+        <BrandingProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </BrandingProvider>
         <ApiErrorToaster />
       </QueryClientProvider>
     </DirectionProvider>

@@ -62,6 +62,7 @@ app.MapTicketCategoriesEndpoints();
 app.MapSlaPoliciesEndpoints();
 app.MapDepartmentsEndpoints();
 app.MapBranchesEndpoints();
+app.MapBrandingEndpoints();
 app.MapTicketsEndpoints();
 app.MapTicketSlaEndpoints();
 app.MapTicketMessagesEndpoints();

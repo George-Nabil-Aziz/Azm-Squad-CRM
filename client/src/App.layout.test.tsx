@@ -4,7 +4,7 @@ import App from './App'
 import { getAccessToken, saveSession } from './auth/session'
 import { ADMIN_PASSWORD, callsTo, fakeApi, inOneHour, submitSignIn } from './test/fake-api'
 
-const NAVIGATION_LABELS = ['Dashboard', 'Tickets', 'Customers', 'Tasks', 'Quick replies', 'Knowledge base', 'Reports', 'Users', 'Assignment', 'Ticket categories', 'Departments', 'Branches', 'SLA policy', 'Audit log', 'Settings']
+const NAVIGATION_LABELS = ['Dashboard', 'Tickets', 'Customers', 'Tasks', 'Quick replies', 'Knowledge base', 'Reports', 'Users', 'Assignment', 'Ticket categories', 'Departments', 'Branches', 'SLA policy', 'Audit log', 'Branding', 'Settings']
 /** Areas whose story is not built yet (each later story removes its label from this list). */
 const COMING_SOON_LABELS: string[] = []
 

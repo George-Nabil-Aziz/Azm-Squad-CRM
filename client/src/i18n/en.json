@@ -20,7 +20,8 @@
     "auditLogs": "Audit log",
     "settings": "Settings",
     "departments": "Departments",
-    "branches": "Branches"
+    "branches": "Branches",
+    "branding": "Branding"
   },
   "shell": {
     "mainNavigation": "Main navigation",
@@ -575,7 +576,8 @@
       "slaPolicyUpdated": "SLA policy changed",
       "customerDeleted": "Customer deleted",
       "customerContactRemoved": "Customer contact removed",
-      "settingsUpdated": "Settings changed"
+      "settingsUpdated": "Settings changed",
+      "brandingUpdated": "Branding changed"
     }
   },
   "settings": {
@@ -1049,5 +1051,24 @@
     "nameRequired": "Enter the branch name.",
     "created": "Branch {{name}} was created.",
     "updated": "Branch {{name}} was saved."
+  },
+  "branding": {
+    "description": "Set the company colours and logo. They apply at once to the staff app, the customer portal and outgoing emails.",
+    "primaryColor": "Primary colour",
+    "secondaryColor": "Secondary colour",
+    "colorPlaceholder": "Default (e.g. #0a5cad)",
+    "save": "Save colours",
+    "saving": "Saving…",
+    "saved": "The colours were saved.",
+    "resetColors": "Use the default colours",
+    "logo": "Logo",
+    "logoAlt": "Company logo",
+    "noLogo": "No logo yet.",
+    "logoFile": "Logo file",
+    "logoHint": "PNG, JPG, WEBP or GIF, up to 2 MB.",
+    "logoTooLarge": "The logo must be 2 MB or smaller.",
+    "logoSaved": "The logo was saved.",
+    "removeLogo": "Remove the logo",
+    "logoRemoved": "The logo was removed."
   }
 }
