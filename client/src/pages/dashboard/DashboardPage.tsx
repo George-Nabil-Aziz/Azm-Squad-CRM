@@ -32,8 +32,8 @@ export function DashboardPage() {
           <TabsTrigger value="all">{t('dashboard.tabs.all')}</TabsTrigger>
           <TabsTrigger value="mine">{t('dashboard.tabs.mine')}</TabsTrigger>
         </TabsList>
-        {/* Both panels stay mounted (hidden when inactive) so switching tabs keeps their loaded data. */}
-        <TabsContent value="all" forceMount className="flex flex-col gap-8 data-[state=inactive]:hidden">
+        {/* Both panels stay mounted (hidden when inactive) so switching tabs keeps their loaded data; divide-y draws a line between sections. */}
+        <TabsContent value="all" forceMount className="flex flex-col divide-y divide-border [&>*]:py-8 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0 data-[state=inactive]:hidden">
           <Can permission={permissions.ticketsView}>
             <Operations />
           </Can>
@@ -54,7 +54,7 @@ export function DashboardPage() {
             <Team />
           </Can>
         </TabsContent>
-        <TabsContent value="mine" forceMount className="flex flex-col gap-8 data-[state=inactive]:hidden">
+        <TabsContent value="mine" forceMount className="flex flex-col divide-y divide-border [&>*]:py-8 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0 data-[state=inactive]:hidden">
           <MyWork />
         </TabsContent>
       </Tabs>
