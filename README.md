@@ -548,7 +548,7 @@ How the integration tests work:
 
 - One shared `CrmApiFactory` (`WebApplicationFactory<Program>`) in the `Testing`
   environment.
-- SQLite in memory, one connection kept open for the factory lifetime, schema created
+- SQLite shared-cache in memory: one connection keeps it alive, each `DbContext` opens its own; schema created
   with `EnsureCreated`.
 - Hangfire is not started. Recurring jobs are plain classes that tests call directly.
 - A fake `TimeProvider` controls time; fake channel and AI providers replace the real
@@ -637,7 +637,6 @@ These are known and recorded, not forgotten:
 
 | Gap | Detail |
 | --- | --- |
-| Flaky tests | A SignalR notification test and a live chat test have each failed once under full-suite load and passed on rerun; likely the single shared SQLite connection in tests |
 | Migration test | No automated test applies the migrations to SQL Server; it is done by hand after each phase |
 | Chatbot rate limit | The anonymous portal chatbot limits message count and size, but has no per-IP rate limit |
 | Abandoned chats | A live chat does not close itself; an agent ends it |
@@ -674,4 +673,4 @@ That channel or AI key is missing. See
 Install it: `dotnet tool install --global dotnet-ef`.
 
 **A test passes alone but fails in the full run.**
-See the flaky tests under [Known gaps](#known-gaps). Run it again before investigating.
+Check free disk space first: uploaded test files are buffered to the system temp folder, and large-upload tests fail when the disk is full.
