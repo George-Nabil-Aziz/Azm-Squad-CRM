@@ -18,6 +18,7 @@ import { CustomersPage } from '@/pages/customers/CustomersPage'
 import { AssignmentSettingsPage } from '@/pages/assignment/AssignmentSettingsPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
 import { ApiKeysPage } from '@/pages/integrations/ApiKeysPage'
+import { WebhooksPage } from '@/pages/integrations/WebhooksPage'
 import { KnowledgeBasePage } from '@/pages/knowledge-base/KnowledgeBasePage'
 import { AgentReportPage } from '@/pages/reports/AgentReportPage'
 import { DashboardReportPage } from '@/pages/reports/DashboardReportPage'
@@ -77,6 +78,7 @@ export function AppRoutes() {
             <Route path="integrations" element={<IntegrationsLayout />}>
               <Route index element={<Navigate to="api-keys" replace />} />
               <Route path="api-keys" element={<ApiKeysPage />} />
+              <Route path="webhooks" element={<WebhooksPage />} />
             </Route>
           </Route>
           {/* Areas built by later stories: each story replaces its line with the real page routes. */}

@@ -91,6 +91,8 @@ public static class DependencyInjection
         services.AddScoped<ITaskRepository, TaskRepository>();
         services.AddScoped<IQuickReplyRepository, QuickReplyRepository>();
         services.AddScoped<IApiKeyRepository, ApiKeyRepository>();
+        services.AddScoped<IWebhookRepository, WebhookRepository>();
+        services.AddHttpClient<IWebhookSender, HttpWebhookSender>(client => client.Timeout = TimeSpan.FromSeconds(10));
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IStaffDirectory, StaffDirectory>();
         services.AddScoped<INotificationEmailSender, NotificationEmailSender>();

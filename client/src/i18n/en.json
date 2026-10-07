@@ -977,7 +977,8 @@
     "description": "Connect other systems to the CRM: API keys for the public API, webhooks and the ERP.",
     "navigation": "Integrations sections",
     "nav": {
-      "apiKeys": "API keys"
+      "apiKeys": "API keys",
+      "webhooks": "Webhooks"
     },
     "apiKeys": {
       "description": "API keys let external systems call the public API (/api/v1) with the X-Api-Key header. A key is shown only once, right after it is created.",
@@ -1006,6 +1007,48 @@
         "ticketsWrite": "Create tickets",
         "customersRead": "Read customers",
         "customersWrite": "Create customers"
+      }
+    },
+    "webhooks": {
+      "description": "Webhooks notify other systems when something happens in the CRM. Every delivery is a JSON POST signed with the webhook secret (header X-Crm-Signature, HMAC-SHA256 of the body).",
+      "name": "Name",
+      "url": "URL",
+      "events": "Events",
+      "register": "Register webhook",
+      "nameRequired": "Enter a name.",
+      "urlInvalid": "Enter a valid http or https URL.",
+      "eventsRequired": "Choose at least one event.",
+      "created": "Webhook registered. Copy the signing secret now: it will not be shown again.",
+      "secretLabel": "Signing secret",
+      "dismiss": "I have copied the secret",
+      "loading": "Loading webhooks…",
+      "empty": "No webhooks yet.",
+      "status": "Status",
+      "actions": "Actions",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "enable": "Enable",
+      "disable": "Disable",
+      "delete": "Delete",
+      "enableFor": "Enable {{name}}",
+      "disableFor": "Disable {{name}}",
+      "deleteFor": "Delete {{name}}",
+      "deliveriesFor": "Deliveries of {{name}}",
+      "deliveries": "Deliveries",
+      "deliveriesEmpty": "No deliveries yet.",
+      "deliveriesLoading": "Loading deliveries…",
+      "event": "Event",
+      "attempts": "Attempts",
+      "result": "Result",
+      "time": "Time",
+      "deliveryStatus": {
+        "pending": "Pending",
+        "delivered": "Delivered",
+        "failed": "Failed"
+      },
+      "eventLabels": {
+        "ticketCreated": "Ticket created",
+        "ticketResolved": "Ticket resolved"
       }
     }
   }

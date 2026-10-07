@@ -3,9 +3,11 @@ using Crm.Application.Common.Paging;
 using Crm.Application.Common.Security;
 using Crm.Application.Common.Validation;
 using Crm.Application.Customers.Timeline;
+using Crm.Application.Integrations;
 using Crm.Application.Settings;
 using Crm.Application.Sla;
 using Crm.Domain.Customers;
+using Crm.Domain.Integrations;
 using Crm.Domain.Tickets;
 using FluentValidation;
 using ValidationException = Crm.Application.Common.Exceptions.ValidationException;
@@ -27,7 +29,8 @@ public sealed class TicketService(
     ISlaPolicyRepository slaPolicies,
     ITicketHistoryRecorder history,
     ISystemSettingsProvider settings,
-    IAutoAssignmentService? autoAssigner = null) : ITicketService
+    IAutoAssignmentService? autoAssigner = null,
+    IWebhookEventPublisher? webhooks = null) : ITicketService
 {
     public Task<TicketResponse> CreateAsync(CreateTicketRequest request, CancellationToken cancellationToken) =>
         CreateCoreAsync(request, TicketChannel.Manual, currentUser.UserId, cancellationToken);
@@ -75,6 +78,11 @@ public sealed class TicketService(
         if (autoAssigner is not null && autoAssignee is { } agent && agent != currentUser.UserId)
         {
             await autoAssigner.NotifyAssignedAsync(ticket.Id, agent, now, cancellationToken); // CRM-28
+        }
+
+        if (webhooks is not null)
+        {
+            await webhooks.PublishAsync(WebhookEvents.TicketCreated, WebhookTicketData.From(ticket), cancellationToken); // CRM-59
         }
 
         return await GetAsync(ticket.Id, cancellationToken);

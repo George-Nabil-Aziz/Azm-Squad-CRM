@@ -1,4 +1,5 @@
 using Crm.Application.Channels;
+using Crm.Application.Integrations;
 using Crm.Infrastructure.Channels.Email;
 
 namespace Crm.Api.Channels;
@@ -56,6 +57,7 @@ public sealed class ChannelWorker(
     private static IEnumerable<(string Name, Func<IServiceProvider, CancellationToken, Task> Run)> Jobs()
     {
         yield return ("retry-outbound", (services, ct) => services.GetRequiredService<IChannelSender>().RetryDueAsync(ct));
+        yield return ("webhook-deliveries", (services, ct) => services.GetRequiredService<WebhookDeliveryJob>().RunAsync(ct));
         yield return ("poll-email", (services, ct) => services.GetRequiredService<EmailInboxPoller>().PollAsync(ct));
     }
 }

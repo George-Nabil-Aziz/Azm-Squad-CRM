@@ -3,7 +3,10 @@ import { NavLink, Outlet } from 'react-router'
 import { cn } from '@/lib/utils'
 
 /** Sub navigation of the integrations area (CRM-58..60); every section is a child route. */
-const sections = [{ id: 'apiKeys', path: '/integrations/api-keys' }] as const
+const sections = [
+  { id: 'apiKeys', path: '/integrations/api-keys' },
+  { id: 'webhooks', path: '/integrations/webhooks' },
+] as const
 
 export function IntegrationsLayout() {
   const { t } = useTranslation()

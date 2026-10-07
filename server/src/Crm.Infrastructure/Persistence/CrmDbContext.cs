@@ -75,6 +75,10 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<ApiKey> ApiKeys => Set<ApiKey>();
 
+    public DbSet<Webhook> Webhooks => Set<Webhook>();
+
+    public DbSet<WebhookDelivery> WebhookDeliveries => Set<WebhookDelivery>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

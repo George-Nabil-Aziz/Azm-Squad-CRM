@@ -114,6 +114,18 @@ public static class IntegrationText
 
     public static string ScopeUnknown(string scope) => LocalizedText.Get($"Unknown scope \"{scope}\".", $"نطاق غير معروف \"{scope}\".");
 
+    public static string UrlInvalid => LocalizedText.Get("Enter a valid http or https URL.", "أدخل رابط http أو https صالحاً.");
+
+    public static string EventsRequired => LocalizedText.Get("Choose at least one event.", "اختر حدثاً واحداً على الأقل.");
+
+    public static string EventUnknown(string name) => LocalizedText.Get($"Unknown event \"{name}\".", $"حدث غير معروف \"{name}\".");
+
+    public static string WebhookNotFound => LocalizedText.Get("The webhook was not found.", "الـ webhook غير موجود.");
+
+    public static string WebhookDisabled => LocalizedText.Get("The webhook is disabled.", "الـ webhook معطّل.");
+
+    public static string WebhookDeleted => LocalizedText.Get("The webhook was deleted.", "تم حذف الـ webhook.");
+
     public static string KeyNotFound => LocalizedText.Get("The API key was not found.", "مفتاح API غير موجود.");
 
     public static string KeyInvalid => LocalizedText.Get(

@@ -977,7 +977,8 @@
     "description": "اربط أنظمة أخرى بنظام إدارة العملاء: مفاتيح API للواجهة العامة، وخطافات الويب، ونظام تخطيط الموارد.",
     "navigation": "أقسام التكاملات",
     "nav": {
-      "apiKeys": "مفاتيح API"
+      "apiKeys": "مفاتيح API",
+      "webhooks": "خطافات الويب"
     },
     "apiKeys": {
       "description": "تتيح مفاتيح API للأنظمة الخارجية استدعاء الواجهة العامة (/api/v1) بالترويسة X-Api-Key. يظهر المفتاح مرة واحدة فقط بعد إنشائه.",
@@ -1006,6 +1007,48 @@
         "ticketsWrite": "إنشاء التذاكر",
         "customersRead": "قراءة العملاء",
         "customersWrite": "إنشاء العملاء"
+      }
+    },
+    "webhooks": {
+      "description": "تُعلِم خطافات الويب الأنظمة الأخرى عند حدوث شيء في النظام. كل إرسال هو طلب POST بصيغة JSON موقّع بسر الخطاف (الترويسة X-Crm-Signature، وهي HMAC-SHA256 لمحتوى الطلب).",
+      "name": "الاسم",
+      "url": "الرابط",
+      "events": "الأحداث",
+      "register": "تسجيل خطاف ويب",
+      "nameRequired": "أدخل اسماً.",
+      "urlInvalid": "أدخل رابط http أو https صالحاً.",
+      "eventsRequired": "اختر حدثاً واحداً على الأقل.",
+      "created": "تم تسجيل الخطاف. انسخ سر التوقيع الآن فلن يظهر مرة أخرى.",
+      "secretLabel": "سر التوقيع",
+      "dismiss": "نسخت السر",
+      "loading": "جارٍ تحميل الخطافات…",
+      "empty": "لا توجد خطافات ويب بعد.",
+      "status": "الحالة",
+      "actions": "الإجراءات",
+      "enabled": "مفعّل",
+      "disabled": "معطّل",
+      "enable": "تفعيل",
+      "disable": "تعطيل",
+      "delete": "حذف",
+      "enableFor": "تفعيل {{name}}",
+      "disableFor": "تعطيل {{name}}",
+      "deleteFor": "حذف {{name}}",
+      "deliveriesFor": "عمليات إرسال {{name}}",
+      "deliveries": "عمليات الإرسال",
+      "deliveriesEmpty": "لا توجد عمليات إرسال بعد.",
+      "deliveriesLoading": "جارٍ تحميل عمليات الإرسال…",
+      "event": "الحدث",
+      "attempts": "المحاولات",
+      "result": "النتيجة",
+      "time": "الوقت",
+      "deliveryStatus": {
+        "pending": "قيد الانتظار",
+        "delivered": "تم التسليم",
+        "failed": "فشل"
+      },
+      "eventLabels": {
+        "ticketCreated": "إنشاء تذكرة",
+        "ticketResolved": "حل تذكرة"
       }
     }
   }

@@ -66,6 +66,9 @@ public static class DependencyInjection
         services.AddScoped<ITaskService, TaskService>();
         services.AddScoped<IQuickReplyService, QuickReplyService>();
         services.AddScoped<IApiKeyService, ApiKeyService>();
+        services.AddScoped<IWebhookService, WebhookService>();
+        services.AddScoped<IWebhookEventPublisher, WebhookEventPublisher>();
+        services.AddScoped<WebhookDeliveryJob>();
         services.AddScoped<TaskReminderJob>();
         services.AddScoped<IAssignmentSettingsService, AssignmentSettingsService>();
         services.AddScoped<ITicketStatusService, TicketStatusService>();
