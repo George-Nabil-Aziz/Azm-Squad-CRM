@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart'
 import { useDashboard } from '@/features/reports/useDashboard'
@@ -90,7 +90,9 @@ export function DashboardReportPage() {
                 <XAxis dataKey="label" tickLine={false} axisLine={false} />
                 <YAxis allowDecimals={false} width={32} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="count" fill="var(--color-count)" radius={4} />
+                <Bar dataKey="count" fill="var(--color-count)" radius={4}>
+                  {byChannel.map((entry, index) => (<Cell key={entry.label} fill={`var(--chart-${(index % 5) + 1})`} />))}
+                </Bar>
               </BarChart>
             </ChartContainer>
           </CardContent>

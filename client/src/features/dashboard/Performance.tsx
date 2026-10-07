@@ -1,3 +1,4 @@
+import { ClockIcon, ShieldCheckIcon, SmileIcon, ZapIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useDashboard } from '@/features/reports/useDashboard'
 import { useSlaReport } from '@/features/reports/useSlaReport'
@@ -24,24 +25,32 @@ export function Performance() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title={t('dashboard.performance.slaCompliance')}
+          icon={ShieldCheckIcon}
+          accent="emerald"
           value={compliance === undefined ? undefined : compliance === null ? NONE : `${compliance}%`}
           hint={last30}
           to="/reports/sla"
         />
         <StatCard
           title={t('dashboard.performance.avgResponse')}
+          icon={ZapIcon}
+          accent="sky"
           value={minutes(dashboard.data?.averageResponseMinutes)}
           hint={last30}
           to="/reports/sla"
         />
         <StatCard
           title={t('dashboard.performance.avgResolution')}
+          icon={ClockIcon}
+          accent="teal"
           value={minutes(sla.data?.overall.resolution.averageMinutes)}
           hint={last30}
           to="/reports/sla"
         />
         <StatCard
           title={t('dashboard.performance.avgCsat')}
+          icon={SmileIcon}
+          accent="amber"
           value={dashboard.data ? (dashboard.data.averageCsat === null ? NONE : String(dashboard.data.averageCsat)) : undefined}
           hint={dashboard.data ? t('reports.csat.ratings', { count: dashboard.data.csatCount }) : undefined}
           to="/reports/satisfaction"

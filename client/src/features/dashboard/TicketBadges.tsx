@@ -1,14 +1,15 @@
 import { useTranslation } from 'react-i18next'
-import { Badge } from '@/components/ui/badge'
+import { ToneBadge } from '@/components/ui/tone-badge'
+import { priorityTones, statusTones } from '@/features/tickets/ticket-tones'
 import type { TicketPriority, TicketStatus } from '@/features/tickets/ticket-values'
 
-/** Status and priority of a ticket as badges (high priority in the destructive colour). */
+/** Status and priority of a ticket as soft coloured badges (high priority in rose). */
 export function TicketBadges({ status, priority }: { status?: TicketStatus; priority: TicketPriority }) {
   const { t } = useTranslation()
   return (
     <div className="flex flex-wrap gap-1">
-      {status ? <Badge variant="secondary">{t(`tickets.statuses.${status}`)}</Badge> : null}
-      <Badge variant={priority === 'high' ? 'destructive' : 'outline'}>{t(`tickets.priorities.${priority}`)}</Badge>
+      {status ? <ToneBadge tone={statusTones[status]}>{t(`tickets.statuses.${status}`)}</ToneBadge> : null}
+      <ToneBadge tone={priorityTones[priority]}>{t(`tickets.priorities.${priority}`)}</ToneBadge>
     </div>
   )
 }

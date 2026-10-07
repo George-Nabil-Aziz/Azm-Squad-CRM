@@ -28,7 +28,7 @@ export function TicketCategoriesTable({ categories, onEdit }: TicketCategoriesTa
           <TableRow key={category.id}>
             <TableCell className="font-medium">{category.name}</TableCell>
             <TableCell>
-              <Badge variant={category.isActive ? 'secondary' : 'outline'}>
+              <Badge variant={category.isActive ? 'success' : 'outline'}>
                 {t(category.isActive ? 'ticketCategories.active' : 'ticketCategories.inactive')}
               </Badge>
             </TableCell>

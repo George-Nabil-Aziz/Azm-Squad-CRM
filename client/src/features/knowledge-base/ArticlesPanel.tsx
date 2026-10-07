@@ -146,7 +146,7 @@ export function ArticlesPanel() {
                   <TableCell className="font-medium">{article.title}</TableCell>
                   <TableCell>{article.categoryName}</TableCell>
                   <TableCell>
-                    <Badge variant={article.status === 'published' ? 'secondary' : 'outline'}>
+                    <Badge variant={article.status === 'published' ? 'success' : 'outline'}>
                       {t(`knowledgeBase.statuses.${article.status}`)}
                     </Badge>
                   </TableCell>

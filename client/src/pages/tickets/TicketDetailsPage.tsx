@@ -5,7 +5,8 @@ import { Link, useParams } from 'react-router'
 import { isApiError } from '@/api/errors'
 import type { Ticket } from '@/api/tickets'
 import { permissions } from '@/auth/permissions'
-import { Badge } from '@/components/ui/badge'
+import { ToneBadge } from '@/components/ui/tone-badge'
+import { channelTones, priorityTones, statusTones } from '@/features/tickets/ticket-tones'
 import { Can } from '@/features/auth/Can'
 import { TicketAiClassification } from '@/features/ai/TicketAiClassification'
 import { TicketSummary } from '@/features/ai/TicketSummary'
@@ -63,10 +64,11 @@ function TicketDetails({ ticket }: { ticket: Ticket }) {
         </p>
         <h1 className="text-2xl font-semibold text-primary">{ticket.subject}</h1>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="secondary">{t(`tickets.statuses.${ticket.status}`)}</Badge>
-          <Badge variant={ticket.priority === 'high' ? 'destructive' : 'outline'}>
+          <ToneBadge tone={statusTones[ticket.status]}>{t(`tickets.statuses.${ticket.status}`)}</ToneBadge>
+          <ToneBadge tone={channelTones[ticket.channel]}>{t(`tickets.channels.${ticket.channel}`)}</ToneBadge>
+          <ToneBadge tone={priorityTones[ticket.priority]}>
             {t(`tickets.priorities.${ticket.priority}`)}
-          </Badge>
+          </ToneBadge>
         </div>
       </header>
 

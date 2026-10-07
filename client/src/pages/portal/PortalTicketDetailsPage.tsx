@@ -12,7 +12,8 @@ import {
   replyToPortalTicket,
   type PortalTicketSummary,
 } from '@/api/portal'
-import { Badge } from '@/components/ui/badge'
+import { ToneBadge } from '@/components/ui/tone-badge'
+import { statusTones } from '@/features/tickets/ticket-tones'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
@@ -93,7 +94,7 @@ function Details({ ticket }: { ticket: PortalTicketSummary }) {
         </p>
         <h1 className="text-2xl font-semibold text-primary">{ticket.subject}</h1>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="secondary">{t(`portal.statuses.${ticket.status}`)}</Badge>
+          <ToneBadge tone={statusTones[ticket.status]}>{t(`portal.statuses.${ticket.status}`)}</ToneBadge>
           {ticket.categoryName ? <span className="text-sm text-muted-foreground">{ticket.categoryName}</span> : null}
         </div>
       </header>

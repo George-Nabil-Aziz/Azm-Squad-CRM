@@ -28,7 +28,7 @@ export function BranchesTable({ branches, onEdit }: BranchesTableProps) {
           <TableRow key={branch.id}>
             <TableCell className="font-medium">{branch.name}</TableCell>
             <TableCell>
-              <Badge variant={branch.isActive ? 'secondary' : 'outline'}>
+              <Badge variant={branch.isActive ? 'success' : 'outline'}>
                 {t(branch.isActive ? 'branches.active' : 'branches.inactive')}
               </Badge>
             </TableCell>

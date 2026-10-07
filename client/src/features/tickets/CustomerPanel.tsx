@@ -2,7 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { getTicketCustomerContext } from '@/api/tickets'
-import { Badge } from '@/components/ui/badge'
+import { ToneBadge } from "@/components/ui/tone-badge"
+import { statusTones } from "./ticket-tones"
 
 /**
  * Customer context beside a ticket (CRM-30): name, contacts, total ticket count and the customer's last tickets.
@@ -58,7 +59,7 @@ export function CustomerPanel({ ticketId, customerId }: { ticketId: string; cust
                   <Link to={`/tickets/${ticket.id}`} dir="ltr" className="font-medium text-primary underline-offset-4 hover:underline">
                     {ticket.number}
                   </Link>
-                  <Badge variant="secondary">{t(`tickets.statuses.${ticket.status}`)}</Badge>
+                  <ToneBadge tone={statusTones[ticket.status]}>{t(`tickets.statuses.${ticket.status}`)}</ToneBadge>
                 </div>
                 <p dir="auto" className="wrap-break-word">
                   {ticket.subject}

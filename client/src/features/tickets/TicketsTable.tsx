@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import type { Ticket } from '@/api/tickets'
-import { Badge } from '@/components/ui/badge'
+import { ToneBadge } from "@/components/ui/tone-badge"
+import { priorityTones, statusTones } from "./ticket-tones"
 import { TicketSlaTimers } from '@/features/sla/TicketSlaTimers'
 import { useNow } from '@/features/sla/useNow'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -39,12 +40,12 @@ export function TicketsTable({ tickets }: { tickets: Ticket[] }) {
             <TableCell>{ticket.subject}</TableCell>
             <TableCell>{ticket.customerName}</TableCell>
             <TableCell>
-              <Badge variant="secondary">{t(`tickets.statuses.${ticket.status}`)}</Badge>
+              <ToneBadge tone={statusTones[ticket.status]}>{t(`tickets.statuses.${ticket.status}`)}</ToneBadge>
             </TableCell>
             <TableCell>
-              <Badge variant={ticket.priority === 'high' ? 'destructive' : 'outline'}>
+              <ToneBadge tone={priorityTones[ticket.priority]}>
                 {t(`tickets.priorities.${ticket.priority}`)}
-              </Badge>
+              </ToneBadge>
             </TableCell>
             <TableCell>{ticket.categoryName}</TableCell>
             <TableCell className={ticket.assigneeName ? undefined : 'text-muted-foreground'}>

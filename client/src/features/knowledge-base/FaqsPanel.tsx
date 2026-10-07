@@ -78,7 +78,7 @@ export function FaqsPanel() {
                 <TableCell>{faq.displayOrder}</TableCell>
                 <TableCell className="font-medium">{faq.question}</TableCell>
                 <TableCell>
-                  <Badge variant={faq.isPublished ? 'secondary' : 'outline'}>
+                  <Badge variant={faq.isPublished ? 'success' : 'outline'}>
                     {t(faq.isPublished ? 'knowledgeBase.statuses.published' : 'knowledgeBase.statuses.draft')}
                   </Badge>
                 </TableCell>

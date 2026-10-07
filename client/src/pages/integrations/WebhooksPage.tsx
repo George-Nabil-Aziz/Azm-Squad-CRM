@@ -180,7 +180,7 @@ export function WebhooksPage() {
                 </TableCell>
                 <TableCell>{webhook.events.map((e) => t(eventLabelKey[e])).join(', ')}</TableCell>
                 <TableCell>
-                  <Badge variant={webhook.isEnabled ? 'secondary' : 'outline'}>
+                  <Badge variant={webhook.isEnabled ? 'success' : 'outline'}>
                     {t(webhook.isEnabled ? 'integrations.webhooks.enabled' : 'integrations.webhooks.disabled')}
                   </Badge>
                 </TableCell>

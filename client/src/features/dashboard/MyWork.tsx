@@ -1,3 +1,4 @@
+import { BellIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { permissions } from '@/auth/permissions'
@@ -54,7 +55,7 @@ function MyTasks() {
 function UnreadNotifications() {
   const { t } = useTranslation()
   const unread = useUnreadCount()
-  return <StatCard title={t('dashboard.myWork.unread')} value={unread.isError ? '–' : unread.data} />
+  return <StatCard title={t('dashboard.myWork.unread')} icon={BellIcon} accent="violet" value={unread.isError ? '–' : unread.data} />
 }
 
 /** Everything that is mine: my tickets and counters, my tasks due soon, my unread notifications. */

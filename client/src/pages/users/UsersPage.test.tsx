@@ -105,7 +105,7 @@ describe('UsersPage', () => {
     const inactive = within(rowOf('Omar Former')).getByText('Inactive')
     expect(inactive).toHaveAttribute('data-variant', 'destructive')
     expect(inactive.className).toContain('border-destructive/30')
-    expect(within(rowOf('Sara Agent')).getByText('Active')).toHaveAttribute('data-variant', 'secondary')
+    expect(within(rowOf('Sara Agent')).getByText('Active')).toHaveAttribute('data-variant', 'success')
   })
 
   it('searches by name or email and starts again at page 1', async () => {

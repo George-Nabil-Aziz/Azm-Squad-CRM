@@ -46,7 +46,7 @@ export function AppSidebar() {
   // The sidebar sits on the reading-start side: left in English, right in Arabic (also the mobile sheet).
   return (
     <Sidebar side={dir === 'rtl' ? 'right' : 'left'} dir={dir} collapsible="icon">
-      <SidebarHeader>
+      <SidebarHeader className="border-b border-sidebar-border bg-gradient-to-b from-primary/10 to-transparent">
         <div className="flex items-center gap-2 px-2 py-1">
           <BrandLogo alt={t('app.name')} />
           <span className="text-base font-semibold group-data-[collapsible=icon]:hidden">{t('app.name')}</span>

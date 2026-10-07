@@ -29,7 +29,7 @@ export function DepartmentsTable({ departments, onEdit, onEditSla }: Departments
           <TableRow key={department.id}>
             <TableCell className="font-medium">{department.name}</TableCell>
             <TableCell>
-              <Badge variant={department.isActive ? 'secondary' : 'outline'}>
+              <Badge variant={department.isActive ? 'success' : 'outline'}>
                 {t(department.isActive ? 'departments.active' : 'departments.inactive')}
               </Badge>
             </TableCell>

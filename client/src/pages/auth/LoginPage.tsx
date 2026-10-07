@@ -22,7 +22,7 @@ export function LoginPage() {
 
   return (
     <div className="grid min-h-svh bg-muted lg:grid-cols-2 lg:bg-background">
-      <aside className="flex flex-col items-center justify-center gap-3 px-6 pt-8 text-center lg:items-start lg:gap-4 lg:bg-gradient-to-br lg:from-primary lg:to-primary/70 lg:p-12 lg:text-start lg:text-primary-foreground">
+      <aside className="flex flex-col items-center justify-center gap-3 px-6 pt-8 text-center lg:items-start lg:gap-4 lg:bg-gradient-to-br lg:from-primary lg:via-primary lg:to-accent-2 lg:p-12 lg:text-start lg:text-primary-foreground">
         <h1 className="text-xl font-semibold lg:text-3xl">
           <Link
             to="/welcome"

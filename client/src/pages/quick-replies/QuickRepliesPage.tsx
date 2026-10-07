@@ -214,7 +214,7 @@ export function QuickRepliesPage() {
                       {reply.shortcut ? <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{reply.shortcut}</code> : null}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={reply.isShared ? 'secondary' : 'outline'}>
+                      <Badge variant={reply.isShared ? 'success' : 'outline'}>
                         {t(reply.isShared ? 'quickReplies.shared' : 'quickReplies.personal')}
                       </Badge>
                     </TableCell>

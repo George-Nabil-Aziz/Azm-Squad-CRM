@@ -73,6 +73,7 @@ export function Charts() {
           <div className="lg:col-span-2">
             <ChartCard
               title={t('dashboard.charts.byChannel')}
+              colored
               data={data.byChannel.map((row) => ({ label: t(`tickets.channels.${row.key}`), count: row.count }))}
             />
           </div>

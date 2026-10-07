@@ -15,10 +15,10 @@ export interface TicketSlaTimes {
 }
 
 const variants = {
-  remaining: 'secondary',
+  remaining: 'info',
   overdue: 'destructive',
-  met: 'outline',
-  metLate: 'outline',
+  met: 'success',
+  metLate: 'warning',
 } as const
 
 function describe(timer: SlaTimerState, t: TFunction): string {

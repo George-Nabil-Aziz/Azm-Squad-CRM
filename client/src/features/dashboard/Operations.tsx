@@ -1,3 +1,4 @@
+import { CircleCheckIcon, HourglassIcon, InboxIcon, SparklesIcon, TimerOffIcon, UsersIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { permissions } from '@/auth/permissions'
@@ -22,18 +23,20 @@ export function Operations() {
         <SectionError message={t('dashboard.operations.loadError')} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-          <StatCard title={t('dashboard.operations.openAll')} value={data?.openTickets} to="/tickets?status=open" />
-          <StatCard title={t('dashboard.operations.pendingAll')} value={data?.pendingTickets} to="/tickets?status=pending" />
+          <StatCard title={t('dashboard.operations.openAll')} icon={InboxIcon} accent="indigo" value={data?.openTickets} to="/tickets?status=open" />
+          <StatCard title={t('dashboard.operations.pendingAll')} icon={HourglassIcon} accent="amber" value={data?.pendingTickets} to="/tickets?status=pending" />
           <StatCard
             title={t('dashboard.operations.breachedNow')}
+            icon={TimerOffIcon}
+            accent="rose"
             value={data?.breachedNow}
             to={breachedLink}
             tone={(data?.breachedNow ?? 0) > 0 ? 'danger' : 'default'}
           />
-          <StatCard title={t('dashboard.operations.resolvedToday')} value={data?.resolvedToday} to="/tickets?status=resolved" />
-          <StatCard title={t('dashboard.operations.newToday')} value={data?.newToday} to={`/tickets?createdFrom=${today}`} />
+          <StatCard title={t('dashboard.operations.resolvedToday')} icon={CircleCheckIcon} accent="emerald" value={data?.resolvedToday} to="/tickets?status=resolved" />
+          <StatCard title={t('dashboard.operations.newToday')} icon={SparklesIcon} accent="sky" value={data?.newToday} to={`/tickets?createdFrom=${today}`} />
           {can(permissions.customersView) && (data === undefined || data.totalCustomers !== null) ? (
-            <StatCard title={t('dashboard.operations.customers')} value={data?.totalCustomers ?? undefined} to="/customers" />
+            <StatCard title={t('dashboard.operations.customers')} icon={UsersIcon} accent="violet" value={data?.totalCustomers ?? undefined} to="/customers" />
           ) : null}
         </div>
       )}

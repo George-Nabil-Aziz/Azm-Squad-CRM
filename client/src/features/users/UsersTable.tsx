@@ -39,7 +39,7 @@ export function UsersTable({ users, onEdit }: UsersTableProps) {
             <TableCell>{roleList.format(user.roles.map((role) => t(`users.roleNames.${role}`)))}</TableCell>
             <TableCell>
               <Badge
-                variant={user.isActive ? 'secondary' : 'destructive'}
+                variant={user.isActive ? 'success' : 'destructive'}
                 className={user.isActive ? undefined : 'border-destructive/30'}
               >
                 {t(user.isActive ? 'users.active' : 'users.inactive')}

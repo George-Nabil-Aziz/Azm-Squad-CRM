@@ -2,7 +2,7 @@ import { ArrowRightIcon, CircleCheckIcon, ClockIcon, MessagesSquareIcon, StarIco
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
-import { Badge } from '@/components/ui/badge'
+import { ToneBadge } from '@/components/ui/tone-badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BrandLogo } from '@/features/branding/BrandLogo'
@@ -35,7 +35,7 @@ export function LandingPage() {
         </div>
       </header>
 
-      <main className="flex-1">
+      <main className="flex-1 bg-gradient-to-b from-primary/10 via-accent-2/5 to-background">
         <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 md:grid-cols-2 md:py-20">
           <div className="space-y-6">
             <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl lg:text-5xl">{t('landing.headline')}</h1>
@@ -58,8 +58,8 @@ export function LandingPage() {
             <Card className="shadow-lg">
               <CardHeader>
                 <div className="flex items-center justify-between gap-2">
-                  <Badge variant="secondary">{t('landing.sample.channel')}</Badge>
-                  <Badge variant="outline">{t('landing.sample.status')}</Badge>
+                  <ToneBadge tone="emerald">{t('landing.sample.channel')}</ToneBadge>
+                  <ToneBadge tone="indigo">{t('landing.sample.status')}</ToneBadge>
                 </div>
                 <CardTitle className="pt-2">{t('landing.sample.subject')}</CardTitle>
               </CardHeader>

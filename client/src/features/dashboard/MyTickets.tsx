@@ -1,3 +1,4 @@
+import { ListChecksIcon } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
@@ -36,6 +37,8 @@ export function MyTickets() {
             title={t(`dashboard.myTickets.counters.${key}`)}
             value={mine.data?.counters[key]}
             to={counterLinks[key]}
+            icon={ListChecksIcon}
+            accent={key === 'breachedToday' ? 'rose' : key === 'open' ? 'indigo' : 'amber'}
             tone={key === 'breachedToday' && (mine.data?.counters.breachedToday ?? 0) > 0 ? 'danger' : 'default'}
           />
         ))}

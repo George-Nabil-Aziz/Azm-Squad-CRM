@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { listPortalTickets } from '@/api/portal'
-import { Badge } from '@/components/ui/badge'
+import { ToneBadge } from "@/components/ui/tone-badge"
+import { statusTones } from "@/features/tickets/ticket-tones"
 import { Button } from '@/components/ui/button'
 
 const PAGE_SIZE = 20
@@ -39,7 +40,7 @@ export function PortalTicketsPage() {
                     <span dir="ltr">{ticket.number}</span> · {formatTime.format(new Date(ticket.updatedAt))}
                   </span>
                 </div>
-                <Badge variant="secondary">{t(`portal.statuses.${ticket.status}`)}</Badge>
+                <ToneBadge tone={statusTones[ticket.status]}>{t(`portal.statuses.${ticket.status}`)}</ToneBadge>
               </li>
             ))}
           </ul>

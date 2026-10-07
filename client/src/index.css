@@ -10,6 +10,31 @@
     --font-heading: var(--font-sans);
     --font-sans: 'Geist Variable', 'Noto Sans Arabic Variable', sans-serif;
     --color-surface: var(--surface);
+    --color-tone-indigo: var(--tone-indigo);
+    --color-tone-indigo-soft: var(--tone-indigo-soft);
+    --color-tone-sky: var(--tone-sky);
+    --color-tone-sky-soft: var(--tone-sky-soft);
+    --color-tone-teal: var(--tone-teal);
+    --color-tone-teal-soft: var(--tone-teal-soft);
+    --color-tone-emerald: var(--tone-emerald);
+    --color-tone-emerald-soft: var(--tone-emerald-soft);
+    --color-tone-amber: var(--tone-amber);
+    --color-tone-amber-soft: var(--tone-amber-soft);
+    --color-tone-orange: var(--tone-orange);
+    --color-tone-orange-soft: var(--tone-orange-soft);
+    --color-tone-rose: var(--tone-rose);
+    --color-tone-rose-soft: var(--tone-rose-soft);
+    --color-tone-violet: var(--tone-violet);
+    --color-tone-violet-soft: var(--tone-violet-soft);
+    --color-tone-slate: var(--tone-slate);
+    --color-tone-slate-soft: var(--tone-slate-soft);
+    --color-destructive-soft: var(--destructive-soft);
+    --color-success-soft: var(--success-soft);
+    --color-warning-soft: var(--warning-soft);
+    --color-info-soft: var(--info-soft);
+    --color-accent-2: var(--accent-2);
+    --color-accent-2-foreground: var(--accent-2-foreground);
+    --color-accent-2-soft: var(--accent-2-soft);
     --color-destructive-foreground: var(--destructive-foreground);
     --color-success: var(--success);
     --color-success-foreground: var(--success-foreground);
@@ -59,14 +84,14 @@
 
 :root {
     color-scheme: light;
-    --background: oklch(0.98 0.004 265);
+    --background: oklch(0.975 0.008 268);
     --foreground: oklch(0.21 0.02 265);
     --surface: oklch(0.965 0.007 265);
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.21 0.02 265);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.21 0.02 265);
-    --primary: oklch(0.5 0.2 266);
+    --primary: oklch(0.51 0.22 268);
     --primary-foreground: oklch(0.985 0 0);
     --secondary: oklch(0.95 0.012 265);
     --secondary-foreground: oklch(0.28 0.03 265);
@@ -87,17 +112,42 @@
     --ring: oklch(0.6 0.16 266);
     --chart-1: var(--primary);
     --chart-2: oklch(0.62 0.13 190);
-    --chart-3: oklch(0.72 0.16 75);
-    --chart-4: oklch(0.62 0.2 10);
+    --chart-3: oklch(0.75 0.16 75);
+    --chart-4: oklch(0.63 0.2 12);
     --chart-5: oklch(0.55 0.18 305);
     --radius: 0.75rem;
-    --sidebar: oklch(0.99 0.003 265);
+    --accent-2: oklch(0.54 0.12 190);
+    --accent-2-foreground: oklch(0.985 0 0);
+    --accent-2-soft: oklch(0.95 0.04 190);
+    --success-soft: oklch(0.95 0.05 152);
+    --warning-soft: oklch(0.96 0.06 80);
+    --info-soft: oklch(0.95 0.04 235);
+    --destructive-soft: oklch(0.95 0.04 20);
+    --tone-indigo: oklch(0.43 0.15 266);
+    --tone-indigo-soft: oklch(0.95 0.04 266);
+    --tone-sky: oklch(0.43 0.15 235);
+    --tone-sky-soft: oklch(0.95 0.04 235);
+    --tone-teal: oklch(0.43 0.15 190);
+    --tone-teal-soft: oklch(0.95 0.04 190);
+    --tone-emerald: oklch(0.43 0.15 152);
+    --tone-emerald-soft: oklch(0.95 0.04 152);
+    --tone-amber: oklch(0.43 0.15 75);
+    --tone-amber-soft: oklch(0.95 0.04 75);
+    --tone-orange: oklch(0.43 0.15 50);
+    --tone-orange-soft: oklch(0.95 0.04 50);
+    --tone-rose: oklch(0.43 0.15 15);
+    --tone-rose-soft: oklch(0.95 0.04 15);
+    --tone-violet: oklch(0.43 0.15 300);
+    --tone-violet-soft: oklch(0.95 0.04 300);
+    --tone-slate: oklch(0.43 0.03 260);
+    --tone-slate-soft: oklch(0.95 0.012 260);
+    --sidebar: oklch(0.955 0.02 268);
     --sidebar-foreground: oklch(0.28 0.02 265);
-    --sidebar-primary: oklch(0.5 0.2 266);
+    --sidebar-primary: oklch(0.51 0.22 268);
     --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.94 0.028 266);
-    --sidebar-accent-foreground: oklch(0.34 0.12 266);
-    --sidebar-border: oklch(0.915 0.01 265);
+    --sidebar-accent: oklch(0.92 0.04 268);
+    --sidebar-accent-foreground: oklch(0.34 0.14 268);
+    --sidebar-border: oklch(0.9 0.02 268);
     --sidebar-ring: oklch(0.6 0.16 266);
 }
 
@@ -134,7 +184,32 @@
     --chart-3: oklch(0.8 0.15 80);
     --chart-4: oklch(0.72 0.17 10);
     --chart-5: oklch(0.72 0.15 305);
-    --sidebar: oklch(0.175 0.016 265);
+    --accent-2: oklch(0.76 0.12 190);
+    --accent-2-foreground: oklch(0.16 0.03 190);
+    --accent-2-soft: oklch(0.3 0.06 190);
+    --success-soft: oklch(0.3 0.06 152);
+    --warning-soft: oklch(0.32 0.06 80);
+    --info-soft: oklch(0.3 0.06 235);
+    --destructive-soft: oklch(0.31 0.07 20);
+    --tone-indigo: oklch(0.83 0.11 266);
+    --tone-indigo-soft: oklch(0.3 0.065 266);
+    --tone-sky: oklch(0.83 0.11 235);
+    --tone-sky-soft: oklch(0.3 0.065 235);
+    --tone-teal: oklch(0.83 0.11 190);
+    --tone-teal-soft: oklch(0.3 0.065 190);
+    --tone-emerald: oklch(0.83 0.11 152);
+    --tone-emerald-soft: oklch(0.3 0.065 152);
+    --tone-amber: oklch(0.83 0.11 75);
+    --tone-amber-soft: oklch(0.3 0.065 75);
+    --tone-orange: oklch(0.83 0.11 50);
+    --tone-orange-soft: oklch(0.3 0.065 50);
+    --tone-rose: oklch(0.83 0.11 15);
+    --tone-rose-soft: oklch(0.3 0.065 15);
+    --tone-violet: oklch(0.83 0.11 300);
+    --tone-violet-soft: oklch(0.3 0.065 300);
+    --tone-slate: oklch(0.83 0.02 260);
+    --tone-slate-soft: oklch(0.3 0.015 260);
+    --sidebar: oklch(0.19 0.03 268);
     --sidebar-foreground: oklch(0.92 0.01 265);
     --sidebar-primary: oklch(0.7 0.15 266);
     --sidebar-primary-foreground: oklch(0.16 0.03 266);
@@ -187,6 +262,11 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  /* Page titles carry a subtle brand accent bar on the reading-start side. */
+  h1.text-primary {
+    border-inline-start: 4px solid var(--primary);
+    padding-inline-start: 0.75rem;
   }
   ::selection {
     background-color: color-mix(in oklch, var(--primary) 25%, transparent);

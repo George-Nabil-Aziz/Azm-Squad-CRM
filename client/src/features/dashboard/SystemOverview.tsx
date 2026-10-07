@@ -1,3 +1,5 @@
+import { statusTones } from '@/features/tickets/ticket-tones'
+import type { Tone } from '@/lib/tones'
 import { useQuery } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -60,8 +62,8 @@ export function SystemOverview() {
   const s = (key: string) => t(`dashboard.system.${key}` as 'dashboard.system.customers')
   const statusCount = (status: string) => d?.ticketsByStatus.find((r) => r.key === status)?.count
   const message = (channel: 'email' | 'whatsapp' | 'sms') => d?.messages.find((m) => m.channel === channel)
-  const card = (title: string, value: ReactNode | undefined, to: string, hint?: string, tone?: 'danger') => (
-    <StatCard key={title} size="compact" title={title} value={value} to={to} hint={hint} tone={tone} />
+  const card = (title: string, value: ReactNode | undefined, to: string, hint?: string, tone?: 'danger', accent?: Tone) => (
+    <StatCard key={title} size="compact" title={title} value={value} to={to} hint={hint} tone={tone} accent={accent} />
   )
 
   return (
@@ -72,7 +74,7 @@ export function SystemOverview() {
         <div className="flex flex-col divide-y divide-border [&>*]:py-6 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
           <Group id="system-support" title={s('groups.support')}>
             {card(s('customers'), d.customers, '/customers')}
-            {ticketStatuses.map((status) => card(t(`tickets.statuses.${status}`), statusCount(status), `/tickets?status=${status}`))}
+            {ticketStatuses.map((status) => card(t(`tickets.statuses.${status}`), statusCount(status), `/tickets?status=${status}`, undefined, undefined, statusTones[status]))}
             {card(s('slaBreached'), d.slaBreachedNow, '/reports/sla', undefined, d.slaBreachedNow > 0 ? 'danger' : undefined)}
           </Group>
 
