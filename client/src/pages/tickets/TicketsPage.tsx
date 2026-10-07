@@ -1,5 +1,6 @@
 import { PlusIcon, SearchIcon } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
+import { useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { permissions } from '@/auth/permissions'
 import { Button } from '@/components/ui/button'
@@ -13,17 +14,33 @@ import {
   type TicketFilterValues,
 } from '@/features/tickets/TicketFilters'
 import { TicketsTable } from '@/features/tickets/TicketsTable'
+import { ticketPriorities, ticketStatuses } from '@/features/tickets/ticket-values'
 import { useTickets } from '@/features/tickets/useTickets'
 
 const PAGE_SIZE = 20
 
+/** Filters named by the address (?status=&priority=&assignee=&createdFrom=), e.g. from the dashboard links; unknown values are ignored. */
+function filtersFromAddress(params: URLSearchParams): TicketFilterValues {
+  const status = params.get('status')
+  const priority = params.get('priority')
+  const createdFrom = params.get('createdFrom') ?? ''
+  return {
+    ...emptyTicketFilters,
+    status: ticketStatuses.find((value) => value === status) ?? '',
+    priority: ticketPriorities.find((value) => value === priority) ?? '',
+    assignee: params.get('assignee') ?? '',
+    createdFrom: /^\d{4}-\d{2}-\d{2}$/.test(createdFrom) ? createdFrom : '',
+  }
+}
+
 /** Tickets page: search, filters, paged list (newest first) and the new-ticket dialog. */
 export function TicketsPage() {
   const { t } = useTranslation()
+  const [searchParams] = useSearchParams()
   const [creating, setCreating] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [search, setSearch] = useState('')
-  const [filters, setFilters] = useState<TicketFilterValues>(emptyTicketFilters)
+  const [filters, setFilters] = useState<TicketFilterValues>(() => filtersFromAddress(searchParams))
   const [page, setPage] = useState(1)
   const tickets = useTickets({
     ...toListParams(filters),

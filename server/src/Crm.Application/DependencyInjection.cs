@@ -13,6 +13,7 @@ using Crm.Application.Integrations;
 using Crm.Application.Departments;
 using Crm.Application.KnowledgeBase;
 using Crm.Application.Portal;
+using Crm.Application.Dashboard;
 using Crm.Application.Reports;
 using Crm.Application.Settings;
 using Crm.Application.Notifications;
@@ -41,6 +42,8 @@ public static class DependencyInjection
         services.AddScoped<ICsatReportService, CsatReportService>();
         services.AddScoped<IAgentReportService, AgentReportService>();
         services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<IDashboardOverviewService, DashboardOverviewService>();
+        services.AddScoped<ISystemOverviewService, SystemOverviewService>();
         services.AddScoped<ISystemSettingsService, SystemSettingsService>();
         services.AddScoped<ISystemSettingsProvider, SystemSettingsProvider>();
         services.AddScoped<IInteractionRecorder, InteractionRecorder>();

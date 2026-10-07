@@ -9,6 +9,7 @@ using Crm.Application.Common.Security;
 using Crm.Application.Customers.Timeline;
 using Crm.Application.Integrations;
 using Crm.Application.Departments;
+using Crm.Application.Dashboard;
 using Crm.Application.Reports;
 using Crm.Application.Settings;
 using Crm.Application.Notifications;
@@ -31,6 +32,7 @@ using Crm.Infrastructure.KnowledgeBase;
 using Crm.Infrastructure.Persistence;
 using Crm.Infrastructure.Portal;
 using Crm.Infrastructure.Notifications;
+using Crm.Infrastructure.Dashboard;
 using Crm.Infrastructure.Reports;
 using Crm.Infrastructure.Settings;
 using Crm.Infrastructure.QuickReplies;
@@ -93,6 +95,8 @@ public static class DependencyInjection
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
         services.AddScoped<ISettingsRepository, SettingsRepository>();
         services.AddScoped<IReportsRepository, ReportsRepository>();
+        services.AddScoped<IDashboardOverviewRepository, DashboardOverviewRepository>();
+        services.AddScoped<ISystemOverviewRepository, SystemOverviewRepository>();
         // CRM-44 (CSAT ratings) is built on another branch: wire to CRM-44 on merge by replacing this with an EF read model.
         services.AddScoped<ICsatReadModel, CsatReadModel>(); // CRM-44: the ratings of the portal surveys
         services.AddDataProtection().SetApplicationName("CustomerSupportCrm");

@@ -42,6 +42,137 @@
         "pending": "Pending",
         "breachedToday": "Breached today"
       }
+    },
+    "sections": {
+      "myWork": "My work",
+      "operations": "Operations",
+      "performance": "Performance",
+      "charts": "Ticket trends",
+      "recent": "Recent tickets",
+      "overdue": "Overdue tickets",
+      "team": "Top agents",
+      "system": "System overview"
+    },
+    "myWork": {
+      "viewAllMine": "View all my tickets",
+      "loadError": "Could not load your tickets.",
+      "unread": "Unread notifications",
+      "tasks": {
+        "title": "Tasks due soon",
+        "empty": "No open tasks.",
+        "all": "All tasks",
+        "loadError": "Could not load your tasks.",
+        "due": "Due {{date}}"
+      }
+    },
+    "operations": {
+      "loadError": "Could not load the operations overview.",
+      "openAll": "All open",
+      "pendingAll": "All pending",
+      "breachedNow": "Breached now",
+      "resolvedToday": "Resolved today",
+      "newToday": "New today",
+      "customers": "Customers"
+    },
+    "performance": {
+      "slaCompliance": "SLA compliance",
+      "avgResponse": "Average first response",
+      "avgResolution": "Average resolution",
+      "avgCsat": "Average CSAT",
+      "last30": "Last 30 days",
+      "loadError": "Could not load the performance figures."
+    },
+    "charts": {
+      "reportLink": "Open ticket report",
+      "range": "Chart range",
+      "days14": "14 days",
+      "days30": "30 days",
+      "perDay": "Tickets per day",
+      "byChannel": "Tickets by channel",
+      "byStatus": "Tickets by status",
+      "loadError": "Could not load the charts."
+    },
+    "recent": {
+      "viewAll": "View all tickets",
+      "empty": "No tickets yet.",
+      "loadError": "Could not load the recent tickets."
+    },
+    "overdue": {
+      "empty": "No overdue tickets.",
+      "viewAll": "SLA report",
+      "unassigned": "Unassigned",
+      "due": "Due {{date}}",
+      "loadError": "Could not load the overdue tickets."
+    },
+    "team": {
+      "agentReport": "Agent report",
+      "handled": "Handled",
+      "sla": "SLA",
+      "csat": "CSAT",
+      "agent": "Agent name",
+      "empty": "No agent activity in this period.",
+      "loadError": "Could not load the agents."
+    },
+    "loading": "Loading…",
+    "system": {
+      "loadError": "Could not load the system overview.",
+      "groups": {
+        "support": "Support desk",
+        "chat": "Live chat",
+        "work": "Work and knowledge",
+        "people": "People and organization",
+        "channels": "Channels",
+        "integrations": "Integrations and AI"
+      },
+      "customers": "Customers",
+      "slaBreached": "SLA breached now",
+      "chatsWaiting": "Chats waiting",
+      "chatsActive": "Chats active",
+      "chatsToday": "Chats started today",
+      "tasksOpen": "Open tasks",
+      "tasksOverdue": "Overdue tasks",
+      "quickPersonal": "Personal quick replies",
+      "quickShared": "Shared quick replies",
+      "articlesPublished": "Published articles",
+      "articlesDraft": "Draft articles",
+      "faqsPublished": "Published FAQs",
+      "faqsDraft": "Draft FAQs",
+      "surveysSent": "Surveys sent",
+      "surveysAnswered": "Surveys answered",
+      "portalAccounts": "Portal accounts",
+      "roles": {
+        "SuperAdmin": "Super admins",
+        "Admin": "Admins",
+        "Supervisor": "Supervisors",
+        "Agent": "Agents"
+      },
+      "agentsOnDuty": "Agents on duty",
+      "departments": "Departments",
+      "branches": "Branches",
+      "activeOfTotal": "{{active}} active of {{total}}",
+      "webForms": "Web form tickets",
+      "messagesSent": {
+        "email": "Email sent",
+        "whatsapp": "WhatsApp sent",
+        "sms": "SMS sent"
+      },
+      "messageHint": "{{failed}} failed, {{received}} received",
+      "apiKeys": "API keys",
+      "apiKeysHint": "{{total}} in total",
+      "webhooks": "Webhooks",
+      "webhooksHint": "{{total}} in total",
+      "webhookFailures": "Failed webhook deliveries",
+      "erpSyncs": "ERP syncs",
+      "erpHint": "{{failed}} failed",
+      "erpConnected": "ERP connected",
+      "ai": "AI assistant",
+      "enabled": "Enabled",
+      "notConfigured": "Not configured",
+      "activityTitle": "Recent activity",
+      "activityEmpty": "No activity yet.",
+      "activityLink": "Audit log",
+      "activityEntry": "{{user}}: {{action}} ({{entity}})",
+      "system": "System"
     }
   },
   "auth": {

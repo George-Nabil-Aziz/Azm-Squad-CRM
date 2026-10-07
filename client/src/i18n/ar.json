@@ -42,6 +42,137 @@
         "pending": "معلّقة",
         "breachedToday": "تجاوزت المهلة اليوم"
       }
+    },
+    "sections": {
+      "myWork": "عملي",
+      "operations": "نظرة عامة على العمليات",
+      "performance": "الأداء",
+      "charts": "اتجاهات التذاكر",
+      "recent": "أحدث التذاكر",
+      "overdue": "التذاكر المتأخرة",
+      "team": "أفضل الموظفين",
+      "system": "نظرة عامة على النظام"
+    },
+    "myWork": {
+      "viewAllMine": "عرض كل تذاكري",
+      "loadError": "تعذّر تحميل تذاكرك.",
+      "unread": "إشعارات غير مقروءة",
+      "tasks": {
+        "title": "مهام قريبة الاستحقاق",
+        "empty": "لا توجد مهام مفتوحة.",
+        "all": "كل المهام",
+        "loadError": "تعذّر تحميل مهامك.",
+        "due": "الاستحقاق {{date}}"
+      }
+    },
+    "operations": {
+      "loadError": "تعذّر تحميل نظرة العمليات.",
+      "openAll": "كل التذاكر المفتوحة",
+      "pendingAll": "كل التذاكر المعلّقة",
+      "breachedNow": "متجاوزة المهلة الآن",
+      "resolvedToday": "تم حلها اليوم",
+      "newToday": "جديدة اليوم",
+      "customers": "العملاء"
+    },
+    "performance": {
+      "slaCompliance": "الالتزام باتفاقية الخدمة",
+      "avgResponse": "متوسط زمن أول استجابة",
+      "avgResolution": "متوسط زمن الحل",
+      "avgCsat": "متوسط رضا العملاء",
+      "last30": "آخر 30 يوماً",
+      "loadError": "تعذّر تحميل مؤشرات الأداء."
+    },
+    "charts": {
+      "reportLink": "فتح تقرير التذاكر",
+      "range": "نطاق الرسم",
+      "days14": "14 يوماً",
+      "days30": "30 يوماً",
+      "perDay": "التذاكر حسب اليوم",
+      "byChannel": "التذاكر حسب القناة",
+      "byStatus": "التذاكر حسب الحالة",
+      "loadError": "تعذّر تحميل الرسوم."
+    },
+    "recent": {
+      "viewAll": "عرض كل التذاكر",
+      "empty": "لا توجد تذاكر بعد.",
+      "loadError": "تعذّر تحميل أحدث التذاكر."
+    },
+    "overdue": {
+      "empty": "لا توجد تذاكر متأخرة.",
+      "viewAll": "تقرير اتفاقية الخدمة",
+      "unassigned": "غير مسندة",
+      "due": "الاستحقاق {{date}}",
+      "loadError": "تعذّر تحميل التذاكر المتأخرة."
+    },
+    "team": {
+      "agentReport": "تقرير الموظفين",
+      "handled": "المعالَجة",
+      "sla": "الالتزام",
+      "csat": "الرضا",
+      "agent": "الموظف",
+      "empty": "لا يوجد نشاط للموظفين في هذه الفترة.",
+      "loadError": "تعذّر تحميل الموظفين."
+    },
+    "loading": "جارٍ التحميل…",
+    "system": {
+      "loadError": "تعذّر تحميل نظرة النظام.",
+      "groups": {
+        "support": "مكتب الدعم",
+        "chat": "المحادثة المباشرة",
+        "work": "العمل والمعرفة",
+        "people": "الأشخاص والمؤسسة",
+        "channels": "القنوات",
+        "integrations": "التكاملات والذكاء الاصطناعي"
+      },
+      "customers": "العملاء",
+      "slaBreached": "متجاوزة المهلة الآن",
+      "chatsWaiting": "محادثات بالانتظار",
+      "chatsActive": "محادثات نشطة",
+      "chatsToday": "محادثات بدأت اليوم",
+      "tasksOpen": "مهام مفتوحة",
+      "tasksOverdue": "مهام متأخرة",
+      "quickPersonal": "ردود سريعة شخصية",
+      "quickShared": "ردود سريعة مشتركة",
+      "articlesPublished": "مقالات منشورة",
+      "articlesDraft": "مقالات مسودة",
+      "faqsPublished": "أسئلة شائعة منشورة",
+      "faqsDraft": "أسئلة شائعة مسودة",
+      "surveysSent": "استبيانات مرسلة",
+      "surveysAnswered": "استبيانات مجابة",
+      "portalAccounts": "حسابات البوابة",
+      "roles": {
+        "SuperAdmin": "مديرو النظام",
+        "Admin": "المديرون",
+        "Supervisor": "المشرفون",
+        "Agent": "الموظفون"
+      },
+      "agentsOnDuty": "موظفون في الدوام",
+      "departments": "الأقسام",
+      "branches": "الفروع",
+      "activeOfTotal": "{{active}} نشط من {{total}}",
+      "webForms": "تذاكر النماذج",
+      "messagesSent": {
+        "email": "بريد مرسل",
+        "whatsapp": "واتساب مرسل",
+        "sms": "رسائل نصية مرسلة"
+      },
+      "messageHint": "{{failed}} فاشلة، {{received}} مستلمة",
+      "apiKeys": "مفاتيح الواجهة",
+      "apiKeysHint": "{{total}} إجمالاً",
+      "webhooks": "ويب هوك",
+      "webhooksHint": "{{total}} إجمالاً",
+      "webhookFailures": "عمليات ويب هوك الفاشلة",
+      "erpSyncs": "مزامنات ERP",
+      "erpHint": "{{failed}} فاشلة",
+      "erpConnected": "ربط ERP",
+      "ai": "المساعد الذكي",
+      "enabled": "مفعّل",
+      "notConfigured": "غير مُعدّ",
+      "activityTitle": "آخر النشاطات",
+      "activityEmpty": "لا توجد نشاطات بعد.",
+      "activityLink": "سجل التدقيق",
+      "activityEntry": "{{user}} نفّذ {{action}} على {{entity}}",
+      "system": "النظام"
     }
   },
   "auth": {

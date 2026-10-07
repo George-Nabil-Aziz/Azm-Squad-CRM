@@ -2,9 +2,12 @@ import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { getMyTickets } from '@/api/tickets'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useCurrentUser } from '@/features/auth/useCurrentUser'
+import { TicketBadges } from '@/features/dashboard/TicketBadges'
+import { SectionError, SectionSkeleton, DashboardSection } from '@/features/dashboard/DashboardSection'
+import { StatCard } from '@/features/dashboard/StatCard'
 import { TicketSlaTimers } from '@/features/sla/TicketSlaTimers'
 import { useNow } from '@/features/sla/useNow'
 
@@ -14,75 +17,73 @@ const counterKeys = ['open', 'pending', 'breachedToday'] as const
 export function MyTickets() {
   const { t } = useTranslation()
   const now = useNow()
+  const { data: user } = useCurrentUser()
   const mine = useQuery({ queryKey: ['tickets', 'mine'], queryFn: ({ signal }) => getMyTickets(signal) })
+  const mineLink = user ? `/tickets?assignee=${encodeURIComponent(user.id)}` : '/tickets'
+  const counterLinks = { open: mineLink, pending: `${mineLink}&status=pending`, breachedToday: mineLink }
 
   return (
-    <section className="flex flex-col gap-4" aria-labelledby="my-tickets-title">
-      <h2 id="my-tickets-title" className="text-xl font-semibold">
-        {t('dashboard.myTickets.title')}
-      </h2>
+    <DashboardSection
+      id="my-tickets-title"
+      level={3}
+      title={t('dashboard.myTickets.title')}
+      action={{ label: t('dashboard.myWork.viewAllMine'), to: mineLink }}
+    >
+      <div className="grid gap-4 sm:grid-cols-3">
+        {counterKeys.map((key) => (
+          <StatCard
+            key={key}
+            title={t(`dashboard.myTickets.counters.${key}`)}
+            value={mine.data?.counters[key]}
+            to={counterLinks[key]}
+            tone={key === 'breachedToday' && (mine.data?.counters.breachedToday ?? 0) > 0 ? 'danger' : 'default'}
+          />
+        ))}
+      </div>
 
-      {mine.isPending ? <p className="text-muted-foreground">{t('dashboard.myTickets.loading')}</p> : null}
+      {mine.isPending ? <SectionSkeleton label={t('dashboard.myTickets.loading')} /> : null}
+      {mine.isError ? <SectionError message={t('dashboard.myWork.loadError')} /> : null}
 
       {mine.data ? (
-        <>
-          <div className="grid gap-4 sm:grid-cols-3">
-            {counterKeys.map((key) => (
-              <Card key={key} role="group" aria-label={t(`dashboard.myTickets.counters.${key}`)}>
-                <CardHeader>
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {t(`dashboard.myTickets.counters.${key}`)}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-3xl font-semibold">{mine.data.counters[key]}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {mine.data.tickets.items.length === 0 ? (
-            <p className="text-muted-foreground">{t('dashboard.myTickets.empty')}</p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t('tickets.columns.number')}</TableHead>
-                  <TableHead>{t('tickets.columns.subject')}</TableHead>
-                  <TableHead>{t('tickets.columns.customer')}</TableHead>
-                  <TableHead>{t('tickets.columns.status')}</TableHead>
-                  <TableHead>{t('tickets.columns.priority')}</TableHead>
-                  <TableHead>{t('tickets.columns.sla')}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {mine.data.tickets.items.map((ticket) => (
-                  <TableRow key={ticket.id}>
-                    <TableCell dir="ltr" className="text-start font-medium">
-                      <Link to={`/tickets/${ticket.id}`} className="text-primary underline-offset-4 hover:underline">
-                        {ticket.number}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{ticket.subject}</TableCell>
-                    <TableCell>{ticket.customerName}</TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{t(`tickets.statuses.${ticket.status}`)}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={ticket.priority === 'high' ? 'destructive' : 'outline'}>
-                        {t(`tickets.priorities.${ticket.priority}`)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <TicketSlaTimers times={ticket} now={now} />
-                    </TableCell>
+        mine.data.tickets.items.length === 0 ? (
+          <p className="text-muted-foreground">{t('dashboard.myTickets.empty')}</p>
+        ) : (
+          <Card>
+            <CardContent className="px-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('tickets.columns.number')}</TableHead>
+                    <TableHead>{t('tickets.columns.subject')}</TableHead>
+                    <TableHead className="hidden md:table-cell">{t('tickets.columns.customer')}</TableHead>
+                    <TableHead>{t('tickets.columns.status')}</TableHead>
+                    <TableHead className="hidden sm:table-cell">{t('tickets.columns.sla')}</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </>
+                </TableHeader>
+                <TableBody>
+                  {mine.data.tickets.items.slice(0, 8).map((ticket) => (
+                    <TableRow key={ticket.id}>
+                      <TableCell dir="ltr" className="text-start font-medium">
+                        <Link to={`/tickets/${ticket.id}`} className="text-primary underline-offset-4 hover:underline">
+                          {ticket.number}
+                        </Link>
+                      </TableCell>
+                      <TableCell className="max-w-64 truncate">{ticket.subject}</TableCell>
+                      <TableCell className="hidden md:table-cell">{ticket.customerName}</TableCell>
+                      <TableCell>
+                        <TicketBadges status={ticket.status} priority={ticket.priority} />
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        <TicketSlaTimers times={ticket} now={now} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )
       ) : null}
-    </section>
+    </DashboardSection>
   )
 }
