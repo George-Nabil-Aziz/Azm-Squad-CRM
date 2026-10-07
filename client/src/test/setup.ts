@@ -1,7 +1,10 @@
 import '@testing-library/jest-dom/vitest'
-import { cleanup } from '@testing-library/react'
+import { cleanup, configure } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
 import { i18n } from '../i18n/i18n'
+
+// findBy*/waitFor default to 1 s, which full parallel runs on a busy machine exceed (redirect and page-load tests).
+configure({ asyncUtilTimeout: 5000 })
 
 // No real SignalR connection in tests: the notification hub is replaced (tests that need pushes mock it themselves).
 vi.mock('@/api/notifications-hub', () => ({ connectNotificationsHub: () => () => {} }))
