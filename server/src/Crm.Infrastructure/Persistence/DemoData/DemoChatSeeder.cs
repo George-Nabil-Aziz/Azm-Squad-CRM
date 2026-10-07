@@ -84,6 +84,7 @@ public sealed class DemoChatSeeder(
         try
         {
             await seeder.SeedAsync(cancellationToken);
+            await seeder.TopUpAsync(cancellationToken); // own marker: also tops up a database that already has the base chats
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
@@ -148,6 +149,124 @@ public sealed class DemoChatSeeder(
         await db.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Seeded {Ended} ended and {Open} open demo chats.", EndedCount, OpenCount);
         return EndedCount + OpenCount;
+    }
+
+    private static readonly string[] TopUpWaitingAr =
+    [
+        "v|السلام عليكم، هل يوجد أحد؟ أحتاج مساعدة في تغيير بيانات حسابي.",
+        "v|أنتظر منذ دقائق، شكرا لكم.",
+    ];
+
+    private static readonly string[] TopUpActiveEn =
+    [
+        "v|Hello, my invoice shows the wrong company name.",
+        "a|Hi, {agent} here. I can fix that, which invoice number is it?",
+        "v|It is invoice 90312.",
+        "a|Thanks, I am issuing a corrected copy now and will email it to you.",
+    ];
+
+    private static readonly string[] TopUpActiveAr =
+    [
+        "v|مرحبا، اسم الشركة في الفاتورة غير صحيح.",
+        "a|أهلا بك، معك {agent}. أستطيع تصحيحه، ما رقم الفاتورة؟",
+        "v|رقم الفاتورة 90312.",
+        "a|شكرا لك، أصدر الآن نسخة مصححة وسأرسلها إلى بريدك.",
+    ];
+
+    /// <summary>
+    /// Tops the demo chats up to 15 sessions (10 ended, 3 waiting, 2 active with two different agents) and adds two offline-form
+    /// submissions (the form shown when no agent is online: a Chat-channel ticket without a session, one English, one Arabic).
+    /// Needs the base demo chats; own marker: a chat of the 14th demo visitor (sessions) or a Chat ticket of the 16th (offline
+    /// forms). Domain notes: a chat has only the states Waiting, Active and Ended and does not record who ended it, so there is
+    /// no "ended by visitor / by agent" to seed. Returns the number of rows added (sessions + offline tickets).
+    /// </summary>
+    public async Task<int> TopUpAsync(CancellationToken cancellationToken)
+    {
+        if (!environment.IsDevelopment() || !configuration.GetValue<bool>(DemoDataSeeder.FlagKey))
+        {
+            return 0;
+        }
+
+        var visitors = await db.Customers.Where(c => c.Email != null && c.Email.EndsWith(DemoDataCatalog.CustomerEmailDomain))
+            .OrderBy(c => c.Email).Take(EndedCount + OpenCount + 4).ToListAsync(cancellationToken);
+        if (visitors.Count < EndedCount + OpenCount + 4
+            || !await db.ChatSessions.AnyAsync(s => s.VisitorEmail == visitors[EndedCount].Email, cancellationToken))
+        {
+            return 0; // the base demo chats come first
+        }
+
+        var agents = new List<(Guid Id, string Name)>();
+        foreach (var email in AgentEmails)
+        {
+            if (await userManager.FindByEmailAsync(email) is { } user)
+            {
+                agents.Add((user.Id, string.IsNullOrWhiteSpace(user.FullName) ? email : user.FullName));
+            }
+        }
+
+        if (agents.Count == 0)
+        {
+            return 0;
+        }
+
+        var now = timeProvider.GetUtcNow().UtcDateTime;
+        var added = 0;
+        var waitingCustomer = visitors[EndedCount + OpenCount];
+        if (!await db.ChatSessions.AnyAsync(s => s.VisitorEmail == waitingCustomer.Email, cancellationToken))
+        {
+            var activeCustomer = visitors[EndedCount + OpenCount + 1];
+            var second = agents[Math.Min(1, agents.Count - 1)];
+            AddOpen(waitingCustomer, null, TopUpWaitingAr, now.AddMinutes(-6));
+            AddOpen(activeCustomer, second, IsArabic(activeCustomer.Name) ? TopUpActiveAr : TopUpActiveEn, now.AddMinutes(-14));
+            added += 2;
+        }
+
+        var englishOffline = visitors[EndedCount + OpenCount + 2];
+        var arabicOffline = visitors[EndedCount + OpenCount + 3];
+        if (!await db.Tickets.AnyAsync(t => t.Channel == TicketChannel.Chat && t.CustomerId == arabicOffline.Id, cancellationToken))
+        {
+            var policy = await db.SlaPolicies.AsNoTracking().FirstOrDefaultAsync(p => p.Priority == TicketPriority.Mid, cancellationToken);
+            if (policy is null)
+            {
+                var (priority, response, resolution) = SlaPolicy.Defaults.First(d => d.Priority == TicketPriority.Mid);
+                policy = SlaPolicy.Create(priority, response, resolution, now); // in memory only, never saved
+            }
+
+            var number = ((await db.Tickets.IgnoreQueryFilters().MaxAsync(t => (int?)t.Number, cancellationToken)) ?? 0) + 1;
+            AddOffline(englishOffline, "Question about my subscription renewal (offline chat form)",
+                "Hello, nobody was online in the chat. When does my subscription renew and can I change the plan before that?",
+                now.AddHours(-9), policy, number++, null);
+            AddOffline(arabicOffline, "استفسار عن موعد التسليم (نموذج المحادثة خارج الدوام)",
+                "السلام عليكم، لم يكن هناك أحد في المحادثة. أرجو إفادتي بموعد تسليم طلبي وهل يمكن تغيير العنوان؟",
+                now.AddHours(-30), policy, number, agents[0]);
+            added += 2;
+        }
+
+        if (added > 0)
+        {
+            await db.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Topped up the demo live chats with {Count} more rows (chats and offline-form tickets).", added);
+        }
+
+        return added;
+    }
+
+    private void AddOffline(Customer customer, string subject, string message, DateTime created, SlaPolicy policy, int number, (Guid Id, string Name)? agent)
+    {
+        var ticket = Ticket.Create(customer.Id, subject, message, null, TicketPriority.Mid, TicketChannel.Chat, null, created);
+        ticket.AssignNumber(number);
+        ticket.AssignBranch(customer.BranchId);
+        ticket.ApplySla(policy);
+        if (agent is { } a)
+        {
+            ticket.AssignTo(a.Id, created.AddMinutes(20));
+            ticket.ChangeStatus(TicketStatus.Open, created.AddMinutes(21));
+        }
+
+        db.Add(ticket);
+        db.Add(TicketMessage.Inbound(ticket.Id, message, TicketChannel.Chat, null, created));
+        db.Add(CustomerInteraction.Create(
+            customer.Id, InteractionType.Ticket, InteractionEvents.TicketCreated, $"{ticket.DisplayNumber} {ticket.Subject}", ticket.Id, null, created));
     }
 
     private static bool IsArabic(string text) => text.Any(c => c is >= '؀' and <= 'ۿ');

@@ -61,6 +61,65 @@ public class DemoChatSeederTests
         return await query(scope.ServiceProvider.GetRequiredService<CrmDbContext>());
     }
 
+    private static async Task<int> TopUpAsync(CrmApiFactory factory, string environment = "Development", bool? flag = true)
+    {
+        using var scope = factory.Services.CreateScope();
+        var s = scope.ServiceProvider;
+        return await new DemoChatSeeder(
+            s.GetRequiredService<CrmDbContext>(), s.GetRequiredService<UserManager<ApplicationUser>>(), s.GetRequiredService<TimeProvider>(),
+            Config(flag), new FakeEnvironment(environment), NullLogger<DemoChatSeeder>.Instance).TopUpAsync(CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task TopUp_AddsTwoChats_ToFifteen_AndTwoOfflineFormChatTickets()
+    {
+        using var factory = new CrmApiFactory();
+        await SeedChatsAsync(factory);
+        var before = await QueryAsync(factory, db => db.Tickets.Where(t => t.Channel == TicketChannel.Chat).Select(t => t.Id).ToListAsync());
+
+        Assert.Equal(4, await TopUpAsync(factory));
+
+        var sessions = await QueryAsync(factory, db => db.ChatSessions.AsNoTracking().Include(s => s.Messages).ToListAsync());
+        Assert.Equal(15, sessions.Count);
+        Assert.Equal(10, sessions.Count(s => s.Status == ChatStatus.Ended));
+        Assert.Equal(3, sessions.Count(s => s.Status == ChatStatus.Waiting));
+        Assert.Equal(2, sessions.Count(s => s.Status == ChatStatus.Active));
+        Assert.Equal(2, sessions.Where(s => s.Status == ChatStatus.Active).Select(s => s.AgentId).Distinct().Count());
+        Assert.Contains(sessions, s => s.Status == ChatStatus.Waiting && s.Messages.Any(m => m.Body.Any(c => c is >= '؀' and <= 'ۿ')));
+        var chatTickets = await QueryAsync(factory, db => db.Tickets.AsNoTracking().Where(t => t.Channel == TicketChannel.Chat).ToListAsync());
+        var offlineOnly = chatTickets.Where(t => !before.Contains(t.Id)).ToList();
+        Assert.Equal(2, offlineOnly.Count);
+        Assert.Contains(offlineOnly, t => t.Subject.Any(c => c is >= '؀' and <= 'ۿ'));
+        Assert.Contains(offlineOnly, t => t.Subject.All(c => c < '؀'));
+        var numbers = await QueryAsync(factory, db => db.Tickets.Select(t => t.Number).ToListAsync());
+        Assert.Equal(numbers.Count, numbers.Distinct().Count());
+    }
+
+    [Fact]
+    public async Task TopUp_RunningTwice_AddsNothing()
+    {
+        using var factory = new CrmApiFactory();
+        await SeedChatsAsync(factory);
+        await TopUpAsync(factory);
+
+        Assert.Equal(0, await TopUpAsync(factory));
+
+        Assert.Equal(15, await QueryAsync(factory, db => db.ChatSessions.CountAsync()));
+    }
+
+    [Theory]
+    [InlineData("Development", false)]
+    [InlineData("Production", true)]
+    public async Task TopUp_DoesNothing_WhenTheFlagIsOffOrTheEnvironmentIsNotDevelopment(string environment, bool? flag)
+    {
+        using var factory = new CrmApiFactory();
+        await SeedChatsAsync(factory);
+
+        Assert.Equal(0, await TopUpAsync(factory, environment, flag));
+
+        Assert.Equal(13, await QueryAsync(factory, db => db.ChatSessions.CountAsync()));
+    }
+
     [Fact]
     public async Task Seeds_TenEndedChats_WithAChatTicketAndTheTranscript_AndThreeOpenChats()
     {
