@@ -25,7 +25,7 @@ export function LoginPage() {
       <aside className="flex flex-col items-center justify-center gap-3 px-6 pt-8 text-center lg:items-start lg:gap-4 lg:bg-gradient-to-br lg:from-primary lg:to-primary/70 lg:p-12 lg:text-start lg:text-primary-foreground">
         <h1 className="text-xl font-semibold lg:text-3xl">
           <Link
-            to="/welcome"
+            to="/"
             aria-label={t('app.name')}
             title={t('auth.backToHome')}
             className="flex items-center gap-3 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring lg:focus-visible:ring-primary-foreground"

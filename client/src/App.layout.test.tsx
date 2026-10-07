@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { getAccessToken, saveSession } from './auth/session'
@@ -22,18 +22,19 @@ describe('App layout and routing', () => {
     vi.unstubAllGlobals()
   })
 
-  it('redirects / to the welcome page when signed out', async () => {
+  it('shows the landing page at / when signed out (no /welcome in the address)', async () => {
     vi.stubGlobal('fetch', fakeApi())
     renderAt('/')
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Customer support, all in one place' })).toBeInTheDocument()
-    expect(window.location.pathname).toBe('/welcome')
+    expect(window.location.pathname).toBe('/')
   })
 
-  it('shows the welcome page at /welcome and its Sign in link opens the login page', async () => {
+  it('the old /welcome address goes to / and its Sign in link opens the login page', async () => {
     vi.stubGlobal('fetch', fakeApi())
     renderAt('/welcome')
 
+    await waitFor(() => expect(window.location.pathname).toBe('/'))
     fireEvent.click(await screen.findByRole('link', { name: 'Sign in' }))
 
     expect(await screen.findByRole('form', { name: 'Sign in' })).toBeInTheDocument()

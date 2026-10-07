@@ -19,7 +19,7 @@ describe('Login page', () => {
     renderAt('/login')
 
     const home = await screen.findByRole('link', { name: 'Customer Support CRM' })
-    expect(home).toHaveAttribute('href', '/welcome')
+    expect(home).toHaveAttribute('href', '/')
     expect(home.querySelector('svg')).not.toBeNull()
     expect(screen.getByText('Every customer conversation, one place.')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /language|العربية/i })).toBeInTheDocument()

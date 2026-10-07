@@ -16,7 +16,7 @@ const steps = [
   { id: 'rate', icon: StarIcon },
 ] as const
 
-/** Public landing page (/welcome, and / for visitors who are not signed in). */
+/** Public landing page, shown at / to visitors who are not signed in. */
 export function LandingPage() {
   const { t } = useTranslation()
 

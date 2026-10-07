@@ -26,7 +26,7 @@ export function PortalLayout() {
     <div className="flex min-h-svh flex-col bg-background">
       <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
-          <Link to="/portal" className="flex items-center gap-2 text-lg font-semibold">
+          <Link to="/" className="flex items-center gap-2 text-lg font-semibold">
             <BrandLogo alt="" />
             {t('portal.title')}
           </Link>
