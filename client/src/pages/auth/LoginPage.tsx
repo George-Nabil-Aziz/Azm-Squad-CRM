@@ -25,7 +25,7 @@ export function LoginPage() {
             <h1 className="text-xl font-semibold">{t('app.name')}</h1>
           </CardTitle>
           <CardDescription>{t('auth.signInDescription')}</CardDescription>
-          <CardAction className="flex flex-col items-end gap-2">
+          <CardAction className="flex items-center gap-1">
             <LanguageSwitcher />
             <ThemeToggle />
           </CardAction>

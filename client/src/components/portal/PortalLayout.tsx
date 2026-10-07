@@ -52,8 +52,8 @@ export function PortalLayout() {
           </nav>
           <div className="ms-auto flex items-center gap-3">
             {customer ? <span className="text-sm text-muted-foreground">{customer.name}</span> : null}
-            <ThemeToggle />
             <LanguageSwitcher />
+            <ThemeToggle />
             {isAuthenticated ? (
               <Button variant="outline" size="sm" onClick={clearPortalSession}>
                 <LogOutIcon aria-hidden="true" />

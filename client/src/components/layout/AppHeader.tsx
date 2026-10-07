@@ -22,8 +22,8 @@ export function AppHeader() {
       <div className="ms-auto flex min-w-0 items-center gap-2 sm:gap-3">
         {user ? <span className="truncate text-sm text-muted-foreground max-sm:hidden">{user.fullName}</span> : null}
         <NotificationBell />
-        <ThemeToggle />
         <LanguageSwitcher />
+        <ThemeToggle />
         <Button variant="outline" size="sm" onClick={signOut}>
           <LogOutIcon aria-hidden="true" />
           <span className="max-sm:sr-only">{t('auth.signOut')}</span>

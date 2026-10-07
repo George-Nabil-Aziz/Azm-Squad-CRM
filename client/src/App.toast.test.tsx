@@ -11,13 +11,12 @@ describe('App error toast', () => {
     vi.unstubAllGlobals()
   })
 
-  it('shows an error toast when the health call fails', async () => {
+  it('shows an error toast when an API call fails', async () => {
     saveSession('good-token', inOneHour())
     vi.stubGlobal('fetch', fakeApi({ healthStatus: 500 }))
 
     render(<App />)
 
-    expect(await screen.findByText('unavailable')).toBeInTheDocument()
     expect(await screen.findByText('Something went wrong. Please try again.')).toBeInTheDocument()
     expect(screen.getByText('Reference: health-1')).toBeInTheDocument()
   })

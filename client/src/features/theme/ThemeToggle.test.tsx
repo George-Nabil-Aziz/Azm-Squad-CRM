@@ -40,28 +40,28 @@ describe('ThemeToggle', () => {
     root.classList.remove('dark')
   })
 
-  it('follows the system preference on first visit (light)', () => {
+  it('is light on first visit when the system is light, and offers dark', () => {
     renderToggle()
     expect(root).not.toHaveClass('dark')
-    expect(screen.getByRole('radio', { name: 'System' })).toBeChecked()
+    expect(screen.getByRole('button', { name: 'Switch to dark mode' })).toHaveAttribute('aria-pressed', 'false')
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull()
   })
 
-  it('follows the system preference on first visit (dark)', () => {
+  it('is dark on first visit when the system is dark, and offers light', () => {
     mockSystemDark(true)
     renderToggle()
     expect(root).toHaveClass('dark')
-    expect(screen.getByRole('radio', { name: 'System' })).toBeChecked()
+    expect(screen.getByRole('button', { name: 'Switch to light mode' })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('switches to dark and back to light, toggling the class and saving the choice', () => {
     renderToggle()
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Dark' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Switch to dark mode' }))
     expect(root).toHaveClass('dark')
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('dark')
-    expect(screen.getByRole('radio', { name: 'Dark' })).toBeChecked()
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Light' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Switch to light mode' }))
     expect(root).not.toHaveClass('dark')
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('light')
   })
@@ -71,13 +71,14 @@ describe('ThemeToggle', () => {
     localStorage.setItem(THEME_STORAGE_KEY, 'light')
     renderToggle()
     expect(root).not.toHaveClass('dark')
-    expect(screen.getByRole('radio', { name: 'Light' })).toBeChecked()
+    expect(screen.getByRole('button', { name: 'Switch to dark mode' })).toBeInTheDocument()
   })
 
-  it('ignores an invalid saved value', () => {
-    localStorage.setItem(THEME_STORAGE_KEY, 'purple')
+  it.each(['system', 'purple'])('treats a saved "%s" as nothing saved', (value) => {
+    mockSystemDark(true)
+    localStorage.setItem(THEME_STORAGE_KEY, value)
     renderToggle()
-    expect(screen.getByRole('radio', { name: 'System' })).toBeChecked()
+    expect(root).toHaveClass('dark')
   })
 
   it('still works when localStorage throws', () => {
@@ -88,7 +89,7 @@ describe('ThemeToggle', () => {
       throw new Error('blocked')
     })
     renderToggle()
-    fireEvent.click(screen.getByRole('radio', { name: 'Dark' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Switch to dark mode' }))
     expect(root).toHaveClass('dark')
     get.mockRestore()
     set.mockRestore()
@@ -97,9 +98,8 @@ describe('ThemeToggle', () => {
   it('has Arabic labels', async () => {
     await i18n.changeLanguage('ar')
     renderToggle()
-    expect(screen.getByRole('radiogroup', { name: 'المظهر' })).toBeInTheDocument()
-    expect(screen.getByRole('radio', { name: 'فاتح' })).toBeInTheDocument()
-    expect(screen.getByRole('radio', { name: 'داكن' })).toBeInTheDocument()
-    expect(screen.getByRole('radio', { name: 'النظام' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'التبديل إلى الوضع الداكن' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button'))
+    expect(screen.getByRole('button', { name: 'التبديل إلى الوضع الفاتح' })).toBeInTheDocument()
   })
 })

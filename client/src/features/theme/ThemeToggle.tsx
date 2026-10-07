@@ -1,42 +1,26 @@
-import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react'
+import { MoonIcon, SunIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { cn } from '@/lib/utils'
-import { THEME_PREFERENCES, useTheme, type ThemePreference } from './theme-context'
+import { Button } from '@/components/ui/button'
+import { useTheme } from './theme-context'
 
-const icons = { light: SunIcon, dark: MoonIcon, system: MonitorIcon } satisfies Record<ThemePreference, unknown>
-
-/** Light / Dark / System switch (a radio group of three icon buttons). */
+/** One icon button that switches between light and dark; its label names the mode it switches to. */
 export function ThemeToggle() {
   const { t } = useTranslation()
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
+  const isDark = resolvedTheme === 'dark'
+  const label = t(isDark ? 'theme.toLight' : 'theme.toDark')
 
   return (
-    <div
-      role="radiogroup"
-      aria-label={t('theme.label')}
-      className="inline-flex items-center gap-0.5 rounded-lg border bg-muted/50 p-0.5"
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon-sm"
+      aria-label={label}
+      title={label}
+      aria-pressed={isDark}
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
     >
-      {THEME_PREFERENCES.map((option) => {
-        const Icon = icons[option]
-        const selected = theme === option
-        return (
-          <button
-            key={option}
-            type="button"
-            role="radio"
-            aria-checked={selected}
-            aria-label={t(`theme.${option}`)}
-            title={t(`theme.${option}`)}
-            onClick={() => setTheme(option)}
-            className={cn(
-              'inline-flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50',
-              selected && 'bg-background text-foreground shadow-sm',
-            )}
-          >
-            <Icon aria-hidden="true" className="size-3.5" />
-          </button>
-        )
-      })}
-    </div>
+      {isDark ? <SunIcon aria-hidden="true" /> : <MoonIcon aria-hidden="true" />}
+    </Button>
   )
 }

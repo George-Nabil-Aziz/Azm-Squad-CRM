@@ -48,7 +48,7 @@ export const supervisorMe: CurrentUser = {
 }
 
 interface FakeApiOptions {
-  /** Status returned by GET /api/health (default 200). */
+  /** Status returned by GET /api/health and by the dashboard's GET /api/tickets/mine (default 200); non-200 makes both fail. */
   healthStatus?: number
   /** Body of GET /api/auth/me (default: the SuperAdmin). */
   me?: CurrentUser
@@ -98,6 +98,7 @@ export function fakeApi({ healthStatus = 200, me = superAdminMe }: FakeApiOption
       return json(200, { items: [], page: 1, pageSize: 20, totalCount: 0 })
     }
     if (path.startsWith('/api/tickets/mine')) {
+      if (healthStatus !== 200) return json(healthStatus, { status: healthStatus, correlationId: 'health-1' }, 'application/problem+json')
       return json(200, { counters: { open: 0, pending: 0, breachedToday: 0 }, tickets: { items: [], page: 1, pageSize: 50, totalCount: 0 } })
     }
     if (path === '/api/tickets/assignees') {

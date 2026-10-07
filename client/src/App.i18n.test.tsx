@@ -11,6 +11,7 @@ function html() {
 }
 
 async function renderLoginPage() {
+  window.history.replaceState(null, '', '/login')
   vi.stubGlobal('fetch', fakeApi())
   render(<App />)
   await screen.findByRole('form', { name: 'Sign in' })
@@ -60,8 +61,8 @@ describe('Language switching (ar / en)', () => {
 
     expect(await screen.findByText('أدخل بريدك الإلكتروني.')).toBeInTheDocument()
     expect(screen.getByText('أدخل كلمة المرور.')).toBeInTheDocument()
-    // The only Latin word left is the switch back to English.
-    expect(document.body.textContent?.match(/[A-Za-z]+/g)).toEqual(['English'])
+    // No Latin text is left: the switch back to English is an icon (its English label is only an aria-label).
+    expect(document.body.textContent?.match(/[A-Za-z]+/g)).toBeNull()
   })
 
   it('remembers the chosen language for the next visit', async () => {
@@ -91,6 +92,7 @@ describe('Language switching (ar / en)', () => {
   })
 
   it('signs in in Arabic and shows API error toasts in Arabic', async () => {
+    window.history.replaceState(null, '', '/login')
     vi.stubGlobal('fetch', fakeApi({ healthStatus: 500 }))
     render(<App />)
     fireEvent.click(await screen.findByRole('button', { name: 'العربية' }))
