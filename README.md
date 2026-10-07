@@ -47,16 +47,16 @@ All 64 are implemented and tested.
 | --- | --- | --- | --- |
 | Phase 1 | 25 | Foundation, auth, users and roles, customers, tickets, SLA, Email and WhatsApp | Merged into `main` |
 | Phase 2 | 23 | Auto-assignment, notifications, agent dashboard, audit logs, settings, knowledge base, customer portal, reports | Merged into `main` |
-| Phase 3 | 15 | AI features, web forms, live chat, SMS, public API, webhooks, ERP, departments, branches, branding, mobile | 8 merged into `main`, 7 on branches |
+| Phase 3 | 15 | AI features, web forms, live chat, SMS, public API, webhooks, ERP, departments, branches, branding, mobile | Merged into `main` |
 
 Phase 3 detail:
 
-| Stories | Feature | Branch | State |
-| --- | --- | --- | --- |
-| CRM-50 … 54 | AI features | `main` | Merged |
-| CRM-55 … 57 | Web forms, live chat, SMS | `main` | Merged |
-| CRM-58 … 60 | Public API keys, outgoing webhooks, ERP | `feature/phase3-group-v` | Implemented, waiting for the final merge |
-| CRM-61 … 64 | Departments, branches, branding, mobile | `feature/phase3-group-u` | Implemented, waiting for the final merge |
+| Stories | Feature |
+| --- | --- |
+| CRM-50 … 54 | AI features |
+| CRM-55 … 57 | Web forms, live chat, SMS |
+| CRM-58 … 60 | Public API keys, outgoing webhooks, ERP |
+| CRM-61 … 64 | Departments, branches, branding, mobile |
 
 What this means for a reader:
 
@@ -350,6 +350,16 @@ starting**; the feature is simply shown as not configured.
 | `Ai:ConfidenceThreshold` | Default `0.8` for auto-categorisation |
 | `Ai:TimeoutSeconds` | Default `30` |
 
+### Integrations (public API, webhooks, ERP)
+
+| Key | Purpose |
+| --- | --- |
+| `Integrations:Api:RequestsPerMinute` | Rate limit per API key, default 60 |
+| `Integrations:Erp:BaseUrl` | ERP address. `HttpErpClient` calls `{BaseUrl}/customers/{id}/orders` and `/invoices` |
+| `Integrations:Erp:ApiKey` | ERP key (secret) |
+| `Integrations:Erp:TimeoutSeconds` | ERP call timeout |
+| `DataProtection:KeysPath` | Where encryption keys are kept, so encrypted secrets survive a restart |
+
 ### Customer portal
 
 | Key | Purpose |
@@ -475,9 +485,17 @@ Public and webhook endpoints (no staff token):
 | `/api/webhooks/whatsapp` | Incoming WhatsApp messages (signature checked) |
 | `/api/webhooks/sms` | Incoming SMS and delivery statuses (signature checked) |
 
-On the `feature/phase3-group-v` branch, a versioned public API (`/api/v1/tickets`,
-`/api/v1/customers`) uses scoped API keys (`X-Api-Key`) and is documented with Swagger
-at `/swagger`.
+Integrations and platform:
+
+| Route | Purpose |
+| --- | --- |
+| `/api/v1/tickets`, `/api/v1/customers` | Versioned public API for external systems, scoped API keys (`X-Api-Key`), per-key rate limit |
+| `/swagger` | Swagger UI for the public API (`/openapi/public-v1.json`) |
+| `/api/api-keys` | Create and revoke API keys (shown once, stored hashed) |
+| `/api/webhooks` | Outgoing webhooks (`ticket.created`, `ticket.resolved`), HMAC-signed, retried with back-off |
+| `/api/customers/{id}/erp` | Read-only ERP orders and invoices for a linked customer |
+| `/api/departments`, `/api/branches` | Departments (with per-department SLA) and branches; agents only see their own data |
+| `/api/branding` | Logo and brand colours, applied to the app and to emails |
 
 ---
 
@@ -619,7 +637,6 @@ These are known and recorded, not forgotten:
 
 | Gap | Detail |
 | --- | --- |
-| Final merge of Phase 3 | CRM-58 … 64 are implemented on two branches and need their last merge with `main` |
 | Flaky tests | A SignalR notification test and a live chat test have each failed once under full-suite load and passed on rerun; likely the single shared SQLite connection in tests |
 | Migration test | No automated test applies the migrations to SQL Server; it is done by hand after each phase |
 | Chatbot rate limit | The anonymous portal chatbot limits message count and size, but has no per-IP rate limit |
