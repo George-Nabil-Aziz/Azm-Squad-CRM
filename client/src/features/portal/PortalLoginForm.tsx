@@ -9,12 +9,8 @@ import { savePortalSession } from '@/auth/portal-session'
 import { Button } from '@/components/ui/button'
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import {
-  createPortalCodeSchema,
-  createPortalEmailSchema,
-  type PortalCodeValues,
-  type PortalEmailValues,
-} from './portal-login-schema'
+import { DemoAccounts } from '@/features/auth/DemoAccounts'
+import { createPortalCodeSchema, createPortalEmailSchema, type PortalCodeValues, type PortalEmailValues } from './portal-login-schema'
 
 function EmailStep({ onSent }: { onSent: (email: string) => void }) {
   const { t } = useTranslation()
@@ -33,25 +29,28 @@ function EmailStep({ onSent }: { onSent: (email: string) => void }) {
   }
 
   return (
-    <form aria-label={t('portal.login.emailStep')} noValidate onSubmit={form.handleSubmit(onSubmit)}>
-      <FieldGroup>
-        <Controller
-          name="email"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="portal-email">{t('portal.login.email')}</FieldLabel>
-              <Input {...field} id="portal-email" type="email" autoComplete="email" dir="ltr" aria-invalid={fieldState.invalid} />
-              <FieldDescription>{t('portal.login.emailHint')}</FieldDescription>
-              {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
-            </Field>
-          )}
-        />
-        <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? t('portal.login.sending') : t('portal.login.sendCode')}
-        </Button>
-      </FieldGroup>
-    </form>
+    <>
+      <form aria-label={t('portal.login.emailStep')} noValidate onSubmit={form.handleSubmit(onSubmit)}>
+        <FieldGroup>
+          <Controller
+            name="email"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="portal-email">{t('portal.login.email')}</FieldLabel>
+                <Input {...field} id="portal-email" type="email" autoComplete="email" dir="ltr" aria-invalid={fieldState.invalid} />
+                <FieldDescription>{t('portal.login.emailHint')}</FieldDescription>
+                {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+              </Field>
+            )}
+          />
+          <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? t('portal.login.sending') : t('portal.login.sendCode')}
+          </Button>
+        </FieldGroup>
+      </form>
+      <DemoAccounts audience="customer" onPick={(email) => form.setValue('email', email, { shouldValidate: form.formState.isSubmitted })} />
+    </>
   )
 }
 
@@ -122,9 +121,5 @@ function CodeStep({ email, onBack, onSignedIn }: { email: string; onBack: () => 
 export function PortalLoginForm({ onSignedIn }: { onSignedIn: () => void }) {
   const [email, setEmail] = useState<string | null>(null)
 
-  return email === null ? (
-    <EmailStep onSent={setEmail} />
-  ) : (
-    <CodeStep email={email} onBack={() => setEmail(null)} onSignedIn={onSignedIn} />
-  )
+  return email === null ? <EmailStep onSent={setEmail} /> : <CodeStep email={email} onBack={() => setEmail(null)} onSignedIn={onSignedIn} />
 }

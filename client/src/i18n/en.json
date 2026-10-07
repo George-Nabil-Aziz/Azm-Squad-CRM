@@ -59,7 +59,13 @@
     "emailInvalid": "Enter a valid email address.",
     "passwordRequired": "Enter your password.",
     "invalidCredentials": "Invalid email or password.",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "demo": {
+      "title": "Demo accounts",
+      "staffHint": "Development only. Click an account to fill the email; the password is the development seed password (Seed:SuperAdminPassword).",
+      "customerHint": "Development only. Click the demo customer to fill the email; the sign-in code appears in the API log.",
+      "customer": "Customer"
+    }
   },
   "errors": {
     "network": "Cannot reach the server. Check your connection and try again.",

@@ -261,7 +261,7 @@ development.
 | API | http://localhost:5080 |
 | Health check | http://localhost:5080/api/health |
 
-Sign in with `admin@crm.local` and the password you set in step 2.
+Sign in with `superadmin@crm.com` and the password you set in step 2.
 
 Check `/api/health` first when something does not work: it tells you whether the API is
 up and can reach the database.
@@ -286,6 +286,26 @@ Permissions are defined once in `Crm.Application/Auth/Permissions.cs`, mapped to
 The client only uses them to hide what a user cannot do; **the API enforces every one of
 them**.
 
+### Demo accounts (development only)
+
+When the API runs in the `Development` environment it also seeds one account per role, all with the
+same password as the SuperAdmin (`Seed:SuperAdminPassword`; nothing extra to configure). They are never
+created in any other environment, and `GET /api/auth/demo-accounts` (which feeds the "Demo accounts"
+list on both sign-in pages) answers `404` there. Restart the API once to create them. A development
+database whose SuperAdmin is still `admin@crm.local` is renamed to `superadmin@crm.com` on start.
+
+| Email | Role | Signs in at |
+| --- | --- | --- |
+| `superadmin@crm.com` | SuperAdmin | Staff sign-in |
+| `admin@crm.com` | Admin | Staff sign-in |
+| `supervisor@crm.com` | Supervisor | Staff sign-in |
+| `agent@crm.com` | Agent | Staff sign-in |
+| `customer@crm.com` | Customer | Portal sign-in (`/portal/login`) |
+
+The portal sends a one-time code by email. With no email channel configured, in `Development` the
+code is written to the API log at Information level (`Portal login code for customer@crm.com: 123456`).
+It is never logged in other environments.
+
 ---
 
 ## Configuration and secrets
@@ -303,7 +323,7 @@ starting**; the feature is simply shown as not configured.
 | Key | Purpose |
 | --- | --- |
 | `Jwt:SigningKey` | Signs the access tokens |
-| `Seed:SuperAdminPassword` | Password of `admin@crm.local` on first run |
+| `Seed:SuperAdminPassword` | Password of `superadmin@crm.com` on first run |
 | `ConnectionStrings:Crm` | SQL Server connection (Development default is in `appsettings.Development.json`) |
 
 ### Email (SMTP / IMAP)
@@ -655,7 +675,7 @@ Port 5080 is already in use by another program. Stop it, or run on another port:
 The signing key is missing. Set it with `dotnet user-secrets` (see
 [Getting started](#getting-started)).
 
-**I cannot sign in as `admin@crm.local`.**
+**I cannot sign in as `superadmin@crm.com`.**
 `Seed:SuperAdminPassword` was not set when the database was first created. Set it, then
 drop the development database (`CustomerSupportCrm`) and start the API again.
 

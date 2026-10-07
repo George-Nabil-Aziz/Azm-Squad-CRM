@@ -7,6 +7,7 @@ import { signIn } from '@/auth/sign-in'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { DemoAccounts } from './DemoAccounts'
 import { createLoginSchema, type LoginValues } from './login-schema'
 
 /** Email + password form (react-hook-form + zod). On success the session changes and LoginPage redirects. */
@@ -33,47 +34,44 @@ export function LoginForm() {
   const isSubmitting = form.formState.isSubmitting
 
   return (
-    <form aria-label={t('auth.signInTitle')} noValidate onSubmit={form.handleSubmit(onSubmit)}>
-      <FieldGroup>
-        <Controller
-          name="email"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="login-email">{t('auth.email')}</FieldLabel>
-              <Input
-                {...field}
-                id="login-email"
-                type="email"
-                autoComplete="username"
-                aria-invalid={fieldState.invalid}
-              />
-              {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
-            </Field>
-          )}
-        />
-        <Controller
-          name="password"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="login-password">{t('auth.password')}</FieldLabel>
-              <Input
-                {...field}
-                id="login-password"
-                type="password"
-                autoComplete="current-password"
-                aria-invalid={fieldState.invalid}
-              />
-              {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
-            </Field>
-          )}
-        />
-        {invalidCredentials ? <FieldError>{t('auth.invalidCredentials')}</FieldError> : null}
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? t('auth.signingIn') : t('auth.signIn')}
-        </Button>
-      </FieldGroup>
-    </form>
+    <>
+      <form aria-label={t('auth.signInTitle')} noValidate onSubmit={form.handleSubmit(onSubmit)}>
+        <FieldGroup>
+          <Controller
+            name="email"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="login-email">{t('auth.email')}</FieldLabel>
+                <Input {...field} id="login-email" type="email" autoComplete="username" aria-invalid={fieldState.invalid} />
+                {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+              </Field>
+            )}
+          />
+          <Controller
+            name="password"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="login-password">{t('auth.password')}</FieldLabel>
+                <Input {...field} id="login-password" type="password" autoComplete="current-password" aria-invalid={fieldState.invalid} />
+                {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+              </Field>
+            )}
+          />
+          {invalidCredentials ? <FieldError>{t('auth.invalidCredentials')}</FieldError> : null}
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? t('auth.signingIn') : t('auth.signIn')}
+          </Button>
+        </FieldGroup>
+      </form>
+      <DemoAccounts
+        audience="staff"
+        onPick={(email) => {
+          form.setValue('email', email, { shouldValidate: form.formState.isSubmitted })
+          form.setFocus('password')
+        }}
+      />
+    </>
   )
 }

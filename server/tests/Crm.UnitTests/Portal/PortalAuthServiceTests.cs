@@ -18,7 +18,8 @@ public class PortalAuthServiceTests
     private readonly TestClock _clock = new(Start);
 
     private PortalAuthService Service(params string[] codes) => new(
-        _accounts, _customers, _sender, _tokens, new FixedCodeGenerator(codes), _clock,
+        _accounts, _customers, _sender, _tokens, new FixedCodeGenerator(codes), new PortalOptions(),
+        Microsoft.Extensions.Logging.Abstractions.NullLogger<PortalAuthService>.Instance, _clock,
         new RequestCodeRequestValidator(), new VerifyCodeRequestValidator());
 
     private Customer AddCustomer(string name, string email)

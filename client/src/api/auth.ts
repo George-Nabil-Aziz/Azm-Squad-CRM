@@ -1,5 +1,5 @@
 import type { Permission } from '@/auth/permissions'
-import { apiGet, apiPost } from './client'
+import { apiGet, apiGetQuiet, apiPost } from './client'
 
 export interface LoginRequest {
   email: string
@@ -28,4 +28,16 @@ export function login(request: LoginRequest): Promise<LoginResponse> {
 
 export function getCurrentUser(signal?: AbortSignal): Promise<CurrentUser> {
   return apiGet<CurrentUser>('/api/auth/me', signal)
+}
+
+/** A development demo sign-in (server: DemoAccount); never carries a password. */
+export interface DemoAccount {
+  email: string
+  /** A staff role name, or the portal demo customer (role "customer" in any letter case). */
+  role: string
+}
+
+/** GET /api/auth/demo-accounts: answers only in Development (404 elsewhere); a failure is not shown to the user. */
+export function getDemoAccounts(signal?: AbortSignal): Promise<DemoAccount[]> {
+  return apiGetQuiet<DemoAccount[]>('/api/auth/demo-accounts', signal)
 }
