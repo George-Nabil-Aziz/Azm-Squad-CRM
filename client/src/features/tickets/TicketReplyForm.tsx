@@ -85,7 +85,7 @@ export function TicketReplyForm({ ticketId, channel }: { ticketId: string; chann
           />
           {error ? <FieldError errors={[{ message: error }]} /> : null}
           {sms && sms.segments > 1 ? (
-            <p role="alert" className="text-sm text-amber-600">
+            <p role="alert" className="text-sm text-warning">
               {t('tickets.details.smsSegments', { segments: sms.segments, units: sms.units, limit: sms.multiLimit })}
             </p>
           ) : null}
