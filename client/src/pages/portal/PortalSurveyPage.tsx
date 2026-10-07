@@ -19,7 +19,7 @@ export function PortalSurveyPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-4">
-      <h1 className="text-2xl font-semibold">{t('portal.survey.title')}</h1>
+      <h1 className="text-2xl font-semibold text-primary">{t('portal.survey.title')}</h1>
       {survey.isPending ? (
         <p className="text-muted-foreground">{t('portal.loading')}</p>
       ) : survey.data ? (

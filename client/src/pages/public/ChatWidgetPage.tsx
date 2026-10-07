@@ -76,7 +76,7 @@ export function ChatWidgetPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-xl flex-col gap-4 p-4">
-      <h1 className="text-2xl font-semibold">{t('chat.widget.title')}</h1>
+      <h1 className="text-2xl font-semibold text-primary">{t('chat.widget.title')}</h1>
       {availability.isPending ? (
         <p className="text-muted-foreground">{t('chat.widget.checking')}</p>
       ) : offline || availability.data?.available === false ? (

@@ -25,7 +25,7 @@ export function AssignmentSettingsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold">{t('nav.assignment')}</h1>
+        <h1 className="text-2xl font-semibold text-primary">{t('nav.assignment')}</h1>
         <p className="text-muted-foreground">{t('assignment.description')}</p>
       </div>
 

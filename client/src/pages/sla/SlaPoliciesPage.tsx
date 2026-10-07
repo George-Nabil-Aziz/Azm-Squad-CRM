@@ -14,7 +14,7 @@ export function SlaPoliciesPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold">{t('nav.slaPolicies')}</h1>
+        <h1 className="text-2xl font-semibold text-primary">{t('nav.slaPolicies')}</h1>
         <p className="text-muted-foreground">{t('sla.description')}</p>
       </div>
 

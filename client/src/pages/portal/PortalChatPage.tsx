@@ -55,7 +55,7 @@ export function PortalChatPage() {
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-4">
-      <h1 className="text-2xl font-semibold">{t('portal.chat.title')}</h1>
+      <h1 className="text-2xl font-semibold text-primary">{t('portal.chat.title')}</h1>
       <p className="text-muted-foreground">{t('portal.chat.intro')}</p>
 
       <div role="log" aria-label={t('portal.chat.conversation')} className="flex flex-col gap-3">

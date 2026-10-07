@@ -21,7 +21,7 @@ export function LinkedArticles({ ticketId }: { ticketId: string }) {
 
   return (
     <section aria-label={t('knowledgeBase.linked.title')} className="flex flex-col gap-2">
-      <h2 className="text-lg font-semibold">{t('knowledgeBase.linked.title')}</h2>
+      <h2 className="text-lg font-semibold text-primary">{t('knowledgeBase.linked.title')}</h2>
       <ul className="flex flex-col gap-1 text-sm">
         {articles.data.map((article) => (
           <li key={article.id}>

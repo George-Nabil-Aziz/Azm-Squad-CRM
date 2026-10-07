@@ -19,7 +19,7 @@ export function ContactFormPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-xl flex-col gap-4 p-4">
-      <h1 className="text-2xl font-semibold">{t('webForms.form.title')}</h1>
+      <h1 className="text-2xl font-semibold text-primary">{t('webForms.form.title')}</h1>
       {receipt ? (
         <div role="status" className="flex flex-col gap-3 rounded-lg border p-4">
           <p className="font-medium">{t('webForms.form.thanks')}</p>

@@ -28,7 +28,7 @@ export function CustomerNotes({ customerId }: { customerId: string }) {
 
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-lg font-semibold">{t('customers.notes.title')}</h2>
+      <h2 className="text-lg font-semibold text-primary">{t('customers.notes.title')}</h2>
       <Can permission={permissions.customersManage}>
         <AddNoteForm customerId={customerId} onAdded={() => setPage(1)} />
       </Can>

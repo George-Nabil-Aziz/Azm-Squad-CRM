@@ -24,7 +24,7 @@ export function DashboardPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold">{t('nav.dashboard')}</h1>
+        <h1 className="text-2xl font-semibold text-primary">{t('nav.dashboard')}</h1>
         {user ? <p className="text-muted-foreground">{t('dashboard.welcome', { name: user.fullName })}</p> : null}
       </div>
       <Tabs defaultValue="all" className="gap-6">

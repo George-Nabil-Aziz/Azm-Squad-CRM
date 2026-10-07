@@ -18,7 +18,7 @@ export function TicketFeedback({ ticketId, status }: { ticketId: string; status:
 
   return (
     <section aria-label={t('portal.survey.title')} className="flex flex-col gap-2 rounded-lg border p-4">
-      <h2 className="text-lg font-semibold">{t('portal.survey.title')}</h2>
+      <h2 className="text-lg font-semibold text-primary">{t('portal.survey.title')}</h2>
       <SurveyView survey={survey.data} submit={(answer) => submit.mutateAsync(answer)} />
     </section>
   )

@@ -20,7 +20,7 @@ export function KnowledgeBasePage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold">{t('nav.knowledgeBase')}</h1>
+        <h1 className="text-2xl font-semibold text-primary">{t('nav.knowledgeBase')}</h1>
         <p className="text-muted-foreground">{t('knowledgeBase.description')}</p>
       </div>
 

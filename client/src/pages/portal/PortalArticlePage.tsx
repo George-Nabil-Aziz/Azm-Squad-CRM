@@ -54,7 +54,7 @@ export function PortalArticlePage() {
       ) : article.data ? (
         <>
           <p className="text-sm text-muted-foreground">{article.data.categoryName}</p>
-          <h1 className="text-2xl font-semibold">{article.data.title}</h1>
+          <h1 className="text-2xl font-semibold text-primary">{article.data.title}</h1>
           <div dir="auto" className="whitespace-pre-line wrap-break-word">
             {article.data.body}
           </div>

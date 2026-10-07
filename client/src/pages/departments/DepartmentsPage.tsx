@@ -26,7 +26,7 @@ export function DepartmentsPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold">{t('nav.departments')}</h1>
+          <h1 className="text-2xl font-semibold text-primary">{t('nav.departments')}</h1>
           <p className="text-muted-foreground">{t('departments.description')}</p>
         </div>
         <Can permission={permissions.departmentsManage}>

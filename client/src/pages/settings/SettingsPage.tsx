@@ -10,7 +10,7 @@ export function SettingsPage() {
   return (
     <div className="flex max-w-4xl flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold">{t('nav.settings')}</h1>
+        <h1 className="text-2xl font-semibold text-primary">{t('nav.settings')}</h1>
         <p className="text-muted-foreground">{t('settings.description')}</p>
       </div>
 

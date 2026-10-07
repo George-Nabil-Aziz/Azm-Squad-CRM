@@ -32,7 +32,7 @@ export function TicketSummary({ ticketId }: { ticketId: string }) {
   return (
     <section aria-label={t('ai.summary.title')} className="flex flex-col gap-2 rounded-lg border p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-semibold">{t('ai.summary.title')}</h2>
+        <h2 className="text-lg font-semibold text-primary">{t('ai.summary.title')}</h2>
         {can(permissions.ticketsManage) ? (
           <Button type="button" variant="outline" size="sm" disabled={generate.isPending} onClick={() => generate.mutate()}>
             <SparklesIcon aria-hidden="true" />

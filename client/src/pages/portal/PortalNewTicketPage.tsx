@@ -11,7 +11,7 @@ export function PortalNewTicketPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-4">
-      <h1 className="text-2xl font-semibold">{t('portal.newTicket.title')}</h1>
+      <h1 className="text-2xl font-semibold text-primary">{t('portal.newTicket.title')}</h1>
       {ticket ? (
         <div role="status" className="flex flex-col gap-3 rounded-lg border p-4">
           <p className="font-medium">{t('portal.newTicket.created')}</p>

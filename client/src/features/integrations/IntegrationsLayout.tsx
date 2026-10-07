@@ -15,7 +15,7 @@ export function IntegrationsLayout() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold">{t('nav.integrations')}</h1>
+        <h1 className="text-2xl font-semibold text-primary">{t('nav.integrations')}</h1>
         <p className="text-muted-foreground">{t('integrations.description')}</p>
       </div>
       <nav aria-label={t('integrations.navigation')} className="flex flex-wrap gap-1 border-b">

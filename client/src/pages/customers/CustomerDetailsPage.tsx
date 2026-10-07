@@ -29,9 +29,9 @@ export function CustomerDetailsPage() {
         <p className="text-muted-foreground">{t('customers.details.loading')}</p>
       ) : customer.data ? (
         <>
-          <h1 className="text-2xl font-semibold">{customer.data.name}</h1>
+          <h1 className="text-2xl font-semibold text-primary">{customer.data.name}</h1>
           <section className="flex flex-col gap-4">
-            <h2 className="text-lg font-semibold">{t('customers.details.contacts')}</h2>
+            <h2 className="text-lg font-semibold text-primary">{t('customers.details.contacts')}</h2>
             {customer.data.contacts.length > 0 ? (
               <CustomerContactsTable customerId={id} contacts={customer.data.contacts} />
             ) : (

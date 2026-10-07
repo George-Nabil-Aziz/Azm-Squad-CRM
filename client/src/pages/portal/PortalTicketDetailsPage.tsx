@@ -91,7 +91,7 @@ function Details({ ticket }: { ticket: PortalTicketSummary }) {
         <p dir="ltr" className="text-sm font-medium text-muted-foreground">
           {ticket.number}
         </p>
-        <h1 className="text-2xl font-semibold">{ticket.subject}</h1>
+        <h1 className="text-2xl font-semibold text-primary">{ticket.subject}</h1>
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="secondary">{t(`portal.statuses.${ticket.status}`)}</Badge>
           {ticket.categoryName ? <span className="text-sm text-muted-foreground">{ticket.categoryName}</span> : null}
@@ -118,7 +118,7 @@ function Details({ ticket }: { ticket: PortalTicketSummary }) {
       {ticket.status === 'resolved' || ticket.status === 'closed' ? <TicketFeedback ticketId={ticket.id} status={ticket.status} /> : null}
 
       <section aria-label={t('portal.details.conversation')} className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">{t('portal.details.conversation')}</h2>
+        <h2 className="text-lg font-semibold text-primary">{t('portal.details.conversation')}</h2>
         {messages.data && messages.data.length > 0 ? (
           <ul className="flex flex-col gap-2">
             {messages.data.map((message) => (
@@ -154,7 +154,7 @@ function Details({ ticket }: { ticket: PortalTicketSummary }) {
       ) : null}
 
       <section aria-label={t('portal.details.history')} className="flex flex-col gap-2">
-        <h2 className="text-lg font-semibold">{t('portal.details.history')}</h2>
+        <h2 className="text-lg font-semibold text-primary">{t('portal.details.history')}</h2>
         <ul className="flex flex-col gap-1 text-sm">
           {history.data?.map((item, index) => (
             <li key={`${item.type}-${index}`}>
