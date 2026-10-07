@@ -142,4 +142,77 @@ describe('QuickRepliesPage', () => {
     await waitFor(() => expect(updateQuickReply).toHaveBeenCalledWith('q2', expect.anything()))
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument() // still editing; the API client shows the error toast
   })
+  it('describes the page without raw placeholders', async () => {
+    renderPage()
+    await screen.findByRole('row', { name: /Greeting/ })
+
+    expect(screen.getByText(/Ready-made replies you can drop into any ticket/)).toBeInTheDocument()
+    expect(screen.queryByText(/{{ticket.number}}/)).not.toBeInTheDocument()
+  })
+
+  it('shows placeholders in the list as badges', async () => {
+    renderPage()
+    const row = await screen.findByRole('row', { name: /Greeting/ })
+
+    expect(within(row).getByText('Customer name')).toBeInTheDocument()
+    expect(within(row).queryByText(/{{/)).not.toBeInTheDocument()
+  })
+
+  it('inserts a token at the caret and keeps focus after it', async () => {
+    renderPage()
+    await screen.findByRole('row', { name: /Greeting/ })
+    const box = screen.getByLabelText('Reply text') as HTMLTextAreaElement
+    fireEvent.change(box, { target: { value: 'Hello , welcome' } })
+    box.setSelectionRange(6, 6)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Insert Customer name' }))
+
+    expect(box.value).toBe('Hello {{customer.name}}, welcome')
+    await waitFor(() => expect(box).toHaveFocus())
+    expect(box.selectionStart).toBe(6 + '{{customer.name}}'.length)
+    expect(box.selectionEnd).toBe(box.selectionStart)
+  })
+
+  it('has an insert chip for each placeholder and replaces a selection', () => {
+    renderPage()
+    const box = screen.getByLabelText('Reply text') as HTMLTextAreaElement
+    fireEvent.change(box, { target: { value: 'Re: XXX' } })
+    box.setSelectionRange(4, 7)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Insert Ticket subject' }))
+
+    expect(box.value).toBe('Re: {{ticket.subject}}')
+    for (const name of ['Insert Ticket number', 'Insert Agent name']) {
+      expect(screen.getByRole('button', { name })).toBeInTheDocument()
+    }
+  })
+
+  it('previews the reply with sample values and the current user name', async () => {
+    renderPage()
+    await screen.findByRole('row', { name: /Greeting/ })
+    await waitFor(() => expect(getCurrentUser).toHaveBeenCalled())
+
+    fireEvent.change(screen.getByLabelText('Reply text'), { target: { value: 'Hi {{customer.name}}, {{ticket.number}} - {{agent.name}}' } })
+
+    await waitFor(() => expect(screen.getByTestId('quick-reply-preview')).toHaveTextContent('Hi Ahmed Ali, TKT-000123 - Sara Agent'))
+  })
+
+  it('filters the list by search and says when nothing matches', async () => {
+    renderPage()
+    await screen.findByRole('row', { name: /Greeting/ })
+
+    fireEvent.change(screen.getByLabelText('Search by title, shortcut or text'), { target: { value: 'refund' } })
+    expect(screen.queryByRole('row', { name: /Greeting/ })).not.toBeInTheDocument()
+    expect(screen.getByRole('row', { name: /Refund policy/ })).toBeInTheDocument()
+
+    fireEvent.change(screen.getByLabelText('Search by title, shortcut or text'), { target: { value: 'zzz' } })
+    expect(screen.getByText('No quick replies match your search.')).toBeInTheDocument()
+  })
+
+  it('shows a friendly empty state', async () => {
+    vi.mocked(listQuickReplies).mockResolvedValue([])
+    renderPage()
+
+    expect(await screen.findByText('No quick replies yet')).toBeInTheDocument()
+  })
 })

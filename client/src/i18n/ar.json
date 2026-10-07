@@ -529,7 +529,7 @@
     "markDoneFor": "تعليم كمنجزة: {{title}}"
   },
   "quickReplies": {
-    "description": "ردود محفوظة يمكنك إدراجها في رد التذكرة. استخدم {{customer.name}} و{{ticket.number}} و{{ticket.subject}} و{{agent.name}} لإدراج بيانات التذكرة.",
+    "description": "ردود جاهزة يمكنك إدراجها في أي تذكرة. استخدم الأزرار لإضافة بيانات العميل والتذكرة تلقائياً.",
     "picker": "الردود السريعة",
     "search": "ابحث في الردود السريعة",
     "empty": "لم يتم العثور على ردود سريعة.",
@@ -537,7 +537,7 @@
     "title": "العنوان",
     "shortcut": "الاختصار",
     "body": "نص الرد",
-    "placeholders": "العناصر النائبة: {{customer.name}} و{{ticket.number}} و{{ticket.subject}} و{{agent.name}}.",
+    "placeholders": "أضف البيانات تلقائياً:",
     "share": "مشاركة مع الجميع",
     "save": "حفظ الرد السريع",
     "cancel": "إلغاء",
@@ -548,7 +548,29 @@
     "personal": "شخصي",
     "actions": "الإجراءات",
     "edit": "تعديل",
-    "delete": "حذف"
+    "delete": "حذف",
+    "insert": "إدراج {{label}}",
+    "tokens": {
+      "customerName": "اسم العميل",
+      "ticketNumber": "رقم التذكرة",
+      "ticketSubject": "موضوع التذكرة",
+      "agentName": "اسم الموظف"
+    },
+    "samples": {
+      "customerName": "أحمد علي",
+      "ticketNumber": "TKT-000123",
+      "ticketSubject": "مشكلة في الفاتورة",
+      "agentName": "اسمك"
+    },
+    "preview": "معاينة",
+    "previewHint": "تُستخدم هنا بيانات تجريبية، وتُملأ البيانات الحقيقية عند إدراج الرد.",
+    "filter": "ابحث بالعنوان أو الاختصار أو النص",
+    "noMatches": "لا توجد ردود سريعة مطابقة لبحثك.",
+    "emptyTitle": "لا توجد ردود سريعة بعد",
+    "emptyHint": "احفظ الإجابات التي تكررها كثيراً وأعد استخدامها بنقرة واحدة.",
+    "formTitleNew": "رد سريع جديد",
+    "formTitleEdit": "تعديل الرد السريع",
+    "owner": "بواسطة {{name}}"
   },
   "auditLogs": {
     "description": "سجل للقراءة فقط للإجراءات الحساسة: تسجيل الدخول وتغييرات المستخدمين والأدوار وتغييرات SLA وعمليات الحذف.",

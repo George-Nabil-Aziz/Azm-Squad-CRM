@@ -14,7 +14,7 @@ const english = flatten(en)
 const arabic = flatten(ar)
 
 /** Keys whose Arabic value is intentionally not Arabic: the switch shows the *other* language's name. */
-const NOT_ARABIC_IN_AR = ['language.switch']
+const NOT_ARABIC_IN_AR = ['language.switch', 'quickReplies.samples.ticketNumber']
 
 const placeholders = (text: string) => (text.match(/\{\{\s*\w+\s*\}\}/g) ?? []).sort()
 

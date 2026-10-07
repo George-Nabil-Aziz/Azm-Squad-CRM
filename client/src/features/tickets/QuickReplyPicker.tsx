@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { listQuickReplies, renderQuickReply } from '@/api/quick-replies'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { QuickReplyBody } from '@/features/quick-replies/QuickReplyBody'
 
 /**
  * The quick reply picker under the reply box (CRM-32): search by title or shortcut, choose one, and its text, with the
@@ -45,16 +46,19 @@ export function QuickReplyPicker({ ticketId, onInsert }: { ticketId: string; onI
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="h-auto w-full justify-start text-start whitespace-normal"
+                  className="h-auto w-full flex-col items-start justify-start gap-0.5 text-start whitespace-normal"
                   disabled={insert.isPending}
                   onClick={() => insert.mutate(reply.id)}
                 >
-                  <span className="font-medium">{reply.title}</span>
-                  {reply.shortcut ? (
-                    <span dir="ltr" className="ms-2 text-muted-foreground">
-                      {reply.shortcut}
-                    </span>
-                  ) : null}
+                  <span>
+                    <span className="font-medium">{reply.title}</span>
+                    {reply.shortcut ? (
+                      <span dir="ltr" className="ms-2 text-muted-foreground">
+                        {reply.shortcut}
+                      </span>
+                    ) : null}
+                  </span>
+                  <QuickReplyBody body={reply.body} className="line-clamp-2 text-xs font-normal leading-5 text-muted-foreground" />
                 </Button>
               </li>
             ))}

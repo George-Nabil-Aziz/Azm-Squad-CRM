@@ -529,7 +529,7 @@
     "markDoneFor": "Mark as done: {{title}}"
   },
   "quickReplies": {
-    "description": "Saved replies you can insert into a ticket reply. Use {{customer.name}}, {{ticket.number}}, {{ticket.subject}} or {{agent.name}} to fill in the ticket data.",
+    "description": "Ready-made replies you can drop into any ticket. Use the buttons to add the customer's and ticket's details automatically.",
     "picker": "Quick replies",
     "search": "Search quick replies",
     "empty": "No quick replies found.",
@@ -537,7 +537,7 @@
     "title": "Title",
     "shortcut": "Shortcut",
     "body": "Reply text",
-    "placeholders": "Placeholders: {{customer.name}}, {{ticket.number}}, {{ticket.subject}}, {{agent.name}}.",
+    "placeholders": "Add details automatically:",
     "share": "Share with everybody",
     "save": "Save quick reply",
     "cancel": "Cancel",
@@ -548,7 +548,29 @@
     "personal": "Personal",
     "actions": "Actions",
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "insert": "Insert {{label}}",
+    "tokens": {
+      "customerName": "Customer name",
+      "ticketNumber": "Ticket number",
+      "ticketSubject": "Ticket subject",
+      "agentName": "Agent name"
+    },
+    "samples": {
+      "customerName": "Ahmed Ali",
+      "ticketNumber": "TKT-000123",
+      "ticketSubject": "Invoice issue",
+      "agentName": "Your name"
+    },
+    "preview": "Preview",
+    "previewHint": "Sample details are used here; real ones are filled in when you insert the reply.",
+    "filter": "Search by title, shortcut or text",
+    "noMatches": "No quick replies match your search.",
+    "emptyTitle": "No quick replies yet",
+    "emptyHint": "Save the answers you give most often and reuse them in one click.",
+    "formTitleNew": "New quick reply",
+    "formTitleEdit": "Edit quick reply",
+    "owner": "By {{name}}"
   },
   "auditLogs": {
     "description": "Read-only record of sensitive actions: logins, user and role changes, SLA changes and deletions.",

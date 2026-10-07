@@ -77,4 +77,14 @@ describe('QuickReplyPicker', () => {
 
     expect(await screen.findByText('No quick replies found.')).toBeInTheDocument()
   })
+  it('shows what each reply contains, with badges instead of raw placeholders', async () => {
+    renderPicker()
+    fireEvent.click(screen.getByRole('button', { name: 'Quick replies' }))
+
+    const button = await screen.findByRole('button', { name: /Greeting/ })
+
+    expect(button).toHaveTextContent('Hello')
+    expect(button).toHaveTextContent('Customer name')
+    expect(button).not.toHaveTextContent('{{')
+  })
 })
