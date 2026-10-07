@@ -49,6 +49,10 @@ public sealed class DemoDataSeeder(
         {
             services.GetRequiredService<ILogger<DemoDataSeeder>>().LogError(exception, "Seeding the development demo data failed.");
         }
+
+        await DemoTaskSeeder.RunAsync(services, cancellationToken); // separate step: also tops up a database that already has demo data
+        await DemoChatSeeder.RunAsync(services, cancellationToken); // separate step with its own marker (chats of demo visitors)
+        await DemoQuickReplySeeder.RunAsync(services, cancellationToken);
     }
 
     /// <summary>Returns true when data was added.</summary>
