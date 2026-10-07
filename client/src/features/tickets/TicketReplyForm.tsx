@@ -9,6 +9,8 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { SuggestedSolutions } from '@/features/ai/SuggestedSolutions'
+import { SuggestReplyButton } from '@/features/ai/SuggestReplyButton'
 import { InsertArticleControl } from '@/features/knowledge-base/InsertArticleControl'
 import { QuickReplyPicker } from './QuickReplyPicker'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
@@ -80,6 +82,16 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
           />
           {error ? <FieldError errors={[{ message: error }]} /> : null}
         </Field>
+        <SuggestedSolutions
+          ticketId={ticketId}
+          onInsert={(inserted) => setText((current) => `${current.trimEnd()}${inserted}`)}
+        />
+        <SuggestReplyButton
+          ticketId={ticketId}
+          onDraft={(draft) => setText((current) => (current.trim() ? `${current.trimEnd()}
+
+${draft}` : draft))}
+        />
         <InsertArticleControl
           ticketId={ticketId}
           onInsert={(inserted) => setText((current) => `${current.trimEnd()}${inserted}`)}

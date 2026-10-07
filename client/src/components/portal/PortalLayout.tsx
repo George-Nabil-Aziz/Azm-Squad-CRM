@@ -1,6 +1,8 @@
+import { useQuery } from '@tanstack/react-query'
 import { LogInIcon, LogOutIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink, Outlet } from 'react-router'
+import { getChatbotStatus } from '@/api/portal-chatbot'
 import { PORTAL_LOGIN_PATH } from '@/app/portal-paths'
 import { clearPortalSession } from '@/auth/portal-session'
 import { useIsPortalAuthenticated, usePortalCustomer } from '@/auth/usePortalSession'
@@ -12,6 +14,8 @@ export function PortalLayout() {
   const { t } = useTranslation()
   const isAuthenticated = useIsPortalAuthenticated()
   const customer = usePortalCustomer()
+  // The chat link only shows while the server has an AI key (CRM-54).
+  const chatbot = useQuery({ queryKey: ['portal-chatbot', 'status'], queryFn: ({ signal }) => getChatbotStatus(signal) })
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `rounded-md px-3 py-1.5 text-sm font-medium ${isActive ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:text-foreground'}`
@@ -27,6 +31,11 @@ export function PortalLayout() {
             <NavLink to="/portal" end className={linkClass}>
               {t('portal.nav.help')}
             </NavLink>
+            {chatbot.data?.enabled ? (
+              <NavLink to="/portal/chat" className={linkClass}>
+                {t('portal.nav.chat')}
+              </NavLink>
+            ) : null}
             {isAuthenticated ? (
               <>
                 <NavLink to="/portal/tickets" end className={linkClass}>

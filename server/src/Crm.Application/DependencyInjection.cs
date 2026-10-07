@@ -1,3 +1,4 @@
+using Crm.Application.Ai;
 using Crm.Application.Audit;
 using Crm.Application.Channels;
 using Crm.Application.Channels.WhatsApp;
@@ -50,6 +51,7 @@ public static class DependencyInjection
         services.AddScoped<ITicketCategoryService, TicketCategoryService>();
         services.AddKnowledgeBase();
         services.AddPortal();
+        services.AddAi();
         services.AddScoped<ISlaPolicyService, SlaPolicyService>();
         services.AddScoped<ITicketService, TicketService>();
         services.AddScoped<SlaMonitorJob>();

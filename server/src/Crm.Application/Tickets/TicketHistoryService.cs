@@ -1,3 +1,4 @@
+using Crm.Application.Ai;
 using Crm.Application.Common.Exceptions;
 using Crm.Domain.Tickets;
 using ValidationException = Crm.Application.Common.Exceptions.ValidationException;
@@ -30,7 +31,8 @@ public sealed class TicketCategoryChangeService(
     ITicketRepository tickets,
     ITicketCategoryRepository categories,
     ITicketHistoryRecorder history,
-    TimeProvider timeProvider) : ITicketCategoryChangeService
+    TimeProvider timeProvider,
+    IAiClassificationService? aiClassification = null) : ITicketCategoryChangeService
 {
     public async Task<TicketResponse> ChangeAsync(Guid ticketId, ChangeTicketCategoryRequest request, CancellationToken cancellationToken)
     {
@@ -54,6 +56,11 @@ public sealed class TicketCategoryChangeService(
         var now = timeProvider.GetUtcNow().UtcDateTime;
         ticket.ChangeCategory(category?.Id, now);
         history.Record(ticket.Id, TicketHistoryField.Category, current.CategoryName, category?.Name, now);
+        if (aiClassification is not null)
+        {
+            await aiClassification.RecordCategoryChangeAsync(ticket.Id, category?.Id, now, cancellationToken); // CRM-52
+        }
+
         await tickets.SaveChangesAsync(cancellationToken);
 
         return TicketService.ToResponse(await tickets.GetViewAsync(ticketId, cancellationToken)

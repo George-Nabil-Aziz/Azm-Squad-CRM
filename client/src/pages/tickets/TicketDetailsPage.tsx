@@ -7,6 +7,8 @@ import type { Ticket } from '@/api/tickets'
 import { permissions } from '@/auth/permissions'
 import { Badge } from '@/components/ui/badge'
 import { Can } from '@/features/auth/Can'
+import { TicketAiClassification } from '@/features/ai/TicketAiClassification'
+import { TicketSummary } from '@/features/ai/TicketSummary'
 import { LinkedArticles } from '@/features/knowledge-base/LinkedArticles'
 import { CustomerPanel } from '@/features/tickets/CustomerPanel'
 import { TicketAssignControl } from '@/features/tickets/TicketAssignControl'
@@ -96,6 +98,8 @@ function TicketDetails({ ticket }: { ticket: Ticket }) {
       <TicketStatusActions ticket={ticket} />
       <TicketAssignControl ticket={ticket} />
       <TicketClassifyControl ticket={ticket} />
+      <TicketAiClassification ticketId={ticket.id} />
+      <TicketSummary ticketId={ticket.id} />
 
       {ticket.description ? (
         <p dir="auto" className="whitespace-pre-line wrap-break-word rounded-lg border p-3">

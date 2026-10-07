@@ -1,0 +1,56 @@
+using Crm.Application.Ai;
+using Crm.Application.Auth;
+
+namespace Crm.Api.Endpoints;
+
+/// <summary>The AI helpers of the staff UI (CRM-50..53). No endpoint needs a key at startup: without one they answer 503.</summary>
+public static class AiEndpoints
+{
+    public static IEndpointRouteBuilder MapAiEndpoints(this IEndpointRouteBuilder app)
+    {
+        // The UI asks once whether to show the AI actions at all.
+        app.MapGet("/api/ai/status", (IAiTextService ai) => Results.Ok(new AiStatusResponse(ai.IsConfigured)))
+            .RequireAuthorization(Permissions.TicketsView)
+            .WithName("GetAiStatus");
+
+        // Reading a ticket's AI results needs tickets.view; asking the AI to generate something needs tickets.manage.
+        var ticket = app.MapGroup("/api/tickets/{id:guid}").RequireAuthorization(Permissions.TicketsView);
+
+        ticket.MapGet("/ai-summary", async (Guid id, ITicketSummaryService summaries, CancellationToken cancellationToken) =>
+                Results.Ok(await summaries.GetAsync(id, cancellationToken)))
+            .WithName("GetTicketAiSummary");
+
+        ticket.MapPost("/ai-summary", async (Guid id, ITicketSummaryService summaries, CancellationToken cancellationToken) =>
+                Results.Ok(await summaries.GenerateAsync(id, cancellationToken)))
+            .RequireAuthorization(Permissions.TicketsManage)
+            .WithName("GenerateTicketAiSummary");
+
+        // CRM-51: a draft for the reply box. It is only returned; the agent reviews it and sends it with the normal reply.
+        ticket.MapPost("/ai-reply-draft", async (Guid id, IReplyDraftService drafts, CancellationToken cancellationToken) =>
+                Results.Ok(await drafts.SuggestAsync(id, cancellationToken)))
+            .RequireAuthorization(Permissions.TicketsManage)
+            .WithName("SuggestTicketReplyDraft");
+
+        // CRM-52: what the AI suggested when the ticket was created, and whether it was applied.
+        ticket.MapGet("/ai-classification", async (Guid id, IAiClassificationService classification, CancellationToken cancellationToken) =>
+                Results.Ok(await classification.GetAsync(id, cancellationToken)))
+            .WithName("GetTicketAiClassification");
+
+        // CRM-53: the best published articles for the ticket (needs kb.view) and the agent's vote on one of them.
+        ticket.MapGet("/ai-suggestions", async (Guid id, ISuggestedSolutionsService suggestions, CancellationToken cancellationToken) =>
+                Results.Ok(await suggestions.ListAsync(id, cancellationToken)))
+            .RequireAuthorization(Permissions.KbView)
+            .WithName("ListTicketAiSuggestions");
+
+        ticket.MapPut("/ai-suggestions/{articleId:guid}/feedback", async (Guid id, Guid articleId, SuggestionFeedbackRequest request,
+                    ISuggestedSolutionsService suggestions, CancellationToken cancellationToken) =>
+                Results.Ok(await suggestions.RecordFeedbackAsync(id, articleId, request, cancellationToken)))
+            .RequireAuthorization(Permissions.TicketsManage, Permissions.KbView)
+            .WithName("RecordTicketAiSuggestionFeedback");
+
+        return app;
+    }
+}
+
+/// <summary>Whether an AI provider key is configured (<c>enabled</c>); when false the UI hides the AI actions.</summary>
+public sealed record AiStatusResponse(bool Enabled);
