@@ -53,6 +53,8 @@ public sealed class DemoDataSeeder(
         await DemoTaskSeeder.RunAsync(services, cancellationToken); // separate step: also tops up a database that already has demo data
         await DemoChatSeeder.RunAsync(services, cancellationToken); // separate step with its own marker (chats of demo visitors)
         await DemoQuickReplySeeder.RunAsync(services, cancellationToken);
+        await DemoIntegrationsSeeder.RunAsync(services, cancellationToken); // API keys, webhooks + deliveries, ERP links (own markers)
+        await DemoAuditSeeder.RunAsync(services, cancellationToken); // varied audit-log examples when the log is nearly empty
     }
 
     /// <summary>Returns true when data was added.</summary>

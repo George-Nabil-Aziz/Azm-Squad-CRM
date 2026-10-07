@@ -38,7 +38,7 @@ const entries: AuditLogEntry[] = [
     entityId: 'high',
     oldValues: '{"responseMinutes":120}',
     newValues: '{"responseMinutes":60}',
-    ipAddress: '10.0.0.9',
+    ipAddress: '::1',
   },
 ]
 
@@ -67,18 +67,39 @@ describe('AuditLogsPage', () => {
       })
   })
 
-  it('lists who did what, on which entity, with old/new values and IP', async () => {
+  it('shows a readable sentence per entry with a friendly IP address', async () => {
     renderPage()
 
     expect(screen.getByRole('heading', { level: 1, name: 'Audit log' })).toBeInTheDocument()
     const failed = await screen.findByRole('row', { name: /ghost@crm.local/ })
-    expect(within(failed).getByText('Login failed')).toBeInTheDocument()
+    expect(within(failed).getByText('Failed sign-in (unknown account)')).toBeInTheDocument()
     expect(within(failed).getByText('10.0.0.8')).toBeInTheDocument()
-    expect(within(failed).getByText('{"reason":"unknown-user"}')).toBeInTheDocument()
     const sla = screen.getByRole('row', { name: /admin@crm.local/ })
-    expect(within(sla).getByText('SLA policy changed')).toBeInTheDocument()
-    expect(within(sla).getByText('{"responseMinutes":120}')).toBeInTheDocument()
-    expect(within(sla).getByText('{"responseMinutes":60}')).toBeInTheDocument()
+    expect(within(sla).getByText('Updated SLA policy High: response time 120 → 60 min')).toBeInTheDocument()
+    expect(within(sla).getByText('Local (this computer)')).toBeInTheDocument()
+    expect(screen.queryByText('{"responseMinutes":120}')).not.toBeInTheDocument()
+  })
+
+  it('shows a dash when the IP address is unknown', async () => {
+    vi.mocked(listAuditLogs).mockResolvedValue(page([{ ...entries[0], ipAddress: null }]))
+    renderPage()
+
+    const row = await screen.findByRole('row', { name: /ghost@crm.local/ })
+    expect(within(row).getByText('—')).toBeInTheDocument()
+  })
+
+  it('expands an entry into a field-by-field diff and collapses it again', async () => {
+    renderPage()
+    const sla = await screen.findByRole('row', { name: /admin@crm.local/ })
+
+    fireEvent.click(within(sla).getByRole('button', { name: 'Show details' }))
+
+    const detail = await screen.findByRole('table', { name: 'Field changes' })
+    const row = within(detail).getByRole('row', { name: /Response time/ })
+    expect(within(row).getByText('120')).toBeInTheDocument()
+    expect(within(row).getByText('60')).toBeInTheDocument()
+    fireEvent.click(within(sla).getByRole('button', { name: 'Hide details' }))
+    expect(screen.queryByRole('table', { name: 'Field changes' })).not.toBeInTheDocument()
   })
 
   it('filters by action and user through the API', async () => {

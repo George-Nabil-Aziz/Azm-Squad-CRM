@@ -39,7 +39,13 @@ builder.Services.AddSingleton<IChatNotifier, SignalRChatNotifier>(); // CRM-56
 builder.Services.AddSingleton<IUserIdProvider, NotificationUserIdProvider>();
 builder.Services.AddSingleton<INotificationPublisher, SignalRNotificationPublisher>(); // replaces the no-op default
 
+// Audit log, rate limits and web forms need the real client address: honour X-Forwarded-For from trusted proxies only
+// (loopback by default = the Vite dev proxy; add reverse proxies in ForwardedHeaders:KnownProxies / KnownNetworks).
+builder.Services.AddCrmForwardedHeaders(builder.Configuration);
+
 var app = builder.Build();
+
+app.UseForwardedHeaders(); // first: everything after sees the forwarded client address
 
 // Localization first: the error handler and status-code pages write ProblemDetails in the request language.
 app.UseCrmLocalization();

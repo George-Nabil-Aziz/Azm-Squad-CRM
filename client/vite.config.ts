@@ -14,9 +14,10 @@ export default defineConfig({
   server: {
     proxy: {
       // Must match applicationUrl of the "http" profile in server/src/Crm.Api/Properties/launchSettings.json
-      '/api': 'http://localhost:5080',
+      // xfwd: send X-Forwarded-For so the API (audit log) records the browser address, not the proxy's.
+      '/api': { target: 'http://localhost:5080', xfwd: true },
       // SignalR hubs (notifications, live chat) need WebSocket proxying too.
-      '/hubs': { target: 'http://localhost:5080', ws: true },
+      '/hubs': { target: 'http://localhost:5080', ws: true, xfwd: true },
     },
   },
   test: {
