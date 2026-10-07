@@ -91,6 +91,10 @@ plan-once, execute-many approach.
 
 - **One story at a time, tests first.** Every acceptance criterion became at least one
   test before any production code was written (TDD: red → green → refactor).
+- **React performance practices.** The client follows Vercel's
+  [React Best Practices](./.claude/skills/vercel-react-best-practices/SKILL.md) skill: first
+  eliminating async waterfalls and reducing bundle size, then data fetching and rendering
+  optimisations. See [Vercel's introduction](https://vercel.com/blog/introducing-react-best-practices).
 - **A strong model plans, a cheaper model executes.** Opus coordinated the work: it split
   the stories into groups, reviewed every migration, ran the full test suites and merged.
   Sonnet agents wrote the plans, the tests and the code.
