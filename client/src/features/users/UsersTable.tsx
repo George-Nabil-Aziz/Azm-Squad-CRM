@@ -33,12 +33,15 @@ export function UsersTable({ users, onEdit }: UsersTableProps) {
       </TableHeader>
       <TableBody>
         {users.map((user) => (
-          <TableRow key={user.id}>
+          <TableRow key={user.id} className={user.isActive ? undefined : 'bg-muted/30 text-muted-foreground'}>
             <TableCell className="font-medium">{user.fullName}</TableCell>
             <TableCell>{user.email}</TableCell>
             <TableCell>{roleList.format(user.roles.map((role) => t(`users.roleNames.${role}`)))}</TableCell>
             <TableCell>
-              <Badge variant={user.isActive ? 'secondary' : 'outline'}>
+              <Badge
+                variant={user.isActive ? 'secondary' : 'destructive'}
+                className={user.isActive ? undefined : 'border-destructive/30'}
+              >
                 {t(user.isActive ? 'users.active' : 'users.inactive')}
               </Badge>
             </TableCell>
