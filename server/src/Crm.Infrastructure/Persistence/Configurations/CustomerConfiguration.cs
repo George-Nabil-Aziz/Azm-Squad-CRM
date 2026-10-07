@@ -15,6 +15,8 @@ public sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         customer.Property(c => c.Email).HasMaxLength(Customer.EmailMaxLength);
         customer.Property(c => c.Phone).HasMaxLength(Customer.PhoneMaxLength);
         customer.HasIndex(c => c.Name); // list order
+        customer.Property(c => c.ErpCustomerId).HasMaxLength(Customer.ErpCustomerIdMaxLength);
+        customer.HasIndex(c => c.ErpCustomerId).IsUnique().HasFilter("[ErpCustomerId] IS NOT NULL"); // CRM-60: one CRM customer per ERP customer
 
         // Contacts belong to the customer aggregate: owned entities in their own table, always loaded with the
         // customer and hidden together with it by the soft-delete filter.

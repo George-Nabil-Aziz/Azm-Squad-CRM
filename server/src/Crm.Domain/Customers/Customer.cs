@@ -14,6 +14,7 @@ public sealed class Customer : ISoftDeletable
     public const int NameMaxLength = 200;
     public const int EmailMaxLength = 256;
     public const int PhoneMaxLength = 32;
+    public const int ErpCustomerIdMaxLength = 100;
 
     private readonly List<CustomerContact> _contacts = [];
 
@@ -31,6 +32,9 @@ public sealed class Customer : ISoftDeletable
 
     /// <summary>The primary phone contact's value, E.164 (null when the customer has no phone).</summary>
     public string? Phone { get; private set; }
+
+    /// <summary>The id of the same customer in the ERP (CRM-60); null = not linked. Unique among customers.</summary>
+    public string? ErpCustomerId { get; private set; }
 
     public DateTime CreatedAt { get; private set; }
 
@@ -64,6 +68,21 @@ public sealed class Customer : ISoftDeletable
         EnsureUtc(utcNow);
         EnsureNotDeleted();
         SetProfile(name, email, phone, utcNow);
+    }
+
+    /// <summary>Links the customer to its ERP customer (trimmed); null or blank removes the link.</summary>
+    public void LinkErp(string? erpCustomerId, DateTime utcNow)
+    {
+        EnsureUtc(utcNow);
+        EnsureNotDeleted();
+        var id = erpCustomerId?.Trim();
+        if (id is { Length: > ErpCustomerIdMaxLength })
+        {
+            throw new ArgumentException("The ERP customer id is too long.", nameof(erpCustomerId));
+        }
+
+        ErpCustomerId = string.IsNullOrEmpty(id) ? null : id;
+        UpdatedAt = utcNow;
     }
 
     /// <summary>Soft delete: the row and its data stay (tickets keep pointing at it). Deleting twice changes nothing.</summary>

@@ -978,7 +978,8 @@
     "navigation": "أقسام التكاملات",
     "nav": {
       "apiKeys": "مفاتيح API",
-      "webhooks": "خطافات الويب"
+      "webhooks": "خطافات الويب",
+      "erpLogs": "سجل مزامنة ERP"
     },
     "apiKeys": {
       "description": "تتيح مفاتيح API للأنظمة الخارجية استدعاء الواجهة العامة (/api/v1) بالترويسة X-Api-Key. يظهر المفتاح مرة واحدة فقط بعد إنشائه.",
@@ -1050,6 +1051,44 @@
         "ticketCreated": "إنشاء تذكرة",
         "ticketResolved": "حل تذكرة"
       }
+    },
+    "erpLogs": {
+      "description": "في كل مرة يقرأ النظام بيانات عميل من نظام ERP تُسجَّل النتيجة هنا.",
+      "loading": "جارٍ تحميل السجل…",
+      "empty": "لا توجد عمليات مزامنة بعد.",
+      "time": "الوقت",
+      "customer": "العميل",
+      "erpId": "معرّف ERP",
+      "result": "النتيجة",
+      "error": "التفاصيل",
+      "previous": "السابق",
+      "next": "التالي",
+      "results": {
+        "success": "نجحت",
+        "failed": "فشلت",
+        "not_configured": "غير مُعدّ"
+      }
     }
+  },
+  "erp": {
+    "title": "نظام ERP",
+    "loading": "جارٍ تحميل بيانات ERP…",
+    "notLinked": "هذا العميل غير مرتبط بعميل في نظام ERP.",
+    "erpId": "معرّف العميل في ERP",
+    "link": "ربط",
+    "unlink": "إزالة الربط",
+    "linkLabel": "معرّف العميل في ERP",
+    "linkedAs": "مرتبط بالعميل {{id}} في ERP",
+    "orders": "أحدث الطلبات",
+    "invoices": "أحدث الفواتير",
+    "noOrders": "لا توجد طلبات.",
+    "noInvoices": "لا توجد فواتير.",
+    "number": "الرقم",
+    "date": "التاريخ",
+    "dueDate": "تاريخ الاستحقاق",
+    "status": "الحالة",
+    "total": "الإجمالي",
+    "unavailable": "بيانات ERP غير متاحة حالياً.",
+    "updated": "آخر تحديث {{time}}"
   }
 }

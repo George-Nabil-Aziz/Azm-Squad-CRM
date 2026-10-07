@@ -75,6 +75,8 @@ public class CrmDbContext(DbContextOptions<CrmDbContext> options)
 
     public DbSet<ApiKey> ApiKeys => Set<ApiKey>();
 
+    public DbSet<ErpSyncLog> ErpSyncLogs => Set<ErpSyncLog>();
+
     public DbSet<Webhook> Webhooks => Set<Webhook>();
 
     public DbSet<WebhookDelivery> WebhookDeliveries => Set<WebhookDelivery>();

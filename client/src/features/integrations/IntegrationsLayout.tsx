@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 const sections = [
   { id: 'apiKeys', path: '/integrations/api-keys' },
   { id: 'webhooks', path: '/integrations/webhooks' },
+  { id: 'erpLogs', path: '/integrations/erp-logs' },
 ] as const
 
 export function IntegrationsLayout() {

@@ -24,6 +24,8 @@ export interface Customer {
   createdAt: string
   updatedAt: string
   contacts: CustomerContact[]
+  /** The customer's id in the ERP (CRM-60), null = not linked. */
+  erpCustomerId?: string | null
 }
 
 /** Body of create and edit. Only the name is required; send null for an empty email or phone. */

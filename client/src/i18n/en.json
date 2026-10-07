@@ -978,7 +978,8 @@
     "navigation": "Integrations sections",
     "nav": {
       "apiKeys": "API keys",
-      "webhooks": "Webhooks"
+      "webhooks": "Webhooks",
+      "erpLogs": "ERP sync log"
     },
     "apiKeys": {
       "description": "API keys let external systems call the public API (/api/v1) with the X-Api-Key header. A key is shown only once, right after it is created.",
@@ -1050,6 +1051,44 @@
         "ticketCreated": "Ticket created",
         "ticketResolved": "Ticket resolved"
       }
+    },
+    "erpLogs": {
+      "description": "Every time the CRM reads a customer's data from the ERP, the result is logged here.",
+      "loading": "Loading the log…",
+      "empty": "No ERP syncs yet.",
+      "time": "Time",
+      "customer": "Customer",
+      "erpId": "ERP id",
+      "result": "Result",
+      "error": "Details",
+      "previous": "Previous",
+      "next": "Next",
+      "results": {
+        "success": "Success",
+        "failed": "Failed",
+        "not_configured": "Not configured"
+      }
     }
+  },
+  "erp": {
+    "title": "ERP",
+    "loading": "Loading ERP data…",
+    "notLinked": "This customer is not linked to an ERP customer.",
+    "erpId": "ERP customer id",
+    "link": "Link",
+    "unlink": "Remove link",
+    "linkLabel": "ERP customer id",
+    "linkedAs": "Linked to ERP customer {{id}}",
+    "orders": "Recent orders",
+    "invoices": "Recent invoices",
+    "noOrders": "No orders.",
+    "noInvoices": "No invoices.",
+    "number": "Number",
+    "date": "Date",
+    "dueDate": "Due date",
+    "status": "Status",
+    "total": "Total",
+    "unavailable": "ERP data is not available right now.",
+    "updated": "Updated at {{time}}"
   }
 }

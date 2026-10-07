@@ -154,7 +154,8 @@ public sealed class CustomerService(
         new(customer.Id, customer.Name, customer.Email, customer.Phone, customer.CreatedAt, customer.UpdatedAt,
             [.. customer.Contacts
                 .OrderBy(c => c.Type).ThenByDescending(c => c.IsPrimary).ThenBy(c => c.CreatedAt).ThenBy(c => c.Value)
-                .Select(ToResponse)]);
+                .Select(ToResponse)],
+            customer.ErpCustomerId);
 
     private static CustomerContactResponse ToResponse(CustomerContact contact) =>
         new(contact.Id, ContactValues.TypeName(contact.Type), contact.Value, contact.IsPrimary);

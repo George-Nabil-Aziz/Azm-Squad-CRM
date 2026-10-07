@@ -1,4 +1,5 @@
-import { apiDelete, apiGet, apiPost } from './client'
+import { apiDelete, apiGet, apiPost, apiPut } from './client'
+import type { PagedResult } from './paging'
 
 /** Scopes of an API key (server: Crm.Domain.Integrations.ApiKeyScopes). */
 export const apiKeyScopes = ['tickets:read', 'tickets:write', 'customers:read', 'customers:write'] as const
@@ -91,4 +92,53 @@ export function deleteWebhook(id: string): Promise<void> {
 
 export function listWebhookDeliveries(id: string, signal?: AbortSignal): Promise<WebhookDelivery[]> {
   return apiGet<WebhookDelivery[]>(`/api/webhooks/${encodeURIComponent(id)}/deliveries`, signal)
+}
+
+/** An order of the customer in the ERP (server: ErpOrder). */
+export interface ErpOrder {
+  id: string
+  number: string | null
+  date: string | null
+  status: string | null
+  total: number | null
+  currency: string | null
+}
+
+/** An invoice of the customer in the ERP (server: ErpInvoice). */
+export interface ErpInvoice extends ErpOrder {
+  dueDate: string | null
+}
+
+/** GET /api/customers/{id}/erp: always 200; `available` false = the ERP is down, `message` says so. */
+export interface ErpCustomerData {
+  linked: boolean
+  erpCustomerId: string | null
+  available: boolean
+  message: string | null
+  orders: ErpOrder[]
+  invoices: ErpInvoice[]
+  fetchedAt: string | null
+}
+
+export interface ErpSyncLogEntry {
+  id: string
+  customerId: string
+  customerName: string | null
+  erpCustomerId: string
+  result: 'success' | 'failed' | 'not_configured'
+  error: string | null
+  createdAt: string
+}
+
+export function getCustomerErp(customerId: string, signal?: AbortSignal): Promise<ErpCustomerData> {
+  return apiGet<ErpCustomerData>(`/api/customers/${encodeURIComponent(customerId)}/erp`, signal)
+}
+
+/** Links the customer to an ERP customer; an empty id removes the link. 409 when another customer has it. */
+export function linkCustomerToErp(customerId: string, erpCustomerId: string): Promise<{ customerId: string; erpCustomerId: string | null }> {
+  return apiPut(`/api/customers/${encodeURIComponent(customerId)}/erp-link`, { erpCustomerId: erpCustomerId.trim() || null })
+}
+
+export function listErpSyncLogs(page = 1, signal?: AbortSignal): Promise<PagedResult<ErpSyncLogEntry>> {
+  return apiGet<PagedResult<ErpSyncLogEntry>>(`/api/integrations/erp/sync-logs?page=${page}`, signal)
 }

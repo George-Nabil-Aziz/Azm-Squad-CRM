@@ -92,6 +92,8 @@ public static class DependencyInjection
         services.AddScoped<IQuickReplyRepository, QuickReplyRepository>();
         services.AddScoped<IApiKeyRepository, ApiKeyRepository>();
         services.AddScoped<IWebhookRepository, WebhookRepository>();
+        services.AddScoped<IErpRepository, ErpRepository>();
+        services.AddHttpClient<IErpClient, HttpErpClient>(); // CRM-60: configured by Integrations:Erp:* (user-secrets / environment)
         services.AddHttpClient<IWebhookSender, HttpWebhookSender>(client => client.Timeout = TimeSpan.FromSeconds(10));
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IStaffDirectory, StaffDirectory>();

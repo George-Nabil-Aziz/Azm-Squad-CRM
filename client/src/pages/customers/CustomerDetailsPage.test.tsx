@@ -19,6 +19,11 @@ import { CustomerDetailsPage } from './CustomerDetailsPage'
 
 vi.mock('@/api/auth', () => ({ getCurrentUser: vi.fn() }))
 
+vi.mock('@/api/integrations', () => ({
+  getCustomerErp: vi.fn().mockResolvedValue({ linked: false, erpCustomerId: null, available: true, message: null, orders: [], invoices: [], fetchedAt: null }),
+  linkCustomerToErp: vi.fn(),
+}))
+
 vi.mock('@/api/customers', () => ({
   getCustomer: vi.fn(),
   getCustomerTimeline: vi.fn(),

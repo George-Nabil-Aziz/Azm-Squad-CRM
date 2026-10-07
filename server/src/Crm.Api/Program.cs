@@ -83,6 +83,7 @@ app.MapTasksEndpoints();
 app.MapQuickRepliesEndpoints();
 app.MapApiKeysEndpoints();
 app.MapWebhooksEndpoints();
+app.MapErpEndpoints();
 app.MapPublicApiEndpoints();
 app.MapHub<NotificationsHub>(NotificationsHub.Path).RequireAuthorization(Permissions.NotificationsView);
 
