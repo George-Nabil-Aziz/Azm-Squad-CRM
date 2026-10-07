@@ -95,3 +95,9 @@ See Test Plan. Write them all, run, see them fail.
 - [ ] AC 3 transfer recorded in history.
 - [ ] AC 4 per-department SLA override.
 - [ ] `dotnet test`, `npm test`, build, lint green.
+
+## Deviations (as built)
+
+- Transfer response is `{ ticketId, departmentId, departmentName }` (not the full ticket): a department-restricted agent loses sight of the ticket they just moved.
+- The ticket list filter `departmentId` exists in the API and `api/tickets.ts`; no filter control was added to the ticket filter bar (UI shows the department on the details page and in the new-ticket dialog).
+- Ticket numbering (`NextNumberAsync`, `NumberTakenAsync`) ignores the query filters: a restricted user sees only some tickets, but numbers must stay unique over all.

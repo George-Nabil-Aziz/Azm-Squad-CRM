@@ -57,3 +57,10 @@
 - [ ] AC 2 CSS variables applied at runtime from `GET /api/branding`.
 - [ ] AC 3 invalid colour / oversize logo -> 400.
 - [ ] AC 4 staff app, portal and emails branded.
+
+## Deviations (as built)
+
+- Logo storage keys are `branding/{guid}` (the file storage accepts only lower-case letters, digits and slashes).
+- The client sets the theme variables on `<html>` as inline style, so the brand colours also win over the `.dark` theme; the dark theme is not given separate brand shades.
+- `api/client.ts` got a `quiet` option (`apiGetQuiet`) so the background branding read never shows an error toast; the app shell now makes one `GET /api/branding` request (the portal login test filters it).
+- Email branding is applied to notification emails and to email-channel replies (HTML part with colour band and embedded logo, plain text kept).

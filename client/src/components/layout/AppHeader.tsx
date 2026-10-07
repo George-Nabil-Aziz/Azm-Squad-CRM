@@ -18,13 +18,13 @@ export function AppHeader() {
       {/* aria-label replaces the English sr-only text inside the generated shadcn component. */}
       <SidebarTrigger className="-ms-1" aria-label={t('shell.toggleSidebar')} />
       <Separator orientation="vertical" className="me-2 data-[orientation=vertical]:h-4" />
-      <div className="ms-auto flex items-center gap-3">
-        {user ? <span className="text-sm text-muted-foreground">{user.fullName}</span> : null}
+      <div className="ms-auto flex min-w-0 items-center gap-2 sm:gap-3">
+        {user ? <span className="truncate text-sm text-muted-foreground max-sm:hidden">{user.fullName}</span> : null}
         <NotificationBell />
         <LanguageSwitcher />
         <Button variant="outline" size="sm" onClick={signOut}>
           <LogOutIcon aria-hidden="true" />
-          {t('auth.signOut')}
+          <span className="max-sm:sr-only">{t('auth.signOut')}</span>
         </Button>
       </div>
     </header>

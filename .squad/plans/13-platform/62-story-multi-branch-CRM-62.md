@@ -88,3 +88,10 @@ See Test Plan.
 - [ ] AC 3 every report filters by branch.
 - [ ] AC 4 SuperAdmin sees all branches.
 - [ ] `dotnet test`, `npm test`, build, lint green.
+
+## Deviations (as built)
+
+- No `BranchManager` role: a branch manager is any staff user other than SuperAdmin who is assigned to a branch (`ApplicationUser.BranchId`).
+- A user's branch is set with `PUT /api/users/{id}/branch` or on user creation, both only with `branches.manage` (SuperAdmin); the general user update does not touch it.
+- Customer `branchId` on `PUT` means "unchanged" when missing; there is no way to clear a customer's branch through the API.
+- Report exports honour `branchId` too; the report branch select lives in `ReportsLayout` and is passed through a React context (`report-branch.ts`).
